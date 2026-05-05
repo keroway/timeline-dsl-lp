@@ -1,7 +1,9 @@
 ---
-title: GitHub Actions
-description: GitHub Actions で Timeline DSL を検証する例です。
+title: CIで検証する
+description: GitHub Actions で自分の .tdsl ファイルを検証する例です。
 ---
+
+このページは、Timeline DSL 利用者が自分のリポジトリで `.tdsl` ファイルを継続的に検証するための例です。Timeline DSL 本体やこのドキュメントサイトをデプロイする手順ではありません。
 
 GitHub Actionsでは、`.tdsl` ファイルに対して `tdsl check`、`tdsl lint`、必要に応じて `tdsl build` を実行します。Wikidataを使うファイルを安定して検証したい場合は、`build` に `--offline` を付けて静的項目だけを処理できます。
 
