@@ -1,0 +1,67 @@
+---
+title: GitHub Actions
+description: GitHub Actions で Timeline DSL を検証する例です。
+---
+
+GitHub Actionsでは、`.tdsl` ファイルに対して `tdsl check`、`tdsl lint`、必要に応じて `tdsl build` を実行します。Wikidataを使うファイルを安定して検証したい場合は、`build` に `--offline` を付けて静的項目だけを処理できます。
+
+## Ubuntu runnerで検証する例
+
+Ubuntu runner ではインストールスクリプトで `tdsl` を取得し、`~/.local/bin` を `PATH` に追加します。
+
+```yaml
+name: Timeline DSL
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  tdsl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tdsl
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Check timeline
+        run: tdsl check examples/china_dynasties.tdsl
+
+      - name: Lint timeline
+        run: tdsl lint examples/china_dynasties.tdsl --format json
+
+      - name: Build JSON
+        run: tdsl build examples/china_dynasties.tdsl --pretty --output timeline.json
+```
+
+## Homebrewでインストールする例
+
+macOS runner では Homebrew で導入できます。
+
+```yaml
+jobs:
+  tdsl:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tdsl
+        run: |
+          brew tap keroway/tap
+          brew install tdsl
+```
+
+## Wikidata import を含むファイル
+
+ネットワーク取得を含めて検証する場合は通常の `build` または `render` を使います。CIの再現性を優先する場合は `--offline` を指定します。
+
+```sh
+tdsl build examples/china_with_import.tdsl --pretty
+tdsl build examples/china_with_import.tdsl --offline --pretty
+```
+
+`search`、`inspect`、`resolve`、`scaffold wikidata` はWikidataまたはWikipediaへのネットワーク接続が必要です。
