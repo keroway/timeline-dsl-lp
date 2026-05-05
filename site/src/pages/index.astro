@@ -1,5 +1,6 @@
 ---
 import SocialMeta from "../components/SocialMeta.astro";
+import SiteFooter from "../components/SiteFooter.astro";
 import "../styles/global.css";
 import releasesData from "../data/releases.generated.json";
 
@@ -287,13 +288,7 @@ event_range incident 1130..1137 "継承戦争";`;
         </section>
       </main>
 
-      <footer class="site-footer">
-        <div class="footer-inner">
-          <span>Timeline DSL</span>
-          <a href="/docs/">Docs</a>
-          <a href="/changelog/">Changelog</a>
-        </div>
-      </footer>
+      <SiteFooter version={latest?.tagName} />
     </div>
     <script>
       const copyButtons = document.querySelectorAll("[data-copy-target]");

@@ -1,5 +1,6 @@
 ---
 import SocialMeta from "../components/SocialMeta.astro";
+import SiteFooter from "../components/SiteFooter.astro";
 import "../styles/global.css";
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import rehypeSanitize from "rehype-sanitize";
@@ -14,6 +15,7 @@ type Release = {
 };
 
 const releases = releasesData.releases as Release[];
+const latest = releasesData.latest as Release | null;
 const pageTitle = "Changelog | Timeline DSL";
 const pageDescription = "Timeline DSL の GitHub Releases から生成した changelog です。";
 const markdownProcessor = await createMarkdownProcessor({
@@ -128,13 +130,7 @@ const renderedReleases = await Promise.all(
         </section>
       </main>
 
-      <footer class="site-footer">
-        <div class="footer-inner">
-          <span>Timeline DSL</span>
-          <a href="/docs/">Docs</a>
-          <a href="/changelog/">Changelog</a>
-        </div>
-      </footer>
+      <SiteFooter currentPath="/changelog/" version={latest?.tagName || releases[0]?.tagName} />
     </div>
   </body>
 </html>
