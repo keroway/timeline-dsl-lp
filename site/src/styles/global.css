@@ -33,6 +33,13 @@ a {
   color: inherit;
 }
 
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
 .page-shell {
   min-height: 100vh;
 }
@@ -102,6 +109,11 @@ a {
 .nav-links a[aria-current="page"] {
   color: var(--color-ink);
   background: var(--color-panel);
+}
+
+.nav-links a:focus-visible,
+.button:focus-visible {
+  border-radius: 6px;
 }
 
 .hero {
