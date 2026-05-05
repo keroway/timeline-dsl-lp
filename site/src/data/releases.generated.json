@@ -1,0 +1,28 @@
+{
+  "repository": "keroway/timeline-dsl",
+  "source": "github-releases",
+  "fetchedAt": "2026-05-05T08:19:15.714Z",
+  "latest": {
+    "tagName": "v1.0.0",
+    "name": "v1.0.0",
+    "publishedAt": "2026-05-04T14:06:37Z",
+    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.0.0",
+    "body": "## What's Changed\n* feat: template/apply構文の実装 by @keroway in https://github.com/keroway/timeline-dsl/pull/42\n* test: テストカバレッジ向上（パーサ・lowering・renderエッジケース） by @keroway in https://github.com/keroway/timeline-dsl/pull/43\n* fix: エラー診断の改善（lane候補提示・DSL仕様更新） by @keroway in https://github.com/keroway/timeline-dsl/pull/44\n* docs: Getting Started チュートリアルの追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/70\n* docs: サンプルファイルの拡充（日本史・戦国Wikidata・世界大戦・科学技術） by @keroway in https://github.com/keroway/timeline-dsl/pull/71\n* feat: SVGファイルの直接出力（tdsl render --format svg） by @keroway in https://github.com/keroway/timeline-dsl/pull/72\n* feat: Wikidata APIエラーハンドリング改善（タイムアウト・リトライ・スロットリング対応） by @keroway in https://github.com/keroway/timeline-dsl/pull/73\n* test: E2Eテスト拡充（全CLIサブコマンド・正常系・異常系カバレッジ） by @keroway in https://github.com/keroway/timeline-dsl/pull/74\n* feat: VS Code 構文ハイライト拡張の追加（TextMate grammar） by @keroway in https://github.com/keroway/timeline-dsl/pull/75\n* feat: Homebrew formula 作成とリリースワークフロー自動更新 by @keroway in https://github.com/keroway/timeline-dsl/pull/76\n* chore: v1.0 リリース準備（CHANGELOG更新・マイグレーションガイド） by @keroway in https://github.com/keroway/timeline-dsl/pull/77\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v0.1.0...v1.0.0"
+  },
+  "releases": [
+    {
+      "tagName": "v1.0.0",
+      "name": "v1.0.0",
+      "publishedAt": "2026-05-04T14:06:37Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.0.0",
+      "body": "## What's Changed\n* feat: template/apply構文の実装 by @keroway in https://github.com/keroway/timeline-dsl/pull/42\n* test: テストカバレッジ向上（パーサ・lowering・renderエッジケース） by @keroway in https://github.com/keroway/timeline-dsl/pull/43\n* fix: エラー診断の改善（lane候補提示・DSL仕様更新） by @keroway in https://github.com/keroway/timeline-dsl/pull/44\n* docs: Getting Started チュートリアルの追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/70\n* docs: サンプルファイルの拡充（日本史・戦国Wikidata・世界大戦・科学技術） by @keroway in https://github.com/keroway/timeline-dsl/pull/71\n* feat: SVGファイルの直接出力（tdsl render --format svg） by @keroway in https://github.com/keroway/timeline-dsl/pull/72\n* feat: Wikidata APIエラーハンドリング改善（タイムアウト・リトライ・スロットリング対応） by @keroway in https://github.com/keroway/timeline-dsl/pull/73\n* test: E2Eテスト拡充（全CLIサブコマンド・正常系・異常系カバレッジ） by @keroway in https://github.com/keroway/timeline-dsl/pull/74\n* feat: VS Code 構文ハイライト拡張の追加（TextMate grammar） by @keroway in https://github.com/keroway/timeline-dsl/pull/75\n* feat: Homebrew formula 作成とリリースワークフロー自動更新 by @keroway in https://github.com/keroway/timeline-dsl/pull/76\n* chore: v1.0 リリース準備（CHANGELOG更新・マイグレーションガイド） by @keroway in https://github.com/keroway/timeline-dsl/pull/77\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v0.1.0...v1.0.0"
+    },
+    {
+      "tagName": "v0.1.0",
+      "name": "v0.1.0",
+      "publishedAt": "2026-04-20T01:33:03Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v0.1.0",
+      "body": "## What's Changed\n* feat: MVP - DSLパーサ・IR変換・Wikidata連携・CLI by @keroway in https://github.com/keroway/timeline-dsl/pull/1\n* docs: README, CLAUDE.md, DSL言語仕様を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/2\n* Add standalone HTML timeline rendering with floating tooltip by @keroway in https://github.com/keroway/timeline-dsl/pull/3\n* Add Wikidata search and inspect commands by @keroway in https://github.com/keroway/timeline-dsl/pull/11\n* Add tdsl scaffold wikidata command by @keroway in https://github.com/keroway/timeline-dsl/pull/12\n* chore: apply cargo fmt across workspace by @keroway in https://github.com/keroway/timeline-dsl/pull/14\n* Implement import query support in parser and lowering by @keroway in https://github.com/keroway/timeline-dsl/pull/13\n* Add tdsl init and tdsl import-csv for manual timeline authoring by @keroway in https://github.com/keroway/timeline-dsl/pull/15\n* Add tdsl lint with --fix and JSON output by @keroway in https://github.com/keroway/timeline-dsl/pull/16\n* Docs and CI smoke flow for authoring workflows by @keroway in https://github.com/keroway/timeline-dsl/pull/17\n* Implement import policy behavior in lowering by @keroway in https://github.com/keroway/timeline-dsl/pull/18\n* Add resolve command for Wikipedia URL to QID by @keroway in https://github.com/keroway/timeline-dsl/pull/19\n* fix: eval_map_expr の未対応アクセサが None を返すよう修正 by @keroway in https://github.com/keroway/timeline-dsl/pull/24\n* docs: CLAUDE.md の実装状況を現状に合わせて更新 by @keroway in https://github.com/keroway/timeline-dsl/pull/25\n* docs: dsl-spec.md の実装乖離を修正 by @keroway in https://github.com/keroway/timeline-dsl/pull/26\n* refactor: render_init_tdsl の alias 登録処理を整理 by @keroway in https://github.com/keroway/timeline-dsl/pull/27\n* fix: write_temp_csv をスレッドID+ナノ秒で衝突回避 by @keroway in https://github.com/keroway/timeline-dsl/pull/32\n* fix: validate に start>end チェック追加 & SPARQL QID 抽出改善 by @keroway in https://github.com/keroway/timeline-dsl/pull/33\n* feat: Wikidata取得結果のキャッシュ機能を追加する (closes #28) by @keroway in https://github.com/keroway/timeline-dsl/pull/37\n* feat: Wikidataキャッシュ機能追加 & README整備 (closes #28) by @keroway in https://github.com/keroway/timeline-dsl/pull/38\n\n## New Contributors\n* @keroway made their first contribution in https://github.com/keroway/timeline-dsl/pull/1\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/commits/v0.1.0"
+    }
+  ]
+}

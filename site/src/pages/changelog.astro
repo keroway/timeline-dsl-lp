@@ -1,0 +1,121 @@
+---
+import "../styles/global.css";
+import releasesData from "../data/releases.generated.json";
+
+type Release = {
+  tagName: string;
+  name: string;
+  publishedAt: string;
+  url: string;
+  body: string;
+};
+
+const releases = releasesData.releases as Release[];
+
+const formatDate = (value: string | null | undefined) => {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+};
+
+const fetchedAt = formatDate(releasesData.fetchedAt) || "未取得";
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Timeline DSL の GitHub Releases から生成した changelog です。"
+    />
+    <title>Changelog | Timeline DSL</title>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <nav class="nav" aria-label="Primary navigation">
+          <a class="brand" href="/">
+            <span class="brand-mark" aria-hidden="true">td</span>
+            <span>Timeline DSL</span>
+          </a>
+          <div class="nav-links">
+            <a href="/docs/">Docs</a>
+            <a href="/changelog/" aria-current="page">Changelog</a>
+            <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
+          </div>
+        </nav>
+      </header>
+
+      <main>
+        <section class="page-hero">
+          <div class="page-hero-inner">
+            <p class="eyebrow">GitHub Releases</p>
+            <h1>Changelog</h1>
+            <p class="lead">
+              {releases.length > 0
+                ? `${releasesData.repository} のリリース情報を表示しています。`
+                : "リリース情報はまだ取得されていません。GitHub Releases の取得後にここへ表示されます。"}
+            </p>
+            <p class="release-meta">最終取得: {fetchedAt}</p>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="releases-heading">
+          <div class="section-header">
+            <h2 id="releases-heading">Releases</h2>
+          </div>
+
+          {releases.length > 0 ? (
+            <div class="release-list">
+              {releases.map((release) => (
+                <article class="release-item">
+                  <div class="release-item-header">
+                    <div>
+                      <p class="release-version">{release.tagName}</p>
+                      <h3>{release.name || release.tagName}</h3>
+                    </div>
+                    <time datetime={release.publishedAt}>
+                      {formatDate(release.publishedAt) || "公開日未取得"}
+                    </time>
+                  </div>
+                  {release.body ? (
+                    <pre class="release-notes">{release.body}</pre>
+                  ) : (
+                    <p class="empty-copy">リリースノート本文はありません。</p>
+                  )}
+                  {release.url && (
+                    <a class="release-link" href={release.url}>
+                      GitHubで見る
+                    </a>
+                  )}
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div class="empty-state">
+              <h3>表示できるリリースはまだありません</h3>
+              <p>
+                取得スクリプトが成功すると、生成されたリリース一覧がこのページに表示されます。
+              </p>
+            </div>
+          )}
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-inner">
+          <span>Timeline DSL</span>
+          <a href="/docs/">Docs</a>
+          <a href="/changelog/">Changelog</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

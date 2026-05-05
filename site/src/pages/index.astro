@@ -1,5 +1,31 @@
 ---
 import "../styles/global.css";
+import releasesData from "../data/releases.generated.json";
+
+type Release = {
+  tagName: string;
+  name: string;
+  publishedAt: string;
+  url: string;
+  body: string;
+};
+
+const latest = releasesData.latest as Release | null;
+const latestLabel = latest?.tagName || "未取得";
+const latestName = latest?.name || latest?.tagName || "リリース情報は準備中です";
+
+const formatDate = (value: string | null | undefined) => {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+};
+
+const latestPublishedAt = formatDate(latest?.publishedAt);
 
 const features = [
   {
@@ -38,6 +64,7 @@ const features = [
           </a>
           <div class="nav-links">
             <a href="/docs/">Docs</a>
+            <a href="/changelog/">Changelog</a>
             <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
           </div>
         </nav>
@@ -58,6 +85,13 @@ const features = [
                 <a class="button button-secondary" href="https://github.com/keroway/timeline-dsl">
                   GitHubを見る
                 </a>
+              </div>
+              <div class="release-summary" aria-label="Latest release">
+                <span class="release-label">Latest</span>
+                <strong>{latestLabel}</strong>
+                <span>{latestName}</span>
+                {latestPublishedAt && <time datetime={latest?.publishedAt}>{latestPublishedAt}</time>}
+                {latest?.url && <a href={latest.url}>リリースノート</a>}
               </div>
             </div>
             <div class="terminal" aria-label="Timeline DSL command example">
@@ -108,6 +142,7 @@ const features = [
         <div class="footer-inner">
           <span>Timeline DSL</span>
           <a href="/docs/">Docs</a>
+          <a href="/changelog/">Changelog</a>
         </div>
       </footer>
     </div>
