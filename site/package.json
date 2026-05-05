@@ -6,6 +6,7 @@
   "packageManager": "pnpm@10.33.3",
   "scripts": {
     "dev": "astro dev",
+    "fetch:releases": "node scripts/fetch-github-releases.mjs",
     "build": "astro check && astro build",
     "preview": "astro preview"
   },
