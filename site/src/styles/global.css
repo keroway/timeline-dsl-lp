@@ -910,18 +910,86 @@ h1 {
 
 .site-footer {
   border-top: 1px solid var(--color-line);
+  background:
+    linear-gradient(90deg, rgba(13, 118, 111, 0.07), rgba(214, 154, 36, 0.04)),
+    #fbfcfd;
   color: var(--color-muted);
 }
 
 .footer-inner {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: minmax(13rem, 1.1fr) minmax(10rem, 0.8fr) minmax(18rem, 1fr);
+  align-items: center;
+  gap: 1.25rem 2rem;
   width: min(1120px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 1.4rem 0;
+  padding: 1.45rem 0;
   font-size: 0.92rem;
+}
+
+.footer-product {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: fit-content;
+  color: var(--color-ink);
+  font-weight: 720;
+  text-decoration: none;
+}
+
+.footer-brand:hover {
+  color: var(--color-accent-strong);
+}
+
+.footer-brand-mark {
+  width: 1.8rem;
+  height: 1.8rem;
+  background: #ffffff;
+}
+
+.footer-copyright {
+  font-size: 0.86rem;
+}
+
+.footer-nav,
+.footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.footer-nav a,
+.footer-meta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.25rem;
+  padding: 0.42rem 0.62rem;
+  border-radius: 6px;
+  color: var(--color-muted);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.footer-nav a:hover,
+.footer-meta a:hover,
+.footer-nav a[aria-current="page"] {
+  background: #ffffff;
+  color: var(--color-ink);
+}
+
+.footer-meta {
+  justify-content: flex-end;
+}
+
+.footer-github-link svg {
+  flex: 0 0 auto;
 }
 
 @media (hover: hover) {
@@ -1015,6 +1083,14 @@ h1 {
 
   .release-item-header {
     flex-direction: column;
+  }
+
+  .footer-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-meta {
+    justify-content: flex-start;
   }
 
   h1 {
