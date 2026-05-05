@@ -23,6 +23,7 @@ export default defineConfig({
             { label: "概要", slug: "docs" },
             { label: "インストール", slug: "docs/installation" },
             { label: "Quick Start", slug: "docs/quick-start" },
+            { label: "Deployment", slug: "docs/deployment" },
           ],
         },
       ],
