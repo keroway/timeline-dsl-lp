@@ -1,0 +1,115 @@
+---
+import "../styles/global.css";
+
+const features = [
+  {
+    title: "年表をテキストで管理",
+    body: "イベント、期間、レーン、注釈をコードレビューしやすいDSLとして扱えます。",
+  },
+  {
+    title: "CLIで生成と検証",
+    body: "ローカルやCIからビルドできるため、資料やドキュメントの更新フローに組み込みやすくなります。",
+  },
+  {
+    title: "公開フローと接続",
+    body: "GitHub Releases、Homebrew、ドキュメントサイトを同じリリース導線にまとめていきます。",
+  },
+];
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Timeline DSL は、年表をテキストで記述し、CLIで検証・生成するためのツールです。"
+    />
+    <title>Timeline DSL</title>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <nav class="nav" aria-label="Primary navigation">
+          <a class="brand" href="/">
+            <span class="brand-mark" aria-hidden="true">td</span>
+            <span>Timeline DSL</span>
+          </a>
+          <div class="nav-links">
+            <a href="/docs/">Docs</a>
+            <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
+          </div>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-inner">
+            <div>
+              <p class="eyebrow">Timeline authoring for CLI workflows</p>
+              <h1>Timeline DSL</h1>
+              <p class="lead">
+                年表をテキストで記述し、CLIで検証・生成するためのツールです。
+                歴史、プロジェクト、リリース、調査メモをGit管理しやすい形式で扱えます。
+              </p>
+              <div class="actions">
+                <a class="button button-primary" href="/docs/">ドキュメントを読む</a>
+                <a class="button button-secondary" href="https://github.com/keroway/timeline-dsl">
+                  GitHubを見る
+                </a>
+              </div>
+            </div>
+            <div class="terminal" aria-label="Timeline DSL command example">
+              <div class="terminal-bar" aria-hidden="true">
+                <span class="terminal-dot"></span>
+                <span class="terminal-dot"></span>
+                <span class="terminal-dot"></span>
+              </div>
+              <pre class="terminal-body"><code><span class="prompt">$</span> tdsl build timeline.tdsl --pretty
+<span class="output">validated 12 events across 3 lanes</span>
+<span class="prompt">$</span> tdsl render timeline.tdsl --output timeline.svg
+<span class="output">created timeline.svg</span></code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="features-heading">
+          <div class="section-header">
+            <h2 id="features-heading">年表作成を、再現できる作業にする</h2>
+            <p>
+              Timeline DSL は、手作業の図版編集ではなく、レビュー可能な入力ファイルとCLI出力を中心にした年表作成を目指します。
+            </p>
+          </div>
+          <div class="feature-grid">
+            {features.map((feature) => (
+              <article class="feature">
+                <h3>{feature.title}</h3>
+                <p>{feature.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="install-band" aria-labelledby="install-heading">
+          <div class="section install-layout">
+            <div class="section-header">
+              <h2 id="install-heading">まずはCLIを入れる</h2>
+              <p>
+                Homebrewでの導入を想定しています。詳しいセットアップと最初のファイル作成はQuick Startで確認できます。
+              </p>
+            </div>
+            <pre class="command"><code>brew install keroway/tap/timeline-dsl</code></pre>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-inner">
+          <span>Timeline DSL</span>
+          <a href="/docs/">Docs</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
