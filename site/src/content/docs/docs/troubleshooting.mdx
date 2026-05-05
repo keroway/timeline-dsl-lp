@@ -1,0 +1,73 @@
+---
+title: Troubleshooting
+description: Timeline DSL CLI 利用時のよくある問題と確認方法です。
+---
+
+## `tdsl` が見つからない
+
+インストール後に `tdsl --help` が実行できない場合は、インストール先が `PATH` に含まれているか確認します。
+
+```sh
+which tdsl
+tdsl --help
+```
+
+インストールスクリプトを使った場合、既定の配置先は `~/.local/bin/tdsl` です。
+
+```sh
+export PATH="${HOME}/.local/bin:${PATH}"
+```
+
+## `.tdsl` の構文エラーを切り分けたい
+
+まず `check` で構文・意味チェックを実行します。パース結果を確認したい場合は `ast` を使います。
+
+```sh
+tdsl check sample.tdsl
+tdsl ast sample.tdsl
+```
+
+## lane参照やIDの問題を直したい
+
+`lint` は未定義lane参照、重複id、`start > end`、空label、タグの空要素・重複などを検出します。安全に直せる項目は `--fix` で修正できます。
+
+```sh
+tdsl lint sample.tdsl
+tdsl lint sample.tdsl --fix
+```
+
+CIや別ツールで扱う場合はJSON形式にします。
+
+```sh
+tdsl lint sample.tdsl --format json
+```
+
+## Wikidata取得が不安定
+
+Wikidata import を含むファイルでネットワークやキャッシュの影響を避けたい場合は、`--offline` で静的項目だけを処理します。
+
+```sh
+tdsl build sample.tdsl --offline --pretty
+tdsl render sample.tdsl --offline --output sample.html
+```
+
+最新データを取り直したい場合は `--no-cache`、キャッシュTTLを変えたい場合は `--cache-ttl <秒>` を指定します。
+
+```sh
+tdsl build sample.tdsl --no-cache --pretty
+tdsl build sample.tdsl --cache-ttl 0 --pretty
+```
+
+## HTMLの見た目を調整したい
+
+`render` の表示オプションを調整します。
+
+```sh
+tdsl render sample.tdsl \
+  --output sample.html \
+  --scale 5 \
+  --lane-height 80 \
+  --theme dark
+```
+
+独自CSSを追加する場合は `--custom-css` を使います。

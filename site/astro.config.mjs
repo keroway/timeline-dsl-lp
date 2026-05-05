@@ -25,6 +25,22 @@ export default defineConfig({
             { label: "Quick Start", slug: "docs/quick-start" },
           ],
         },
+        {
+          label: "CLI",
+          items: [
+            { label: "Commands", slug: "docs/commands" },
+            { label: "Configuration", slug: "docs/configuration" },
+            { label: "GitHub Actions", slug: "docs/github-actions" },
+            { label: "Homebrew", slug: "docs/homebrew" },
+          ],
+        },
+        {
+          label: "サポート",
+          items: [
+            { label: "Troubleshooting", slug: "docs/troubleshooting" },
+            { label: "FAQ", slug: "docs/faq" },
+          ],
+        },
       ],
     }),
   ],

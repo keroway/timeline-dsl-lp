@@ -1,0 +1,74 @@
+---
+title: Configuration
+description: Timeline DSL CLI の設定と実行時オプションです。
+---
+
+Timeline DSL は専用の設定ファイルを前提にせず、`.tdsl` ファイル内の宣言とCLIオプションで挙動を指定します。
+
+## `.tdsl` の基本設定
+
+年表全体の表示名、単位、範囲、暦法は `timeline` ブロックで宣言します。
+
+```txt
+timeline "中国王朝年表" {
+    title "中国王朝年表";
+    unit year;
+    range -500..2000;
+    calendar proleptic_gregorian;
+}
+```
+
+縦軸カテゴリは `lane` で定義します。`span`、`event`、`event_range` は定義済みlaneを参照します。
+
+```txt
+lane "漢" as han { kind dynasty; order 20; }
+
+span han -206..220 "漢" { tags ["dynasty"]; source wd:Q7209; id "span:han"; };
+event han -209 "陳勝・呉広の乱" {};
+event_range han 184..204 "黄巾の乱" { tags ["war"]; };
+```
+
+## Wikidata取得
+
+`build` と `render` は、Wikidata import を含む `.tdsl` を処理するときに取得処理を行います。
+
+```sh
+tdsl build china_with_import.tdsl --pretty
+tdsl render china_with_import.tdsl --output china.html
+```
+
+オフラインで静的項目だけを処理する場合は `--offline` を指定します。
+
+```sh
+tdsl build china_with_import.tdsl --offline --pretty
+```
+
+キャッシュを使わずに再取得する場合は `--no-cache`、キャッシュTTLを変える場合は `--cache-ttl <秒>` を使います。既定TTLは86400秒です。
+
+## HTMLレンダリング
+
+`tdsl render` はスタンドアロンHTMLを出力します。表示調整はCLIオプションで指定します。
+
+```sh
+tdsl render sample.tdsl \
+  --output sample.html \
+  --scale 5 \
+  --lane-height 60 \
+  --left-gutter 120 \
+  --top-margin 40 \
+  --theme pastel
+```
+
+`--theme` は `default`、`dark`、`print`、`pastel` を指定できます。追加CSSを注入する場合は `--custom-css path/to/custom.css` を使います。
+
+## Lint
+
+`tdsl lint` は `text` と `json` の出力形式に対応します。
+
+```sh
+tdsl lint sample.tdsl
+tdsl lint sample.tdsl --format json
+tdsl lint sample.tdsl --fix
+```
+
+`--fix` はタグ重複除去、空タグ除去、`start,end` の入れ替え、未設定IDの安定生成など、安全な修正をファイルへ適用します。
