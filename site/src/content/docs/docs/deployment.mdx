@@ -1,0 +1,47 @@
+---
+title: Deployment
+description: Cloudflare Pages への公開と Preview URL の確認手順
+---
+
+このサイトは Cloudflare Pages Direct Upload を GitHub Actions から実行して公開します。Cloudflare の Git 連携ビルドは使わず、GitHub Actions の `Cloudflare Pages` workflow で `site/` をビルドし、`site/dist` を Pages にアップロードします。
+
+## 前提
+
+Cloudflare Pages project は `timeline-dsl`、production branch は `main` とします。
+
+GitHub repository secrets には以下を設定します。
+
+| Secret | 用途 |
+| --- | --- |
+| `CLOUDFLARE_ACCOUNT_ID` | Pages project が所属する Cloudflare account ID |
+| `CLOUDFLARE_API_TOKEN` | 対象 account に scope を限定した Custom API Token。権限は `Account / Cloudflare Pages / Edit` のみにし、Global API Key は使わない |
+
+## 実行タイミング
+
+| Trigger | 用途 | Pages branch |
+| --- | --- | --- |
+| `push` to `main` | 本番公開 | `main` |
+| `release.published` | リリース公開時に本番を再デプロイ | `main` |
+| `workflow_dispatch` | 手動で本番または preview を作成 | 入力した `pages_branch` |
+
+pull request では `Site build` workflow が `pnpm build` を実行します。Cloudflare API token を pull request のビルドコードへ渡さないため、自動 preview deploy は行いません。Preview deployment は必要なときだけ `Cloudflare Pages` workflow を手動実行して作成します。
+
+## 手動 Preview
+
+GitHub Actions の `Cloudflare Pages` workflow を `workflow_dispatch` で実行します。
+
+1. `ref` にデプロイしたい branch または commit を指定する。空の場合は Actions UI で選んだ ref が使われます。
+2. `pages_branch` に `main` 以外の名前を指定する。例: `pr-3-cloudflare-pages`
+3. workflow の Summary に出る Alias URL を開く。
+4. `/` と `/docs/` が表示できることを確認する。
+
+Preview alias は `https://<pages_branch>.timeline-dsl.pages.dev` の形式です。
+`pages_branch` は lowercase letters、digits、hyphen の DNS-safe な名前に限定します。
+
+## ローカル確認
+
+```sh
+cd site
+pnpm install --frozen-lockfile
+pnpm build
+```
