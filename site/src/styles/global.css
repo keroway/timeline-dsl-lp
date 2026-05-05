@@ -45,8 +45,12 @@ button:focus-visible {
 }
 
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   border-bottom: 1px solid var(--color-line);
   background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
 }
 
 .nav {
@@ -487,7 +491,7 @@ h1 {
 .page-hero-inner {
   width: min(1120px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: clamp(2.8rem, 6vw, 5rem) 0;
+  padding: clamp(2.2rem, 4vw, 3.5rem) 0;
 }
 
 .page-hero h1 {
@@ -530,6 +534,10 @@ h1 {
   border: 1px solid var(--color-line);
   border-radius: 8px;
   background: #ffffff;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .feature-kicker,
@@ -607,6 +615,10 @@ h1 {
   border-radius: 8px;
   background: #ffffff;
   overflow: hidden;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .workflow-step::before {
@@ -625,7 +637,7 @@ h1 {
 }
 
 .workflow-step h3 {
-  margin: 4rem 0 0;
+  margin: 1.65rem 0 0;
   font-size: 1.08rem;
 }
 
@@ -649,6 +661,10 @@ h1 {
   border: 1px solid var(--color-line);
   border-radius: 8px;
   background: #ffffff;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .usecase-map {
@@ -827,6 +843,10 @@ h1 {
   color: var(--color-muted);
 }
 
+.page-hero + .section {
+  padding-top: 2rem;
+}
+
 .install-band {
   border-top: 1px solid var(--color-line);
   border-bottom: 1px solid var(--color-line);
@@ -846,9 +866,46 @@ h1 {
   border: 1px solid var(--color-line);
   border-radius: 8px;
   background: #ffffff;
-  padding: 1rem;
+  padding: 1rem 5.1rem 1rem 1rem;
   font-family: var(--font-mono);
   font-size: 0.95rem;
+}
+
+.command-copy {
+  position: relative;
+  min-width: 0;
+}
+
+.copy-button {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.2rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 680;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background: var(--color-panel);
+}
+
+.copy-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .site-footer {
@@ -865,6 +922,30 @@ h1 {
   margin: 0 auto;
   padding: 1.4rem 0;
   font-size: 0.92rem;
+}
+
+@media (hover: hover) {
+  .feature:hover,
+  .usecase:hover,
+  .workflow-step:hover {
+    border-color: rgba(13, 118, 111, 0.36);
+    box-shadow: 0 16px 34px rgba(21, 32, 44, 0.12);
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature,
+  .usecase,
+  .workflow-step {
+    transition: none;
+  }
+
+  .feature:hover,
+  .usecase:hover,
+  .workflow-step:hover {
+    transform: none;
+  }
 }
 
 @media (max-width: 820px) {
