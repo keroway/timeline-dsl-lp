@@ -13,6 +13,7 @@ type Release = {
 const latest = releasesData.latest as Release | null;
 const latestLabel = latest?.tagName || "未取得";
 const latestName = latest?.name || latest?.tagName || "リリース情報は準備中です";
+const shouldShowLatestName = latestName !== latestLabel;
 
 const formatDate = (value: string | null | undefined) => {
   if (!value) return null;
@@ -29,18 +30,62 @@ const latestPublishedAt = formatDate(latest?.publishedAt);
 
 const features = [
   {
-    title: "年表をテキストで管理",
-    body: "イベント、期間、レーン、注釈をコードレビューしやすいDSLとして扱えます。",
+    kicker: "Author",
+    title: "年表をテキストで残す",
+    body: "イベント、期間、レーン、注釈を `.tdsl` として記述し、差分レビューしやすい形で保管できます。",
+    metric: ".tdsl",
   },
   {
-    title: "CLIで生成と検証",
-    body: "ローカルやCIからビルドできるため、資料やドキュメントの更新フローに組み込みやすくなります。",
+    kicker: "Validate",
+    title: "CLIで壊れた年表を検出",
+    body: "構文、lane参照、重複ID、期間の前後関係をローカルやCIで確認できます。",
+    metric: "check",
   },
   {
-    title: "公開フローと接続",
-    body: "GitHub Releases、Homebrew、ドキュメントサイトを同じリリース導線にまとめていきます。",
+    kicker: "Render",
+    title: "HTML / SVGへ描画",
+    body: "資料、ドキュメント、GitHub Pagesなどに置きやすいスタンドアロン成果物へ変換できます。",
+    metric: "render",
   },
 ];
+
+const useCases = [
+  {
+    title: "物語・ゲーム設定",
+    body: "王朝、戦争、人物の生没、章ごとの事件をレーンで分け、設定資料として更新し続けられます。",
+    sample: "架空世界年表",
+    tone: "story",
+  },
+  {
+    title: "授業・教材",
+    body: "時代区分と出来事を並べ、授業で扱う範囲だけをHTMLとして配布できます。",
+    sample: "日本史 / 世界史",
+    tone: "classroom",
+  },
+  {
+    title: "組織の沿革",
+    body: "創業、製品発表、拠点展開、制度変更を一つの履歴として保守できます。",
+    sample: "Company history",
+    tone: "company",
+  },
+  {
+    title: "調査・研究メモ",
+    body: "Wikidataの候補探索から手元の追記まで、出典確認前の仮説もテキストで管理できます。",
+    sample: "Wikidata scaffold",
+    tone: "research",
+  },
+];
+
+const heroDslExample = `timeline "架空世界年表" {
+  range 980..1260;
+}
+
+lane "王国" as realm;
+lane "事件" as incident;
+
+span realm 990..1184 "灰都王朝";
+event incident 1042 "北方遠征";
+event_range incident 1130..1137 "継承戦争";`;
 ---
 
 <!doctype html>
@@ -73,12 +118,12 @@ const features = [
       <main>
         <section class="hero">
           <div class="hero-inner">
-            <div>
+            <div class="hero-copy">
               <p class="eyebrow">Timeline authoring for CLI workflows</p>
               <h1>Timeline DSL</h1>
               <p class="lead">
                 年表をテキストで記述し、CLIで検証・生成するためのツールです。
-                歴史、プロジェクト、リリース、調査メモをGit管理しやすい形式で扱えます。
+                歴史、創作設定、教材、組織の沿革をGit管理しやすい形式で扱えます。
               </p>
               <div class="actions">
                 <a class="button button-primary" href="/docs/">ドキュメントを読む</a>
@@ -89,26 +134,55 @@ const features = [
               <div class="release-summary" aria-label="Latest release">
                 <span class="release-label">Latest</span>
                 <strong>{latestLabel}</strong>
-                <span>{latestName}</span>
+                {shouldShowLatestName && <span>{latestName}</span>}
                 {latestPublishedAt && <time datetime={latest?.publishedAt}>{latestPublishedAt}</time>}
                 {latest?.url && <a href={latest.url}>リリースノート</a>}
               </div>
             </div>
-            <div class="terminal" aria-label="Timeline DSL command example">
-              <div class="terminal-bar" aria-hidden="true">
-                <span class="terminal-dot"></span>
-                <span class="terminal-dot"></span>
-                <span class="terminal-dot"></span>
+            <div class="hero-visual" aria-label="Timeline DSL workflow preview">
+              <div class="editor-panel">
+                <div class="panel-bar">
+                  <span>world-history.tdsl</span>
+                  <span>validated</span>
+                </div>
+                <pre class="code-sample"><code>{heroDslExample}</code></pre>
               </div>
-              <pre class="terminal-body"><code><span class="prompt">$</span> tdsl build timeline.tdsl --pretty
-<span class="output">validated 12 events across 3 lanes</span>
-<span class="prompt">$</span> tdsl render timeline.tdsl --output timeline.svg
-<span class="output">created timeline.svg</span></code></pre>
+              <div class="timeline-preview" aria-hidden="true">
+                <div class="preview-header">
+                  <span>Rendered timeline</span>
+                  <span>980 - 1260</span>
+                </div>
+                <div class="timeline-axis">
+                  <span>980</span>
+                  <span>1060</span>
+                  <span>1140</span>
+                  <span>1220</span>
+                </div>
+                <div class="lane-row">
+                  <span class="lane-label">王国</span>
+                  <span class="span-block span-realm">灰都王朝</span>
+                </div>
+                <div class="lane-row">
+                  <span class="lane-label">事件</span>
+                  <span class="event-dot dot-one"></span>
+                  <span class="span-block span-war">継承戦争</span>
+                </div>
+                <div class="lane-row">
+                  <span class="lane-label">人物</span>
+                  <span class="span-block span-person">巡礼王</span>
+                  <span class="event-dot dot-two"></span>
+                </div>
+              </div>
+              <div class="command-strip" aria-hidden="true">
+                <span class="prompt">$</span>
+                <span>tdsl check world-history.tdsl</span>
+                <strong>0 errors</strong>
+              </div>
             </div>
           </div>
         </section>
 
-        <section class="section" aria-labelledby="features-heading">
+        <section class="section feature-section" aria-labelledby="features-heading">
           <div class="section-header">
             <h2 id="features-heading">年表作成を、再現できる作業にする</h2>
             <p>
@@ -118,8 +192,66 @@ const features = [
           <div class="feature-grid">
             {features.map((feature) => (
               <article class="feature">
+                <p class="feature-kicker">{feature.kicker}</p>
+                <div class="feature-figure" aria-hidden="true">
+                  <span>{feature.metric}</span>
+                </div>
                 <h3>{feature.title}</h3>
                 <p>{feature.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="workflow-band" aria-labelledby="workflow-heading">
+          <div class="section workflow-layout">
+            <div class="section-header">
+              <p class="eyebrow">From source to artifact</p>
+              <h2 id="workflow-heading">書く、確かめる、見せるまでを同じ流れに置く</h2>
+              <p>
+                `.tdsl` は成果物そのものではなく、年表を再生成するための入力です。差分、CI、HTML出力がつながるので、長く更新する年表ほど扱いやすくなります。
+              </p>
+            </div>
+            <div class="workflow-rail" aria-label="Timeline DSL workflow">
+              <article class="workflow-step">
+                <span class="step-number">01</span>
+                <h3>テキストで編集</h3>
+                <p>手書き、CSV取り込み、Wikidata scaffold から年表の材料を作ります。</p>
+              </article>
+              <article class="workflow-step">
+                <span class="step-number">02</span>
+                <h3>CLIで検証</h3>
+                <p>`tdsl check` と `tdsl lint` で、参照ミスや重複を公開前に見つけます。</p>
+              </article>
+              <article class="workflow-step">
+                <span class="step-number">03</span>
+                <h3>HTML / SVGに出力</h3>
+                <p>教材、社内資料、ドキュメントサイトへ置ける形で年表を描画します。</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section usecase-section" aria-labelledby="usecases-heading">
+          <div class="section-header">
+            <h2 id="usecases-heading">専門ツールとして、使い道は広く</h2>
+            <p>
+              一般向けの年表メーカーではなく、更新し続ける年表をテキストとして扱いたい人に向いています。
+            </p>
+          </div>
+          <div class="usecase-grid">
+            {useCases.map((useCase) => (
+              <article class={`usecase ${useCase.tone}`}>
+                <div class="usecase-map" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div>
+                  <p class="usecase-sample">{useCase.sample}</p>
+                  <h3>{useCase.title}</h3>
+                  <p>{useCase.body}</p>
+                </div>
               </article>
             ))}
           </div>
