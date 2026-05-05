@@ -3,40 +3,55 @@ title: Deployment
 description: Cloudflare Pages への公開と Preview URL の確認手順
 ---
 
-このサイトは Cloudflare Pages Direct Upload を GitHub Actions から実行して公開します。Cloudflare の Git 連携ビルドは使わず、GitHub Actions の `Cloudflare Pages` workflow で `site/` をビルドし、`site/dist` を Pages にアップロードします。
+このサイトは Cloudflare Pages の GitHub integration で公開します。GitHub Actions は CI として `pnpm build` を確認し、公開と Preview URL の作成は Cloudflare Pages に任せます。
 
 ## 前提
 
 Cloudflare Pages project は `timeline-dsl`、production branch は `main` とします。
 
-GitHub repository secrets には以下を設定します。
+Cloudflare Pages の Build settings は以下にします。
 
-| Secret | 用途 |
+| Setting | Value |
 | --- | --- |
-| `CLOUDFLARE_ACCOUNT_ID` | Pages project が所属する Cloudflare account ID |
-| `CLOUDFLARE_API_TOKEN` | 対象 account に scope を限定した Custom API Token。権限は `Account / Cloudflare Pages / Edit` のみにし、Global API Key は使わない |
+| Root directory | `site` |
+| Build command | `pnpm build` |
+| Build output directory | `dist` |
+| Deploy command | 設定項目が出ない |
+
+Cloudflare Pages の build image は dependency install を自動実行します。Build command に `pnpm install --frozen-lockfile && pnpm build` を入れても build はできますが、install が二重になるため `pnpm build` のみにします。
+
+Deploy command が必須になっている場合や、非本番ブランチのデプロイコマンドが表示されている場合は、Pages ではなく Workers Builds の設定画面です。Workers Builds は build command の後に Wrangler の deploy command を実行する仕組みですが、このサイトは静的な Pages site として運用するため使いません。
 
 ## 実行タイミング
 
 | Trigger | 用途 | Pages branch |
 | --- | --- | --- |
+| `pull_request` | Preview deployment を作成 | PR branch |
 | `push` to `main` | 本番公開 | `main` |
-| `release.published` | リリース公開時に本番を再デプロイ | `main` |
-| `workflow_dispatch` | 手動で本番または preview を作成 | 入力した `pages_branch` |
+| `release.published` | deploy trigger としては使わない | - |
+| `workflow_dispatch` | GitHub Actions の CI を手動再実行 | - |
 
-pull request では `Site build` workflow が `pnpm build` を実行します。Cloudflare API token を pull request のビルドコードへ渡さないため、自動 preview deploy は行いません。Preview deployment は必要なときだけ `Cloudflare Pages` workflow を手動実行して作成します。
+pull request では GitHub Actions の `Site build` workflow と Cloudflare Pages の Preview deployment がそれぞれ実行されます。
 
-## 手動 Preview
+## Preview 確認
 
-GitHub Actions の `Cloudflare Pages` workflow を `workflow_dispatch` で実行します。
+Cloudflare Pages の Preview URL は GitHub PR の checks、Deployments、または Cloudflare Pages dashboard から確認します。
 
-1. `ref` にデプロイしたい branch または commit を指定する。空の場合は Actions UI で選んだ ref が使われます。
-2. `pages_branch` に `main` 以外の名前を指定する。例: `pr-3-cloudflare-pages`
-3. workflow の Summary に出る Alias URL を開く。
-4. `/` と `/docs/` が表示できることを確認する。
+1. PR の Cloudflare Pages check または Deployments から Preview URL を開く。
+2. Preview URL で `/` が表示できることを確認する。
+3. Preview URL で `/docs/` が表示できることを確認する。
 
-Preview alias は `https://<pages_branch>.timeline-dsl.pages.dev` の形式です。
-`pages_branch` は lowercase letters、digits、hyphen の DNS-safe な名前に限定します。
+## エラー対応
+
+Cloudflare build log に `Worker Name`、`Executing user deploy command: npx wrangler deploy`、`Non-production branch deploy command` が出ている場合は、Workers Builds として作成されています。Cloudflare dashboard で新しい Pages project を作成し、Pages の `Import an existing Git repository` からこの repository を接続してください。
+
+Workers Builds として継続する場合は Wrangler 設定と Workers Static Assets 用の deploy command が必要になりますが、この LP/document サイトでは不要です。`Missing file or directory: public/.assetsignore` は Wrangler が Workers/Astro 用の追加セットアップを試みた結果で、Pages project として作り直すことで解消します。
+
+参考:
+
+- [Cloudflare Pages build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/)
+- [Cloudflare Workers Builds configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)
+- [Cloudflare Pages preview deployments](https://developers.cloudflare.com/pages/configuration/preview-deployments/)
 
 ## ローカル確認
 
