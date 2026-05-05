@@ -23,7 +23,6 @@ export default defineConfig({
             { label: "概要", slug: "docs" },
             { label: "インストール", slug: "docs/installation" },
             { label: "Quick Start", slug: "docs/quick-start" },
-            { label: "Deployment", slug: "docs/deployment" },
           ],
         },
         {
@@ -31,8 +30,15 @@ export default defineConfig({
           items: [
             { label: "Commands", slug: "docs/commands" },
             { label: "Configuration", slug: "docs/configuration" },
-            { label: "GitHub Actions", slug: "docs/github-actions" },
+            { label: "CIで検証", slug: "docs/github-actions" },
             { label: "Homebrew", slug: "docs/homebrew" },
+          ],
+        },
+        {
+          label: "開発者向け",
+          items: [
+            { label: "コントリビューター向け", slug: "docs/contributing" },
+            { label: "サイトのデプロイ", slug: "docs/deployment" },
           ],
         },
         {
