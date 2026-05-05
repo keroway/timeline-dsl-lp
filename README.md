@@ -17,31 +17,26 @@ pnpm preview
 
 ## Deploy
 
-Cloudflare Pages の運用方式は GitHub Actions に固定します。Cloudflare Pages の GitHub 連携による自動ビルドは使わず、Actions で `site/` をビルドして `site/dist` を Wrangler から Direct Upload します。
+Cloudflare Pages の運用方式は Cloudflare の GitHub integration に固定します。GitHub Actions は CI として `pnpm build` を確認し、公開と Preview URL の作成は Cloudflare Pages に任せます。
 
 Cloudflare Pages project:
 
 - Project name: `timeline-dsl`
 - Production branch: `main`
 - Build command: `pnpm build`
-- Build output directory: `site/dist`
-
-GitHub repository secrets:
-
-- `CLOUDFLARE_ACCOUNT_ID`: Cloudflare account ID
-- `CLOUDFLARE_API_TOKEN`: 対象 account に scope を限定した Custom API Token。権限は `Account / Cloudflare Pages / Edit` のみにし、Global API Key は使わない。
+- Build output directory: `dist`
+- Root directory: `site`
+- Deploy command: 設定項目が出ない
 
 Workflows:
 
 - `Site build`: PR、`main` push、手動実行で `pnpm build` を実行する CI。
-- `Cloudflare Pages`: `main` push、`release.published`、手動実行で `pnpm build` 後に Cloudflare Pages へデプロイする。
 
 Event policy:
 
-- `pull_request`: `Site build` のみ実行する。Cloudflare API token を PR のビルドコードへ渡さないため、自動 preview deploy は行わない。
-- `push` to `main`: `main` を production branch として https://timeline-dsl.pages.dev にデプロイする。
-- `release.published`: release target commitish をビルドし、Cloudflare Pages の branch を `main` として production に再デプロイする。
-- `workflow_dispatch`: `pages_branch` を指定して production または preview を手動デプロイする。`main` 以外の branch 名は preview になる。
+- `pull_request`: GitHub Actions の `Site build` と Cloudflare Pages の Preview deployment を実行する。レビュー時は Cloudflare Pages Preview URL で `/` と `/docs/` を確認する。
+- `push` to `main`: Cloudflare Pages が production branch `main` として https://timeline-dsl.pages.dev にデプロイする。
+- `release.published`: Cloudflare Pages の GitHub integration では直接の deploy trigger にしない。リリースは `main` への merge 後、production deployment が成功してから公開する。
+- `workflow_dispatch`: GitHub Actions の CI を手動再実行する用途に限定する。公開の再実行は Cloudflare Pages dashboard の Retry deployment を使う。
 
-Preview 確認は `workflow_dispatch` で `pages_branch` に `main` 以外の値を指定し、workflow summary の Alias URL で `/` と `/docs/` を開いて確認します。詳細は `site/src/content/docs/docs/deployment.mdx` を参照してください。
-`pages_branch` は lowercase letters、digits、hyphen の DNS-safe な名前に限定します。
+Cloudflare の設定画面で Deploy command が必須になっている場合や、非本番ブランチのデプロイコマンドが表示されている場合は、Pages ではなく Workers Builds の設定です。このサイトは Workers ではなく Pages project として、Cloudflare dashboard の Pages から GitHub repository を import します。

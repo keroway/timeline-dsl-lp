@@ -5,13 +5,11 @@ on:
     paths:
       - "site/**"
       - ".github/workflows/site-build.yml"
-      - ".github/workflows/cloudflare-pages.yml"
   push:
     branches: [main]
     paths:
       - "site/**"
       - ".github/workflows/site-build.yml"
-      - ".github/workflows/cloudflare-pages.yml"
   workflow_dispatch:
 
 jobs:
