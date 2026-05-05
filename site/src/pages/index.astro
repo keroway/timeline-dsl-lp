@@ -269,7 +269,20 @@ event_range incident 1130..1137 "継承戦争";`;
                 Homebrewでの導入を想定しています。詳しいセットアップと最初のファイル作成はQuick Startで確認できます。
               </p>
             </div>
-            <pre class="command"><code>brew install keroway/tap/timeline-dsl</code></pre>
+            <div class="command-copy">
+              <pre class="command"><code id="install-command">brew install keroway/tap/timeline-dsl</code></pre>
+              <button
+                class="copy-button"
+                type="button"
+                data-copy-target="install-command"
+                data-copy-label="Copy"
+                data-copy-success-label="Copied!"
+                aria-label="Copy install command"
+              >
+                Copy
+              </button>
+              <span class="copy-status" aria-live="polite" aria-atomic="true"></span>
+            </div>
           </div>
         </section>
       </main>
@@ -282,5 +295,71 @@ event_range incident 1130..1137 "継承戦争";`;
         </div>
       </footer>
     </div>
+    <script>
+      const copyButtons = document.querySelectorAll("[data-copy-target]");
+
+      const copyText = async (text: string) => {
+        if (navigator.clipboard?.writeText) {
+          try {
+            await Promise.race([
+              navigator.clipboard.writeText(text),
+              new Promise((_, reject) => {
+                window.setTimeout(() => reject(new Error("Clipboard write timed out")), 800);
+              }),
+            ]);
+            return true;
+          } catch {
+            // Fall through to the selection-based fallback for restricted browsers.
+          }
+        }
+
+        const field = document.createElement("textarea");
+        field.value = text;
+        field.setAttribute("readonly", "");
+        field.style.position = "fixed";
+        field.style.top = "-999px";
+        field.style.opacity = "0";
+        document.body.appendChild(field);
+        field.select();
+
+        try {
+          const legacyCopy = (document as unknown as { execCommand: (command: string) => boolean })
+            .execCommand;
+          return legacyCopy.call(document, "copy");
+        } finally {
+          field.remove();
+        }
+      };
+
+      copyButtons.forEach((button) => {
+        const targetId = button.getAttribute("data-copy-target");
+        const target = targetId ? document.getElementById(targetId) : null;
+        const label = button.getAttribute("data-copy-label") || button.textContent || "Copy";
+        const successLabel = button.getAttribute("data-copy-success-label") || "Copied!";
+        const status = button.parentElement?.querySelector(".copy-status");
+        let resetTimer: number | undefined;
+        const setStatus = (message: string) => {
+          if (status) status.textContent = message;
+        };
+
+        button.addEventListener("click", async () => {
+          if (!target?.textContent) return;
+
+          const didCopy = await copyText(target.textContent.trim());
+
+          if (didCopy) {
+            button.textContent = successLabel;
+            setStatus(successLabel);
+            window.clearTimeout(resetTimer);
+            resetTimer = window.setTimeout(() => {
+              button.textContent = label;
+              setStatus("");
+            }, 1800);
+          } else {
+            setStatus("Copy failed");
+          }
+        });
+      });
+    </script>
   </body>
 </html>
