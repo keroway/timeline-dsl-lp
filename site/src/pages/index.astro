@@ -1,4 +1,5 @@
 ---
+import SocialMeta from "../components/SocialMeta.astro";
 import "../styles/global.css";
 import releasesData from "../data/releases.generated.json";
 
@@ -11,6 +12,8 @@ type Release = {
 };
 
 const latest = releasesData.latest as Release | null;
+const pageTitle = "Timeline DSL — 年表をテキストで記述・検証するCLIツール";
+const pageDescription = "Timeline DSL は、年表をテキストで記述し、CLIで検証・生成するためのツールです。";
 const latestLabel = latest?.tagName || "未取得";
 const latestName = latest?.name || latest?.tagName || "リリース情報は準備中です";
 const shouldShowLatestName = latestName !== latestLabel;
@@ -95,9 +98,10 @@ event_range incident 1130..1137 "継承戦争";`;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Timeline DSL は、年表をテキストで記述し、CLIで検証・生成するためのツールです。"
+      content={pageDescription}
     />
-    <title>Timeline DSL — 年表をテキストで記述・検証するCLIツール</title>
+    <SocialMeta title={pageTitle} description={pageDescription} pathname="/" />
+    <title>{pageTitle}</title>
   </head>
   <body>
     <div class="page-shell">

@@ -1,4 +1,5 @@
 ---
+import SocialMeta from "../components/SocialMeta.astro";
 import "../styles/global.css";
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import rehypeSanitize from "rehype-sanitize";
@@ -13,6 +14,8 @@ type Release = {
 };
 
 const releases = releasesData.releases as Release[];
+const pageTitle = "Changelog | Timeline DSL";
+const pageDescription = "Timeline DSL の GitHub Releases から生成した changelog です。";
 const markdownProcessor = await createMarkdownProcessor({
   gfm: true,
   rehypePlugins: [rehypeSanitize],
@@ -48,9 +51,10 @@ const renderedReleases = await Promise.all(
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Timeline DSL の GitHub Releases から生成した changelog です。"
+      content={pageDescription}
     />
-    <title>Changelog | Timeline DSL</title>
+    <SocialMeta title={pageTitle} description={pageDescription} pathname="/changelog/" />
+    <title>{pageTitle}</title>
   </head>
   <body>
     <div class="page-shell">
