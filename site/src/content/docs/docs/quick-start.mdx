@@ -6,24 +6,36 @@ description: Timeline DSL で最初の年表を作る手順です。
 最小の `.tdsl` ファイルを作り、CLIで検証します。
 
 ```txt
-timeline "Sample"
-
-event "Kickoff" {
-  date: 2026-01-01
-  lane: "Project"
+timeline "Sample" {
+    title "Sample";
+    unit year;
+    range 2025..2027;
+    calendar proleptic_gregorian;
 }
+
+lane "Project" as project { kind custom; order 10; }
+
+event project 2026 "Kickoff" { id "event:kickoff"; };
 ```
 
-保存したファイルをCLIでビルドします。
+保存したファイルをCLIで検証し、ビルドします。
 
 ```sh
+tdsl check sample.tdsl
 tdsl build sample.tdsl --pretty
 ```
 
 出力が成功すれば、年表データとして解釈できています。
 
+ブラウザで確認する場合は、スタンドアロンHTMLとして描画します。
+
+```sh
+tdsl render sample.tdsl --output sample.html
+```
+
 ## 次のステップ
 
 - 複数イベントを追加する
 - レーンで分類する
-- CIで `tdsl build` を実行する
+- [Commands](/docs/commands/) で用途ごとのCLIを確認する
+- CIで `tdsl check` と `tdsl lint` を実行する

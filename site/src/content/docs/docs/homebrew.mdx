@@ -1,0 +1,41 @@
+---
+title: Homebrew
+description: Homebrew とその他の導入方法です。
+---
+
+macOS / Linux では Homebrew で `tdsl` を導入できます。
+
+```sh
+brew tap keroway/tap
+brew install tdsl
+tdsl --help
+```
+
+更新する場合は通常の Homebrew コマンドを使います。
+
+```sh
+brew update
+brew upgrade tdsl
+```
+
+## ワンラインインストール
+
+Homebrewを使わない場合は、リリース済みバイナリを取得するインストールスクリプトを使えます。
+
+```sh
+curl -sSfL https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.sh | sh
+```
+
+インストール先は既定で `~/.local/bin/tdsl` です。`~/.local/bin` が `PATH` に入っていない場合は、利用しているシェルの設定ファイルに追加します。
+
+```sh
+export PATH="${HOME}/.local/bin:${PATH}"
+```
+
+## cargoでインストール
+
+Rust開発環境がある場合は、GitHubリポジトリから `tdsl-cli` をインストールできます。
+
+```sh
+cargo install --git https://github.com/keroway/timeline-dsl tdsl-cli
+```

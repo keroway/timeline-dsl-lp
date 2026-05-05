@@ -1,0 +1,93 @@
+---
+title: Commands
+description: Timeline DSL CLI の主要コマンド一覧です。
+---
+
+`tdsl` は `.tdsl` ファイルの検証、JSON IRへのコンパイル、HTMLレンダリング、Wikidata起点の年表作成、手作業向けテンプレート生成を扱います。
+
+```sh
+tdsl --help
+tdsl help <command>
+```
+
+## 基本フロー
+
+```sh
+tdsl check sample.tdsl
+tdsl lint sample.tdsl
+tdsl build sample.tdsl --pretty --output sample.json
+tdsl render sample.tdsl --output sample.html
+```
+
+| コマンド | 用途 |
+|---|---|
+| `tdsl check <FILE>` | 構文・意味チェックを実行する |
+| `tdsl lint <FILE>` | 品質チェックを実行する |
+| `tdsl build <FILE>` | `.tdsl` をIR JSONにコンパイルする |
+| `tdsl render <FILE>` | スタンドアロンHTMLに描画する |
+| `tdsl ast <FILE>` | デバッグ用にASTを出力する |
+
+`build` と `render` は Wikidata import を含むファイルでネットワークアクセスを行うことがあります。ローカル定義だけを処理したい場合は `--offline` を指定します。
+
+```sh
+tdsl build sample.tdsl --offline --pretty
+tdsl render sample.tdsl --offline --output sample.html
+```
+
+## Wikidata起点
+
+Wikidataから候補QIDを探し、年表化しやすい情報を確認してから `.tdsl` 雛形を生成します。
+
+```sh
+tdsl search "漢王朝" --lang ja -n 5
+tdsl inspect Q7209 --lang ja,en
+tdsl scaffold wikidata \
+  --qids Q7183,Q7209 \
+  --timeline "中国王朝(生成)" \
+  --lang ja,en \
+  --target auto \
+  --lane-mode per-entity \
+  --output china.tdsl
+tdsl render china.tdsl --output china.html
+```
+
+| コマンド | 用途 |
+|---|---|
+| `tdsl search <QUERY>` | Wikidataの候補QIDを検索する |
+| `tdsl inspect <QID>` | QIDの年表化方針を確認する |
+| `tdsl fetch <QID>` | Wikidataエンティティのデータを表示する |
+| `tdsl resolve <URL>` | Wikipedia記事URLからWikidata QIDを解決する |
+| `tdsl scaffold wikidata` | 複数QIDから `.tdsl` 雛形を生成する |
+
+`search`、`inspect`、`resolve` は `--json` に対応しています。CIや別ツールから扱う場合に使います。
+
+## 手作業起点
+
+空の年表を作ってから、CSVで項目を追加できます。
+
+```sh
+tdsl init \
+  --output manual.tdsl \
+  --timeline "架空世界年表" \
+  --range-start 1000 \
+  --range-end 1300 \
+  --lanes "王国:kingdom,事件:incidents"
+
+tdsl import-csv items.csv --append manual.tdsl
+tdsl lint manual.tdsl --fix
+tdsl render manual.tdsl --output manual.html
+```
+
+`import-csv` は `lane,type,start,end,time,label,tags,id` のヘッダー行を持つUTF-8 CSVを入力にします。
+
+## よく使うオプション
+
+| オプション | 対象 | 用途 |
+|---|---|---|
+| `--pretty` | `build` | JSONを読みやすく整形する |
+| `--output`, `-o` | `build`, `render`, `init`, `import-csv` | 出力先を指定する |
+| `--offline` | `build`, `render` | Wikidata取得をスキップする |
+| `--no-cache` | `build`, `render` | Wikidataキャッシュを使わず再取得する |
+| `--cache-ttl <秒>` | `build`, `render` | WikidataキャッシュのTTLを指定する |
+| `--format text,json` | `lint` | lint結果の出力形式を指定する |
+| `--fix` | `lint` | 安全な修正をファイルへ適用する |
