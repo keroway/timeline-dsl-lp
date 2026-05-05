@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Timeline DSL</title>
+  <desc id="desc">Social preview card for Timeline DSL</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101820" />
+      <stop offset="0.55" stop-color="#182c3a" />
+      <stop offset="1" stop-color="#2c3e34" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect x="80" y="76" width="1040" height="478" rx="28" fill="#f7f3ea" />
+  <rect x="128" y="132" width="142" height="142" rx="24" fill="#26333b" />
+  <text x="199" y="223" text-anchor="middle" fill="#f7f3ea" font-family="Arial, sans-serif" font-size="58" font-weight="700">td</text>
+  <text x="128" y="350" fill="#26333b" font-family="Arial, sans-serif" font-size="78" font-weight="700">Timeline DSL</text>
+  <text x="132" y="414" fill="#50636f" font-family="Arial, sans-serif" font-size="34">年表をテキストで記述・検証するCLIツール</text>
+  <line x1="132" y1="482" x2="1030" y2="482" stroke="#d6c27b" stroke-width="8" stroke-linecap="round" />
+  <circle cx="250" cy="482" r="17" fill="#d95f43" />
+  <circle cx="538" cy="482" r="17" fill="#4b8f8c" />
+  <circle cx="854" cy="482" r="17" fill="#26333b" />
+</svg>
