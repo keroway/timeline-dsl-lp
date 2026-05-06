@@ -49,7 +49,7 @@ type Feature = {
 
 const latest = releasesData.latest as Release | null;
 const pageTitle = "Timeline DSL — 年表をテキストで記述・検証するCLIツール";
-const pageDescription = "Timeline DSL は、年表をテキストで記述し、CLIで検証・生成するためのツールです。";
+const pageDescription = "Timeline DSL は、年表をブラウザで試し、CLIで検証・生成できるテキストベースのツールです。";
 const latestLabel = latest?.tagName || "未取得";
 const latestName = latest?.name || latest?.tagName || "リリース情報は準備中です";
 const shouldShowLatestName = latestName !== latestLabel;
@@ -70,8 +70,8 @@ const latestPublishedAt = formatDate(latest?.publishedAt);
 const features: Feature[] = [
   {
     kicker: "Author",
-    title: "年表をテキストで残す",
-    body: "イベント、期間、レーン、注釈を `.tdsl` として記述し、差分レビューしやすい形で保管できます。",
+    title: "ブラウザでもCLIでも書ける",
+    body: "イベント、期間、レーン、注釈を `.tdsl` として記述し、Playgroundで試してから差分レビューしやすい形で保管できます。",
     visual: {
       type: "author",
       filename: "source.tdsl",
@@ -86,8 +86,8 @@ const features: Feature[] = [
   },
   {
     kicker: "Validate",
-    title: "CLIで壊れた年表を検出",
-    body: "構文、lane参照、重複ID、期間の前後関係をローカルやCIで確認できます。",
+    title: "壊れた年表をすぐ検出",
+    body: "Playgroundで構文やlane参照を確認し、ローカルやCIでは `tdsl check` と `tdsl lint` で品質を固定できます。",
     visual: {
       type: "validate",
       command: "tdsl check source.tdsl",
@@ -198,6 +198,7 @@ event_range incident 1130..1137 "継承戦争";`;
             <span>Timeline DSL</span>
           </a>
           <div class="nav-links">
+            <a href="/playground/">Playground</a>
             <a href="/docs/">Docs</a>
             <a href="/changelog/">Changelog</a>
             <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
@@ -209,14 +210,15 @@ event_range incident 1130..1137 "継承戦争";`;
         <section class="hero">
           <div class="hero-inner">
             <div class="hero-copy">
-              <p class="eyebrow">Timeline authoring for CLI workflows</p>
+              <p class="eyebrow">Browser-first timeline authoring</p>
               <h1>Timeline DSL</h1>
               <p class="lead">
-                年表をテキストで記述し、CLIで検証・生成するためのツールです。
-                歴史、創作設定、教材、組織の沿革をGit管理しやすい形式で扱えます。
+                年表をテキストで記述し、ブラウザで即座に検証・プレビューできます。
+                手応えを見てからCLIやCIへ進み、歴史、創作設定、教材、組織の沿革をGit管理しやすい形式で扱えます。
               </p>
               <div class="actions">
-                <a class="button button-primary" href="/docs/">ドキュメントを読む</a>
+                <a class="button button-primary" href="/playground/">Playgroundで試す</a>
+                <a class="button button-secondary" href="/docs/">ドキュメントを読む</a>
                 <a class="button button-secondary" href="https://github.com/keroway/timeline-dsl">
                   GitHubを見る
                 </a>
@@ -345,24 +347,24 @@ event_range incident 1130..1137 "継承戦争";`;
               <p class="eyebrow">From source to artifact</p>
               <h2 id="workflow-heading">書く、確かめる、見せるまでを同じ流れに置く</h2>
               <p>
-                `.tdsl` は成果物そのものではなく、年表を再生成するための入力です。差分、CI、HTML出力がつながるので、長く更新する年表ほど扱いやすくなります。
+                `.tdsl` は成果物そのものではなく、年表を再生成するための入力です。ブラウザで試し、保存したファイルをCLIとCIへ渡すことで、長く更新する年表ほど扱いやすくなります。
               </p>
             </div>
             <div class="workflow-rail" aria-label="Timeline DSL workflow">
               <article class="workflow-step">
                 <span class="step-number">01</span>
-                <h3>テキストで編集</h3>
-                <p>手書き、CSV取り込み、Wikidata scaffold から年表の材料を作ります。</p>
+                <h3>ブラウザで試す</h3>
+                <p>Playgroundで `.tdsl` を編集し、WASMによる検証とSVGプレビューをすぐ確認します。</p>
               </article>
               <article class="workflow-step">
                 <span class="step-number">02</span>
-                <h3>CLIで検証</h3>
-                <p>`tdsl check` と `tdsl lint` で、参照ミスや重複を公開前に見つけます。</p>
+                <h3>CLIで保存・検証</h3>
+                <p>ダウンロードした `.tdsl` を `tdsl check` と `tdsl lint` に通し、参照ミスや重複を公開前に見つけます。</p>
               </article>
               <article class="workflow-step">
                 <span class="step-number">03</span>
-                <h3>HTML / SVGに出力</h3>
-                <p>教材、社内資料、ドキュメントサイトへ置ける形で年表を描画します。</p>
+                <h3>CIで維持して出力</h3>
+                <p>GitHub Actionsで検証を続け、教材、社内資料、ドキュメントサイトへ置けるHTML / SVGへ描画します。</p>
               </article>
             </div>
           </div>
@@ -405,9 +407,9 @@ event_range incident 1130..1137 "継承戦争";`;
         <section class="install-band" aria-labelledby="install-heading">
           <div class="section install-layout">
             <div class="section-header">
-              <h2 id="install-heading">まずはCLIを入れる</h2>
+              <h2 id="install-heading">Webで試したらCLIを入れる</h2>
               <p>
-                Homebrewでの導入を想定しています。詳しいセットアップと最初のファイル作成はQuick Startで確認できます。
+                Playgroundで形を確認したら、HomebrewでCLIを導入して保存、検証、CIへ進めます。詳しいセットアップはQuick Startで確認できます。
               </p>
             </div>
             <div class="command-copy">

@@ -1,0 +1,368 @@
+---
+import SocialMeta from "../components/SocialMeta.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import "../styles/global.css";
+
+const pageTitle = "Playground — Timeline DSL";
+const pageDescription =
+  "ブラウザ内で .tdsl を編集し、Timeline DSL の検証結果と SVG プレビューを確認できます。";
+
+const samples = [
+  {
+    id: "minimal",
+    label: "最小 timeline",
+    source: `timeline "読書メモ" {
+    title "読書メモ";
+    unit year;
+    range 2024..2026;
+    calendar proleptic_gregorian;
+}
+
+lane "本" as books { kind custom; order 10; }
+
+event books 2025 "Timeline DSLを試す" { id "event:first"; };
+`,
+  },
+  {
+    id: "range",
+    label: "span / event / event_range",
+    source: `timeline "小さなプロジェクト" {
+    title "小さなプロジェクト";
+    unit year;
+    range 2025..2028;
+    calendar proleptic_gregorian;
+}
+
+lane "工程" as phases { kind custom; order 10; }
+lane "節目" as milestones { kind custom; order 20; }
+
+span phases 2025..2026 "設計" { tags ["phase"]; id "span:design"; };
+span phases 2026..2028 "実装" { tags ["phase"]; id "span:build"; };
+event_range milestones 2025..2026 "移行期間" { tags ["migration"]; };
+event milestones 2027 "新体制で運用開始" {};
+`,
+  },
+  {
+    id: "lanes",
+    label: "複数 lane",
+    source: `timeline "架空世界年表" {
+    title "架空世界年表";
+    unit year;
+    range 980..1260;
+    calendar proleptic_gregorian;
+}
+
+lane "王国" as realm { kind custom; order 10; }
+lane "事件" as incident { kind custom; order 20; }
+lane "人物" as people { kind custom; order 30; }
+
+span realm 990..1184 "灰都王朝" { tags ["dynasty"]; };
+event incident 1042 "北方遠征" {};
+event_range incident 1130..1137 "継承戦争" { tags ["war"]; };
+span people 1088..1162 "巡礼王" { tags ["person"]; };
+event people 1184 "王朝終焉" {};
+`,
+  },
+  {
+    id: "import",
+    label: "import を含む Web 制限例",
+    source: `timeline "中国王朝" {
+    title "中国王朝";
+    unit year;
+    range -300..300;
+    calendar proleptic_gregorian;
+}
+
+lane "王朝" as dynasties { kind dynasty; order 10; }
+
+event dynasties -221 "秦の天下統一" { tags ["manual"]; };
+
+import wikidata as wd {
+    entity Q7209 as han_dynasty;
+    policy merge_by_source;
+}
+
+map wd.han_dynasty to span {
+    lane dynasties;
+    start claim(P571).year;
+    end claim(P576).year;
+    label label@ja ?? label@en;
+    tags ["dynasty", "imported"];
+}
+`,
+  },
+] as const;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={pageDescription} />
+    <SocialMeta title={pageTitle} description={pageDescription} pathname="/playground/" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <div class="page-shell playground-shell">
+      <header class="site-header">
+        <nav class="nav" aria-label="Primary navigation">
+          <a class="brand" href="/">
+            <span class="brand-mark" aria-hidden="true">td</span>
+            <span>Timeline DSL</span>
+          </a>
+          <div class="nav-links">
+            <a href="/playground/" aria-current="page">Playground</a>
+            <a href="/docs/">Docs</a>
+            <a href="/changelog/">Changelog</a>
+            <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
+          </div>
+        </nav>
+      </header>
+
+      <main class="playground-main" data-playground-root>
+        <section class="playground-head" aria-labelledby="playground-heading">
+          <div>
+            <p class="eyebrow">Browser Playground</p>
+            <h1 id="playground-heading">Playground</h1>
+            <p class="playground-lead">
+              `.tdsl` を編集すると、ブラウザ内の WASM で検証し、SVG プレビューを更新します。
+            </p>
+          </div>
+          <div class="playground-status" aria-live="polite" aria-atomic="true" data-status>
+            WASM を初期化中
+          </div>
+        </section>
+
+        <section class="playground-toolbar" aria-label="Playground controls">
+          <label class="sample-picker">
+            <span>Sample</span>
+            <select data-sample-select>
+              {samples.map((sample) => <option value={sample.id}>{sample.label}</option>)}
+            </select>
+          </label>
+          <div class="playground-actions">
+            <button class="button button-secondary" type="button" data-download-tdsl>
+              .tdsl download
+            </button>
+            <button class="button button-primary" type="button" data-download-svg disabled>
+              SVG download
+            </button>
+          </div>
+        </section>
+
+        <section class="playground-workspace" aria-label="Timeline DSL editor and preview">
+          <div class="playground-panel editor-workbench">
+            <div class="playground-panel-bar">
+              <span>source.tdsl</span>
+              <span data-editor-meta>0 lines</span>
+            </div>
+            <textarea
+              class="tdsl-editor"
+              spellcheck="false"
+              autocapitalize="off"
+              autocomplete="off"
+              aria-label="Timeline DSL source editor"
+              data-smoke="playground-editor"
+              data-editor
+            >{samples[0].source}</textarea>
+          </div>
+
+          <div class="playground-panel preview-workbench">
+            <div class="playground-panel-bar">
+              <span>preview.svg</span>
+              <span data-preview-meta>waiting</span>
+            </div>
+            <div class="preview-surface" data-smoke="playground-preview" data-preview>
+              <p>WASM の読み込み後にプレビューを表示します。</p>
+            </div>
+          </div>
+
+          <aside class="playground-panel diagnostics-workbench" aria-label="Diagnostics">
+            <div class="playground-panel-bar">
+              <span>diagnostics</span>
+              <span data-diagnostics-meta>0</span>
+            </div>
+            <div class="diagnostics-surface" data-smoke="playground-diagnostics" data-diagnostics>
+              <p class="diagnostics-empty">検証結果はここに表示されます。</p>
+            </div>
+          </aside>
+        </section>
+      </main>
+
+      <SiteFooter currentPath="/playground/" />
+    </div>
+
+    <script is:inline type="application/json" id="playground-samples" set:html={JSON.stringify(samples)} />
+    <script>
+      import { checkTdslSource, renderTdslSvg } from "../lib/tdsl-wasm";
+
+      type PlaygroundSample = {
+        id: string;
+        label: string;
+        source: string;
+      };
+
+      type PlaygroundDiagnostic = {
+        severity: "error" | "warning";
+        message: string;
+        line: number;
+        col: number;
+      };
+
+      const root = document.querySelector<HTMLElement>("[data-playground-root]");
+      const editor = document.querySelector<HTMLTextAreaElement>("[data-editor]");
+      const sampleSelect = document.querySelector<HTMLSelectElement>("[data-sample-select]");
+      const status = document.querySelector<HTMLElement>("[data-status]");
+      const preview = document.querySelector<HTMLElement>("[data-preview]");
+      const diagnostics = document.querySelector<HTMLElement>("[data-diagnostics]");
+      const editorMeta = document.querySelector<HTMLElement>("[data-editor-meta]");
+      const previewMeta = document.querySelector<HTMLElement>("[data-preview-meta]");
+      const diagnosticsMeta = document.querySelector<HTMLElement>("[data-diagnostics-meta]");
+      const downloadTdslButton = document.querySelector<HTMLButtonElement>("[data-download-tdsl]");
+      const downloadSvgButton = document.querySelector<HTMLButtonElement>("[data-download-svg]");
+      const sampleDataElement = document.getElementById("playground-samples");
+      const samples = JSON.parse(sampleDataElement?.textContent || "[]") as PlaygroundSample[];
+
+      const debounceMs = 420;
+      let debounceTimer: number | undefined;
+      let latestRunId = 0;
+      let lastSvg = "";
+
+      const setText = (element: HTMLElement | null, value: string) => {
+        if (element) element.textContent = value;
+      };
+
+      const setStatus = (message: string, state: "loading" | "ready" | "error" | "warn") => {
+        setText(status, message);
+        root?.setAttribute("data-playground-state", state);
+      };
+
+      const countLines = (source: string) => (source.match(/\n/g)?.length || 0) + 1;
+
+      const escapeHtml = (value: string) =>
+        value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+
+      const updateEditorMeta = () => {
+        if (!editor) return;
+        setText(editorMeta, `${countLines(editor.value)} lines`);
+      };
+
+      const renderDiagnostics = (items: PlaygroundDiagnostic[]) => {
+        if (!diagnostics) return;
+
+        const errorCount = items.filter((item) => item.severity === "error").length;
+        const warningCount = items.filter((item) => item.severity === "warning").length;
+        setText(diagnosticsMeta, `${errorCount} errors / ${warningCount} warnings`);
+
+        if (items.length === 0) {
+          diagnostics.innerHTML = '<p class="diagnostics-empty">No diagnostics.</p>';
+          return;
+        }
+
+        diagnostics.innerHTML = `<ol class="playground-diagnostic-list">${items
+          .map((item) => {
+            const location = item.line > 0 ? `${item.line}:${item.col}` : "global";
+            return `<li class="playground-diagnostic ${item.severity}">
+              <span>${item.severity === "error" ? "ERROR" : "WARN"}</span>
+              <strong>${escapeHtml(location)}</strong>
+              <p>${escapeHtml(item.message)}</p>
+            </li>`;
+          })
+          .join("")}</ol>`;
+      };
+
+      const downloadText = (filename: string, mimeType: string, value: string) => {
+        const blob = new Blob([value], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
+      };
+
+      const runPlayground = async () => {
+        if (!editor || !preview) return;
+
+        const runId = ++latestRunId;
+        const source = editor.value;
+        updateEditorMeta();
+        setStatus("検証中", "loading");
+        setText(previewMeta, "checking");
+
+        try {
+          const result = await checkTdslSource(source);
+          if (runId !== latestRunId) return;
+
+          const hasErrors = result.some((item) => item.severity === "error");
+          renderDiagnostics(result);
+
+          if (hasErrors) {
+            setStatus("構文または参照エラーがあります", "error");
+            setText(previewMeta, lastSvg ? "previous preview kept" : "no preview");
+            if (!lastSvg) {
+              preview.innerHTML = "<p>エラーを修正するとプレビューを表示します。</p>";
+            }
+            return;
+          }
+
+          const svg = await renderTdslSvg(source);
+          if (runId !== latestRunId) return;
+
+          lastSvg = svg;
+          preview.innerHTML = svg;
+          downloadSvgButton?.removeAttribute("disabled");
+          setText(previewMeta, "updated");
+          setStatus(result.length > 0 ? "警告つきで描画しました" : "問題なし", result.length > 0 ? "warn" : "ready");
+        } catch (error) {
+          if (runId !== latestRunId) return;
+
+          const message = error instanceof Error ? error.message : String(error);
+          renderDiagnostics([{ severity: "error", message, line: 0, col: 0 }]);
+          setStatus("WASM 処理に失敗しました", "error");
+          setText(previewMeta, lastSvg ? "previous preview kept" : "render failed");
+          if (!lastSvg) {
+            preview.innerHTML = "<p>レンダリングできませんでした。</p>";
+          }
+        }
+      };
+
+      const queueRun = () => {
+        window.clearTimeout(debounceTimer);
+        debounceTimer = window.setTimeout(runPlayground, debounceMs);
+      };
+
+      const applySource = (source: string) => {
+        if (!editor) return;
+        editor.value = source;
+        updateEditorMeta();
+        queueRun();
+      };
+
+      const sourceParam = new URLSearchParams(window.location.search).get("source");
+      if (sourceParam) {
+        applySource(sourceParam);
+        if (sampleSelect) sampleSelect.value = "";
+      } else {
+        updateEditorMeta();
+        runPlayground();
+      }
+
+      editor?.addEventListener("input", queueRun);
+
+      sampleSelect?.addEventListener("change", () => {
+        const sample = samples.find((item) => item.id === sampleSelect.value);
+        if (sample) applySource(sample.source);
+      });
+
+      downloadTdslButton?.addEventListener("click", () => {
+        if (editor) downloadText("timeline.tdsl", "text/plain;charset=utf-8", editor.value);
+      });
+
+      downloadSvgButton?.addEventListener("click", () => {
+        if (lastSvg) downloadText("timeline.svg", "image/svg+xml;charset=utf-8", lastSvg);
+      });
+    </script>
+  </body>
+</html>
