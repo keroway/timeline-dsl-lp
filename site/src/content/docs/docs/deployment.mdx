@@ -62,3 +62,36 @@ cd site
 pnpm install --frozen-lockfile
 pnpm build
 ```
+
+## WASM bundle の更新
+
+Playground と runnable docs から Timeline DSL WASM を使う場合、LP 側の呼び出し口は `src/lib/tdsl-wasm.ts` に集約します。Astro / Starlight のコンポーネントから `tdsl_wasm.js` や wasm-bindgen 生成物を直接 import しないでください。
+
+2026年5月時点では、本体 repo の `tdsl-wasm` は npm package や release artifact としての配布方式がまだ固定されていません。そのため LP 側では、本体 repo の `apps/webui` と同じ `wasm-pack --target web` 生成物を `public/wasm/` に vendoring します。将来 npm package または release artifact が整備されたら、差し替え対象は `src/lib/tdsl-wasm.ts` とこの更新手順に限定します。
+
+本体 repo で WASM を更新します。
+
+```sh
+cd ../timeline-dsl
+wasm-pack build crates/tdsl-wasm --target web --out-dir apps/webui/src/wasm --no-opt
+```
+
+生成物を LP repo に同期します。
+
+```sh
+cd ../timeline-dsl-lp
+cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm.js site/public/wasm/tdsl_wasm.js
+cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm.d.ts site/public/wasm/tdsl_wasm.d.ts
+cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm_bg.wasm site/public/wasm/tdsl_wasm_bg.wasm
+cp ../timeline-dsl/apps/webui/src/wasm/package.json site/public/wasm/package.json
+```
+
+更新後は smoke と build を実行します。
+
+```sh
+cd site
+pnpm smoke:wasm
+pnpm build
+```
+
+WASM wrapper が対象にするのは静的な `.tdsl` の検証、IR 生成、SVG/HTML レンダリングです。Wikidata import の解決やネットワーク取得はブラウザ版 WASM では対応外とし、Playground 側では diagnostic として扱います。
