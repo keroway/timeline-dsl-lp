@@ -49,7 +49,7 @@ type Feature = {
 
 const latest = releasesData.latest as Release | null;
 const pageTitle = "Timeline DSL — 年表をテキストで記述・検証するCLIツール";
-const pageDescription = "Timeline DSL は、年表をブラウザで試し、CLIで検証・生成できるテキストベースのツールです。";
+const pageDescription = "Timeline DSL は、年表をテキストで管理し、ブラウザでの即時検証とCLIでの継続的なビルドを支える開発者向けツールです。";
 const latestLabel = latest?.tagName || "未取得";
 const latestName = latest?.name || latest?.tagName || "リリース情報は準備中です";
 const shouldShowLatestName = latestName !== latestLabel;
@@ -70,8 +70,8 @@ const latestPublishedAt = formatDate(latest?.publishedAt);
 const features: Feature[] = [
   {
     kicker: "Author",
-    title: "ブラウザでもCLIでも書ける",
-    body: "イベント、期間、レーン、注釈を `.tdsl` として記述し、Playgroundで試してから差分レビューしやすい形で保管できます。",
+    title: "ブラウザ・CLI 双方での記述",
+    body: "イベント、期間、レーン、注釈を `.tdsl` として記述し、Playground での即時プレビューを経て、差分レビューに適した形式でソースを保管できます。",
     visual: {
       type: "author",
       filename: "source.tdsl",
@@ -87,7 +87,7 @@ const features: Feature[] = [
   {
     kicker: "Validate",
     title: "壊れた年表をすぐ検出",
-    body: "Playgroundで構文やlane参照を確認し、ローカルやCIでは `tdsl check` と `tdsl lint` で品質を固定できます。",
+    body: "Playgroundで構文やlane参照を確認し、ローカルやCIでは `tdsl check` と `tdsl lint` で品質を担保できます。",
     visual: {
       type: "validate",
       command: "tdsl check source.tdsl",
@@ -100,8 +100,8 @@ const features: Feature[] = [
   },
   {
     kicker: "Render",
-    title: "HTML / SVGへ描画",
-    body: "資料、ドキュメント、GitHub Pagesなどに置きやすいスタンドアロン成果物へ変換できます。",
+    title: "汎用的な HTML / SVG への出力",
+    body: "ドキュメントサイトや GitHub Pages 等に容易に組み込める、静的な成果物を生成できます。",
     visual: {
       type: "render",
       range: "1850 - 1912",
@@ -216,10 +216,10 @@ event_range incident 1130..1137 "継承戦争";`;
               <h1>Timeline DSL</h1>
               <p class="lead">
                 年表をテキストで記述し、ブラウザで即座に検証・プレビューできます。
-                手応えを見てからCLIやCIへ進み、歴史、創作設定、教材、組織の沿革をGit管理しやすい形式で扱えます。
+                Playground で構成を検証してから CLI や CI へ移行でき、歴史、創作設定、教材、組織の沿革をGit管理しやすい形式で扱えます。
               </p>
               <div class="actions">
-                <a class="button button-primary" href="/playground/">Playgroundで試す</a>
+                <a class="button button-primary" href="/playground/">Playground を開く</a>
                 <a class="button button-secondary" href="/docs/">ドキュメントを読む</a>
                 <a class="button button-secondary" href="https://github.com/keroway/timeline-dsl">
                   GitHubを見る
@@ -355,17 +355,17 @@ event_range incident 1130..1137 "継承戦争";`;
             <div class="workflow-rail" aria-label="Timeline DSL workflow">
               <article class="workflow-step">
                 <span class="step-number">01</span>
-                <h3>ブラウザで試す</h3>
+                <h3>ブラウザでのプロトタイピング</h3>
                 <p>Playgroundで `.tdsl` を編集し、WASMによる検証とSVGプレビューをすぐ確認します。</p>
               </article>
               <article class="workflow-step">
                 <span class="step-number">02</span>
-                <h3>CLIで保存・検証</h3>
+                <h3>CLI によるローカル検証</h3>
                 <p>ダウンロードした `.tdsl` を `tdsl check` と `tdsl lint` に通し、参照ミスや重複を公開前に見つけます。</p>
               </article>
               <article class="workflow-step">
                 <span class="step-number">03</span>
-                <h3>CIで維持して出力</h3>
+                <h3>CI による品質管理と自動ビルド</h3>
                 <p>GitHub Actionsで検証を続け、教材、社内資料、ドキュメントサイトへ置けるHTML / SVGへ描画します。</p>
               </article>
             </div>
@@ -409,9 +409,9 @@ event_range incident 1130..1137 "継承戦争";`;
         <section class="install-band" aria-labelledby="install-heading">
           <div class="section install-layout">
             <div class="section-header">
-              <h2 id="install-heading">CLIで手元のワークフローに載せる</h2>
+              <h2 id="install-heading">CLI によるローカル・CI への統合</h2>
               <p>
-                Playgroundで感触をつかんだら、HomebrewでCLIを導入して保存、検証、CIまでつなげます。詳しいセットアップはQuick Startで確認できます。
+                Playground で構成を検証できたら、Homebrew で CLI を導入し、ローカルでの保守や CI による自動ビルド環境を構築できます。詳しいセットアップはQuick Startで確認できます。
               </p>
             </div>
             <div class="command-copy">

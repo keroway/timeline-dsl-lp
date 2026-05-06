@@ -132,7 +132,7 @@ map wd.han_dynasty to span {
             </p>
           </div>
           <div class="playground-status" aria-live="polite" aria-atomic="true" data-status>
-            WASM を初期化中
+            WASM を初期化中...
           </div>
         </section>
 
@@ -145,10 +145,10 @@ map wd.han_dynasty to span {
           </label>
           <div class="playground-actions">
             <button class="button button-secondary" type="button" data-download-tdsl>
-              .tdsl download
+              TDSL をダウンロード
             </button>
             <button class="button button-primary" type="button" data-download-svg disabled>
-              SVG download
+              SVG をダウンロード
             </button>
           </div>
         </section>
@@ -173,7 +173,7 @@ map wd.han_dynasty to span {
           <div class="playground-panel preview-workbench">
             <div class="playground-panel-bar">
               <span>preview.svg</span>
-              <span data-preview-meta>waiting</span>
+              <span data-preview-meta>待機中</span>
             </div>
             <div class="preview-surface" data-smoke="playground-preview" data-preview>
               <p>WASM の読み込み後にプレビューを表示します。</p>
@@ -182,11 +182,11 @@ map wd.han_dynasty to span {
 
           <aside class="playground-panel diagnostics-workbench" aria-label="Diagnostics">
             <div class="playground-panel-bar">
-              <span>diagnostics</span>
+              <span>検証結果</span>
               <span data-diagnostics-meta>0</span>
             </div>
             <div class="diagnostics-surface" data-smoke="playground-diagnostics" data-diagnostics>
-              <p class="diagnostics-empty">検証結果はここに表示されます。</p>
+              <p class="diagnostics-empty">診断結果がここに表示されます。</p>
             </div>
           </aside>
         </section>
@@ -258,7 +258,7 @@ map wd.han_dynasty to span {
         setText(diagnosticsMeta, `${errorCount} errors / ${warningCount} warnings`);
 
         if (items.length === 0) {
-          diagnostics.innerHTML = '<p class="diagnostics-empty">No diagnostics.</p>';
+          diagnostics.innerHTML = '<p class="diagnostics-empty">診断結果なし</p>';
           return;
         }
 
@@ -290,7 +290,7 @@ map wd.han_dynasty to span {
         const runId = ++latestRunId;
         const source = editor.value;
         updateEditorMeta();
-        setStatus("検証中", "loading");
+        setStatus("検証中...", "loading");
         setText(previewMeta, "checking");
 
         try {
@@ -301,7 +301,7 @@ map wd.han_dynasty to span {
           renderDiagnostics(result);
 
           if (hasErrors) {
-            setStatus("構文または参照エラーがあります", "error");
+            setStatus("構文または参照エラーを検出しました", "error");
             setText(previewMeta, lastSvg ? "previous preview kept" : "no preview");
             if (!lastSvg) {
               preview.innerHTML = "<p>エラーを修正するとプレビューを表示します。</p>";
@@ -316,7 +316,7 @@ map wd.han_dynasty to span {
           preview.innerHTML = svg;
           downloadSvgButton?.removeAttribute("disabled");
           setText(previewMeta, "updated");
-          setStatus(result.length > 0 ? "警告つきで描画しました" : "問題なし", result.length > 0 ? "warn" : "ready");
+          setStatus(result.length > 0 ? "警告つきで描画しました" : "診断結果なし", result.length > 0 ? "warn" : "ready");
         } catch (error) {
           if (runId !== latestRunId) return;
 
