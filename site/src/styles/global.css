@@ -1,5 +1,6 @@
 :root {
   color-scheme: light;
+  --color-bg: #ffffff;
   --color-ink: #17212b;
   --color-muted: #596575;
   --color-line: #d8dde5;
@@ -20,6 +21,19 @@
     "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-bg: #111920;
+    --color-ink: #e8f0f8;
+    --color-muted: #8fa3ba;
+    --color-line: #2a3544;
+    --color-panel: #1a2434;
+    --color-accent: #1a9e96;
+    --color-accent-strong: #22c4bb;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -27,7 +41,7 @@
 body {
   margin: 0;
   color: var(--color-ink);
-  background: #ffffff;
+  background: var(--color-bg);
   font-family: var(--font-sans);
   font-feature-settings: "palt" 1;
   line-height: 1.65;
@@ -53,7 +67,7 @@ button:focus-visible {
   top: 0;
   z-index: 20;
   border-bottom: 1px solid var(--color-line);
-  background: rgba(255, 255, 255, 0.94);
+  background: color-mix(in srgb, var(--color-bg), transparent 6%);
   backdrop-filter: blur(14px);
 }
 
@@ -83,7 +97,7 @@ button:focus-visible {
   border-radius: 8px;
   overflow: hidden;
   background: #232526;
-  box-shadow: 0 8px 20px rgba(21, 32, 44, 0.14);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--color-ink), transparent 86%);
 }
 
 .brand-mark img {
@@ -134,9 +148,9 @@ button:focus-visible {
 .hero {
   border-bottom: 1px solid var(--color-line);
   background:
-    linear-gradient(180deg, rgba(244, 248, 248, 0.92), rgba(255, 255, 255, 0.1)),
-    linear-gradient(90deg, rgba(13, 118, 111, 0.08), rgba(214, 154, 36, 0.06)),
-    #ffffff;
+    linear-gradient(180deg, color-mix(in srgb, var(--color-panel), transparent 8%), color-mix(in srgb, var(--color-bg), transparent 90%)),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 92%), color-mix(in srgb, var(--color-gold), transparent 94%)),
+    var(--color-bg);
   overflow: hidden;
 }
 
@@ -216,7 +230,7 @@ h1 {
   padding: 0.2rem 0.45rem;
   border: 1px solid var(--color-line);
   border-radius: 4px;
-  background: #ffffff;
+  background: var(--color-bg);
   color: var(--color-warm);
   font-size: 0.78rem;
   font-weight: 720;
@@ -237,7 +251,7 @@ h1 {
 
 .button-secondary {
   border-color: var(--color-line);
-  background: #ffffff;
+  background: var(--color-bg);
   color: var(--color-ink);
 }
 
@@ -256,12 +270,12 @@ h1 {
   inset: 1.4rem 0 auto auto;
   width: 88%;
   height: 16.8rem;
-  border: 1px solid rgba(13, 118, 111, 0.2);
+  border: 1px solid color-mix(in srgb, var(--color-accent), transparent 80%);
   background:
-    linear-gradient(90deg, rgba(13, 118, 111, 0.14) 1px, transparent 1px) 0 0 / 3.8rem 100%,
-    linear-gradient(180deg, rgba(23, 33, 43, 0.08) 1px, transparent 1px) 0 0 / 100% 4.2rem,
-    #ffffff;
-  box-shadow: 0 24px 70px rgba(21, 32, 44, 0.14);
+    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 86%) 1px, transparent 1px) 0 0 / 3.8rem 100%,
+    linear-gradient(180deg, color-mix(in srgb, var(--color-ink), transparent 92%) 1px, transparent 1px) 0 0 / 100% 4.2rem,
+    var(--color-bg);
+  box-shadow: 0 24px 70px color-mix(in srgb, var(--color-ink), transparent 86%);
   content: "";
   transform: rotate(-1.4deg);
 }
@@ -270,9 +284,9 @@ h1 {
 .timeline-preview,
 .command-strip {
   z-index: 1;
-  border: 1px solid rgba(23, 33, 43, 0.16);
-  background: #ffffff;
-  box-shadow: 0 18px 48px rgba(21, 32, 44, 0.14);
+  border: 1px solid color-mix(in srgb, var(--color-ink), transparent 84%);
+  background: var(--color-bg);
+  box-shadow: 0 18px 48px color-mix(in srgb, var(--color-ink), transparent 86%);
 }
 
 .editor-panel {
@@ -305,7 +319,7 @@ h1 {
   margin: 0;
   overflow-x: auto;
   padding: 1rem;
-  color: #22303c;
+  color: var(--color-ink);
   font-family: var(--font-mono);
   font-size: 0.78rem;
   line-height: 1.54;
@@ -403,10 +417,10 @@ h1 {
   top: 50%;
   width: 0.95rem;
   height: 0.95rem;
-  border: 3px solid #ffffff;
+  border: 3px solid var(--color-bg);
   border-radius: 999px;
   background: var(--color-gold);
-  box-shadow: 0 0 0 1px rgba(23, 33, 43, 0.18);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ink), transparent 82%);
   transform: translateY(-50%);
 }
 
@@ -609,7 +623,7 @@ h1 {
   padding: 1.2rem;
   border: 1px solid var(--color-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-bg);
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease,
@@ -629,11 +643,11 @@ h1 {
   width: 100%;
   min-height: 8.8rem;
   margin: 0.8rem 0 1.1rem;
-  border: 1px solid rgba(216, 221, 229, 0.9);
+  border: 1px solid color-mix(in srgb, var(--color-line), transparent 10%);
   background:
-    linear-gradient(90deg, rgba(13, 118, 111, 0.08) 1px, transparent 1px) 0 0 / 2.4rem 100%,
-    linear-gradient(180deg, rgba(167, 71, 24, 0.08) 1px, transparent 1px) 0 0 / 100% 2.4rem,
-    #fbfcfd;
+    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 92%) 1px, transparent 1px) 0 0 / 2.4rem 100%,
+    linear-gradient(180deg, color-mix(in srgb, var(--color-warm), transparent 92%) 1px, transparent 1px) 0 0 / 100% 2.4rem,
+    var(--color-panel);
   overflow: hidden;
   padding: 0.65rem;
 }
@@ -642,9 +656,9 @@ h1 {
 .feature-terminal,
 .feature-mini-timeline {
   min-height: 7.35rem;
-  border: 1px solid rgba(23, 33, 43, 0.14);
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 12px 28px rgba(21, 32, 44, 0.08);
+  border: 1px solid color-mix(in srgb, var(--color-ink), transparent 86%);
+  background: color-mix(in srgb, var(--color-bg), transparent 14%);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--color-ink), transparent 92%);
 }
 
 .feature-figure-bar,
@@ -822,8 +836,8 @@ h1 {
   border-top: 1px solid var(--color-line);
   border-bottom: 1px solid var(--color-line);
   background:
-    linear-gradient(90deg, rgba(13, 118, 111, 0.08), rgba(123, 69, 105, 0.06)),
-    #f8fafc;
+    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 92%), color-mix(in srgb, var(--color-plum), transparent 94%)),
+    var(--color-panel);
 }
 
 .workflow-layout {
@@ -843,9 +857,9 @@ h1 {
   position: relative;
   min-height: 15.5rem;
   padding: 1.1rem;
-  border: 1px solid rgba(23, 33, 43, 0.14);
+  border: 1px solid color-mix(in srgb, var(--color-ink), transparent 86%);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-bg);
   overflow: hidden;
   transition:
     border-color 160ms ease,
@@ -892,7 +906,7 @@ h1 {
   padding: 1.1rem;
   border: 1px solid var(--color-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-bg);
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease,
@@ -902,11 +916,11 @@ h1 {
 .usecase-map {
   position: relative;
   min-height: 10.4rem;
-  border: 1px solid rgba(216, 221, 229, 0.95);
+  border: 1px solid color-mix(in srgb, var(--color-line), transparent 5%);
   background:
-    linear-gradient(90deg, rgba(13, 118, 111, 0.08) 1px, transparent 1px) 0 0 / 2.15rem 100%,
-    linear-gradient(180deg, transparent 36%, rgba(23, 33, 43, 0.1) 36% 37%, transparent 37% 63%, rgba(23, 33, 43, 0.1) 63% 64%, transparent 64%),
-    #fbfcfd;
+    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 92%) 1px, transparent 1px) 0 0 / 2.15rem 100%,
+    linear-gradient(180deg, transparent 36%, color-mix(in srgb, var(--color-ink), transparent 90%) 36% 37%, transparent 37% 63%, color-mix(in srgb, var(--color-ink), transparent 90%) 63% 64%, transparent 64%),
+    var(--color-panel);
   overflow: hidden;
 }
 
@@ -914,7 +928,7 @@ h1 {
   position: absolute;
   inset: 2.45rem 0.85rem auto 0.85rem;
   height: 1px;
-  background: rgba(23, 33, 43, 0.22);
+  background: color-mix(in srgb, var(--color-ink), transparent 78%);
   content: "";
 }
 
@@ -950,7 +964,7 @@ h1 {
   left: 0.45rem;
   width: 1px;
   height: 0.52rem;
-  background: rgba(23, 33, 43, 0.28);
+  background: color-mix(in srgb, var(--color-ink), transparent 72%);
   content: "";
 }
 
@@ -1008,7 +1022,7 @@ h1 {
   padding: 1.25rem;
   border: 1px solid var(--color-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-bg);
 }
 
 .release-item-header {
@@ -1095,7 +1109,7 @@ h1 {
 .empty-state {
   border: 1px solid var(--color-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-bg);
   padding: 1.25rem;
 }
 
@@ -1131,7 +1145,7 @@ h1 {
   overflow-x: auto;
   border: 1px solid var(--color-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-bg);
   padding: 1rem 5.1rem 1rem 1rem;
   font-family: var(--font-mono);
   font-size: 0.95rem;
@@ -1153,7 +1167,7 @@ h1 {
   padding: 0.45rem 0.7rem;
   border: 1px solid var(--color-line);
   border-radius: 6px;
-  background: #ffffff;
+  background: var(--color-bg);
   color: var(--color-ink);
   font: inherit;
   font-size: 0.86rem;
@@ -1176,8 +1190,8 @@ h1 {
 
 .playground-shell {
   background:
-    linear-gradient(180deg, rgba(246, 248, 251, 0.9), rgba(255, 255, 255, 0) 16rem),
-    #ffffff;
+    linear-gradient(180deg, color-mix(in srgb, var(--color-panel), transparent 10%), transparent 16rem),
+    var(--color-bg);
 }
 
 .playground-main {
@@ -1213,7 +1227,7 @@ h1 {
   padding: 0.42rem 0.75rem;
   border: 1px solid var(--color-line);
   border-left: 4px solid var(--color-muted);
-  background: #ffffff;
+  background: var(--color-bg);
   color: var(--color-muted);
   font-size: 0.88rem;
   font-weight: 700;
@@ -1243,7 +1257,7 @@ h1 {
   padding: 0.8rem;
   border: 1px solid var(--color-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-bg);
 }
 
 .sample-picker {
@@ -1261,7 +1275,7 @@ h1 {
   min-height: 2.4rem;
   border: 1px solid var(--color-line);
   border-radius: 6px;
-  background: #ffffff;
+  background: var(--color-bg);
   color: var(--color-ink);
   font: inherit;
   font-weight: 650;
@@ -1298,9 +1312,9 @@ h1 {
   min-width: 0;
   border: 1px solid var(--color-line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-bg);
   overflow: hidden;
-  box-shadow: 0 14px 34px rgba(21, 32, 44, 0.08);
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--color-ink), transparent 92%);
 }
 
 .editor-workbench,
@@ -1323,7 +1337,7 @@ h1 {
   min-height: 2.55rem;
   padding: 0 0.9rem;
   border-bottom: 1px solid var(--color-line);
-  background: #fbfcfd;
+  background: var(--color-panel);
   color: var(--color-muted);
   font-family: var(--font-mono);
   font-size: 0.76rem;
@@ -1354,9 +1368,9 @@ h1 {
   overflow: auto;
   padding: 1rem;
   background:
-    linear-gradient(90deg, rgba(13, 118, 111, 0.07) 1px, transparent 1px) 0 0 / 2.8rem 100%,
-    linear-gradient(180deg, rgba(23, 33, 43, 0.06) 1px, transparent 1px) 0 0 / 100% 2.8rem,
-    #fbfcfd;
+    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 93%) 1px, transparent 1px) 0 0 / 2.8rem 100%,
+    linear-gradient(180deg, color-mix(in srgb, var(--color-ink), transparent 94%) 1px, transparent 1px) 0 0 / 100% 2.8rem,
+    var(--color-panel);
 }
 
 .preview-surface p,
@@ -1371,7 +1385,7 @@ h1 {
   height: auto;
   margin: 0 auto;
   background: #ffffff;
-  box-shadow: 0 8px 24px rgba(21, 32, 44, 0.1);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-ink), transparent 90%);
 }
 
 .diagnostics-surface {
@@ -1379,7 +1393,7 @@ h1 {
   max-height: 18rem;
   overflow: auto;
   padding: 0.85rem;
-  background: #ffffff;
+  background: var(--color-bg);
 }
 
 .playground-diagnostic-list {
@@ -1438,8 +1452,8 @@ h1 {
 .site-footer {
   border-top: 1px solid var(--color-line);
   background:
-    linear-gradient(90deg, rgba(13, 118, 111, 0.07), rgba(214, 154, 36, 0.04)),
-    #fbfcfd;
+    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 93%), color-mix(in srgb, var(--color-gold), transparent 96%)),
+    var(--color-panel);
   color: var(--color-muted);
 }
 
@@ -1506,7 +1520,7 @@ h1 {
 .footer-nav a:hover,
 .footer-meta a:hover,
 .footer-nav a[aria-current="page"] {
-  background: #ffffff;
+  background: var(--color-bg);
   color: var(--color-ink);
 }
 
