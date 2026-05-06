@@ -8,6 +8,7 @@ export default defineConfig({
       title: "Timeline DSL",
       description: "Timeline DSL の LP とドキュメント",
       defaultLocale: "ja",
+      favicon: "/favicon.svg",
       social: [
         {
           icon: "github",
