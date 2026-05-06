@@ -10,11 +10,14 @@
   --color-gold: #d69a24;
   --color-plum: #7b4569;
   --color-sky: #2c6f9f;
+  --font-display:
+    "Avenir Next", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic",
+    "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
   --font-sans:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+    Aptos, "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic UI",
+    "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
   --font-mono:
-    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 * {
@@ -26,6 +29,7 @@ body {
   color: var(--color-ink);
   background: #ffffff;
   font-family: var(--font-sans);
+  font-feature-settings: "palt" 1;
   line-height: 1.65;
 }
 
@@ -154,7 +158,9 @@ button:focus-visible {
 h1 {
   max-width: 12ch;
   margin: 0;
+  font-family: var(--font-display);
   font-size: 4.45rem;
+  font-weight: 780;
   line-height: 0.95;
   letter-spacing: 0;
 }
@@ -512,7 +518,9 @@ h1 {
 
 .section-header h2 {
   margin: 0;
+  font-family: var(--font-display);
   font-size: 2.25rem;
+  font-weight: 760;
   line-height: 1.15;
   letter-spacing: 0;
 }
@@ -611,30 +619,186 @@ h1 {
 }
 
 .feature-figure {
-  display: grid;
-  place-items: center;
   width: 100%;
-  min-height: 6rem;
+  min-height: 8.8rem;
   margin: 0.8rem 0 1.1rem;
   border: 1px solid rgba(216, 221, 229, 0.9);
   background:
     linear-gradient(90deg, rgba(13, 118, 111, 0.08) 1px, transparent 1px) 0 0 / 2.4rem 100%,
     linear-gradient(180deg, rgba(167, 71, 24, 0.08) 1px, transparent 1px) 0 0 / 100% 2.4rem,
     #fbfcfd;
+  overflow: hidden;
+  padding: 0.65rem;
 }
 
-.feature-figure span {
+.feature-code,
+.feature-terminal,
+.feature-mini-timeline {
+  min-height: 7.35rem;
+  border: 1px solid rgba(23, 33, 43, 0.14);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 12px 28px rgba(21, 32, 44, 0.08);
+}
+
+.feature-figure-bar,
+.feature-command,
+.mini-timeline-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  min-height: 1.9rem;
+  padding: 0 0.6rem;
+  border-bottom: 1px solid rgba(216, 221, 229, 0.85);
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+}
+
+.feature-figure-bar span:last-child,
+.mini-timeline-head strong {
+  color: var(--color-accent-strong);
+  font-weight: 760;
+}
+
+.feature-code pre {
+  margin: 0;
+  overflow: hidden;
+  padding: 0.62rem 0.68rem;
+  color: #23313f;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  line-height: 1.56;
+}
+
+.feature-terminal {
+  background: #121921;
+  color: #eaf1f8;
+}
+
+.feature-terminal .feature-command {
+  justify-content: flex-start;
+  border-bottom-color: rgba(255, 255, 255, 0.11);
+  color: #eaf1f8;
+}
+
+.diagnostic-list {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.62rem;
+}
+
+.diagnostic {
+  display: grid;
+  grid-template-columns: 3.2rem minmax(0, 1fr);
+  gap: 0.45rem;
+  align-items: baseline;
+  margin: 0;
+  color: #b8c4d1;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  line-height: 1.45;
+}
+
+.diagnostic span {
+  color: #eaf1f8;
+  font-weight: 760;
+}
+
+.diagnostic strong {
+  min-width: 0;
+  font-weight: 520;
+  overflow-wrap: anywhere;
+}
+
+.diagnostic.ok span {
+  color: #8de0a2;
+}
+
+.diagnostic.warn span {
+  color: #e0bd66;
+}
+
+.diagnostic.error span {
+  color: #ff947d;
+}
+
+.feature-mini-timeline {
+  padding-bottom: 0.5rem;
+}
+
+.mini-ticks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 0.5rem 0.62rem 0.1rem 4.2rem;
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+}
+
+.mini-lane {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.55rem minmax(0, 1fr);
+  align-items: center;
+  min-height: 2.25rem;
+  margin: 0 0.62rem;
+  border-top: 1px solid rgba(216, 221, 229, 0.9);
+}
+
+.mini-lane-label {
+  color: var(--color-muted);
+  font-size: 0.65rem;
+  font-weight: 720;
+}
+
+.mini-lane::after {
+  position: absolute;
+  right: 0;
+  left: 3.55rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(89, 101, 117, 0.2), transparent);
+  content: "";
+}
+
+.mini-span {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
-  min-height: 2.6rem;
-  padding: 0 0.75rem;
-  border: 1px solid rgba(23, 33, 43, 0.16);
-  background: #ffffff;
-  color: var(--color-accent-strong);
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  font-weight: 760;
-  box-shadow: 0 10px 26px rgba(21, 32, 44, 0.1);
+  width: var(--width);
+  min-height: 1.35rem;
+  margin-left: var(--start);
+  padding: 0 0.42rem;
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 740;
+  white-space: nowrap;
+}
+
+.mini-span.accent,
+.usecase-bar.accent {
+  background: var(--color-accent);
+}
+
+.mini-span.gold,
+.usecase-bar.gold {
+  background: var(--color-gold);
+}
+
+.mini-span.plum,
+.usecase-bar.plum {
+  background: var(--color-plum);
+}
+
+.mini-span.sky,
+.usecase-bar.sky {
+  background: var(--color-sky);
+}
+
+.mini-span.warm,
+.usecase-bar.warm {
+  background: var(--color-warm);
 }
 
 .feature h3 {
@@ -715,9 +879,9 @@ h1 {
 
 .usecase {
   display: grid;
-  grid-template-columns: 8.5rem minmax(0, 1fr);
+  grid-template-columns: 12rem minmax(0, 1fr);
   gap: 1.1rem;
-  min-height: 13rem;
+  min-height: 13.5rem;
   padding: 1.1rem;
   border: 1px solid var(--color-line);
   border-radius: 8px;
@@ -730,58 +894,92 @@ h1 {
 
 .usecase-map {
   position: relative;
-  min-height: 10rem;
+  min-height: 10.4rem;
   border: 1px solid rgba(216, 221, 229, 0.95);
   background:
-    linear-gradient(180deg, transparent 31%, rgba(23, 33, 43, 0.1) 31% 32%, transparent 32% 64%, rgba(23, 33, 43, 0.1) 64% 65%, transparent 65%),
+    linear-gradient(90deg, rgba(13, 118, 111, 0.08) 1px, transparent 1px) 0 0 / 2.15rem 100%,
+    linear-gradient(180deg, transparent 36%, rgba(23, 33, 43, 0.1) 36% 37%, transparent 37% 63%, rgba(23, 33, 43, 0.1) 63% 64%, transparent 64%),
     #fbfcfd;
+  overflow: hidden;
 }
 
 .usecase-map::before {
   position: absolute;
-  inset: 1rem auto 1rem 50%;
-  width: 2px;
-  background: rgba(23, 33, 43, 0.16);
+  inset: 2.45rem 0.85rem auto 0.85rem;
+  height: 1px;
+  background: rgba(23, 33, 43, 0.22);
   content: "";
 }
 
-.usecase-map span {
+.usecase-map-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2rem;
+  padding: 0 0.7rem;
+  border-bottom: 1px solid rgba(216, 221, 229, 0.86);
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 720;
+}
+
+.usecase-bar {
   position: absolute;
-  left: 1rem;
-  height: 1.1rem;
-  border-radius: 999px;
+  left: calc(0.8rem + var(--start));
+  display: grid;
+  align-content: center;
+  width: var(--width);
+  min-width: 3.25rem;
+  height: 1.85rem;
+  padding: 0 0.45rem;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(21, 32, 44, 0.12);
 }
 
-.usecase-map span:nth-child(1) {
-  top: 1.2rem;
-  width: 70%;
-  background: var(--color-accent);
+.usecase-bar::before {
+  position: absolute;
+  top: -0.52rem;
+  left: 0.45rem;
+  width: 1px;
+  height: 0.52rem;
+  background: rgba(23, 33, 43, 0.28);
+  content: "";
 }
 
-.usecase-map span:nth-child(2) {
-  top: 4.25rem;
-  width: 42%;
-  margin-left: 26%;
-  background: var(--color-gold);
+.usecase-bar:nth-child(2) {
+  top: 3.15rem;
 }
 
-.usecase-map span:nth-child(3) {
-  top: 7.4rem;
-  width: 56%;
-  margin-left: 10%;
-  background: var(--color-plum);
+.usecase-bar:nth-child(3) {
+  top: 5.85rem;
 }
 
-.usecase.classroom .usecase-map span:nth-child(1) {
-  background: var(--color-sky);
+.usecase-bar:nth-child(4) {
+  top: 8.55rem;
 }
 
-.usecase.company .usecase-map span:nth-child(2) {
-  background: var(--color-warm);
+.usecase-year,
+.usecase-label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.usecase.research .usecase-map span:nth-child(3) {
-  background: var(--color-accent-strong);
+.usecase-year {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  line-height: 1;
+  opacity: 0.84;
+}
+
+.usecase-label {
+  margin-top: 0.15rem;
+  font-size: 0.64rem;
+  font-weight: 760;
+  line-height: 1;
 }
 
 .usecase h3 {
@@ -1152,7 +1350,7 @@ h1 {
   }
 
   .usecase-map {
-    min-height: 7rem;
+    min-height: 10.4rem;
   }
 
   .release-item-header {
