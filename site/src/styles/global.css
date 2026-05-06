@@ -522,6 +522,67 @@ h1 {
   color: var(--color-muted);
 }
 
+@keyframes reveal-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-y, 24px));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-fade-right {
+  from {
+    opacity: 0;
+    transform: translateX(var(--reveal-x, -28px));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.scroll-reveal-enabled :is(.section-header, .feature, .workflow-step, .usecase) {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.scroll-reveal-enabled :is(.section-header, .usecase) {
+  transform: translateY(var(--reveal-y, 24px));
+}
+
+.scroll-reveal-enabled :is(.feature, .workflow-step) {
+  transform: translateX(var(--reveal-x, -28px));
+}
+
+.scroll-reveal-enabled :is(.section-header, .feature, .workflow-step, .usecase).is-visible {
+  animation-delay: var(--reveal-delay, 0ms);
+  animation-duration: 640ms;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-reveal-enabled .section-header.is-visible,
+.scroll-reveal-enabled .usecase.is-visible {
+  animation-name: reveal-fade-up;
+}
+
+.scroll-reveal-enabled .feature.is-visible,
+.scroll-reveal-enabled .workflow-step.is-visible {
+  animation-name: reveal-fade-right;
+}
+
+.scroll-reveal-enabled :is(.section-header, .feature, .workflow-step, .usecase).is-revealed {
+  opacity: 1;
+  transform: none;
+  animation: none;
+  will-change: auto;
+}
+
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1003,6 +1064,14 @@ h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .scroll-reveal-enabled :is(.section-header, .feature, .workflow-step, .usecase) {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    transition: none;
+    will-change: auto;
+  }
+
   .feature,
   .usecase,
   .workflow-step {
@@ -1017,6 +1086,11 @@ h1 {
 }
 
 @media (max-width: 820px) {
+  .scroll-reveal-enabled {
+    --reveal-x: -12px;
+    --reveal-y: 18px;
+  }
+
   .nav {
     align-items: center;
     flex-direction: row;
