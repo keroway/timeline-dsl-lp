@@ -2,3 +2,11 @@ node_modules/
 dist/
 .astro/
 .DS_Store
+
+# Local agent and browser automation state
+.claude/
+.playwright-mcp/
+
+# Generated verification artifacts
+output/
+screenshot-*.png

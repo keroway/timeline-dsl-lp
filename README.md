@@ -40,3 +40,9 @@ Event policy:
 - `workflow_dispatch`: GitHub Actions の CI を手動再実行する用途に限定する。公開の再実行は Cloudflare Pages dashboard の Retry deployment を使う。
 
 Cloudflare の設定画面で Deploy command が必須になっている場合や、非本番ブランチのデプロイコマンドが表示されている場合は、Pages ではなく Workers Builds の設定です。このサイトは Workers ではなく Pages project として、Cloudflare dashboard の Pages から GitHub repository を import します。
+
+## WASM bundle
+
+Playground と runnable docs からは `site/src/lib/tdsl-wasm.ts` だけを経由して Timeline DSL WASM を呼び出します。現時点では本体 repo の npm package / release artifact がまだ固定されていないため、`wasm-pack --target web` の生成物を `site/public/wasm/` に vendoring します。
+
+更新時は本体 repo の `crates/tdsl-wasm` を `wasm-pack build` し、`apps/webui/src/wasm/tdsl_wasm.{js,d.ts}`、`tdsl_wasm_bg.wasm`、`package.json` を `site/public/wasm/` に同期します。`pnpm build` は `check_source` と `render_svg_from_source` の smoke を先に実行します。
