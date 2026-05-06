@@ -1,31 +1,47 @@
 ---
 title: Quick Start
-description: Timeline DSL で最初の年表を作る手順です。
+description: Timeline DSL を読む、Playgroundで試す、CLIで保存・検証する流れです。
 ---
 
-最小の `.tdsl` ファイルを作り、CLIで検証します。
+まず短い `.tdsl` を読み、Playgroundで試し、最後にCLIで保存・検証します。
+
+## 1. 読む
 
 ```txt
-timeline "Sample" {
-    title "Sample";
+timeline "読書メモ" {
+    title "読書メモ";
     unit year;
-    range 2025..2027;
+    range 2024..2026;
     calendar proleptic_gregorian;
 }
 
-lane "Project" as project { kind custom; order 10; }
+lane "本" as books { kind custom; order 10; }
 
-event project 2026 "Kickoff" { id "event:kickoff"; };
+event books 2025 "Timeline DSLを試す" { id "event:first"; };
 ```
 
-保存したファイルをCLIで検証し、ビルドします。
+`timeline` で年表全体、`lane` で縦軸、`event` で出来事を書きます。文法の読み方は [文法とサンプル](/docs/grammar/) に短い例をまとめています。
+
+## 2. Playgroundで試す
+
+[このサンプルをPlaygroundで開く](/playground/?source=timeline+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22+%7B%0A++++title+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22%3B%0A++++unit+year%3B%0A++++range+2024..2026%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E6%9C%AC%22+as+books+%7B+kind+custom%3B+order+10%3B+%7D%0A%0Aevent+books+2025+%22Timeline+DSL%E3%82%92%E8%A9%A6%E3%81%99%22+%7B+id+%22event%3Afirst%22%3B+%7D%3B)
+
+> Playground 本体は今後追加予定です。リンクは `/playground/?source=...` にサンプル本文を渡す将来URLとして用意しています。
+
+## 3. CLIで保存して検証する
+
+同じ内容を `sample.tdsl` として保存し、CLIで検証します。
 
 ```sh
 tdsl check sample.tdsl
-tdsl build sample.tdsl --pretty
+tdsl lint sample.tdsl
 ```
 
-出力が成功すれば、年表データとして解釈できています。
+出力が成功すれば、構文と基本的な品質チェックを通過しています。JSONとして確認する場合は `build` を使います。
+
+```sh
+tdsl build sample.tdsl --pretty --output sample.json
+```
 
 ブラウザで確認する場合は、スタンドアロンHTMLとして描画します。
 
@@ -35,7 +51,6 @@ tdsl render sample.tdsl --output sample.html
 
 ## 次のステップ
 
-- 複数イベントを追加する
-- レーンで分類する
+- [文法とサンプル](/docs/grammar/) で `span`、`event_range`、Wikidata import の制約を確認する
 - [Commands](/docs/commands/) で用途ごとのCLIを確認する
-- CIで `tdsl check` と `tdsl lint` を実行する
+- [CIで検証する](/docs/github-actions/) で `tdsl check` と `tdsl lint` を自動化する

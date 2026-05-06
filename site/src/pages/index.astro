@@ -12,6 +12,41 @@ type Release = {
   body: string;
 };
 
+type FeatureVisual =
+  | {
+      type: "author";
+      filename: string;
+      lines: string[];
+    }
+  | {
+      type: "validate";
+      command: string;
+      diagnostics: {
+        tone: "ok" | "warn" | "error";
+        label: string;
+        text: string;
+      }[];
+    }
+  | {
+      type: "render";
+      range: string;
+      ticks: string[];
+      lanes: {
+        label: string;
+        text: string;
+        start: string;
+        width: string;
+        tone: "accent" | "gold" | "plum" | "sky" | "warm";
+      }[];
+    };
+
+type Feature = {
+  kicker: string;
+  title: string;
+  body: string;
+  visual: FeatureVisual;
+};
+
 const latest = releasesData.latest as Release | null;
 const pageTitle = "Timeline DSL — 年表をテキストで記述・検証するCLIツール";
 const pageDescription = "Timeline DSL は、年表をテキストで記述し、CLIで検証・生成するためのツールです。";
@@ -32,24 +67,50 @@ const formatDate = (value: string | null | undefined) => {
 
 const latestPublishedAt = formatDate(latest?.publishedAt);
 
-const features = [
+const features: Feature[] = [
   {
     kicker: "Author",
     title: "年表をテキストで残す",
     body: "イベント、期間、レーン、注釈を `.tdsl` として記述し、差分レビューしやすい形で保管できます。",
-    metric: ".tdsl",
+    visual: {
+      type: "author",
+      filename: "source.tdsl",
+      lines: [
+        'timeline "教材用年表" {',
+        "  range 1850..1912;",
+        "}",
+        'lane "政治" as politics;',
+        'event politics 1868 "明治改元";',
+      ],
+    },
   },
   {
     kicker: "Validate",
     title: "CLIで壊れた年表を検出",
     body: "構文、lane参照、重複ID、期間の前後関係をローカルやCIで確認できます。",
-    metric: "check",
+    visual: {
+      type: "validate",
+      command: "tdsl check source.tdsl",
+      diagnostics: [
+        { tone: "ok", label: "ok", text: "parsed 24 events / 4 lanes" },
+        { tone: "warn", label: "warn", text: "duplicate label at 1905" },
+        { tone: "error", label: "error", text: "unknown lane: source" },
+      ],
+    },
   },
   {
     kicker: "Render",
     title: "HTML / SVGへ描画",
     body: "資料、ドキュメント、GitHub Pagesなどに置きやすいスタンドアロン成果物へ変換できます。",
-    metric: "render",
+    visual: {
+      type: "render",
+      range: "1850 - 1912",
+      ticks: ["1850", "1870", "1890", "1910"],
+      lanes: [
+        { label: "政治", text: "制度改革", start: "12%", width: "58%", tone: "accent" },
+        { label: "社会", text: "産業化", start: "38%", width: "45%", tone: "gold" },
+      ],
+    },
   },
 ];
 
@@ -59,24 +120,48 @@ const useCases = [
     body: "王朝、戦争、人物の生没、章ごとの事件をレーンで分け、設定資料として更新し続けられます。",
     sample: "架空世界年表",
     tone: "story",
+    range: "980-1260",
+    map: [
+      { year: "990", label: "王朝成立", start: "8%", width: "62%", tone: "accent" },
+      { year: "1042", label: "北方", start: "31%", width: "18%", tone: "gold" },
+      { year: "1130", label: "継承", start: "58%", width: "30%", tone: "plum" },
+    ],
   },
   {
     title: "授業・教材",
     body: "時代区分と出来事を並べ、授業で扱う範囲だけをHTMLとして配布できます。",
     sample: "日本史 / 世界史",
     tone: "classroom",
+    range: "1850-1912",
+    map: [
+      { year: "1853", label: "開国", start: "6%", width: "20%", tone: "sky" },
+      { year: "1868", label: "明治改元", start: "27%", width: "36%", tone: "accent" },
+      { year: "1905", label: "日露", start: "66%", width: "22%", tone: "gold" },
+    ],
   },
   {
     title: "組織の沿革",
     body: "創業、製品発表、拠点展開、制度変更を一つの履歴として保守できます。",
     sample: "Company history",
     tone: "company",
+    range: "2016-2026",
+    map: [
+      { year: "2016", label: "創業", start: "6%", width: "23%", tone: "warm" },
+      { year: "2020", label: "製品", start: "36%", width: "30%", tone: "accent" },
+      { year: "2024", label: "海外", start: "68%", width: "22%", tone: "plum" },
+    ],
   },
   {
     title: "調査・研究メモ",
     body: "Wikidataの候補探索から手元の追記まで、出典確認前の仮説もテキストで管理できます。",
     sample: "Wikidata scaffold",
     tone: "research",
+    range: "QID draft",
+    map: [
+      { year: "Q42", label: "候補", start: "8%", width: "24%", tone: "accent" },
+      { year: "ref", label: "出典", start: "40%", width: "28%", tone: "sky" },
+      { year: "tdsl", label: "追記", start: "70%", width: "20%", tone: "gold" },
+    ],
   },
 ];
 
@@ -199,7 +284,53 @@ event_range incident 1130..1137 "継承戦争";`;
               <article class="feature">
                 <p class="feature-kicker">{feature.kicker}</p>
                 <div class="feature-figure" aria-hidden="true">
-                  <span>{feature.metric}</span>
+                  {feature.visual.type === "author" && (
+                    <div class="feature-code">
+                      <div class="feature-figure-bar">
+                        <span>{feature.visual.filename}</span>
+                        <span>.tdsl</span>
+                      </div>
+                      <pre><code>{feature.visual.lines.join("\n")}</code></pre>
+                    </div>
+                  )}
+                  {feature.visual.type === "validate" && (
+                    <div class="feature-terminal">
+                      <div class="feature-command">
+                        <span class="prompt">$</span>
+                        <span>{feature.visual.command}</span>
+                      </div>
+                      <div class="diagnostic-list">
+                        {feature.visual.diagnostics.map((item) => (
+                          <p class={`diagnostic ${item.tone}`}>
+                            <span>{item.label}</span>
+                            <strong>{item.text}</strong>
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {feature.visual.type === "render" && (
+                    <div class="feature-mini-timeline">
+                      <div class="mini-timeline-head">
+                        <span>preview.html</span>
+                        <strong>{feature.visual.range}</strong>
+                      </div>
+                      <div class="mini-ticks">
+                        {feature.visual.ticks.map((tick) => <span>{tick}</span>)}
+                      </div>
+                      {feature.visual.lanes.map((lane) => (
+                        <div class="mini-lane">
+                          <span class="mini-lane-label">{lane.label}</span>
+                          <span
+                            class={`mini-span ${lane.tone}`}
+                            style={`--start: ${lane.start}; --width: ${lane.width};`}
+                          >
+                            {lane.text}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <h3>{feature.title}</h3>
                 <p>{feature.body}</p>
@@ -248,9 +379,18 @@ event_range incident 1130..1137 "継承戦争";`;
             {useCases.map((useCase) => (
               <article class={`usecase ${useCase.tone}`}>
                 <div class="usecase-map" aria-hidden="true">
-                  <span></span>
-                  <span></span>
-                  <span></span>
+                  <div class="usecase-map-head">
+                    <span>{useCase.range}</span>
+                  </div>
+                  {useCase.map.map((item) => (
+                    <div
+                      class={`usecase-bar ${item.tone}`}
+                      style={`--start: ${item.start}; --width: ${item.width};`}
+                    >
+                      <span class="usecase-year">{item.year}</span>
+                      <span class="usecase-label">{item.label}</span>
+                    </div>
+                  ))}
                 </div>
                 <div>
                   <p class="usecase-sample">{useCase.sample}</p>
