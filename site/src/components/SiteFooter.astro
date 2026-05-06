@@ -22,6 +22,9 @@ const versionUrl = version ? `${repositoryUrl}/releases/tag/${version}` : `${rep
     </div>
 
     <nav class="footer-nav" aria-label="Footer navigation">
+      <a href="/playground/" aria-current={currentPath === "/playground/" ? "page" : undefined}>
+        Playground
+      </a>
       <a href="/docs/" aria-current={currentPath === "/docs/" ? "page" : undefined}>Docs</a>
       <a href="/changelog/" aria-current={currentPath === "/changelog/" ? "page" : undefined}>
         Changelog
