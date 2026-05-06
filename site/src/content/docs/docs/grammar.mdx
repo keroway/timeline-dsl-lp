@@ -1,0 +1,196 @@
+---
+title: 文法
+description: Timeline DSL の文法を、Playgroundで試せる短い .tdsl サンプル中心に説明します。
+---
+
+Playgroundリンク付きの例は、短い完全な `.tdsl` ファイルとして読める形にしています。各リンクには、同じ本文を `source` クエリに入れています。
+
+> Playground 本体は今後追加予定です。リンク先は `/playground/?source=...` の将来URLとして揃えています。
+
+## 最小の年表
+
+```txt
+timeline "読書メモ" {
+    title "読書メモ";
+    unit year;
+    range 2024..2026;
+    calendar proleptic_gregorian;
+}
+
+lane "本" as books { kind custom; order 10; }
+
+event books 2025 "Timeline DSLを試す" { id "event:first"; };
+```
+
+[Playgroundで開く](/playground/?source=timeline+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22+%7B%0A++++title+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22%3B%0A++++unit+year%3B%0A++++range+2024..2026%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E6%9C%AC%22+as+books+%7B+kind+custom%3B+order+10%3B+%7D%0A%0Aevent+books+2025+%22Timeline+DSL%E3%82%92%E8%A9%A6%E3%81%99%22+%7B+id+%22event%3Afirst%22%3B+%7D%3B)
+
+`.tdsl` は、年表全体の `timeline`、縦軸の `lane`、時間要素の `event` / `span` / `event_range` を組み合わせます。
+
+## timeline と range
+
+```txt
+timeline "製品ロードマップ" {
+    title "製品ロードマップ";
+    unit year;
+    range 2025..2027;
+    calendar proleptic_gregorian;
+}
+
+lane "マイルストーン" as milestones { kind custom; order 10; }
+event milestones 2026 "公開ベータ" {};
+```
+
+[Playgroundで開く](/playground/?source=timeline+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22+%7B%0A++++title+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9E%E3%82%A4%E3%83%AB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%B3%22+as+milestones+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+milestones+2026+%22%E5%85%AC%E9%96%8B%E3%83%99%E3%83%BC%E3%82%BF%22+%7B%7D%3B)
+
+`range 2025..2027;` は表示・検証の対象範囲です。まずは `unit year;` と `calendar proleptic_gregorian;` を固定して、年単位の年表として作るのが分かりやすいです。
+
+## lane
+
+`lane` は年表の縦軸です。`as milestones` のように短いIDを付け、後続の `event`、`span`、`event_range` から参照します。
+
+```txt
+lane "マイルストーン" as milestones { kind custom; order 10; }
+event milestones 2026 "公開ベータ" {};
+```
+
+`order` は表示順です。小さい値ほど上に並びます。`kind` は分類用のメタデータとして扱います。
+
+## event
+
+`event` は1年に置く点イベントです。
+
+```txt
+timeline "製品ロードマップ" {
+    title "製品ロードマップ";
+    unit year;
+    range 2025..2027;
+    calendar proleptic_gregorian;
+}
+
+lane "マイルストーン" as milestones { kind custom; order 10; }
+event milestones 2026 "公開ベータ" { tags ["release"]; id "event:beta"; };
+```
+
+[Playgroundで開く](/playground/?source=timeline+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22+%7B%0A++++title+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9E%E3%82%A4%E3%83%AB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%B3%22+as+milestones+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+milestones+2026+%22%E5%85%AC%E9%96%8B%E3%83%99%E3%83%BC%E3%82%BF%22+%7B+tags+%5B%22release%22%5D%3B+id+%22event%3Abeta%22%3B+%7D%3B)
+
+`event <lane-id> <year> "<label>" { ... };` の順で書きます。ラベルは年表上に表示されます。
+
+## span
+
+`span` は存続期間や工程のように、開始年と終了年を持つ項目です。
+
+```txt
+timeline "小さなプロジェクト" {
+    title "小さなプロジェクト";
+    unit year;
+    range 2025..2028;
+    calendar proleptic_gregorian;
+}
+
+lane "工程" as phases { kind custom; order 10; }
+span phases 2025..2026 "設計" { tags ["phase"]; id "span:design"; };
+span phases 2026..2028 "実装" { tags ["phase"]; id "span:build"; };
+```
+
+[Playgroundで開く](/playground/?source=timeline+%22%E5%B0%8F%E3%81%95%E3%81%AA%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%22+%7B%0A++++title+%22%E5%B0%8F%E3%81%95%E3%81%AA%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%22%3B%0A++++unit+year%3B%0A++++range+2025..2028%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E5%B7%A5%E7%A8%8B%22+as+phases+%7B+kind+custom%3B+order+10%3B+%7D%0Aspan+phases+2025..2026+%22%E8%A8%AD%E8%A8%88%22+%7B+tags+%5B%22phase%22%5D%3B+id+%22span%3Adesign%22%3B+%7D%3B%0Aspan+phases+2026..2028+%22%E5%AE%9F%E8%A3%85%22+%7B+tags+%5B%22phase%22%5D%3B+id+%22span%3Abuild%22%3B+%7D%3B)
+
+`span <lane-id> <start>..<end> "<label>" { ... };` の順で書きます。
+
+## event_range
+
+`event_range` は戦争、移行期間、障害対応など、出来事として扱いたい期間に使います。
+
+```txt
+timeline "リリース計画" {
+    title "リリース計画";
+    unit year;
+    range 2025..2027;
+    calendar proleptic_gregorian;
+}
+
+lane "作業" as work { kind custom; order 10; }
+event_range work 2025..2026 "移行期間" { tags ["migration"]; };
+event work 2027 "新体制で運用開始" {};
+```
+
+[Playgroundで開く](/playground/?source=timeline+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E8%A8%88%E7%94%BB%22+%7B%0A++++title+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E8%A8%88%E7%94%BB%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E4%BD%9C%E6%A5%AD%22+as+work+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent_range+work+2025..2026+%22%E7%A7%BB%E8%A1%8C%E6%9C%9F%E9%96%93%22+%7B+tags+%5B%22migration%22%5D%3B+%7D%3B%0Aevent+work+2027+%22%E6%96%B0%E4%BD%93%E5%88%B6%E3%81%A7%E9%81%8B%E7%94%A8%E9%96%8B%E5%A7%8B%22+%7B%7D%3B)
+
+見た目は期間を持つ点で `span` に近いですが、意味は「期間を持つ出来事」です。時代区分や所属期間は `span`、作業・事件・戦争は `event_range` に寄せると読み分けやすくなります。
+
+## tags、id、metadata
+
+`event`、`span`、`event_range` の `{ ... }` には共通のメタデータを書けます。
+
+```txt
+timeline "公開履歴" {
+    title "公開履歴";
+    unit year;
+    range 2024..2026;
+    calendar proleptic_gregorian;
+}
+
+lane "リリース" as releases { kind custom; order 10; }
+event releases 2026 "v1.0公開" {
+    tags ["release", "stable"];
+    source wd:Q95;
+    origin manual;
+    id "event:v1";
+};
+```
+
+[Playgroundで開く](/playground/?source=timeline+%22%E5%85%AC%E9%96%8B%E5%B1%A5%E6%AD%B4%22+%7B%0A++++title+%22%E5%85%AC%E9%96%8B%E5%B1%A5%E6%AD%B4%22%3B%0A++++unit+year%3B%0A++++range+2024..2026%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%22+as+releases+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+releases+2026+%22v1.0%E5%85%AC%E9%96%8B%22+%7B%0A++++tags+%5B%22release%22%2C+%22stable%22%5D%3B%0A++++source+wd%3AQ95%3B%0A++++origin+manual%3B%0A++++id+%22event%3Av1%22%3B%0A%7D%3B)
+
+`tags` は分類、`id` はレビューや差分追跡で使う安定識別子です。`source wd:Q95;` はWikidata QIDを出典メタデータとして記録します。`origin manual;` は手書きデータであることを示します。
+
+## import と Wikidata の Web 制約
+
+Wikidataを使う場合は、`import wikidata` でQIDを取り込み、`map` で年表要素へ変換します。
+
+```txt
+timeline "中国王朝" {
+    title "中国王朝";
+    unit year;
+    range -300..300;
+    calendar proleptic_gregorian;
+}
+
+lane "王朝" as dynasties { kind dynasty; order 10; }
+
+event dynasties -221 "秦の天下統一" { tags ["manual"]; };
+
+import wikidata as wd {
+    entity Q7209 as han_dynasty;
+    policy merge_by_source;
+}
+
+map wd.han_dynasty to span {
+    lane dynasties;
+    start claim(P571).year;
+    end claim(P576).year;
+    label label@ja ?? label@en;
+    tags ["dynasty", "imported"];
+}
+```
+
+[Playgroundで開く](/playground/?source=timeline+%22%E4%B8%AD%E5%9B%BD%E7%8E%8B%E6%9C%9D%22+%7B%0A++++title+%22%E4%B8%AD%E5%9B%BD%E7%8E%8B%E6%9C%9D%22%3B%0A++++unit+year%3B%0A++++range+-300..300%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E7%8E%8B%E6%9C%9D%22+as+dynasties+%7B+kind+dynasty%3B+order+10%3B+%7D%0A%0Aevent+dynasties+-221+%22%E7%A7%A6%E3%81%AE%E5%A4%A9%E4%B8%8B%E7%B5%B1%E4%B8%80%22+%7B+tags+%5B%22manual%22%5D%3B+%7D%3B%0A%0Aimport+wikidata+as+wd+%7B%0A++++entity+Q7209+as+han_dynasty%3B%0A++++policy+merge_by_source%3B%0A%7D%0A%0Amap+wd.han_dynasty+to+span+%7B%0A++++lane+dynasties%3B%0A++++start+claim%28P571%29.year%3B%0A++++end+claim%28P576%29.year%3B%0A++++label+label%40ja+%3F%3F+label%40en%3B%0A++++tags+%5B%22dynasty%22%2C+%22imported%22%5D%3B%0A%7D)
+
+ブラウザ版の Playground では、Wikidataのネットワーク取得は行いません。構文確認用として開けますが、`import` 由来の項目は描画結果から省かれることがあります。Webで確実に表示したい内容は、上の例の `event dynasties -221 ...` のように静的な `event`、`span`、`event_range` として書いてください。
+
+Wikidataを解決してJSONやHTMLへ出力する場合はCLIを使います。
+
+```sh
+tdsl build china.tdsl --pretty --output china.json
+tdsl render china.tdsl --output china.html
+```
+
+CIでネットワーク取得を避けたい場合は、`--offline` を付けます。
+
+```sh
+tdsl build china.tdsl --offline --pretty
+```
+
+## 次に進む
+
+- [Quick Start](/docs/quick-start/) で保存、検証、描画の流れを確認する
+- [Commands](/docs/commands/) でCLIコマンドを確認する
+- [CIで検証する](/docs/github-actions/) でGitHub Actionsに組み込む

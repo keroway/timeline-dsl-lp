@@ -26,6 +26,10 @@ export default defineConfig({
           ],
         },
         {
+          label: "文法",
+          items: [{ label: "文法とサンプル", slug: "docs/grammar" }],
+        },
+        {
           label: "CLI",
           items: [
             { label: "Commands", slug: "docs/commands" },
