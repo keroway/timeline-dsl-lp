@@ -1,15 +1,29 @@
 {
   "repository": "keroway/timeline-dsl",
   "source": "github-releases",
-  "fetchedAt": "2026-05-06T01:59:45.238Z",
+  "fetchedAt": "2026-05-06T08:08:45.248Z",
   "latest": {
-    "tagName": "v1.1.0",
-    "name": "v1.1.0",
-    "publishedAt": "2026-05-06T01:45:52Z",
-    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.1.0",
-    "body": "## What's Changed\n* chore(deps): bump dirs from 5.0.1 to 6.0.0 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/87\n* chore(deps): bump actions/download-artifact from 4 to 8 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/80\n* chore(deps): bump softprops/action-gh-release from 2 to 3 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/81\n* chore(deps): bump actions/upload-artifact from 4 to 7 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/82\n* chore(deps): bump actions/checkout from 4 to 6 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/83\n* chore(deps): bump tokio from 1.52.0 to 1.52.2 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/84\n* chore(deps): bump clap from 4.6.0 to 4.6.1 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/85\n* chore(deps): bump governor from 0.8.1 to 0.10.4 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/86\n* feat: キャッシュ管理CLIコマンド追加・アトミック書き込み対応 (#45, #46) by @keroway in https://github.com/keroway/timeline-dsl/pull/93\n* docs: エラーコードカタログを追加 (#56) by @keroway in https://github.com/keroway/timeline-dsl/pull/94\n* docs: README整理・内部向けドキュメント削除 (#92) by @keroway in https://github.com/keroway/timeline-dsl/pull/95\n* feat(dist): cargo-binstall 対応（#69） by @keroway in https://github.com/keroway/timeline-dsl/pull/96\n* docs: スタイルカスタマイズガイドを追加 (docs/styling.md) (#91) by @keroway in https://github.com/keroway/timeline-dsl/pull/97\n* feat: Windows バイナリ対応（CI・リリースワークフロー追加） by @keroway in https://github.com/keroway/timeline-dsl/pull/98\n* feat(core): フィールド別インポート優先度を実装 (#47) by @keroway in https://github.com/keroway/timeline-dsl/pull/99\n* fix: rustls-webpki 0.103.13 へ更新（GHSA-82j2-j2ch-gfr8） by @keroway in https://github.com/keroway/timeline-dsl/pull/100\n* feat(render): タグ→カラーマッピング対応（--color-map フラグ） by @keroway in https://github.com/keroway/timeline-dsl/pull/101\n* feat(render): インタラクティブHTMLレンダリング（--interactive フラグ） by @keroway in https://github.com/keroway/timeline-dsl/pull/102\n* docs: decide WebUI architecture by @keroway in https://github.com/keroway/timeline-dsl/pull/103\n* feat(webui): WebUI MVP — WASM facade + Vite/React エディタ by @keroway in https://github.com/keroway/timeline-dsl/pull/104\n* chore: GitHub Pages CI/CD デプロイワークフローの追加（WebUI 公開） by @keroway in https://github.com/keroway/timeline-dsl/pull/106\n* fix(ci): GitHub Pages enablement を true に変更して初回デプロイエラーを修正 by @keroway in https://github.com/keroway/timeline-dsl/pull/107\n* fix(webui): プレビューUX改善（ツールチップ・スクロール・ラベル） by @keroway in https://github.com/keroway/timeline-dsl/pull/108\n* feat(parser): DSLにcolor_mapブロックを追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/109\n* feat(core): JSON IR → .tdsl 逆コンパイル（tdsl decompile） by @keroway in https://github.com/keroway/timeline-dsl/pull/110\n* docs: IssueテンプレートとCONTRIBUTING.mdを追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/112\n* test(bench): criterionベンチマークスイートを追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/111\n* chore(deps): bump actions/deploy-pages from 4 to 5 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/113\n* chore(deps): bump actions/setup-node from 4 to 6 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/114\n* chore(deps): bump actions/configure-pages from 5 to 6 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/115\n* chore(deps): bump actions/upload-pages-artifact from 3 to 5 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/116\n* chore(deps): bump criterion from 0.5.1 to 0.8.2 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/117\n* fix: v1.1.0 品質向上 — Clippy警告全解消 + バグ修正2件 by @keroway in https://github.com/keroway/timeline-dsl/pull/118\n\n## New Contributors\n* @dependabot[bot] made their first contribution in https://github.com/keroway/timeline-dsl/pull/87\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.0.0...v1.1.0"
+    "tagName": "v1.2.1",
+    "name": "v1.2.1",
+    "publishedAt": "2026-05-06T06:10:56Z",
+    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.2.1",
+    "body": "## What's Changed\n* chore: vscode-publish ワークフローを Node.js 24 / setup-node@v5 に更新 by @keroway in https://github.com/keroway/timeline-dsl/pull/126\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.2.0...v1.2.1"
   },
   "releases": [
+    {
+      "tagName": "v1.2.1",
+      "name": "v1.2.1",
+      "publishedAt": "2026-05-06T06:10:56Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.2.1",
+      "body": "## What's Changed\n* chore: vscode-publish ワークフローを Node.js 24 / setup-node@v5 に更新 by @keroway in https://github.com/keroway/timeline-dsl/pull/126\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.2.0...v1.2.1"
+    },
+    {
+      "tagName": "v1.2.0",
+      "name": "v1.2.0",
+      "publishedAt": "2026-05-06T04:45:06Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.2.0",
+      "body": "## What's Changed\n* docs: v1.1.0リリースノート・README/仕様書の更新 by @keroway in https://github.com/keroway/timeline-dsl/pull/119\n* feat: 複数 .tdsl ファイルの結合に対応（tdsl build / tdsl merge） by @keroway in https://github.com/keroway/timeline-dsl/pull/122\n* feat: tdsl-wasm を GitHub Release artifact として配布 + LP リンク整備 by @keroway in https://github.com/keroway/timeline-dsl/pull/124\n* feat: VS Code 拡張機能の Marketplace 公開準備（#120） by @keroway in https://github.com/keroway/timeline-dsl/pull/125\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.1.0...v1.2.0"
+    },
     {
       "tagName": "v1.1.0",
       "name": "v1.1.0",

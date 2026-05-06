@@ -8,6 +8,8 @@
     "dev": "astro dev",
     "fetch:releases": "node scripts/fetch-github-releases.mjs",
     "smoke:wasm": "node scripts/smoke-tdsl-wasm.mjs",
+    "smoke:playground": "node scripts/smoke-playground.mjs",
+    "smoke:playground:browser": "node scripts/smoke-playground.mjs --browser",
     "build": "pnpm smoke:wasm && astro check && astro build",
     "preview": "astro preview"
   },

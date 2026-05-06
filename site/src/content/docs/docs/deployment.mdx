@@ -42,6 +42,37 @@ Cloudflare Pages の Preview URL は GitHub PR の checks、Deployments、また
 1. PR の Cloudflare Pages check または Deployments から Preview URL を開く。
 2. Preview URL で `/` が表示できることを確認する。
 3. Preview URL で `/docs/` が表示できることを確認する。
+4. Playground を含む PR では Preview URL に対して smoke を実行する。
+
+```sh
+cd site
+PLAYGROUND_BASE_URL="https://<preview>.pages.dev" pnpm smoke:playground
+```
+
+`smoke:playground` は `/playground/`、`/wasm/tdsl_wasm.js`、`/wasm/tdsl_wasm_bg.wasm` を HTTP で確認します。WASM asset の 404、`.wasm` の MIME type 不一致、未バージョン asset に対する強すぎる cache policy がある場合は失敗します。
+
+Playground の画面操作まで確認する場合は Playwright package と Chromium を利用できる環境で browser smoke を実行します。Playwright は CI/build の必須依存には含めません。スクリーンショットは生成せず、artifact として repo には残しません。
+
+```sh
+cd site
+PLAYGROUND_BASE_URL="https://<preview>.pages.dev" pnpm smoke:playground:browser
+```
+
+browser smoke は以下を確認します。
+
+- `/playground/` が表示される。
+- 初期サンプルで `data-smoke="playground-preview"` 内に SVG preview が出る。
+- `data-smoke="playground-editor"` の入力を壊すと `data-smoke="playground-diagnostics"` に error が出る。
+- 入力を戻すと SVG preview が復帰する。
+- WASM asset を 404 にした場合に、読み込み失敗がユーザーに見える。
+
+Playground 実装では smoke 用に以下の属性を維持します。
+
+| Target | Selector |
+| --- | --- |
+| editor | `data-smoke="playground-editor"` |
+| preview container | `data-smoke="playground-preview"` |
+| diagnostics container | `data-smoke="playground-diagnostics"` |
 
 ## エラー対応
 
@@ -63,13 +94,50 @@ pnpm install --frozen-lockfile
 pnpm build
 ```
 
+Playground を実装したブランチでは、ローカル preview に対しても smoke を実行します。
+
+```sh
+cd site
+pnpm build
+pnpm preview -- --host 127.0.0.1 --port 4321
+```
+
+別 terminal で実行します。
+
+```sh
+cd site
+PLAYGROUND_BASE_URL="http://127.0.0.1:4321" pnpm smoke:playground
+PLAYGROUND_BASE_URL="http://127.0.0.1:4321" pnpm smoke:playground:browser
+```
+
 ## WASM bundle の更新
 
 Playground と runnable docs から Timeline DSL WASM を使う場合、LP 側の呼び出し口は `src/lib/tdsl-wasm.ts` に集約します。Astro / Starlight のコンポーネントから `tdsl_wasm.js` や wasm-bindgen 生成物を直接 import しないでください。
 
-2026年5月時点では、本体 repo の `tdsl-wasm` は npm package や release artifact としての配布方式がまだ固定されていません。そのため LP 側では、本体 repo の `apps/webui` と同じ `wasm-pack --target web` 生成物を `public/wasm/` に vendoring します。将来 npm package または release artifact が整備されたら、差し替え対象は `src/lib/tdsl-wasm.ts` とこの更新手順に限定します。
+timeline-dsl v1.2.0 以降は、GitHub Release に `tdsl-wasm-<version>.tar.gz` が添付されます。LP 側ではその wasm-pack 生成物を `public/wasm/` に vendoring します。npm package 配布へ移行した場合も、差し替え対象は `src/lib/tdsl-wasm.ts`、`public/wasm/`、`scripts/smoke-tdsl-wasm.mjs`、`scripts/smoke-playground.mjs`、この更新手順に限定します。
 
-本体 repo で WASM を更新します。
+更新時に確認するファイルは以下です。
+
+| File | 確認内容 |
+| --- | --- |
+| `src/lib/tdsl-wasm.ts` | import path、fallback message、公開 API 名 |
+| `public/wasm/tdsl_wasm.js` | wasm-bindgen の JS glue |
+| `public/wasm/tdsl_wasm.d.ts` | TypeScript 型 |
+| `public/wasm/tdsl_wasm_bg.wasm` | WASM binary |
+| `public/wasm/tdsl_wasm_bg.wasm.d.ts` | WASM binary import 型 |
+| `public/wasm/package.json` | package metadata |
+| `scripts/smoke-tdsl-wasm.mjs` | Node smoke が呼ぶ export 名 |
+| `scripts/smoke-playground.mjs` | Preview smoke の asset path と画面操作 |
+
+通常は GitHub Release asset から WASM bundle を取得します。`<version>` には `v1.2.1` のような tag を指定します。
+
+```sh
+cd ../timeline-dsl-lp
+curl -L "https://github.com/keroway/timeline-dsl/releases/download/<version>/tdsl-wasm-<version>.tar.gz" -o /tmp/tdsl-wasm.tar.gz
+tar -xzf /tmp/tdsl-wasm.tar.gz -C site/public/wasm
+```
+
+本体 repo の手元の成果物を使う場合は、先に WASM を更新します。
 
 ```sh
 cd ../timeline-dsl
@@ -83,6 +151,7 @@ cd ../timeline-dsl-lp
 cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm.js site/public/wasm/tdsl_wasm.js
 cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm.d.ts site/public/wasm/tdsl_wasm.d.ts
 cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm_bg.wasm site/public/wasm/tdsl_wasm_bg.wasm
+cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm_bg.wasm.d.ts site/public/wasm/tdsl_wasm_bg.wasm.d.ts
 cp ../timeline-dsl/apps/webui/src/wasm/package.json site/public/wasm/package.json
 ```
 
@@ -93,5 +162,7 @@ cd site
 pnpm smoke:wasm
 pnpm build
 ```
+
+Playground を含む更新では、ローカル preview または Cloudflare Pages Preview に対して `pnpm smoke:playground` も実行します。
 
 WASM wrapper が対象にするのは静的な `.tdsl` の検証、IR 生成、SVG/HTML レンダリングです。Wikidata import の解決やネットワーク取得はブラウザ版 WASM では対応外とし、Playground 側では diagnostic として扱います。
