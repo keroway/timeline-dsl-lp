@@ -19,7 +19,16 @@ export type TdslWasmLoadResult =
   | { status: "unavailable"; message: string; cause?: unknown };
 
 interface RawTdslWasmModule {
-  default: (moduleOrPath?: string | URL | Request | Response | BufferSource | WebAssembly.Module) => Promise<unknown>;
+  default: (
+    moduleOrPath?:
+      | { module_or_path: string | URL | Request | Response | BufferSource | WebAssembly.Module }
+      | string
+      | URL
+      | Request
+      | Response
+      | BufferSource
+      | WebAssembly.Module,
+  ) => Promise<unknown>;
   compile_to_ir(source: string): string;
   render_svg_from_source(source: string): string;
   render_html_from_source(source: string): string;
@@ -94,7 +103,7 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
 
   try {
     const rawModule = (await import(/* @vite-ignore */ TDSL_WASM_JS_URL)) as RawTdslWasmModule;
-    await rawModule.default(TDSL_WASM_BINARY_URL);
+    await rawModule.default({ module_or_path: TDSL_WASM_BINARY_URL });
 
     return {
       status: "ready",
