@@ -355,6 +355,79 @@ event_range incident 1130..1137 "継承戦争";`;
           }
         });
       });
+
+      const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      if (!motionQuery.matches && "IntersectionObserver" in window) {
+        const revealGroups = [
+          { selector: ".section-header", delayStep: 80 },
+          { selector: ".feature", delayStep: 120 },
+          { selector: ".workflow-step", delayStep: 130 },
+          { selector: ".usecase", delayStep: 90 },
+        ];
+        const revealTargets: HTMLElement[] = [];
+
+        revealGroups.forEach(({ selector, delayStep }) => {
+          document.querySelectorAll<HTMLElement>(selector).forEach((target, index) => {
+            target.style.setProperty("--reveal-delay", `${index * delayStep}ms`);
+            revealTargets.push(target);
+          });
+        });
+
+        if (revealTargets.length > 0) {
+          document.body.classList.add("scroll-reveal-enabled");
+          const revealTarget = (target: HTMLElement) => {
+            target.classList.add("is-visible");
+            revealObserver.unobserve(target);
+          };
+
+          const revealObserver = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+
+                revealTarget(entry.target as HTMLElement);
+              });
+            },
+            {
+              rootMargin: "0px 0px -12% 0px",
+              threshold: 0.12,
+            },
+          );
+          let revealFrame = 0;
+          const revealPassedTargets = () => {
+            revealFrame = 0;
+            const triggerLine = window.innerHeight * 0.88;
+
+            revealTargets.forEach((target) => {
+              if (target.classList.contains("is-visible")) return;
+
+              const rect = target.getBoundingClientRect();
+              if (rect.top <= triggerLine) {
+                revealTarget(target);
+              }
+            });
+          };
+          const queueRevealCheck = () => {
+            if (revealFrame) return;
+            revealFrame = window.requestAnimationFrame(revealPassedTargets);
+          };
+
+          revealTargets.forEach((target) => {
+            target.addEventListener(
+              "animationend",
+              () => {
+                target.classList.add("is-revealed");
+              },
+              { once: true },
+            );
+            revealObserver.observe(target);
+          });
+          window.addEventListener("scroll", queueRevealCheck, { passive: true });
+          window.addEventListener("resize", queueRevealCheck);
+          queueRevealCheck();
+        }
+      }
     </script>
   </body>
 </html>
