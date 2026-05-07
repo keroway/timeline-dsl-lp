@@ -406,11 +406,41 @@ event_range incident 1130..1137 "継承戦争";`;
                 class="copy-button"
                 type="button"
                 data-copy-target="install-command"
-                data-copy-label="Copy"
-                data-copy-success-label="Copied!"
-                aria-label="Copy install command"
+                data-copy-success-label="コピーしました"
+                data-copy-error-label="コピーに失敗しました"
+                aria-label="インストールコマンドをコピー"
               >
-                Copy
+                <svg
+                  class="copy-button__icon copy-button__icon--clipboard"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <rect x="9" y="3" width="6" height="3" rx="1" />
+                  <path d="M9 4.5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-12a2 2 0 0 0-2-2h-2" />
+                </svg>
+                <svg
+                  class="copy-button__icon copy-button__icon--check"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <polyline points="5 12 10 17 19 8" />
+                </svg>
               </button>
               <span class="copy-status" aria-live="polite" aria-atomic="true"></span>
             </div>
@@ -459,8 +489,8 @@ event_range incident 1130..1137 "継承戦争";`;
       copyButtons.forEach((button) => {
         const targetId = button.getAttribute("data-copy-target");
         const target = targetId ? document.getElementById(targetId) : null;
-        const label = button.getAttribute("data-copy-label") || button.textContent || "Copy";
-        const successLabel = button.getAttribute("data-copy-success-label") || "Copied!";
+        const successLabel = button.getAttribute("data-copy-success-label") || "コピーしました";
+        const errorLabel = button.getAttribute("data-copy-error-label") || "コピーに失敗しました";
         const status = button.parentElement?.querySelector(".copy-status");
         let resetTimer: number | undefined;
         const setStatus = (message: string) => {
@@ -473,15 +503,15 @@ event_range incident 1130..1137 "継承戦争";`;
           const didCopy = await copyText(target.textContent.trim());
 
           if (didCopy) {
-            button.textContent = successLabel;
+            button.classList.add("is-copied");
             setStatus(successLabel);
             window.clearTimeout(resetTimer);
             resetTimer = window.setTimeout(() => {
-              button.textContent = label;
+              button.classList.remove("is-copied");
               setStatus("");
             }, 1800);
           } else {
-            setStatus("Copy failed");
+            setStatus(errorLabel);
           }
         });
       });
