@@ -26,7 +26,7 @@ if (errors.length > 0) {
   throw new Error(`check_source returned errors: ${JSON.stringify(errors)}`);
 }
 
-const svg = render_svg_from_source(sample);
+const svg = render_svg_from_source(sample, 0);
 if (!svg.includes("<svg") || !svg.includes("Kickoff")) {
   throw new Error("render_svg_from_source did not return the expected SVG output.");
 }
