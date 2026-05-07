@@ -1,15 +1,29 @@
 {
   "repository": "keroway/timeline-dsl",
   "source": "github-releases",
-  "fetchedAt": "2026-05-06T08:08:45.248Z",
+  "fetchedAt": "2026-05-07T12:56:34.924Z",
   "latest": {
-    "tagName": "v1.2.1",
-    "name": "v1.2.1",
-    "publishedAt": "2026-05-06T06:10:56Z",
-    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.2.1",
-    "body": "## What's Changed\n* chore: vscode-publish ワークフローを Node.js 24 / setup-node@v5 に更新 by @keroway in https://github.com/keroway/timeline-dsl/pull/126\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.2.0...v1.2.1"
+    "tagName": "v1.3.0",
+    "name": "v1.3.0",
+    "publishedAt": "2026-05-06T14:39:24Z",
+    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.3.0",
+    "body": "## What's Changed\n* feat(webui): フォントサイズ・ライト/ダークテーマ選択、SVGプレビュー黒背景修正 by @keroway in https://github.com/keroway/timeline-dsl/pull/129\n* feat: WebUI タイムラインプレビューのスケール（ズーム）制御 (#128) by @keroway in https://github.com/keroway/timeline-dsl/pull/130\n* feat: WebUI スケール（ズーム）制御 + v1.3.0 リリース前整備 by @keroway in https://github.com/keroway/timeline-dsl/pull/133\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.2.2...v1.3.0"
   },
   "releases": [
+    {
+      "tagName": "v1.3.0",
+      "name": "v1.3.0",
+      "publishedAt": "2026-05-06T14:39:24Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.3.0",
+      "body": "## What's Changed\n* feat(webui): フォントサイズ・ライト/ダークテーマ選択、SVGプレビュー黒背景修正 by @keroway in https://github.com/keroway/timeline-dsl/pull/129\n* feat: WebUI タイムラインプレビューのスケール（ズーム）制御 (#128) by @keroway in https://github.com/keroway/timeline-dsl/pull/130\n* feat: WebUI スケール（ズーム）制御 + v1.3.0 リリース前整備 by @keroway in https://github.com/keroway/timeline-dsl/pull/133\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.2.2...v1.3.0"
+    },
+    {
+      "tagName": "v1.2.2",
+      "name": "v1.2.2",
+      "publishedAt": "2026-05-06T09:01:27Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.2.2",
+      "body": "## What's Changed\n* chore: VS Code 拡張機能の README / CHANGELOG を追加（v1.2.2） by @keroway in https://github.com/keroway/timeline-dsl/pull/127\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.2.1...v1.2.2"
+    },
     {
       "tagName": "v1.2.1",
       "name": "v1.2.1",
