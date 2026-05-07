@@ -1,5 +1,6 @@
 ---
 import SocialMeta from "../components/SocialMeta.astro";
+import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import "../styles/global.css";
 
@@ -105,22 +106,7 @@ map wd.han_dynasty to span {
   </head>
   <body>
     <div class="page-shell playground-shell">
-      <header class="site-header">
-        <nav class="nav" aria-label="Primary navigation">
-          <a class="brand" href="/">
-            <span class="brand-mark" aria-hidden="true">
-              <img src="/icon.svg" alt="" width="32" height="32" decoding="async" />
-            </span>
-            <span>Timeline DSL</span>
-          </a>
-          <div class="nav-links">
-            <a href="/playground/" aria-current="page">Playground</a>
-            <a href="/docs/">Docs</a>
-            <a href="/changelog/">Changelog</a>
-            <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
-          </div>
-        </nav>
-      </header>
+      <SiteHeader currentPath="/playground/" />
 
       <main class="playground-main" data-playground-root>
         <section class="playground-head" aria-labelledby="playground-heading">
