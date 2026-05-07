@@ -19,6 +19,29 @@
     "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
   --font-mono:
     "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --font-size-base: 1rem;
+}
+
+:root[data-a11y-contrast="high"] {
+  --color-bg: #ffffff;
+  --color-ink: #000000;
+  --color-muted: #333333;
+  --color-line: #000000;
+  --color-panel: #ffffff;
+  --color-accent: #0000ff;
+  --color-accent-strong: #000080;
+  --color-warm: #800000;
+  --color-gold: #806000;
+  --color-plum: #600060;
+  --color-sky: #000080;
+}
+
+:root[data-a11y-text-size="large"] {
+  --font-size-base: 1.25rem;
+}
+
+:root[data-a11y-text-size="extra-large"] {
+  --font-size-base: 1.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -32,6 +55,16 @@
     --color-accent: #1a9e96;
     --color-accent-strong: #22c4bb;
   }
+
+  :root[data-a11y-contrast="high"] {
+    --color-bg: #000000;
+    --color-ink: #ffffff;
+    --color-muted: #cccccc;
+    --color-line: #ffffff;
+    --color-panel: #000000;
+    --color-accent: #00ffff;
+    --color-accent-strong: #80ffff;
+  }
 }
 
 * {
@@ -43,6 +76,7 @@ body {
   color: var(--color-ink);
   background: var(--color-bg);
   font-family: var(--font-sans);
+  font-size: var(--font-size-base);
   font-feature-settings: "palt" 1;
   line-height: 1.65;
 }
@@ -1562,6 +1596,26 @@ h1 {
   .workflow-step:hover {
     transform: none;
   }
+}
+
+:root[data-a11y-reduced-motion="true"] .scroll-reveal-enabled :is(.section-header, .feature, .workflow-step, .usecase) {
+  opacity: 1;
+  transform: none;
+  animation: none;
+  transition: none;
+  will-change: auto;
+}
+
+:root[data-a11y-reduced-motion="true"] .feature,
+:root[data-a11y-reduced-motion="true"] .usecase,
+:root[data-a11y-reduced-motion="true"] .workflow-step {
+  transition: none;
+}
+
+:root[data-a11y-reduced-motion="true"] .feature:hover,
+:root[data-a11y-reduced-motion="true"] .usecase:hover,
+:root[data-a11y-reduced-motion="true"] .workflow-step:hover {
+  transform: none;
 }
 
 @media (max-width: 820px) {
