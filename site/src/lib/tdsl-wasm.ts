@@ -30,10 +30,12 @@ interface RawTdslWasmModule {
       | WebAssembly.Module,
   ) => Promise<unknown>;
   compile_to_ir(source: string): string;
-  render_svg_from_source(source: string): string;
+  render_svg_from_source(source: string, scale: number): string;
   render_html_from_source(source: string): string;
   check_source(source: string): string;
 }
+
+const RENDER_SVG_AUTO_SCALE = 0;
 
 export const TDSL_WASM_IMPORT_STRATEGY = {
   kind: "vendored-wasm-pack",
@@ -109,7 +111,7 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
       status: "ready",
       api: {
         compileToIr: rawModule.compile_to_ir,
-        renderSvgFromSource: rawModule.render_svg_from_source,
+        renderSvgFromSource: (source) => rawModule.render_svg_from_source(source, RENDER_SVG_AUTO_SCALE),
         renderHtmlFromSource: rawModule.render_html_from_source,
         checkSource(source) {
           return parseDiagnostics(rawModule.check_source(source));
