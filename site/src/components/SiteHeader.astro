@@ -1,0 +1,247 @@
+---
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = "" } = Astro.props;
+---
+
+<header class="site-header">
+  <nav class="nav" aria-label="Primary navigation">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">
+        <img src="/icon.svg" alt="" width="32" height="32" decoding="async" />
+      </span>
+      <span>Timeline DSL</span>
+    </a>
+    <div class="nav-links">
+      <a href="/playground/" aria-current={currentPath === "/playground/" ? "page" : undefined}>Playground</a>
+      <a href="/docs/">Docs</a>
+      <a href="/changelog/" aria-current={currentPath === "/changelog/" ? "page" : undefined}>Changelog</a>
+      <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
+      <button class="a11y-toggle" type="button" aria-expanded="false" aria-controls="a11y-menu" aria-label="アクセシビリティ設定">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="16"></line>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div id="a11y-menu" class="a11y-menu" hidden>
+    <div class="a11y-menu-inner">
+      <div class="a11y-section">
+        <h3>視覚効果・動き</h3>
+        <div class="a11y-field">
+          <label>
+            <input type="checkbox" data-a11y-reduced-motion />
+            動きを抑える (Reduced motion)
+          </label>
+        </div>
+        <div class="a11y-field">
+          <label>
+            <input type="checkbox" data-a11y-high-contrast />
+            高コントラスト表示
+          </label>
+        </div>
+      </div>
+      <div class="a11y-section">
+        <h3>文字サイズ</h3>
+        <div class="a11y-field">
+          <select data-a11y-text-size>
+            <option value="normal">標準</option>
+            <option value="large">大きく</option>
+            <option value="extra-large">さらに大きく</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .a11y-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    background: var(--color-bg);
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .a11y-toggle:hover {
+    color: var(--color-ink);
+    background: var(--color-panel);
+    border-color: var(--color-ink);
+  }
+
+  .a11y-toggle[aria-expanded="true"] {
+    background: var(--color-panel);
+    color: var(--color-accent-strong);
+    border-color: var(--color-accent);
+  }
+
+  .a11y-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: min(320px, 100vw);
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    border-top: none;
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--color-ink), transparent 90%);
+    z-index: 100;
+  }
+
+  .a11y-menu:not([hidden]) {
+    display: block;
+  }
+
+  .a11y-menu-inner {
+    padding: 1.25rem;
+  }
+
+  .a11y-section + .a11y-section {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .a11y-section h3 {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .a11y-field {
+    margin: 0.5rem 0;
+  }
+
+  .a11y-field label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+
+  .a11y-field select {
+    width: 100%;
+    height: 2.25rem;
+    padding: 0 0.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: 4px;
+    background: var(--color-bg);
+    color: var(--color-ink);
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector('.a11y-toggle');
+  const menu = document.getElementById('a11y-menu');
+  const reducedMotion = document.querySelector('[data-a11y-reduced-motion]') as HTMLInputElement;
+  const highContrast = document.querySelector('[data-a11y-high-contrast]') as HTMLInputElement;
+  const textSize = document.querySelector('[data-a11y-text-size]') as HTMLSelectElement;
+
+  const SETTINGS_KEY = 'tdsl-a11y-settings';
+
+  interface Settings {
+    reducedMotion: boolean;
+    highContrast: boolean;
+    textSize: string;
+  }
+
+  const loadSettings = (): Settings => {
+    const saved = localStorage.getItem(SETTINGS_KEY);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        // ignore
+      }
+    }
+    return {
+      reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      highContrast: window.matchMedia('(prefers-contrast: more)').matches,
+      textSize: 'normal'
+    };
+  };
+
+  const saveSettings = (settings: Settings) => {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    applySettings(settings);
+  };
+
+  const applySettings = (settings: Settings) => {
+    const root = document.documentElement;
+    
+    // Reduced motion
+    if (settings.reducedMotion) {
+      root.setAttribute('data-a11y-reduced-motion', 'true');
+    } else {
+      root.removeAttribute('data-a11y-reduced-motion');
+    }
+
+    // High contrast
+    if (settings.highContrast) {
+      root.setAttribute('data-a11y-contrast', 'high');
+    } else {
+      root.removeAttribute('data-a11y-contrast');
+    }
+
+    // Text size
+    root.setAttribute('data-a11y-text-size', settings.textSize);
+
+    // Update form elements
+    if (reducedMotion) reducedMotion.checked = settings.reducedMotion;
+    if (highContrast) highContrast.checked = settings.highContrast;
+    if (textSize) textSize.value = settings.textSize;
+  };
+
+  // Initial load
+  const currentSettings = loadSettings();
+  applySettings(currentSettings);
+
+  // Toggle menu
+  toggle?.addEventListener('click', () => {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    if (menu) menu.hidden = expanded;
+  });
+
+  // Close menu on click outside
+  document.addEventListener('click', (e) => {
+    if (menu && !menu.hidden && !toggle?.contains(e.target as Node) && !menu.contains(e.target as Node)) {
+      toggle?.setAttribute('aria-expanded', 'false');
+      menu.hidden = true;
+    }
+  });
+
+  // Handle changes
+  reducedMotion?.addEventListener('change', () => {
+    const s = loadSettings();
+    s.reducedMotion = reducedMotion.checked;
+    saveSettings(s);
+  });
+
+  highContrast?.addEventListener('change', () => {
+    const s = loadSettings();
+    s.highContrast = highContrast.checked;
+    saveSettings(s);
+  });
+
+  textSize?.addEventListener('change', () => {
+    const s = loadSettings();
+    s.textSize = textSize.value;
+    saveSettings(s);
+  });
+</script>
