@@ -1,0 +1,58 @@
+---
+title: Playground
+description: ブラウザだけで Timeline DSL を試せる Playground の使い方を解説します。
+---
+
+import { LinkButton } from "@astrojs/starlight/components";
+
+[Playground](/playground/) はブラウザ内で `.tdsl` を編集し、構文チェックと SVG プレビューをリアルタイムに確認できるツールです。インストール不要で、Timeline DSL の文法を学習したり、スニペットを素早く検証したりするのに適しています。
+
+<LinkButton href="/playground/" target="_blank" variant="primary">Playground を開く</LinkButton>
+
+## 主な機能
+
+### リアルタイム検証
+
+エディタに `.tdsl` を入力すると、自動的に構文チェックが走ります。エラーや警告は画面下部の診断パネルに行番号と詳細メッセージとして表示されます。
+
+### SVG プレビュー
+
+検証が通ると、右パネルに年表の SVG が描画されます。コードを変更するたびにプレビューも更新されます。
+
+### サンプル切り替え
+
+ツールバーのプルダウンから組み込みサンプルを選択できます。
+
+| サンプル | 内容 |
+| --- | --- |
+| 最小 timeline | `timeline` + `lane` + `event` の最小構成 |
+| span / event / event_range | 期間表現の基本3要素 |
+| 複数 lane | 複数の lane を持つ年表 |
+| import を含む Web 制限例 | Wikidata import 構文（ブラウザでは実行不可の例） |
+
+### `.tdsl` ダウンロード
+
+ツールバーの「Download」ボタンで、現在のエディタ内容を `timeline.tdsl` としてダウンロードできます。
+
+### `?source=` クエリによる共有
+
+URL に `?source=` クエリを付けると、指定したソースコードがエディタに読み込まれた状態で Playground を開けます。Quick Start や文法ドキュメントの「このサンプルをPlaygroundで開く」リンクはこの仕組みを利用しています。
+
+```txt
+/playground/?source=timeline%20%22サンプル%22%20%7B...%7D
+```
+
+## 制限事項
+
+Playground はブラウザ内の WebAssembly で動作します。以下の機能は利用できません。
+
+- `import wikidata` — 外部ネットワークアクセスが必要なため
+- ファイルシステムへの書き込み — ローカルの `.tdsl` への直接保存には CLI が必要
+
+本格的なワークフローへの移行は [インストール](/docs/installation/) と [Quick Start](/docs/quick-start/) を参照してください。
+
+## 関連リンク
+
+- [文法とサンプル](/docs/grammar/) — `.tdsl` の構文リファレンス
+- [Quick Start](/docs/quick-start/) — CLI を使った最初のワークフロー
+- [インストール](/docs/installation/) — CLI のセットアップ

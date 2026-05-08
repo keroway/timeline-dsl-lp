@@ -22,7 +22,7 @@ export default defineConfig({
           label: "はじめる",
           items: [
             { label: "概要", slug: "docs" },
-            { label: "Playground", link: "/playground/" },
+            { label: "Playground", slug: "docs/playground" },
             { label: "インストール", slug: "docs/installation" },
             { label: "Quick Start", slug: "docs/quick-start" },
           ],
