@@ -1,9 +1,22 @@
 ---
+import { Code } from "astro:components";
 import SocialMeta from "../components/SocialMeta.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import "../styles/global.css";
 import releasesData from "../data/releases.generated.json";
+import tdslGrammar from "../lib/tdsl.tmLanguage.json" with { type: "json" };
+
+// Astro の `<Code lang>` の型は組み込み言語名の Union のため、
+// カスタム grammar の場合は LanguageRegistration オブジェクトをそのまま渡せる
+// （CodeLanguage = BundledLanguage | LanguageRegistration | SpecialLanguage）。
+// JSON import の推論型が緩いので any を介する。
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const tdslLang = tdslGrammar as any;
+
+// Astro `<Code>` は markdown.shikiConfig を参照しない独立 Shiki を持つため、
+// dual themes は props で直接渡す。前景色は global.css の prefers-color-scheme で切替。
+const tdslCodeThemes = { light: "github-light", dark: "github-dark" } as const;
 
 type Release = {
   tagName: string;
@@ -225,7 +238,13 @@ event_range incident 1130..1137 "継承戦争";`;
                   <span>world-history.tdsl</span>
                   <span>validated</span>
                 </div>
-                <pre class="code-sample"><code>{heroDslExample}</code></pre>
+                <Code
+                  class="code-sample"
+                  code={heroDslExample}
+                  lang={tdslLang}
+                  themes={tdslCodeThemes}
+                  defaultColor={false}
+                />
               </div>
               <div class="timeline-preview" aria-hidden="true">
                 <div class="preview-header">
@@ -280,7 +299,12 @@ event_range incident 1130..1137 "継承戦争";`;
                         <span>{feature.visual.filename}</span>
                         <span>.tdsl</span>
                       </div>
-                      <pre><code>{feature.visual.lines.join("\n")}</code></pre>
+                      <Code
+                        code={feature.visual.lines.join("\n")}
+                        lang={tdslLang}
+                        themes={tdslCodeThemes}
+                        defaultColor={false}
+                      />
                     </div>
                   )}
                   {feature.visual.type === "validate" && (
