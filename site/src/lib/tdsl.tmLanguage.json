@@ -1,0 +1,159 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "tdsl",
+  "scopeName": "source.tdsl",
+  "displayName": "Timeline DSL",
+  "aliases": ["timeline-dsl", "timelinedsl"],
+  "fileTypes": ["tdsl"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#top-keywords" },
+    { "include": "#secondary-keywords" },
+    { "include": "#as-keyword" },
+    { "include": "#operators" },
+    { "include": "#year-range" },
+    { "include": "#year-literal" },
+    { "include": "#qid" },
+    { "include": "#field-keys" },
+    { "include": "#functions" },
+    { "include": "#punctuation" },
+    { "include": "#identifiers" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.tdsl",
+          "match": "#.*$"
+        },
+        {
+          "name": "comment.line.double-slash.tdsl",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.tdsl",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.tdsl",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.tdsl",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.tdsl",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "top-keywords": {
+      "name": "keyword.control.tdsl",
+      "match": "\\b(timeline|lane|event_range|event|span|import|map)\\b"
+    },
+    "secondary-keywords": {
+      "name": "keyword.other.tdsl",
+      "match": "\\b(to|wikidata|entity|policy)\\b"
+    },
+    "as-keyword": {
+      "name": "keyword.operator.as.tdsl",
+      "match": "\\bas\\b"
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.range.tdsl",
+          "match": "\\.\\."
+        },
+        {
+          "name": "keyword.operator.coalesce.tdsl",
+          "match": "\\?\\?"
+        },
+        {
+          "name": "keyword.operator.accessor.tdsl",
+          "match": "@"
+        }
+      ]
+    },
+    "year-range": {
+      "name": "constant.numeric.range.tdsl",
+      "match": "-?\\b\\d+\\.\\.-?\\b\\d+\\b"
+    },
+    "year-literal": {
+      "name": "constant.numeric.year.tdsl",
+      "match": "(?<![A-Za-z_])-?\\d+\\b"
+    },
+    "qid": {
+      "name": "constant.other.qid.tdsl",
+      "match": "\\b[QP]\\d+\\b"
+    },
+    "field-keys": {
+      "name": "variable.other.attribute.tdsl",
+      "match": "\\b(title|unit|range|calendar|kind|order|id|tags|source|origin|start|end|label|lane|claim|merge_by_source)\\b"
+    },
+    "functions": {
+      "name": "entity.name.function.tdsl",
+      "match": "\\b(claim)(?=\\s*\\()"
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.section.block.begin.tdsl",
+          "match": "\\{"
+        },
+        {
+          "name": "punctuation.section.block.end.tdsl",
+          "match": "\\}"
+        },
+        {
+          "name": "punctuation.section.brackets.begin.tdsl",
+          "match": "\\["
+        },
+        {
+          "name": "punctuation.section.brackets.end.tdsl",
+          "match": "\\]"
+        },
+        {
+          "name": "punctuation.section.parens.begin.tdsl",
+          "match": "\\("
+        },
+        {
+          "name": "punctuation.section.parens.end.tdsl",
+          "match": "\\)"
+        },
+        {
+          "name": "punctuation.terminator.statement.tdsl",
+          "match": ";"
+        },
+        {
+          "name": "punctuation.separator.comma.tdsl",
+          "match": ","
+        },
+        {
+          "name": "punctuation.accessor.dot.tdsl",
+          "match": "\\."
+        },
+        {
+          "name": "punctuation.accessor.colon.tdsl",
+          "match": ":"
+        }
+      ]
+    },
+    "identifiers": {
+      "name": "variable.other.tdsl",
+      "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b"
+    }
+  }
+}
