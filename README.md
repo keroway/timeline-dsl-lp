@@ -31,6 +31,7 @@ Cloudflare Pages project:
 Workflows:
 
 - `Site build`: PR、`main` push、手動実行で `pnpm build` を実行する CI。
+- `Remove in-progress label on close`: PR が merge されたとき、本文の `Closes #N` / `Fixes #N` / `Resolves #N` で参照された issue から `in-progress` ラベルを除去する。Issue が直接 close されたときも当該 issue から除去する。手動実行時は `issue_number` を指定して任意の issue から除去できる。
 
 Event policy:
 
