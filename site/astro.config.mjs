@@ -1,8 +1,19 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import tdslGrammar from "./src/lib/tdsl.tmLanguage.json" with { type: "json" };
 
 export default defineConfig({
   site: "https://timeline-dsl.pages.dev",
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+      defaultColor: false,
+      langs: [tdslGrammar],
+    },
+  },
   integrations: [
     starlight({
       title: "Timeline DSL",

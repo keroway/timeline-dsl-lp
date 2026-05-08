@@ -357,6 +357,32 @@ h1 {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   line-height: 1.54;
+  /* Shiki が tokens に inline style を付けるが、背景はパネル側で管理する */
+  background: transparent !important;
+}
+
+.code-sample code {
+  background: transparent !important;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Shiki dual themes: defaultColor:false なので token の前景は CSS variable で切替 */
+.code-sample,
+.code-sample span,
+.feature-code pre,
+.feature-code pre span {
+  color: var(--shiki-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .code-sample,
+  .code-sample span,
+  .feature-code pre,
+  .feature-code pre span {
+    color: var(--shiki-dark);
+  }
 }
 
 .timeline-preview {
@@ -724,6 +750,15 @@ h1 {
   font-family: var(--font-mono);
   font-size: 0.64rem;
   line-height: 1.56;
+  /* Shiki の inline 背景はパネル側で持つので無効化する */
+  background: transparent !important;
+}
+
+.feature-code pre code {
+  background: transparent !important;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
 }
 
 .feature-terminal {
