@@ -1460,6 +1460,7 @@ h1 {
     linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 93%) 1px, transparent 1px) 0 0 / 2.8rem 100%,
     linear-gradient(180deg, color-mix(in srgb, var(--color-ink), transparent 94%) 1px, transparent 1px) 0 0 / 100% 2.8rem,
     var(--color-panel);
+  transition: opacity 0.15s ease;
 }
 
 .preview-surface p,
@@ -1536,6 +1537,105 @@ h1 {
 .playground-diagnostic p {
   margin: 0;
   overflow-wrap: anywhere;
+}
+
+/* === Playground micro interactions === */
+
+@keyframes pg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pg-flash-ready {
+  from {
+    background: color-mix(in srgb, var(--color-accent), transparent 70%);
+  }
+
+  to {
+    background: var(--color-bg);
+  }
+}
+
+@keyframes pg-flash-warn {
+  from {
+    background: color-mix(in srgb, var(--color-gold), transparent 70%);
+  }
+
+  to {
+    background: var(--color-bg);
+  }
+}
+
+@keyframes pg-flash-error {
+  from {
+    background: color-mix(in srgb, var(--color-warm), transparent 65%);
+  }
+
+  to {
+    background: var(--color-bg);
+  }
+}
+
+[data-playground-state="loading"] .playground-status::before {
+  content: "";
+  display: inline-block;
+  width: 0.72rem;
+  height: 0.72rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  margin-inline-end: 0.5rem;
+  flex-shrink: 0;
+  animation: pg-spin 0.65s linear infinite;
+}
+
+[data-playground-state="loading"] .preview-surface {
+  opacity: 0.5;
+}
+
+[data-playground-state="ready"] .playground-status {
+  animation: pg-flash-ready 0.35s ease-out both;
+}
+
+[data-playground-state="warn"] .playground-status {
+  animation: pg-flash-warn 0.35s ease-out both;
+}
+
+[data-playground-state="error"] .playground-status {
+  animation: pg-flash-error 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-playground-state="loading"] .playground-status::before {
+    animation: none;
+  }
+
+  [data-playground-state="ready"] .playground-status,
+  [data-playground-state="warn"] .playground-status,
+  [data-playground-state="error"] .playground-status {
+    animation: none;
+  }
+
+  .preview-surface {
+    transition: none;
+  }
+}
+
+:root[data-a11y-reduced-motion="true"] [data-playground-state="loading"] .playground-status::before {
+  animation: none;
+}
+
+:root[data-a11y-reduced-motion="true"] :is(
+  [data-playground-state="ready"],
+  [data-playground-state="warn"],
+  [data-playground-state="error"]
+) .playground-status {
+  animation: none;
+}
+
+:root[data-a11y-reduced-motion="true"] .preview-surface {
+  transition: none;
 }
 
 .site-footer {
