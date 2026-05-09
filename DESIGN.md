@@ -253,12 +253,44 @@ OS の `prefers-reduced-motion` / `prefers-contrast` も尊重しますが、ユ
 
 ## 8. Output SVG theme
 
-LP 内のレンダリングプレビュー（ヒーロー右側、ユースケースカード、Playground）は現状 LP 側の lane パレット（warm / gold / plum / sky）と本体 SVG レンダラーのデフォルト配色を **手動で揃えている** 状態です。後続作業で次のいずれかの形で整合を恒久化します。
+LP 内には「色付きの年表ビジュアル」を見せる場所が 2 系統あり、現状は **別経路で並走**しています。揃っているように見えますが、配色は技術的にはリンクしていません。
 
-- (a) 本体側のデフォルトテーマトークンを LP のトークンと同名で公開し、LP 側でそれをそのまま参照する。
-- (b) LP 側で「LP 用テーマ」を定義し、Playground のレンダリング時にテーマ引数として渡す。
+| 場所 | 描画経路 | 配色源 |
+| --- | --- | --- |
+| ヒーロー右側のミニタイムライン / ユースケースカード | LP 側で HTML + CSS により再現 | `global.css` の lane palette（`--color-warm` / `--color-gold` / `--color-plum` / `--color-sky`） |
+| Playground のレンダリング SVG | `tdsl_wasm.render_svg_from_source(source, scale)` | 本体 WASM レンダラー内蔵のデフォルトテーマ（後述） |
 
-採用方針は #53 の項 5 で決めます。決定までの間、本体レンダラーのデフォルト配色を変更する PR はこの DESIGN.md の lane セマンティクスを破壊しないかをレビュー観点に含めてください。
+### 現状の WASM デフォルト配色（実測）
+
+`render_svg_from_source` が `circle.tdsl-event-dot` の `style="fill:#..."` 等として出力するハードコード値は次の 4 色で、lane の出現順に循環適用されます。
+
+| 順 | hex | LP lane palette との対応 |
+| --- | --- | --- |
+| 1 | `#27AE60`（緑） | LP 側に対応色なし |
+| 2 | `#4682B4`（steel blue） | `--color-sky` (`#2c6f9f`) に意味的に近い |
+| 3 | `#8E44AD`（紫） | `--color-plum` (`#7b4569`) に意味的に近い |
+| 4 | `#E67E22`（オレンジ） | `--color-warm` (`#a74718`) に意味的に近い |
+
+LP 側の `--color-gold`（周年・節目）に相当する色は WASM 側に存在せず、また WASM 1 番目の緑は LP 側に対応がありません。さらに WASM 側は順序ベース（`order` ではなく lane の出現順）で、LP の **意味付き**（warm = 起点 / gold = 節目 / plum = 人物 / sky = 地理）と**対応軸が違います**。
+
+### 採用方針（短期 / 中期）
+
+- **短期（本リポジトリ単独で完結する範囲）**: 2 系統が並走している事実を受け入れ、各々の場所で lane の意味割り当てを **DESIGN.md §2 のセマンティクスに従って手動で揃える**ことだけを保証します。Playground のレンダリング SVG は本体 WASM の出力を改変しません（インライン style に LP 側 CSS から override をかける誘惑には乗らない。WCAG コントラストを壊し、本体側の更新で容易に乖離するため）。
+- **中期（本体 [`timeline-dsl`](https://github.com/keroway/timeline-dsl) repo への依頼が前提）**: **(a) named theme tokens を本体側で公開し、LP 側で同名トークンを参照する** 案を主案とします。具体的には、`render_svg_from_source` が出力する SVG の `<style>` に `--tdsl-lane-warm` / `--tdsl-lane-gold` / `--tdsl-lane-plum` / `--tdsl-lane-sky` のような **意味付きの CSS variables** を吐き、LP 側で `:root` の lane palette を同名でプロキシする運用です。dark mode / high-contrast の追従も LP 側 token を変えるだけで済むため整合性が高い。
+- **(b) Playground レンダリング時にテーマ引数を渡す**は取り下げます。`render_svg_from_source` の API 表面を広げる必要があり、theme は環境（LP / Docs / 第三者組み込み）ごとに自由なため、CSS variables 経由で外から差し替えられる (a) のほうが API として薄く運用が楽。
+
+### 本体 repo への提案メモ
+
+中期案を進める際は本体 repo に以下の趣旨で issue を起票してください（執筆時点では未起票）。
+
+- 出力 SVG の `<style>` に `--tdsl-lane-*`（warm / gold / plum / sky など lane セマンティクス相当）の CSS variables を定義し、デフォルト値として現行の hex を保持する。
+- `tdsl-event-dot` / `tdsl-event-stem` / `tdsl-lane-band-*` 等の class が `var(--tdsl-lane-*, #fallback)` を参照する形に置き換える。
+- LP 側 `global.css` で同名トークンを公開し、`prefers-color-scheme: dark` と `data-a11y-contrast="high"` でも追従させる。
+- 4 色循環 → セマンティクス対応への移行については別議論（lane に `tags` で意味を渡す / lane id 命名規約に乗せる等の選択肢あり）。
+
+### 据え置き期間中のレビュー観点
+
+決定までの間、本体レンダラーのデフォルト配色を変更する PR はこの DESIGN.md の lane セマンティクスを破壊しないか（特に gold = 周年 / plum = 人物 / sky = 地理 / warm = 起点 の役割と離れた色を割り当てていないか）をレビュー観点に含めてください。
 
 ---
 
