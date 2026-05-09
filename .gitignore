@@ -10,3 +10,4 @@ dist/
 # Generated verification artifacts
 output/
 screenshot-*.png
+.serena/
