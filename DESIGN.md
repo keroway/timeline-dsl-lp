@@ -82,7 +82,38 @@
 | `--font-sans` | `Aptos, "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic UI", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif` |
 | `--font-mono` | `"Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace` |
 
-OS フォントへのフォールバックを前提にしています。Web フォントの self-host は現状採用していません（読み込み戦略は #53 の追加施策で検討）。
+OS フォントへのフォールバックを前提にしています。Web フォントの self-host は **現時点では採用しない** 判断です。判断の根拠と再検討トリガーは「コードフォントの self-host 判断」を参照してください。
+
+### コードフォントの self-host 判断
+
+\`--font-mono\` の Web フォント self-host（JetBrains Mono / Fira Code を WOFF2 で配信する案）は #71 で検討した結果、**現時点では採用しません**。判断の理由と、次に再検討すべき条件を以下に固定化します。
+
+#### 不採用の理由
+
+- **既存スタックで実害が観測できない**。ヒーロー、feature card、Playground、Docs のコードブロックはいずれも `--font-mono` の OS フォールバック（`Fira Code` がインストールされていれば優先、なければ `SFMono-Regular` / Consolas / Menlo / Liberation Mono / monospace に順次フォールバック）でコード可読性に問題が出ていない。`palt` を当てない限り等幅であり、Shiki / Expressive Code のシンタックスハイライト（`<Code lang="tdsl">` 経路、Docs の Expressive Code 経路の双方）も正常に機能している。
+- **ブランド要件として未確立**。Editor first / Calm density（§1）が掲げる軸は「コード片の可読性」であって「コードフォントの統一感」ではない。OS 別の差異が**初見でブランドが揺らぐレベル**にはなっていない。
+- **self-host が連れてくる運用負債**。WOFF2 配置（`site/public/fonts/`）、`@font-face` の light/dark 双方での挙動確認、SIL OFL ライセンスファイルの同梱、subset 化（latin + punctuation）、ビルド時の最適化、Cloudflare Pages 配信での `Cache-Control` 設定、追加 HTTP リクエストや FOUT/FOIT のレビューが必要になる。これらは**ブランド要件が確立していない段階で抱えるには重い**。
+- **CLS / LCP 観点の見立て**。`font-display: swap` で CLS は抑制可能だが、現状すでに OS フォントで即時 paint しており LCP の改善幅は限定的と推定される。Lighthouse / WebPageTest による before/after の定量計測は、self-host を採用したい根拠が先に立ってからやるべき作業（先に計測しても、不採用根拠を覆す材料にはならない）。
+
+#### 再検討するトリガー
+
+以下のいずれかが起きたら本判断を上書きする前提で、再検討時にこのリストを必ず参照する。
+
+1. **コードフォントの統一感がデザインの一次要件になる**：例えば LP がコードショーケース寄りに大きく傾く、または `Calm density` から `Code-first identity` に方針転換する判断が出る。
+2. **Fira Code のリガチャを意図的にブランド要素として使う方針が立つ**：OS フォールバックの大半（`SFMono-Regular` / Consolas）はリガチャを持たないため、視覚仕様が揃わないと議論にならない。
+3. **コード片の表示量が大幅増**：Gallery（#68）の本格運用や、Docs の長尺コードブロックが LP の主役になる比重がはっきり上がった場合。
+4. **計測でコード片の閲覧体験が悪化していることが示される**：例えば実機計測で「ある OS / ブラウザ組み合わせでコード片の readability が他環境比で明確に劣る」ことが定量的に確認できた場合。
+
+#### 採用時に決めるべきこと（メモ）
+
+将来採用に転じる際は以下を **同時に決めて記録**する：
+
+- 採用フォント（JetBrains Mono / Fira Code のいずれか、ライセンス SIL OFL）と weight 構成
+- 配置先（`site/public/fonts/`）と `@font-face` での `font-display: swap` 適用、`font-feature-settings` の指定
+- subset 戦略（latin + punctuation で十分か、`-` `..` `=>` 等の DSL 記号を明示的に含めるか）
+- `--font-mono` スタックの先頭への追加（OS インストール済みフォントよりも self-host を優先するかを含む）
+- CLS / LCP の before/after を `pnpm build` 後の dist で測定し、回帰がないことを確認
+- 本セクション（§3 コードフォントの self-host 判断）を「採用済み」に書き換え、不採用ロジックは履歴として残さない
 
 ### 用途別の使い分け
 
