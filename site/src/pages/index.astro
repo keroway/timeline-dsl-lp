@@ -274,8 +274,8 @@ event_range incident 1130..1137 "継承戦争";`;
               </div>
               <div class="command-strip" aria-hidden="true">
                 <span class="prompt">$</span>
-                <span>tdsl check world-history.tdsl</span>
-                <strong>0 errors</strong>
+                <span class="command-strip__command">tdsl check world-history.tdsl</span>
+                <strong class="command-strip__result">0 errors</strong>
               </div>
             </div>
           </div>
@@ -541,8 +541,13 @@ event_range incident 1130..1137 "継承戦争";`;
       });
 
       const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const motionAllowed = !motionQuery.matches && !document.documentElement.hasAttribute('data-a11y-reduced-motion');
 
-      if (!motionQuery.matches && !document.documentElement.hasAttribute('data-a11y-reduced-motion') && "IntersectionObserver" in window) {
+      if (motionAllowed && document.querySelector(".command-strip__command")) {
+        document.body.classList.add("cli-strip-motion-enabled");
+      }
+
+      if (motionAllowed && "IntersectionObserver" in window) {
         const revealGroups = [
           { selector: ".section-header", delayStep: 80 },
           { selector: ".feature", delayStep: 120 },
