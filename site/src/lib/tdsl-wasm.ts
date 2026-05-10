@@ -9,7 +9,7 @@ export interface TdslDiagnostic {
 
 export interface TdslWasmApi {
   compileToIr(source: string): string;
-  renderSvgFromSource(source: string): string;
+  renderSvgFromSource(source: string, scale?: number): string;
   renderHtmlFromSource(source: string): string;
   checkSource(source: string): TdslDiagnostic[];
 }
@@ -71,13 +71,13 @@ export async function checkTdslSource(source: string): Promise<TdslDiagnostic[]>
   return withWikidataImportWarning(source, loaded.api.checkSource(source));
 }
 
-export async function renderTdslSvg(source: string): Promise<string> {
+export async function renderTdslSvg(source: string, scale?: number): Promise<string> {
   const loaded = await loadTdslWasm();
   if (loaded.status !== "ready") {
     throw new Error(loaded.message, { cause: loaded.cause });
   }
 
-  return loaded.api.renderSvgFromSource(source);
+  return loaded.api.renderSvgFromSource(source, scale);
 }
 
 export async function renderTdslHtml(source: string): Promise<string> {
@@ -111,7 +111,7 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
       status: "ready",
       api: {
         compileToIr: rawModule.compile_to_ir,
-        renderSvgFromSource: (source) => rawModule.render_svg_from_source(source, RENDER_SVG_AUTO_SCALE),
+        renderSvgFromSource: (source, scale) => rawModule.render_svg_from_source(source, scale ?? RENDER_SVG_AUTO_SCALE),
         renderHtmlFromSource: rawModule.render_html_from_source,
         checkSource(source) {
           return parseDiagnostics(rawModule.check_source(source));
