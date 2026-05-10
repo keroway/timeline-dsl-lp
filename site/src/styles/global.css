@@ -711,6 +711,63 @@ h1 {
   will-change: auto;
 }
 
+/* ---- mini-timeline 組み上がり scroll reveal (#73) ---- */
+
+@keyframes mini-axis-grow {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes mini-lane-appear {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mini-span-appear {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* feature.is-visible になったとき、内部のミニタイムラインを段階的にアニメート。
+   feature 本体の reveal-fade-right (640ms) の途中から走り始め、
+   feature が is-revealed になっても内部 animation は完了済みのため問題なし。 */
+.scroll-reveal-enabled .feature.is-visible .mini-ticks {
+  animation: mini-axis-grow 400ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+}
+
+.scroll-reveal-enabled .feature.is-visible .mini-lane:nth-child(1) {
+  animation: mini-lane-appear 350ms cubic-bezier(0.22, 1, 0.36, 1) 200ms both;
+}
+
+.scroll-reveal-enabled .feature.is-visible .mini-lane:nth-child(2) {
+  animation: mini-lane-appear 350ms cubic-bezier(0.22, 1, 0.36, 1) 280ms both;
+}
+
+.scroll-reveal-enabled .feature.is-visible .mini-span {
+  animation: mini-span-appear 400ms cubic-bezier(0.22, 1, 0.36, 1) 380ms both;
+}
+
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
