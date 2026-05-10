@@ -1677,6 +1677,40 @@ h1 {
   transition: none;
 }
 
+/* SVG preview custom tooltip */
+.tdsl-tooltip {
+  position: fixed;
+  z-index: 200;
+  pointer-events: none;
+  padding: 0.3rem 0.6rem;
+  background: var(--color-ink);
+  color: var(--color-bg);
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  max-width: 22rem;
+  word-break: break-word;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-ink), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  white-space: normal;
+}
+
+.tdsl-tooltip[data-visible="true"] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tdsl-tooltip {
+    transition: none;
+  }
+}
+
+:root[data-a11y-reduced-motion="true"] .tdsl-tooltip {
+  transition: none;
+}
+
 .site-footer {
   border-top: 1px solid var(--color-line);
   background:
