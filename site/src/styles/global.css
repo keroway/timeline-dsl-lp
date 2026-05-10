@@ -553,6 +553,62 @@ h1 {
   animation: command-strip-result-fade-in 320ms cubic-bezier(0.22, 1, 0.36, 1) 1700ms both;
 }
 
+/* ── hero editor → preview motion ────────────────────────────────────────── */
+
+@keyframes hero-line-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-preview-build {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Editor: each .line fades in sequentially */
+.hero-editor-motion-enabled .editor-panel .code-sample .line {
+  opacity: 0;
+  animation: hero-line-appear 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-editor-motion-enabled .editor-panel .code-sample .line:nth-child(1)  { animation-delay: 100ms; }
+.hero-editor-motion-enabled .editor-panel .code-sample .line:nth-child(2)  { animation-delay: 200ms; }
+.hero-editor-motion-enabled .editor-panel .code-sample .line:nth-child(3)  { animation-delay: 300ms; }
+.hero-editor-motion-enabled .editor-panel .code-sample .line:nth-child(4)  { animation-delay: 400ms; }
+.hero-editor-motion-enabled .editor-panel .code-sample .line:nth-child(5)  { animation-delay: 500ms; }
+.hero-editor-motion-enabled .editor-panel .code-sample .line:nth-child(6)  { animation-delay: 600ms; }
+.hero-editor-motion-enabled .editor-panel .code-sample .line:nth-child(7)  { animation-delay: 700ms; }
+.hero-editor-motion-enabled .editor-panel .code-sample .line:nth-child(8)  { animation-delay: 800ms; }
+.hero-editor-motion-enabled .editor-panel .code-sample .line:nth-child(9)  { animation-delay: 900ms; }
+.hero-editor-motion-enabled .editor-panel .code-sample .line:nth-child(10) { animation-delay: 1000ms; }
+
+/* Preview: axis and lanes build after editor finishes (~1100ms) */
+.hero-editor-motion-enabled .timeline-axis,
+.hero-editor-motion-enabled .lane-row {
+  opacity: 0;
+  animation: hero-preview-build 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-editor-motion-enabled .timeline-axis      { animation-delay: 1150ms; }
+/* .lane-row elements are 3rd, 4th, 5th children of .timeline-preview */
+.hero-editor-motion-enabled .lane-row:nth-child(3) { animation-delay: 1300ms; }
+.hero-editor-motion-enabled .lane-row:nth-child(4) { animation-delay: 1450ms; }
+.hero-editor-motion-enabled .lane-row:nth-child(5) { animation-delay: 1600ms; }
+
 .terminal {
   border: 1px solid #cdd4df;
   background: #121921;
