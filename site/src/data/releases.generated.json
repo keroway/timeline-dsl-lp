@@ -1,15 +1,22 @@
 {
   "repository": "keroway/timeline-dsl",
   "source": "github-releases",
-  "fetchedAt": "2026-05-07T12:56:34.924Z",
+  "fetchedAt": "2026-05-10T16:40:24.395Z",
   "latest": {
-    "tagName": "v1.3.0",
-    "name": "v1.3.0",
-    "publishedAt": "2026-05-06T14:39:24Z",
-    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.3.0",
-    "body": "## What's Changed\n* feat(webui): フォントサイズ・ライト/ダークテーマ選択、SVGプレビュー黒背景修正 by @keroway in https://github.com/keroway/timeline-dsl/pull/129\n* feat: WebUI タイムラインプレビューのスケール（ズーム）制御 (#128) by @keroway in https://github.com/keroway/timeline-dsl/pull/130\n* feat: WebUI スケール（ズーム）制御 + v1.3.0 リリース前整備 by @keroway in https://github.com/keroway/timeline-dsl/pull/133\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.2.2...v1.3.0"
+    "tagName": "v1.4.0",
+    "name": "v1.4.0",
+    "publishedAt": "2026-05-10T15:13:24Z",
+    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.4.0",
+    "body": "## What's Changed\n* feat: VS Code スニペット追加（timeline / lane / span テンプレート） by @keroway in https://github.com/keroway/timeline-dsl/pull/151\n* fix: CJK フォントスタック改善 - Noto Sans JP を優先指定 by @keroway in https://github.com/keroway/timeline-dsl/pull/152\n* feat: Wikidata HTTP タイムアウトの CLI オプション化（--wikidata-timeout） by @keroway in https://github.com/keroway/timeline-dsl/pull/153\n* fix: ベンチマークの criterion::black_box を std::hint::black_box に移行 by @keroway in https://github.com/keroway/timeline-dsl/pull/155\n* chore: .gitignore に .serena/ を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/156\n* refactor: serde_json::to_string*().unwrap() をエラーチェーンに統一 by @keroway in https://github.com/keroway/timeline-dsl/pull/159\n* feat: Wikidata リトライ回数をデフォルト5回に引き上げ・with_options() を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/160\n* feat: WebUI 診断パネルのエラー行クリックでエディタへジャンプ by @keroway in https://github.com/keroway/timeline-dsl/pull/164\n* feat: Wikidata fetch 時のスピナー表示追加（indicatif） by @keroway in https://github.com/keroway/timeline-dsl/pull/163\n* feat: WebUI 専用 CodeMirror 言語拡張（.tdsl シンタックスハイライト） by @keroway in https://github.com/keroway/timeline-dsl/pull/165\n* chore: v1.4.0 バージョンバンプ・CHANGELOG 更新 by @keroway in https://github.com/keroway/timeline-dsl/pull/166\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.3.0...v1.4.0"
   },
   "releases": [
+    {
+      "tagName": "v1.4.0",
+      "name": "v1.4.0",
+      "publishedAt": "2026-05-10T15:13:24Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.4.0",
+      "body": "## What's Changed\n* feat: VS Code スニペット追加（timeline / lane / span テンプレート） by @keroway in https://github.com/keroway/timeline-dsl/pull/151\n* fix: CJK フォントスタック改善 - Noto Sans JP を優先指定 by @keroway in https://github.com/keroway/timeline-dsl/pull/152\n* feat: Wikidata HTTP タイムアウトの CLI オプション化（--wikidata-timeout） by @keroway in https://github.com/keroway/timeline-dsl/pull/153\n* fix: ベンチマークの criterion::black_box を std::hint::black_box に移行 by @keroway in https://github.com/keroway/timeline-dsl/pull/155\n* chore: .gitignore に .serena/ を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/156\n* refactor: serde_json::to_string*().unwrap() をエラーチェーンに統一 by @keroway in https://github.com/keroway/timeline-dsl/pull/159\n* feat: Wikidata リトライ回数をデフォルト5回に引き上げ・with_options() を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/160\n* feat: WebUI 診断パネルのエラー行クリックでエディタへジャンプ by @keroway in https://github.com/keroway/timeline-dsl/pull/164\n* feat: Wikidata fetch 時のスピナー表示追加（indicatif） by @keroway in https://github.com/keroway/timeline-dsl/pull/163\n* feat: WebUI 専用 CodeMirror 言語拡張（.tdsl シンタックスハイライト） by @keroway in https://github.com/keroway/timeline-dsl/pull/165\n* chore: v1.4.0 バージョンバンプ・CHANGELOG 更新 by @keroway in https://github.com/keroway/timeline-dsl/pull/166\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.3.0...v1.4.0"
+    },
     {
       "tagName": "v1.3.0",
       "name": "v1.3.0",
