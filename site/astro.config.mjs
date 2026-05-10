@@ -27,6 +27,9 @@ export default defineConfig({
           href: "https://github.com/keroway/timeline-dsl",
         },
       ],
+      components: {
+        SocialIcons: "./src/components/DocsA11yMenu.astro",
+      },
       customCss: ["./src/styles/starlight.css"],
       sidebar: [
         {
