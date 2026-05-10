@@ -26,12 +26,31 @@ tdsl render sample.tdsl --output sample.html
 | `tdsl build <FILE>` | `.tdsl` をIR JSONにコンパイルする |
 | `tdsl render <FILE>` | スタンドアロンHTMLに描画する |
 | `tdsl ast <FILE>` | デバッグ用にASTを出力する |
+| `tdsl decompile <FILE>` | JSON IRを `.tdsl` に逆コンパイルする（v1.1.0〜） |
+| `tdsl merge <FILES...>` | 複数の `.tdsl` ファイルを結合する（v1.2.0〜） |
 
 `build` と `render` は Wikidata import を含むファイルでネットワークアクセスを行うことがあります。ローカル定義だけを処理したい場合は `--offline` を指定します。
 
 ```sh
 tdsl build sample.tdsl --offline --pretty
 tdsl render sample.tdsl --offline --output sample.html
+```
+
+### decompile
+
+JSON IRから `.tdsl` ソースを逆生成します。`build` の逆方向の変換で、既存IRからDSLソースを復元したい場合に使います（v1.1.0〜）。
+
+```sh
+tdsl decompile sample.json --output sample.tdsl
+```
+
+### merge
+
+複数の `.tdsl` ファイルを1つに結合します。レーンやイベントをファイル分割して管理し、最終的に1ファイルにまとめる場合に使います（v1.2.0〜）。
+
+```sh
+tdsl merge part1.tdsl part2.tdsl --output combined.tdsl
+tdsl build combined.tdsl --pretty --output combined.json
 ```
 
 ## Wikidata起点
@@ -80,6 +99,23 @@ tdsl render manual.tdsl --output manual.html
 
 `import-csv` は `lane,type,start,end,time,label,tags,id` のヘッダー行を持つUTF-8 CSVを入力にします。
 
+## キャッシュ管理
+
+`tdsl build` / `tdsl render` はWikidataの取得結果をローカルにキャッシュします。`tdsl cache` サブコマンドでキャッシュを操作できます（v1.1.0〜）。
+
+```sh
+tdsl cache list            # キャッシュ済みエントリの一覧を表示する
+tdsl cache clear           # すべてのキャッシュを削除する
+tdsl cache clear --dry-run # 削除対象を確認する（実際には削除しない）
+```
+
+| コマンド | 用途 |
+|---|---|
+| `tdsl cache list` | キャッシュ済みエントリとサイズを表示する |
+| `tdsl cache clear` | すべてのキャッシュエントリを削除する |
+
+キャッシュの保存場所はOSのデータディレクトリ（`dirs` クレートの `data_dir`）以下です。`--no-cache` を渡すとキャッシュを使わずにWikidataを再取得します。
+
 ## よく使うオプション
 
 | オプション | 対象 | 用途 |
@@ -89,5 +125,6 @@ tdsl render manual.tdsl --output manual.html
 | `--offline` | `build`, `render` | Wikidata取得をスキップする |
 | `--no-cache` | `build`, `render` | Wikidataキャッシュを使わず再取得する |
 | `--cache-ttl <秒>` | `build`, `render` | WikidataキャッシュのTTLを指定する |
+| `--wikidata-timeout <秒>` | `build`, `render`, `search`, `inspect` | WikidataへのHTTPタイムアウト秒数を指定する（v1.4.0〜） |
 | `--format text,json` | `lint` | lint結果の出力形式を指定する |
 | `--fix` | `lint` | 安全な修正をファイルへ適用する |
