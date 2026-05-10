@@ -32,6 +32,28 @@ curl -sSfL https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.s
 export PATH="${HOME}/.local/bin:${PATH}"
 ```
 
+## Windows（バイナリ手動インストール）
+
+Windows では Homebrew が使えないため、GitHub リリースページからバイナリを手動で取得します。
+
+1. [GitHub Releases](https://github.com/keroway/timeline-dsl/releases/latest) を開きます。
+2. Assets から `tdsl-windows-x86_64.zip` をダウンロードします。
+3. ZIP を展開し、`tdsl.exe` を任意のフォルダ（例: `C:\Users\<ユーザー名>\bin`）に配置します。
+4. そのフォルダを `PATH` に追加します。
+
+   **PowerShell（ユーザースコープ）:**
+
+   ```powershell
+   $dir = "$env:USERPROFILE\bin"
+   [System.Environment]::SetEnvironmentVariable("Path", "$([System.Environment]::GetEnvironmentVariable('Path','User'));$dir", "User")
+   ```
+
+5. 新しいターミナルを開いて動作確認します。
+
+   ```powershell
+   tdsl --help
+   ```
+
 ## cargoでインストール
 
 Rust開発環境がある場合は、GitHubリポジトリから `tdsl-cli` をインストールできます。

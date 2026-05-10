@@ -18,8 +18,30 @@ tdsl --help
 
 ## 必要な環境
 
-- macOS または Linux
-- Homebrew
+- macOS または Linux（Homebrew 経由）
+- Windows（バイナリ手動インストール）
 - Git
 
-Homebrew 以外の導入方法は [Homebrewとその他の導入方法](/docs/homebrew/) を参照してください。
+Homebrew 以外の導入方法（Linux ワンラインインストール、Windows バイナリ、cargo）は [Homebrewとその他の導入方法](/docs/homebrew/) を参照してください。
+
+## VS Code 拡張
+
+v1.0.0 以降、構文ハイライトを提供する VS Code 拡張機能があります。v1.2.0 から Marketplace で公開されており、v1.4.0 以降はスニペットも利用できます。
+
+### インストール
+
+VS Code の拡張機能パネル（`Ctrl+Shift+X` / `Cmd+Shift+X`）で `Timeline DSL` を検索してインストールします。または以下のコマンドを実行します。
+
+```sh
+code --install-extension keroway.timeline-dsl
+```
+
+### 利用可能なスニペット
+
+| プレフィックス | 展開内容 |
+| --- | --- |
+| `timeline` | `timeline` ブロックのテンプレート（`title`、`unit`、`range`、`calendar` 込み） |
+| `lane` | `lane` 定義のテンプレート（`kind`、`order` 込み） |
+| `span` | `span` イベントのテンプレート（開始・終了日時付き） |
+
+スニペットはファイル拡張子が `.tdsl` のファイルで有効です。
