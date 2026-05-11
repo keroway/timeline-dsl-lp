@@ -165,7 +165,8 @@ async function smokeVisibleWasmFailure(rootUrl, browser) {
 }
 
 async function fillEditor(locator, value) {
-  await locator.fill(value);
+  const input = locator.locator('[data-smoke="playground-editor-input"]').first();
+  await input.fill(value);
 }
 
 async function importPlaywright() {
