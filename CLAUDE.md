@@ -24,6 +24,12 @@ pnpm smoke:playground           # Playground の HTTP smoke テスト
 pnpm smoke:playground:browser   # Playwright ブラウザ smoke テスト
 ```
 
+`pnpm smoke:playground:browser` を初回実行する前に、Chromium バイナリの取得が必要:
+
+```sh
+pnpm exec playwright install chromium
+```
+
 ## Project structure
 
 ```
