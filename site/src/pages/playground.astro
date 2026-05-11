@@ -11,11 +11,11 @@ const pageDescription =
 const samples = [
   {
     id: "minimal",
-    label: "最小 timeline",
+    label: "Hello Timeline — 1 event だけの最小例",
     source: `timeline "読書メモ" {
     title "読書メモ";
     unit year;
-    range 2024..2026;
+    range 2018..2030;
     calendar proleptic_gregorian;
 }
 
@@ -26,11 +26,11 @@ event books 2025 "Timeline DSLを試す" { id "event:first"; };
   },
   {
     id: "range",
-    label: "span / event / event_range",
+    label: "マーカー 3 種 — span / event / event_range の違い",
     source: `timeline "小さなプロジェクト" {
     title "小さなプロジェクト";
     unit year;
-    range 2025..2028;
+    range 2020..2032;
     calendar proleptic_gregorian;
 }
 
@@ -45,7 +45,7 @@ event milestones 2027 "新体制で運用開始" {};
   },
   {
     id: "lanes",
-    label: "複数 lane",
+    label: "複数 lane — 並列イベントを階層化する",
     source: `timeline "架空世界年表" {
     title "架空世界年表";
     unit year;
@@ -66,8 +66,11 @@ event people 1184 "王朝終焉" {};
   },
   {
     id: "import",
-    label: "import を含む Web 制限例",
-    source: `timeline "中国王朝" {
+    label: "Wikidata import（CLI 専用機能のデモ）",
+    source: `// ⚠️ import wikidata は CLI 専用機能です。
+// ブラウザ WASM では Wikidata クエリは解決されません（手動追加のイベントのみ描画）。
+
+timeline "中国王朝" {
     title "中国王朝";
     unit year;
     range -300..300;
