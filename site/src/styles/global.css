@@ -1589,19 +1589,24 @@ h1 {
   font-weight: 760;
 }
 
-.tdsl-editor {
+.cm-editor-host {
   width: 100%;
-  min-height: 100%;
-  resize: none;
-  border: 0;
-  outline: 0;
-  background: #121921;
-  color: #eaf1f8;
-  padding: 1rem;
-  font-family: var(--font-mono);
-  font-size: 0.86rem;
-  line-height: 1.62;
-  tab-size: 4;
+  height: 100%;
+  overflow: hidden;
+}
+
+.cm-editor-host .cm-editor {
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cm-editor-host .cm-cursor {
+    animation: none !important;
+  }
+}
+
+:root[data-a11y-reduced-motion="true"] .cm-editor-host .cm-cursor {
+  animation: none !important;
 }
 
 .preview-surface {
