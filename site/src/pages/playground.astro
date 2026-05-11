@@ -170,15 +170,11 @@ map wd.han_dynasty to span {
               <span>source.tdsl</span>
               <span data-editor-meta>0 lines</span>
             </div>
-            <textarea
-              class="tdsl-editor"
-              spellcheck="false"
-              autocapitalize="off"
-              autocomplete="off"
-              aria-label="Timeline DSL source editor"
+            <div
+              class="cm-editor-host"
+              data-editor-host
               data-smoke="playground-editor"
-              data-editor
-            >{samples[0].source}</textarea>
+            ></div>
           </div>
 
           <div class="playground-panel preview-workbench">
@@ -209,6 +205,17 @@ map wd.han_dynasty to span {
     <div class="tdsl-tooltip" id="tdsl-tooltip" role="tooltip" aria-hidden="true"></div>
     <script is:inline type="application/json" id="playground-samples" set:html={JSON.stringify(samples)} />
     <script>
+      import { EditorState } from "@codemirror/state";
+      import {
+        EditorView,
+        lineNumbers,
+        highlightActiveLine,
+        drawSelection,
+        keymap,
+        highlightSpecialChars,
+      } from "@codemirror/view";
+      import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+      import { bracketMatching, indentOnInput } from "@codemirror/language";
       import { checkTdslSource, renderTdslSvg, renderTdslHtml } from "../lib/tdsl-wasm";
 
       type PlaygroundSample = {
@@ -225,7 +232,7 @@ map wd.han_dynasty to span {
       };
 
       const root = document.querySelector<HTMLElement>("[data-playground-root]");
-      const editor = document.querySelector<HTMLTextAreaElement>("[data-editor]");
+      const editorHost = document.querySelector<HTMLElement>("[data-editor-host]");
       const sampleSelect = document.querySelector<HTMLSelectElement>("[data-sample-select]");
       const status = document.querySelector<HTMLElement>("[data-status]");
       const preview = document.querySelector<HTMLElement>("[data-preview]");
@@ -257,14 +264,11 @@ map wd.han_dynasty to span {
         root?.setAttribute("data-playground-state", state);
       };
 
-      const countLines = (source: string) => (source.match(/\n/g)?.length || 0) + 1;
-
       const escapeHtml = (value: string) =>
         value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 
       const updateEditorMeta = () => {
-        if (!editor) return;
-        setText(editorMeta, `${countLines(editor.value)} lines`);
+        setText(editorMeta, `${view.state.doc.lines} lines`);
       };
 
       const renderDiagnostics = (items: PlaygroundDiagnostic[]) => {
@@ -302,10 +306,10 @@ map wd.han_dynasty to span {
       };
 
       const runPlayground = async () => {
-        if (!editor || !preview) return;
+        if (!preview) return;
 
         const runId = ++latestRunId;
-        const source = editor.value;
+        const source = view.state.doc.toString();
         updateEditorMeta();
         setStatus("検証中...", "loading");
         setText(previewMeta, "checking");
@@ -356,11 +360,84 @@ map wd.han_dynasty to span {
       };
 
       const applySource = (source: string) => {
-        if (!editor) return;
-        editor.value = source;
+        view.dispatch({
+          changes: { from: 0, to: view.state.doc.length, insert: source },
+        });
         updateEditorMeta();
         queueRun();
       };
+
+      // CodeMirror 6 dark theme matching LP design tokens
+      const darkTheme = EditorView.theme(
+        {
+          "&": {
+            height: "100%",
+            fontSize: "0.86rem",
+            fontFamily: "var(--font-mono)",
+            background: "#121921",
+            color: "#eaf1f8",
+          },
+          ".cm-content": {
+            padding: "1rem",
+            lineHeight: "1.62",
+            caretColor: "#eaf1f8",
+          },
+          ".cm-gutters": {
+            background: "#0e1520",
+            color: "#4e6a80",
+            border: "none",
+            borderRight: "1px solid #1e2d3d",
+          },
+          ".cm-lineNumbers .cm-gutterElement": {
+            padding: "0 0.75rem 0 0.5rem",
+            minWidth: "2rem",
+          },
+          ".cm-activeLine": { background: "rgba(255,255,255,0.04)" },
+          ".cm-activeLineGutter": {
+            background: "rgba(255,255,255,0.04)",
+            color: "#8aabb8",
+          },
+          ".cm-selectionBackground, ::selection": {
+            background: "#264f78 !important",
+          },
+          ".cm-matchingBracket": {
+            background: "rgba(255,255,255,0.1)",
+            outline: "1px solid #5a8a9f",
+            color: "inherit",
+          },
+          ".cm-scroller": { overflow: "auto", fontFamily: "inherit" },
+          ".cm-focused": { outline: "none" },
+          ".cm-cursor, .cm-dropCursor": { borderLeftColor: "#eaf1f8" },
+        },
+        { dark: true },
+      );
+
+      // Initialize CodeMirror editor
+      const view = new EditorView({
+        state: EditorState.create({
+          doc: samples[0].source,
+          extensions: [
+            history(),
+            drawSelection(),
+            lineNumbers(),
+            highlightActiveLine(),
+            highlightSpecialChars(),
+            bracketMatching(),
+            indentOnInput(),
+            EditorState.tabSize.of(4),
+            keymap.of([...defaultKeymap, ...historyKeymap]),
+            EditorView.updateListener.of((update) => {
+              if (update.docChanged) queueRun();
+            }),
+            EditorView.contentAttributes.of({
+              "aria-label": "Timeline DSL source editor",
+              "data-smoke": "playground-editor-input",
+            }),
+            darkTheme,
+          ],
+        }),
+        parent: editorHost!,
+      });
 
       const sourceParam = new URLSearchParams(window.location.search).get("source");
       if (sourceParam) {
@@ -371,15 +448,13 @@ map wd.han_dynasty to span {
         runPlayground();
       }
 
-      editor?.addEventListener("input", queueRun);
-
       sampleSelect?.addEventListener("change", () => {
         const sample = samples.find((item) => item.id === sampleSelect.value);
         if (sample) applySource(sample.source);
       });
 
       downloadTdslButton?.addEventListener("click", () => {
-        if (editor) downloadText("timeline.tdsl", "text/plain;charset=utf-8", editor.value);
+        downloadText("timeline.tdsl", "text/plain;charset=utf-8", view.state.doc.toString());
       });
 
       downloadSvgButton?.addEventListener("click", () => {
