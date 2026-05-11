@@ -174,7 +174,9 @@ async function importPlaywright() {
     return await import("playwright");
   } catch (cause) {
     throw new Error(
-      "Playwright is required for --browser smoke. Install it in the current environment, then rerun `pnpm smoke:playground:browser -- --base-url <url>`.",
+      "Playwright module is installed but the Chromium binary is missing.\n" +
+      "Run: pnpm exec playwright install chromium\n" +
+      "Then rerun: pnpm smoke:playground:browser -- --base-url <url>",
       { cause },
     );
   }
