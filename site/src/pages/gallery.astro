@@ -1,0 +1,392 @@
+---
+import { Code } from "astro:components";
+import SocialMeta from "../components/SocialMeta.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import "../styles/global.css";
+import releasesData from "../data/releases.generated.json";
+import gallerySamples from "../data/gallery-samples.json";
+import tdslGrammar from "../lib/tdsl.tmLanguage.json" with { type: "json" };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const tdslLang = tdslGrammar as any;
+const tdslCodeThemes = { light: "github-light", dark: "github-dark" } as const;
+
+type Release = { tagName: string };
+const latest = releasesData.latest as Release | null;
+
+const pageTitle = "Gallery — Timeline DSL";
+const pageDescription =
+  "Timeline DSL のサンプル年表一覧。各サンプルを Playground で編集・カスタマイズできます。";
+
+const samples = gallerySamples as {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  source: string;
+}[];
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={pageDescription} />
+    <SocialMeta title={pageTitle} description={pageDescription} pathname="/gallery/" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <div class="page-shell">
+      <SiteHeader currentPath="/gallery/" />
+
+      <main>
+        <section class="page-hero">
+          <div class="page-hero-inner">
+            <p class="eyebrow">サンプル集</p>
+            <h1>Gallery</h1>
+            <p class="lead">
+              Timeline DSL のサンプル年表一覧です。各カードの「Edit this example」から
+              Playground で編集・カスタマイズできます。
+            </p>
+          </div>
+        </section>
+
+        <section class="section gallery-section" aria-labelledby="gallery-heading">
+          <div class="section-header">
+            <h2 id="gallery-heading">サンプル年表</h2>
+            <p>{samples.length} 種類のサンプルを掲載しています。</p>
+          </div>
+
+          <div class="gallery-grid">
+            {
+              samples.map((sample) => (
+                <article class="gallery-card" data-gallery-id={sample.id}>
+                  <div class="gallery-card-header">
+                    <h3>{sample.title}</h3>
+                    <p class="gallery-card-desc">{sample.description}</p>
+                    <div class="gallery-tags" aria-label="タグ">
+                      {sample.tags.map((tag) => (
+                        <span class="gallery-tag">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div class="gallery-card-body">
+                    <div class="gallery-source-pane">
+                      <p class="gallery-pane-label">
+                        <span aria-hidden="true">✦</span> source.tdsl
+                      </p>
+                      <div class="gallery-code-wrap">
+                        <Code
+                          code={sample.source}
+                          lang={tdslLang}
+                          themes={tdslCodeThemes}
+                          class="gallery-code"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="gallery-preview-pane" data-preview-pane>
+                      <p class="gallery-pane-label">
+                        <span aria-hidden="true">◆</span> preview
+                      </p>
+                      <div
+                        class="gallery-preview"
+                        data-gallery-preview={sample.id}
+                        aria-label={`${sample.title} のプレビュー`}
+                      >
+                        <div class="gallery-preview-placeholder" aria-hidden="true">
+                          <span class="gallery-loading-dot" />
+                          <span class="gallery-loading-dot" />
+                          <span class="gallery-loading-dot" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="gallery-card-footer">
+                    <a
+                      class="gallery-edit-btn"
+                      href={`/playground/?source=${encodeURIComponent(sample.source)}`}
+                    >
+                      Edit this example
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M7 17L17 7M17 7H7M17 7v10" />
+                      </svg>
+                    </a>
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+        </section>
+      </main>
+
+      <SiteFooter currentPath="/gallery/" version={latest?.tagName} />
+    </div>
+
+    <script
+      id="gallery-samples-data"
+      type="application/json"
+      set:html={JSON.stringify(samples.map((s) => ({ id: s.id, source: s.source })))}
+    />
+  </body>
+</html>
+
+<script>
+  import { renderTdslSvg } from "../lib/tdsl-wasm";
+
+  type SampleData = { id: string; source: string };
+
+  const dataEl = document.getElementById("gallery-samples-data");
+  const samplesData = JSON.parse(dataEl?.textContent || "[]") as SampleData[];
+
+  const renderSample = async (sample: SampleData) => {
+    const el = document.querySelector<HTMLElement>(`[data-gallery-preview="${sample.id}"]`);
+    if (!el) return;
+    try {
+      // SVG は自社 WASM ライブラリが生成する信頼済みコンテンツ（playground.astro と同パターン）
+      const svg = await renderTdslSvg(sample.source);
+      el.innerHTML = svg;
+      el.classList.add("has-svg");
+    } catch {
+      el.textContent = "プレビューを表示できませんでした。";
+      el.classList.add("gallery-preview-error");
+    }
+  };
+
+  for (const sample of samplesData) {
+    renderSample(sample);
+  }
+</script>
+
+<style>
+  .gallery-section {
+    padding-bottom: 4rem;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr));
+    gap: 2rem;
+  }
+
+  .gallery-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background: var(--color-panel);
+    overflow: hidden;
+  }
+
+  .gallery-card-header {
+    padding: 1.25rem 1.25rem 0.75rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .gallery-card-header h3 {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 760;
+    color: var(--color-ink);
+  }
+
+  .gallery-card-desc {
+    margin: 0 0 0.6rem;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    line-height: 1.5;
+  }
+
+  .gallery-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .gallery-tag {
+    padding: 0.15em 0.55em;
+    border: 1px solid var(--color-line);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    background: var(--color-bg);
+  }
+
+  .gallery-card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex: 1;
+    min-height: 240px;
+  }
+
+  .gallery-source-pane,
+  .gallery-preview-pane {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .gallery-source-pane {
+    border-right: 1px solid var(--color-line);
+  }
+
+  .gallery-pane-label {
+    margin: 0;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--color-muted);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .gallery-code-wrap {
+    flex: 1;
+    overflow: auto;
+    font-size: 0.72rem;
+  }
+
+  .gallery-code-wrap :global(.gallery-code) {
+    height: 100%;
+    margin: 0;
+    border-radius: 0;
+    font-size: 0.72rem;
+    line-height: 1.55;
+  }
+
+  .gallery-code-wrap :global(pre) {
+    margin: 0;
+    padding: 0.75rem;
+    border-radius: 0;
+    height: 100%;
+    overflow: auto;
+  }
+
+  .gallery-preview {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    overflow: auto;
+  }
+
+  .gallery-preview.has-svg :global(svg) {
+    width: 100%;
+    height: auto;
+    max-height: 240px;
+  }
+
+  .gallery-preview-placeholder {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-loading-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-muted);
+    opacity: 0.5;
+    animation: gallery-dot-pulse 1.2s ease-in-out infinite;
+  }
+
+  .gallery-loading-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .gallery-loading-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes gallery-dot-pulse {
+    0%,
+    80%,
+    100% {
+      opacity: 0.25;
+    }
+    40% {
+      opacity: 0.9;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-loading-dot {
+      animation: none;
+    }
+  }
+
+  :root[data-a11y-reduced-motion="true"] .gallery-loading-dot {
+    animation: none;
+  }
+
+  .gallery-preview-error {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    text-align: center;
+    padding: 0.5rem;
+  }
+
+  .gallery-card-footer {
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--color-line);
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .gallery-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.45em 1em;
+    border: 1px solid var(--color-accent);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-accent);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      background 0.15s,
+      color 0.15s;
+  }
+
+  .gallery-edit-btn:hover {
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  .gallery-edit-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .gallery-card-body {
+      grid-template-columns: 1fr;
+    }
+
+    .gallery-source-pane {
+      border-right: none;
+      border-bottom: 1px solid var(--color-line);
+    }
+  }
+</style>
