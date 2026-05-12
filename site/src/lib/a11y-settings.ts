@@ -1,14 +1,15 @@
-export type A11yTextSize = "normal" | "large" | "extra-large";
+export type A11yTextSize = "normal" | "large" | "extra-large" | "xx-large";
 
 export interface A11ySettings {
   reducedMotion: boolean;
   highContrast: boolean;
   textSize: A11yTextSize;
+  textSpacing: boolean;
 }
 
 export const SETTINGS_KEY = "tdsl-a11y-settings";
 
-const VALID_TEXT_SIZES: A11yTextSize[] = ["normal", "large", "extra-large"];
+const VALID_TEXT_SIZES: A11yTextSize[] = ["normal", "large", "extra-large", "xx-large"];
 
 function isValidTextSize(v: unknown): v is A11yTextSize {
   return VALID_TEXT_SIZES.includes(v as A11yTextSize);
@@ -19,6 +20,7 @@ export function loadSettings(): A11ySettings {
     reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     highContrast: window.matchMedia("(prefers-contrast: more)").matches,
     textSize: "normal",
+    textSpacing: false,
   };
   const saved = localStorage.getItem(SETTINGS_KEY);
   if (!saved) return osDefaults;
@@ -30,6 +32,7 @@ export function loadSettings(): A11ySettings {
       reducedMotion: typeof p.reducedMotion === "boolean" ? p.reducedMotion : osDefaults.reducedMotion,
       highContrast: typeof p.highContrast === "boolean" ? p.highContrast : osDefaults.highContrast,
       textSize: isValidTextSize(p.textSize) ? p.textSize : "normal",
+      textSpacing: typeof p.textSpacing === "boolean" ? p.textSpacing : false,
     };
   } catch {
     return osDefaults;
@@ -56,6 +59,33 @@ export function applySettings(settings: A11ySettings): void {
   }
 
   root.setAttribute("data-a11y-text-size", settings.textSize);
+
+  if (settings.textSpacing) {
+    root.setAttribute("data-a11y-text-spacing", "enhanced");
+  } else {
+    root.removeAttribute("data-a11y-text-spacing");
+  }
+}
+
+const TEXT_SIZE_LABELS: Record<A11yTextSize, string> = {
+  normal: "標準 (100%)",
+  large: "大きく (125%)",
+  "extra-large": "さらに大きく (150%)",
+  "xx-large": "最大 (200%)",
+};
+
+const MESSAGES = {
+  reducedMotion: { on: "動きを抑える設定を有効にしました", off: "動きを抑える設定を解除しました" },
+  highContrast: { on: "高コントラスト表示を有効にしました", off: "高コントラスト表示を解除しました" },
+  textSpacing: { on: "テキストの余白を広げました", off: "テキストの余白を標準に戻しました" },
+  textSize: (size: A11yTextSize) => `文字サイズを${TEXT_SIZE_LABELS[size]}に変更しました`,
+};
+
+function announce(menuEl: HTMLElement, text: string) {
+  const live = menuEl.querySelector<HTMLElement>("[data-a11y-live]");
+  if (!live) return;
+  live.textContent = "";
+  requestAnimationFrame(() => { live.textContent = text; });
 }
 
 interface InitOpts {
@@ -70,12 +100,32 @@ export function initA11yMenu({ toggleSelector, menuId }: InitOpts): void {
 
   const reducedMotionInput = menu.querySelector<HTMLInputElement>("[data-a11y-reduced-motion]");
   const highContrastInput = menu.querySelector<HTMLInputElement>("[data-a11y-high-contrast]");
+  const textSpacingInput = menu.querySelector<HTMLInputElement>("[data-a11y-text-spacing-input]");
   const textSizeInput = menu.querySelector<HTMLSelectElement>("[data-a11y-text-size]");
 
   function syncForm(settings: A11ySettings) {
     if (reducedMotionInput) reducedMotionInput.checked = settings.reducedMotion;
     if (highContrastInput) highContrastInput.checked = settings.highContrast;
+    if (textSpacingInput) textSpacingInput.checked = settings.textSpacing;
     if (textSizeInput) textSizeInput.value = settings.textSize;
+  }
+
+  function getFirstFocusable(): HTMLElement | null {
+    return menu!.querySelector<HTMLElement>(
+      'input:not([disabled]), select:not([disabled]), button:not([disabled])'
+    );
+  }
+
+  function closeMenu(restoreFocus = true) {
+    toggle!.setAttribute("aria-expanded", "false");
+    menu!.hidden = true;
+    if (restoreFocus) toggle!.focus();
+  }
+
+  function openMenu() {
+    toggle!.setAttribute("aria-expanded", "true");
+    menu!.hidden = false;
+    getFirstFocusable()?.focus();
   }
 
   const initial = loadSettings();
@@ -84,37 +134,72 @@ export function initA11yMenu({ toggleSelector, menuId }: InitOpts): void {
 
   toggle.addEventListener("click", () => {
     const expanded = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!expanded));
-    menu.hidden = expanded;
+    if (expanded) closeMenu();
+    else openMenu();
+  });
+
+  menu.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      e.stopPropagation();
+      closeMenu();
+    }
   });
 
   document.addEventListener("click", (e) => {
     if (menu.hidden) return;
     const target = e.target as Node;
     if (!menu.contains(target) && !toggle.contains(target)) {
-      toggle.setAttribute("aria-expanded", "false");
-      menu.hidden = true;
+      closeMenu(false);
     }
   });
 
+  menu.addEventListener("focusout", () => {
+    setTimeout(() => {
+      const next = document.activeElement;
+      if (next && !menu.contains(next) && next !== toggle) {
+        closeMenu(false);
+      }
+    }, 0);
+  });
+
   reducedMotionInput?.addEventListener("change", () => {
-    const s = loadSettings();
-    s.reducedMotion = reducedMotionInput.checked;
-    saveSettings(s);
-    applySettings(s);
+    const prev = loadSettings();
+    const next = { ...prev, reducedMotion: reducedMotionInput.checked };
+    saveSettings(next);
+    applySettings(next);
+    if (prev.reducedMotion !== next.reducedMotion) {
+      announce(menu, MESSAGES.reducedMotion[next.reducedMotion ? "on" : "off"]);
+    }
   });
 
   highContrastInput?.addEventListener("change", () => {
-    const s = loadSettings();
-    s.highContrast = highContrastInput.checked;
-    saveSettings(s);
-    applySettings(s);
+    const prev = loadSettings();
+    const next = { ...prev, highContrast: highContrastInput.checked };
+    saveSettings(next);
+    applySettings(next);
+    if (prev.highContrast !== next.highContrast) {
+      announce(menu, MESSAGES.highContrast[next.highContrast ? "on" : "off"]);
+    }
+  });
+
+  textSpacingInput?.addEventListener("change", () => {
+    const prev = loadSettings();
+    const next = { ...prev, textSpacing: textSpacingInput.checked };
+    saveSettings(next);
+    applySettings(next);
+    if (prev.textSpacing !== next.textSpacing) {
+      announce(menu, MESSAGES.textSpacing[next.textSpacing ? "on" : "off"]);
+    }
   });
 
   textSizeInput?.addEventListener("change", () => {
-    const s = loadSettings();
-    s.textSize = isValidTextSize(textSizeInput.value) ? textSizeInput.value : "normal";
-    saveSettings(s);
-    applySettings(s);
+    const prev = loadSettings();
+    const newSize = isValidTextSize(textSizeInput.value) ? textSizeInput.value : "normal";
+    const next = { ...prev, textSize: newSize };
+    saveSettings(next);
+    applySettings(next);
+    if (prev.textSize !== next.textSize) {
+      announce(menu, MESSAGES.textSize(next.textSize));
+    }
   });
 }
