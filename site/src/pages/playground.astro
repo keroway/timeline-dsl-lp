@@ -186,7 +186,23 @@ map wd.han_dynasty to span {
               <span data-preview-meta>待機中</span>
             </div>
             <div class="preview-surface" data-smoke="playground-preview" data-preview>
-              <p>WASM の読み込み後にプレビューを表示します。</p>
+              <div class="pan-zoom-stage" data-pan-zoom-stage>
+                <p class="pan-zoom-placeholder">WASM の読み込み後にプレビューを表示します。</p>
+              </div>
+              <button
+                class="pan-zoom-reset"
+                type="button"
+                data-pan-zoom-reset
+                aria-label="ビューをフィット"
+                title="ビューをフィット (ダブルクリックでもリセット)"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <polyline points="9 21 3 21 3 15"></polyline>
+                  <line x1="21" y1="3" x2="14" y2="10"></line>
+                  <line x1="3" y1="21" x2="10" y2="14"></line>
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -220,6 +236,7 @@ map wd.han_dynasty to span {
       import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
       import { bracketMatching, indentOnInput } from "@codemirror/language";
       import { checkTdslSource, renderTdslSvg, renderTdslHtml } from "../lib/tdsl-wasm";
+      import { createPanZoom } from "../lib/playground-pan-zoom";
 
       type PlaygroundSample = {
         id: string;
@@ -239,6 +256,8 @@ map wd.han_dynasty to span {
       const sampleSelect = document.querySelector<HTMLSelectElement>("[data-sample-select]");
       const status = document.querySelector<HTMLElement>("[data-status]");
       const preview = document.querySelector<HTMLElement>("[data-preview]");
+      const panZoomStage = document.querySelector<HTMLElement>("[data-pan-zoom-stage]");
+      const panZoomReset = document.querySelector<HTMLButtonElement>("[data-pan-zoom-reset]");
       const diagnostics = document.querySelector<HTMLElement>("[data-diagnostics]");
       const editorMeta = document.querySelector<HTMLElement>("[data-editor-meta]");
       const previewMeta = document.querySelector<HTMLElement>("[data-preview-meta]");
@@ -251,6 +270,15 @@ map wd.han_dynasty to span {
       const scaleSelect = document.querySelector<HTMLSelectElement>("[data-scale-select]");
       const sampleDataElement = document.getElementById("playground-samples");
       const samples = JSON.parse(sampleDataElement?.textContent || "[]") as PlaygroundSample[];
+
+      const panZoom = preview && panZoomStage
+        ? createPanZoom({
+            surface: preview,
+            stage: panZoomStage,
+            resetButton: panZoomReset,
+            tooltipEl: document.getElementById("tdsl-tooltip"),
+          })
+        : null;
 
       const debounceMs = 420;
       let debounceTimer: number | undefined;
@@ -308,8 +336,16 @@ map wd.han_dynasty to span {
         URL.revokeObjectURL(url);
       };
 
+      const setSvgContent = (target: HTMLElement, svgString: string) => {
+        const parsed = new DOMParser().parseFromString(svgString, "image/svg+xml");
+        const svgEl = parsed.documentElement;
+        target.replaceChildren(svgEl);
+      };
+
       const runPlayground = async () => {
         if (!preview) return;
+
+        const stage = panZoomStage ?? preview;
 
         const runId = ++latestRunId;
         const source = view.state.doc.toString();
@@ -328,18 +364,19 @@ map wd.han_dynasty to span {
             setStatus("構文または参照エラーを検出しました", "error");
             setText(previewMeta, lastSvg ? "previous preview kept" : "no preview");
             if (!lastSvg) {
-              preview.innerHTML = "<p>エラーを修正するとプレビューを表示します。</p>";
+              stage.replaceChildren(Object.assign(document.createElement("p"), { textContent: "エラーを修正するとプレビューを表示します。" }));
             }
             return;
           }
 
-          const scale = parseFloat(scaleSelect?.value ?? "0");
-          const svg = await renderTdslSvg(source, scale);
+          const renderScale = parseFloat(scaleSelect?.value ?? "0");
+          const svg = await renderTdslSvg(source, renderScale);
           if (runId !== latestRunId) return;
 
           lastSvg = svg;
           lastSource = source;
-          preview.innerHTML = svg;
+          setSvgContent(stage, svg);
+          panZoom?.applySvg();
           downloadSvgButton?.removeAttribute("disabled");
           downloadHtmlButton?.removeAttribute("disabled");
           setText(previewMeta, "updated");
@@ -359,7 +396,7 @@ map wd.han_dynasty to span {
             retryBtn.className = "preview-retry-btn";
             retryBtn.textContent = "再試行";
             retryBtn.addEventListener("click", () => queueRun());
-            preview.replaceChildren(errMsg, retryBtn);
+            stage.replaceChildren(errMsg, retryBtn);
           }
         }
       };
