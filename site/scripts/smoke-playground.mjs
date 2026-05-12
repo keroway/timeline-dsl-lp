@@ -114,6 +114,7 @@ async function smokeBrowserFlow(rootUrl) {
     await page.goto(`${rootUrl}${PLAYGROUND_PATH}`, { waitUntil: "networkidle" });
     await page.locator('[data-smoke="playground-editor"]').first().waitFor({ state: "visible" });
     await page.locator('[data-smoke="playground-preview"] svg').first().waitFor({ state: "visible" });
+    await page.locator('[data-pan-zoom-stage]').first().waitFor({ state: "attached" });
 
     if (failedWasmResponses.length > 0) {
       throw new Error(`WASM asset request failed: ${failedWasmResponses.join(", ")}`);
