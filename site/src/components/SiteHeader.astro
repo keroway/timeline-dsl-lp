@@ -20,7 +20,7 @@ const { currentPath = "" } = Astro.props;
       <a href="/docs/">Docs</a>
       <a href="/changelog/" aria-current={currentPath === "/changelog/" ? "page" : undefined}>Changelog</a>
       <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
-      <button class="a11y-toggle" type="button" aria-expanded="false" aria-controls="a11y-menu" aria-label="アクセシビリティ設定">
+      <button class="a11y-toggle" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="a11y-menu" aria-label="アクセシビリティ設定">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -48,15 +48,23 @@ const { currentPath = "" } = Astro.props;
         </div>
       </div>
       <div class="a11y-section">
-        <h3>文字サイズ</h3>
+        <h3>読みやすさ</h3>
+        <div class="a11y-field">
+          <label>
+            <input type="checkbox" data-a11y-text-spacing-input />
+            テキストの余白を広げる
+          </label>
+        </div>
         <div class="a11y-field">
           <select data-a11y-text-size>
-            <option value="normal">標準</option>
-            <option value="large">大きく</option>
-            <option value="extra-large">さらに大きく</option>
+            <option value="normal">標準 (100%)</option>
+            <option value="large">大きく (125%)</option>
+            <option value="extra-large">さらに大きく (150%)</option>
+            <option value="xx-large">最大 (200%)</option>
           </select>
         </div>
       </div>
+      <div class="sr-only" aria-live="polite" data-a11y-live></div>
     </div>
   </div>
 </header>
@@ -94,11 +102,25 @@ const { currentPath = "" } = Astro.props;
     top: 100%;
     right: 0;
     width: min(320px, 100vw);
+    max-height: calc(100vh - 5rem);
+    overflow-y: auto;
     background: var(--color-bg);
     border: 1px solid var(--color-line);
     border-top: none;
     box-shadow: 0 10px 30px color-mix(in srgb, var(--color-ink), transparent 90%);
     z-index: 100;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .a11y-menu:not([hidden]) {
