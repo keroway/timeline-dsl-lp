@@ -352,7 +352,14 @@ map wd.han_dynasty to span {
           setStatus("WASM 処理に失敗しました", "error");
           setText(previewMeta, lastSvg ? "previous preview kept" : "render failed");
           if (!lastSvg) {
-            preview.innerHTML = "<p>レンダリングできませんでした。</p>";
+            const errMsg = document.createElement("p");
+            errMsg.textContent = "レンダリングできませんでした。";
+            const retryBtn = document.createElement("button");
+            retryBtn.type = "button";
+            retryBtn.className = "preview-retry-btn";
+            retryBtn.textContent = "再試行";
+            retryBtn.addEventListener("click", () => queueRun());
+            preview.replaceChildren(errMsg, retryBtn);
           }
         }
       };

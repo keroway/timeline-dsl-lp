@@ -161,14 +161,42 @@ const samples = gallerySamples as {
       const svg = await renderTdslSvg(sample.source);
       el.innerHTML = svg;
       el.classList.add("has-svg");
-    } catch {
-      el.textContent = "プレビューを表示できませんでした。";
-      el.classList.add("gallery-preview-error");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const errorDiv = document.createElement("div");
+      errorDiv.className = "gallery-preview-error";
+      const detailsEl = document.createElement("details");
+      detailsEl.className = "gallery-error-detail";
+      const summaryEl = document.createElement("summary");
+      summaryEl.textContent = "プレビューを表示できませんでした";
+      const preEl = document.createElement("pre");
+      preEl.className = "gallery-error-message";
+      preEl.textContent = message;
+      const retryBtn = document.createElement("button");
+      retryBtn.type = "button";
+      retryBtn.className = "gallery-retry-btn";
+      retryBtn.textContent = "再試行";
+      retryBtn.addEventListener("click", () => {
+        el.replaceChildren();
+        const placeholder = document.createElement("div");
+        placeholder.className = "gallery-preview-placeholder";
+        placeholder.setAttribute("aria-hidden", "true");
+        for (let i = 0; i < 3; i++) {
+          const dot = document.createElement("span");
+          dot.className = "gallery-loading-dot";
+          placeholder.append(dot);
+        }
+        el.append(placeholder);
+        renderSample(sample);
+      });
+      detailsEl.append(summaryEl, preEl);
+      errorDiv.append(detailsEl, retryBtn);
+      el.replaceChildren(errorDiv);
     }
   };
 
   for (const sample of samplesData) {
-    renderSample(sample);
+    await renderSample(sample);
   }
 </script>
 
@@ -287,9 +315,10 @@ const samples = gallerySamples as {
   }
 
   .gallery-preview.has-svg :global(svg) {
-    width: 100%;
-    height: auto;
+    max-width: 100%;
     max-height: 240px;
+    width: auto;
+    height: auto;
   }
 
   .gallery-preview-placeholder {
@@ -388,5 +417,43 @@ const samples = gallerySamples as {
       border-right: none;
       border-bottom: 1px solid var(--color-line);
     }
+  }
+
+  .gallery-error-detail {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .gallery-error-message {
+    margin: 0.25rem 0 0;
+    padding: 0.3rem;
+    font-size: 0.7rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 80px;
+    overflow: auto;
+  }
+
+  .gallery-retry-btn {
+    margin-top: 0.5rem;
+    padding: 0.3em 0.8em;
+    border: 1px solid var(--color-accent);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+
+  .gallery-retry-btn:hover {
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  .gallery-retry-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 </style>
