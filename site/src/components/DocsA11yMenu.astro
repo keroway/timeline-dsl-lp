@@ -30,6 +30,7 @@ const links = config.social ?? [];
   <button
     class="a11y-toggle"
     type="button"
+    aria-haspopup="menu"
     aria-expanded="false"
     aria-controls="docs-a11y-menu"
     aria-label="アクセシビリティ設定"
@@ -69,15 +70,23 @@ const links = config.social ?? [];
         </div>
       </div>
       <div class="a11y-section">
-        <h3>文字サイズ</h3>
+        <h3>読みやすさ</h3>
+        <div class="a11y-field">
+          <label>
+            <input type="checkbox" data-a11y-text-spacing-input />
+            テキストの余白を広げる
+          </label>
+        </div>
         <div class="a11y-field">
           <select data-a11y-text-size>
-            <option value="normal">標準</option>
-            <option value="large">大きく</option>
-            <option value="extra-large">さらに大きく</option>
+            <option value="normal">標準 (100%)</option>
+            <option value="large">大きく (125%)</option>
+            <option value="extra-large">さらに大きく (150%)</option>
+            <option value="xx-large">最大 (200%)</option>
           </select>
         </div>
       </div>
+      <div class="sr-only" aria-live="polite" data-a11y-live></div>
     </div>
   </div>
 </div>
@@ -130,6 +139,8 @@ const links = config.social ?? [];
     top: calc(100% + 0.5rem);
     right: 0;
     width: min(320px, 90vw);
+    max-height: calc(100vh - 5rem);
+    overflow-y: auto;
     background: var(--sl-color-bg);
     border: 1px solid var(--sl-color-gray-5);
     box-shadow: var(--sl-shadow-lg);
