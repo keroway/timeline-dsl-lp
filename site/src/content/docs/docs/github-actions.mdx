@@ -1,13 +1,94 @@
 ---
 title: CIで検証する
-description: GitHub Actions で自分の .tdsl ファイルを検証する例です。
+description: GitHub Actions で自分の .tdsl ファイルを検証・レンダリングする例です。
 ---
 
 このページは、Timeline DSL 利用者が自分のリポジトリで `.tdsl` ファイルを継続的に検証するための例です。Timeline DSL 本体やこのドキュメントサイトをデプロイする手順ではありません。
 
+## composite action を使う（推奨）
+
+`uses: keroway/timeline-dsl@v1` でインストールなしに `.tdsl` を SVG または HTML へレンダリングできます。Linux / macOS / Windows の全 runner に対応しています。
+
+```yaml
+name: Render Timeline
+
+on:
+  push:
+    paths: ['**/*.tdsl']
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: keroway/timeline-dsl@v1
+        with:
+          file: examples/china_dynasties.tdsl
+          format: svg
+          output: output/china.svg
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: timeline-svg
+          path: output/
+```
+
+### インプット
+
+| インプット | 必須 | デフォルト | 説明 |
+| --- | --- | --- | --- |
+| `file` | ✅ | — | レンダリングする `.tdsl` ファイルのパス |
+| `format` | — | `svg` | 出力フォーマット: `svg` または `html` |
+| `output` | — | `<basename>.<format>` | 出力ファイルパス |
+| `offline` | — | `false` | オフラインモード（Wikidata フェッチをスキップ） |
+| `interactive` | — | `false` | インタラクティブ HTML 出力（`format: html` 時のみ） |
+| `theme` | — | （CLI デフォルト） | テーマ: `default` / `dark` / `print` / `pastel` |
+| `scale` | — | （CLI デフォルト） | 水平軸のピクセル/年レート |
+| `version` | — | `latest` | 使用する tdsl バージョン（例: `v1.5.0`） |
+
+### アウトプット
+
+| アウトプット | 説明 |
+| --- | --- |
+| `output_path` | 生成された出力ファイルの絶対パス |
+
+### PR で変更された .tdsl を SVG プレビューとしてアーティファクト化する例
+
+```yaml
+name: TDSL Preview
+
+on:
+  pull_request:
+    paths: ['**/*.tdsl']
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: keroway/timeline-dsl@v1
+        with:
+          file: examples/china_dynasties.tdsl
+          format: svg
+          offline: 'true'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tdsl-preview
+          path: '*.svg'
+```
+
+## tdsl CLI を直接インストールして使う
+
+tdsl を複数のコマンドで使い回す場合は、インストールスクリプトで直接取得します。
+
 GitHub Actionsでは、`.tdsl` ファイルに対して `tdsl check`、`tdsl lint`、必要に応じて `tdsl build` を実行します。Wikidataを使うファイルを安定して検証したい場合は、`build` に `--offline` を付けて静的項目だけを処理できます。
 
-## Ubuntu runnerで検証する例
+### Ubuntu runnerで検証する例
 
 Ubuntu runner ではインストールスクリプトで `tdsl` を取得し、`~/.local/bin` を `PATH` に追加します。
 
@@ -40,7 +121,7 @@ jobs:
         run: tdsl build examples/china_dynasties.tdsl --pretty --output timeline.json
 ```
 
-## Homebrewでインストールする例
+### Homebrewでインストールする例
 
 macOS runner では Homebrew で導入できます。
 
