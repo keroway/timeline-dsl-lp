@@ -30,7 +30,7 @@ export function createPanZoom({
   let tx = 0;
   let ty = 0;
 
-  let pendingPan: { startX: number; startY: number; pointerId: number } | null = null;
+  let pendingPan: { startX: number; startY: number; startTx: number; startTy: number; pointerId: number } | null = null;
   let panActive = false;
   let rafId: number | null = null;
   let pendingTx = 0;
@@ -52,16 +52,23 @@ export function createPanZoom({
     }
 
     const sw = surface.clientWidth;
-    const sh = surface.clientHeight;
+    const rect = surface.getBoundingClientRect();
+    const sh = Math.max(
+      120,
+      Math.min(surface.clientHeight, window.innerHeight - Math.max(0, rect.top))
+    );
     const svgW = svg.viewBox.baseVal.width || svg.clientWidth || sw;
     const svgH = svg.viewBox.baseVal.height || svg.clientHeight || sh;
+
+    const fitPad = 32;
 
     if (svgW <= 0 || svgH <= 0) {
       scale = 1;
       tx = 0;
       ty = 0;
     } else {
-      scale = Math.min(sw / svgW, sh / svgH, 1);
+      scale = Math.min((sw - 2 * fitPad) / svgW, (sh - 2 * fitPad) / svgH, 1);
+      scale = Math.max(scale, minScale);
       tx = (sw - svgW * scale) / 2;
       ty = (sh - svgH * scale) / 2;
     }
@@ -73,7 +80,7 @@ export function createPanZoom({
 
   const onPointerDown = (e: PointerEvent) => {
     if (e.button !== 0) return;
-    pendingPan = { startX: e.clientX, startY: e.clientY, pointerId: e.pointerId };
+    pendingPan = { startX: e.clientX, startY: e.clientY, startTx: tx, startTy: ty, pointerId: e.pointerId };
     panActive = false;
     surface.setPointerCapture(e.pointerId);
   };
@@ -93,12 +100,10 @@ export function createPanZoom({
         tooltipEl.removeAttribute("data-visible");
         tooltipEl.setAttribute("aria-hidden", "true");
       }
-      pendingTx = tx;
-      pendingTy = ty;
     }
 
-    pendingTx = tx + dx;
-    pendingTy = ty + dy;
+    pendingTx = pendingPan.startTx + dx;
+    pendingTy = pendingPan.startTy + dy;
 
     if (rafId === null) {
       rafId = requestAnimationFrame(() => {
