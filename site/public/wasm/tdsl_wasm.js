@@ -108,7 +108,7 @@ export function render_html_from_source(source) {
 /**
  * Render SVG from TDSL source (static items only).
  * `scale` controls pixels-per-year. Pass `0.0` (or negative) to auto-calculate
- * from the IR's `meta.range` (clamped to `0.5..=8.0`).
+ * from the IR's `meta.range` (clamped to `0.5..=50.0`).
  * Returns Ok(svg_string) or Err(error_message).
  * @param {string} source
  * @param {number} scale
