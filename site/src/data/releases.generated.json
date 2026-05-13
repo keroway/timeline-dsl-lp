@@ -1,13 +1,13 @@
 {
   "repository": "keroway/timeline-dsl",
   "source": "github-releases",
-  "fetchedAt": "2026-05-13T10:45:33.930Z",
+  "fetchedAt": "2026-05-13T12:20:13.252Z",
   "latest": {
     "tagName": "v1.6.0",
     "name": "v1.6.0",
     "publishedAt": "2026-05-13T10:22:31Z",
     "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.6.0",
-    "body": ""
+    "body": "## What's Changed\n* fix(render): 年ラベル間隔を scale とラベル幅から計算し重なりを防ぐ by @keroway in https://github.com/keroway/timeline-dsl/pull/199\n* feat(webui): examples.ts にサンプルを拡充し文法カバレッジを広げる (#200) by @keroway in https://github.com/keroway/timeline-dsl/pull/204\n* feat(webui): ?source= URL クエリパラメータ対応で deep link を可能にする (#201) by @keroway in https://github.com/keroway/timeline-dsl/pull/205\n* feat(webui): コンパイル失敗時に直前成功 SVG を保持し stale バッジを表示 (#202) by @keroway in https://github.com/keroway/timeline-dsl/pull/206\n* docs(webui): .tdsl syntax highlighting の grammar 整合方針を明文化する (#203) by @keroway in https://github.com/keroway/timeline-dsl/pull/208\n* feat(wikidata): Wikidata precision の月・日精度を IR に保持する by @keroway in https://github.com/keroway/timeline-dsl/pull/209\n* docs: README.md を英語化し日本語版を README.ja.md として温存する by @keroway in https://github.com/keroway/timeline-dsl/pull/210\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.5.0...v1.6.0"
   },
   "releases": [
     {
@@ -15,14 +15,14 @@
       "name": "v1.6.0",
       "publishedAt": "2026-05-13T10:22:31Z",
       "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.6.0",
-      "body": ""
+      "body": "## What's Changed\n* fix(render): 年ラベル間隔を scale とラベル幅から計算し重なりを防ぐ by @keroway in https://github.com/keroway/timeline-dsl/pull/199\n* feat(webui): examples.ts にサンプルを拡充し文法カバレッジを広げる (#200) by @keroway in https://github.com/keroway/timeline-dsl/pull/204\n* feat(webui): ?source= URL クエリパラメータ対応で deep link を可能にする (#201) by @keroway in https://github.com/keroway/timeline-dsl/pull/205\n* feat(webui): コンパイル失敗時に直前成功 SVG を保持し stale バッジを表示 (#202) by @keroway in https://github.com/keroway/timeline-dsl/pull/206\n* docs(webui): .tdsl syntax highlighting の grammar 整合方針を明文化する (#203) by @keroway in https://github.com/keroway/timeline-dsl/pull/208\n* feat(wikidata): Wikidata precision の月・日精度を IR に保持する by @keroway in https://github.com/keroway/timeline-dsl/pull/209\n* docs: README.md を英語化し日本語版を README.ja.md として温存する by @keroway in https://github.com/keroway/timeline-dsl/pull/210\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.5.0...v1.6.0"
     },
     {
       "tagName": "v1.5.0",
       "name": "v1.5.0",
       "publishedAt": "2026-05-13T03:21:44Z",
       "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.5.0",
-      "body": ""
+      "body": "## What's Changed\n* feat: 時間値フォールバック演算子（??）の map expr 対応 (#143) by @keroway in https://github.com/keroway/timeline-dsl/pull/168\n* feat: map ブロックに filter 句を追加 (#142) by @keroway in https://github.com/keroway/timeline-dsl/pull/169\n* chore(ci): close 時に in-progress ラベルを自動剥離するワークフローを追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/170\n* feat(ci): PR で .tdsl 変更時に SVG をレンダリングしアーティファクト化する by @keroway in https://github.com/keroway/timeline-dsl/pull/175\n* feat(webui): PNG ダウンロード・クリップボードコピー・Markdown エクスポートを追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/181\n* feat(webui): プレビューにパン/ズーム・凡例・選択詳細パネルを追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/182\n* feat(webui): エディタに補完・検索置換・行折り返し・ショートカット一覧を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/183\n* feat(ci): tdsl-preview ワークフローから PR にプレビューコメントを自動投稿する by @keroway in https://github.com/keroway/timeline-dsl/pull/184\n* feat(action): uses: keroway/timeline-dsl@v1 で呼べる composite action を公開する by @keroway in https://github.com/keroway/timeline-dsl/pull/185\n* test: tdsl-wikidata / tdsl-cli ユニットテストカバレッジを強化 by @keroway in https://github.com/keroway/timeline-dsl/pull/186\n* feat(webui): モバイル対応（レスポンシブ / タブ切り替え UI） by @keroway in https://github.com/keroway/timeline-dsl/pull/187\n* feat(webui): エディタ/プレビューペインのドラッグ分割幅調整機能 by @keroway in https://github.com/keroway/timeline-dsl/pull/188\n* fix(wasm): Auto スケール時の年ラベル重なり解消（short range viewBox 修正） by @keroway in https://github.com/keroway/timeline-dsl/pull/195\n* docs: cargo doc 整備（公開 API ドキュメントの充実） by @keroway in https://github.com/keroway/timeline-dsl/pull/197\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.4.1...v1.5.0"
     },
     {
       "tagName": "v1.4.1",
