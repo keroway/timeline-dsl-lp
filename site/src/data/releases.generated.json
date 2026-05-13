@@ -1,15 +1,22 @@
 {
   "repository": "keroway/timeline-dsl",
   "source": "github-releases",
-  "fetchedAt": "2026-05-11T09:40:01.649Z",
+  "fetchedAt": "2026-05-13T04:04:23.460Z",
   "latest": {
-    "tagName": "v1.4.1",
-    "name": "v1.4.1",
-    "publishedAt": "2026-05-10T18:10:20Z",
-    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.4.1",
-    "body": "Re-release of v1.4.0 binaries to fix incorrect sha256 checksums in homebrew-tap formula."
+    "tagName": "v1.5.0",
+    "name": "v1.5.0",
+    "publishedAt": "2026-05-13T03:21:44Z",
+    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.5.0",
+    "body": ""
   },
   "releases": [
+    {
+      "tagName": "v1.5.0",
+      "name": "v1.5.0",
+      "publishedAt": "2026-05-13T03:21:44Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.5.0",
+      "body": ""
+    },
     {
       "tagName": "v1.4.1",
       "name": "v1.4.1",
