@@ -19,16 +19,18 @@ import { LinkButton } from "@astrojs/starlight/components";
 
 検証が通ると、右パネルに年表の SVG が描画されます。コードを変更するたびにプレビューも更新されます。
 
+コンパイルエラーが発生した場合は、直前に成功したプレビューが維持されたまま「直前の成功時プレビューを表示中」バッジがプレビューパネルに重畳表示されます。エラーを修正すると通常表示に戻ります。
+
 ### サンプル切り替え
 
 ツールバーのプルダウンから組み込みサンプルを選択できます。
 
 | サンプル | 内容 |
 | --- | --- |
-| 最小 timeline | `timeline` + `lane` + `event` の最小構成 |
-| span / event / event_range | 期間表現の基本3要素 |
-| 複数 lane | 複数の lane を持つ年表 |
-| import を含む Web 制限例 | Wikidata import 構文（ブラウザでは実行不可の例） |
+| 中国王朝 | 王朝の `span` / `event` / `event_range` を含む実践例 |
+| 近現代史 | 近現代の `span` / `event_range` を含む実践例 |
+| DSL 基本文法（最小構成） | `span` / `event` / `event_range` の最小構成サンプル |
+| Wikidata インポート（オフライン不可） | Wikidata import 構文の参考例（WebUI では実行不可） |
 
 ### `.tdsl` ダウンロード
 
