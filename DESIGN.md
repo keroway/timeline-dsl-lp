@@ -1,5 +1,7 @@
 # DESIGN.md
 
+> **English summary**: This document records the design decisions for the `timeline-dsl-lp` site (LP + Docs). Three core principles guide every decision: **Source as truth** (the site reflects Timeline DSL's text-driven philosophy — code, commands, and rendered output appear side-by-side); **Editor first** (primary audience is developers and educators, so readability and CLI output fidelity take priority over decoration); **Calm density** (sections stack in a fixed order — hero → features → workflow → use cases → install — with one message per section). Colors are defined as CSS custom properties in `site/src/styles/global.css`; always reuse existing tokens before adding new ones. Typography relies on the Starlight system font stack with `--font-code` for monospace. When in doubt, choose honesty over spectacle and code legibility over visual flourish.
+
 このドキュメントは `timeline-dsl-lp`（LP / Docs サイト）の現行デザイン決定を言語化したものです。新規ブランドの再定義ではなく、`site/src/styles/global.css` と各ページに既に組み込まれている決定を、後続の改善が同じ方向を向けるように整理することを目的としています。
 
 対象は LP `site/` のデザイン指針です。Timeline DSL 本体（CLI / WASM レンダラー / DSL 仕様）の機能設計は対象外です。本体側の出力 SVG と LP の見た目を整合させる **マッピング規則** だけは含めます。
