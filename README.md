@@ -1,5 +1,8 @@
 # timeline-dsl-lp
-Timeline DSL の LP/documentサイト
+
+[日本語 README →](./README.ja.md)
+
+LP / documentation site for [Timeline DSL](https://timeline-dsl.pages.dev).
 
 ## Site
 
@@ -17,7 +20,7 @@ pnpm preview
 
 ## Deploy
 
-Cloudflare Pages の運用方式は Cloudflare の GitHub integration に固定します。GitHub Actions は CI として `pnpm build` を確認し、公開と Preview URL の作成は Cloudflare Pages に任せます。
+Deployment is handled by Cloudflare Pages via GitHub integration. GitHub Actions runs `pnpm build` as CI only; publishing and Preview URL creation are delegated to Cloudflare Pages.
 
 Cloudflare Pages project:
 
@@ -26,24 +29,24 @@ Cloudflare Pages project:
 - Build command: `pnpm build`
 - Build output directory: `dist`
 - Root directory: `site`
-- Deploy command: 設定項目が出ない
+- Deploy command: (no setting shown)
 
 Workflows:
 
-- `Site build`: PR、`main` push、手動実行で `pnpm build` を実行する CI。
-- `Remove in-progress label on close`: PR が merge されたとき、本文の `Closes #N` / `Fixes #N` / `Resolves #N` で参照された issue から `in-progress` ラベルを除去する。Issue が直接 close されたときも当該 issue から除去する。手動実行時は `issue_number` を指定して任意の issue から除去できる。
+- `Site build`: Runs `pnpm build` on PR, `main` push, and manual dispatch as CI.
+- `Remove in-progress label on close`: When a PR is merged, removes the `in-progress` label from issues referenced by `Closes #N` / `Fixes #N` / `Resolves #N` in the PR body. Also removes the label when an issue is directly closed. On manual dispatch, specify `issue_number` to remove the label from any issue.
 
 Event policy:
 
-- `pull_request`: GitHub Actions の `Site build` と Cloudflare Pages の Preview deployment を実行する。レビュー時は Cloudflare Pages Preview URL で `/` と `/docs/` を確認する。
-- `push` to `main`: Cloudflare Pages が production branch `main` として https://timeline-dsl.pages.dev にデプロイする。
-- `release.published`: Cloudflare Pages の GitHub integration では直接の deploy trigger にしない。リリースは `main` への merge 後、production deployment が成功してから公開する。
-- `workflow_dispatch`: GitHub Actions の CI を手動再実行する用途に限定する。公開の再実行は Cloudflare Pages dashboard の Retry deployment を使う。
+- `pull_request`: Runs GitHub Actions `Site build` and Cloudflare Pages Preview deployment. During review, verify `/` and `/docs/` on the Cloudflare Pages Preview URL.
+- `push` to `main`: Cloudflare Pages deploys to https://timeline-dsl.pages.dev as the production branch.
+- `release.published`: Not used as a direct deploy trigger via the Cloudflare Pages GitHub integration. Releases are published after a `main` merge once the production deployment succeeds.
+- `workflow_dispatch`: Limited to manually re-running GitHub Actions CI. To re-run a deployment, use the Retry deployment button in the Cloudflare Pages dashboard.
 
-Cloudflare の設定画面で Deploy command が必須になっている場合や、非本番ブランチのデプロイコマンドが表示されている場合は、Pages ではなく Workers Builds の設定です。このサイトは Workers ではなく Pages project として、Cloudflare dashboard の Pages から GitHub repository を import します。
+If the Cloudflare settings UI requires a Deploy command or shows a deploy command for non-production branches, you are looking at Workers Builds, not Pages. This site is a Pages project — import the GitHub repository from Pages in the Cloudflare dashboard, not Workers.
 
 ## WASM bundle
 
-Playground と runnable docs からは `site/src/lib/tdsl-wasm.ts` だけを経由して Timeline DSL WASM を呼び出します。現時点では本体 repo の npm package / release artifact がまだ固定されていないため、`wasm-pack --target web` の生成物を `site/public/wasm/` に vendoring します。
+All calls to the Timeline DSL WASM from the Playground and runnable docs go through `site/src/lib/tdsl-wasm.ts` only. Because the npm package / release artifact from the main repository is not yet stable, the output of `wasm-pack --target web` is vendored in `site/public/wasm/`.
 
-更新時は本体 repo の `crates/tdsl-wasm` を `wasm-pack build` し、`apps/webui/src/wasm/tdsl_wasm.{js,d.ts}`、`tdsl_wasm_bg.wasm`、`package.json` を `site/public/wasm/` に同期します。`pnpm build` は `check_source` と `render_svg_from_source` の smoke を先に実行します。
+To update: build `crates/tdsl-wasm` in the main repo with `wasm-pack build`, then sync `apps/webui/src/wasm/tdsl_wasm.{js,d.ts}`, `tdsl_wasm_bg.wasm`, and `package.json` into `site/public/wasm/`. `pnpm build` runs `check_source` and `render_svg_from_source` smoke tests before the main build.
