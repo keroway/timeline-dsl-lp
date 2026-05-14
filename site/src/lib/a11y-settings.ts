@@ -1,5 +1,12 @@
 export type A11yTextSize = "normal" | "large" | "extra-large" | "xx-large";
 
+export interface A11yMessages {
+  reducedMotion: { on: string; off: string };
+  highContrast: { on: string; off: string };
+  textSpacing: { on: string; off: string };
+  textSize: (size: A11yTextSize) => string;
+}
+
 export interface A11ySettings {
   reducedMotion: boolean;
   highContrast: boolean;
@@ -91,12 +98,15 @@ function announce(menuEl: HTMLElement, text: string) {
 interface InitOpts {
   toggleSelector: string;
   menuId: string;
+  messages?: A11yMessages;
 }
 
-export function initA11yMenu({ toggleSelector, menuId }: InitOpts): void {
+export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): void {
   const toggle = document.querySelector<HTMLButtonElement>(toggleSelector);
   const menu = document.getElementById(menuId);
   if (!toggle || !menu) return;
+
+  const msgs = messages ?? MESSAGES;
 
   const reducedMotionInput = menu.querySelector<HTMLInputElement>("[data-a11y-reduced-motion]");
   const highContrastInput = menu.querySelector<HTMLInputElement>("[data-a11y-high-contrast]");
@@ -168,7 +178,7 @@ export function initA11yMenu({ toggleSelector, menuId }: InitOpts): void {
     saveSettings(next);
     applySettings(next);
     if (prev.reducedMotion !== next.reducedMotion) {
-      announce(menu, MESSAGES.reducedMotion[next.reducedMotion ? "on" : "off"]);
+      announce(menu, msgs.reducedMotion[next.reducedMotion ? "on" : "off"]);
     }
   });
 
@@ -178,7 +188,7 @@ export function initA11yMenu({ toggleSelector, menuId }: InitOpts): void {
     saveSettings(next);
     applySettings(next);
     if (prev.highContrast !== next.highContrast) {
-      announce(menu, MESSAGES.highContrast[next.highContrast ? "on" : "off"]);
+      announce(menu, msgs.highContrast[next.highContrast ? "on" : "off"]);
     }
   });
 
@@ -188,7 +198,7 @@ export function initA11yMenu({ toggleSelector, menuId }: InitOpts): void {
     saveSettings(next);
     applySettings(next);
     if (prev.textSpacing !== next.textSpacing) {
-      announce(menu, MESSAGES.textSpacing[next.textSpacing ? "on" : "off"]);
+      announce(menu, msgs.textSpacing[next.textSpacing ? "on" : "off"]);
     }
   });
 
@@ -199,7 +209,7 @@ export function initA11yMenu({ toggleSelector, menuId }: InitOpts): void {
     saveSettings(next);
     applySettings(next);
     if (prev.textSize !== next.textSize) {
-      announce(menu, MESSAGES.textSize(next.textSize));
+      announce(menu, msgs.textSize(next.textSize));
     }
   });
 }
