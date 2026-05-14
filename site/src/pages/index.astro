@@ -1,9 +1,6 @@
 ---
 import { Code } from "astro:components";
-import SocialMeta from "../components/SocialMeta.astro";
-import SiteHeader from "../components/SiteHeader.astro";
-import SiteFooter from "../components/SiteFooter.astro";
-import "../styles/global.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
 import releasesData from "../data/releases.generated.json";
 import tdslGrammar from "../lib/tdsl.tmLanguage.json" with { type: "json" };
 
@@ -191,21 +188,7 @@ event incident 1042 "北方遠征";
 event_range incident 1130..1137 "継承戦争";`;
 ---
 
-<!doctype html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content={pageDescription}
-    />
-    <SocialMeta title={pageTitle} description={pageDescription} pathname="/" />
-    <title>{pageTitle}</title>
-  </head>
-  <body>
-    <div class="page-shell">
-      <SiteHeader currentPath="/" />
+<BaseLayout title={pageTitle} description={pageDescription} pathname="/" version={latest?.tagName}>
 
       <main>
         <section class="hero">
@@ -472,9 +455,8 @@ event_range incident 1130..1137 "継承戦争";`;
         </section>
       </main>
 
-      <SiteFooter version={latest?.tagName} />
-    </div>
-    <script>
+  <Fragment slot="body-end">
+  <script>
       const copyButtons = document.querySelectorAll("[data-copy-target]");
 
       const copyText = async (text: string) => {
@@ -621,6 +603,6 @@ event_range incident 1130..1137 "継承戦争";`;
           queueRevealCheck();
         }
       }
-    </script>
-  </body>
-</html>
+  </script>
+  </Fragment>
+</BaseLayout>

@@ -1,8 +1,5 @@
 ---
-import SocialMeta from "../components/SocialMeta.astro";
-import SiteHeader from "../components/SiteHeader.astro";
-import SiteFooter from "../components/SiteFooter.astro";
-import "../styles/global.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import rehypeSanitize from "rehype-sanitize";
 import releasesData from "../data/releases.generated.json";
@@ -47,21 +44,7 @@ const renderedReleases = await Promise.all(
 );
 ---
 
-<!doctype html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content={pageDescription}
-    />
-    <SocialMeta title={pageTitle} description={pageDescription} pathname="/changelog/" />
-    <title>{pageTitle}</title>
-  </head>
-  <body>
-    <div class="page-shell">
-      <SiteHeader currentPath="/changelog/" />
+<BaseLayout title={pageTitle} description={pageDescription} pathname="/changelog/" version={latest?.tagName || releases[0]?.tagName}>
 
       <main>
         <section class="page-hero">
@@ -119,7 +102,4 @@ const renderedReleases = await Promise.all(
         </section>
       </main>
 
-      <SiteFooter currentPath="/changelog/" version={latest?.tagName || releases[0]?.tagName} />
-    </div>
-  </body>
-</html>
+</BaseLayout>
