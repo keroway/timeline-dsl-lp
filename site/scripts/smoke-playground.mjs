@@ -137,11 +137,12 @@ async function smokeBrowserFlow(rootUrl) {
     await context.close();
     await smokeVisibleWasmFailure(rootUrl, browser);
     await smokeA11yMenu(rootUrl, browser);
+    await smokeLocaleToggle(rootUrl, browser);
   } finally {
     await browser.close();
   }
 
-  console.log("Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, and a11y menu.");
+  console.log("Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, and locale toggle.");
 }
 
 async function smokeA11yMenu(rootUrl, browser) {
@@ -270,6 +271,76 @@ async function smokeVisibleWasmFailure(rootUrl, browser) {
     { timeout: 5000 },
   );
 
+  await context.close();
+}
+
+async function smokeLocaleToggle(rootUrl, browser) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await page.goto(`${rootUrl}${PLAYGROUND_PATH}`, { waitUntil: "networkidle" });
+
+  const langToggle = page.locator(".lang-toggle").first();
+
+  // lang-toggle ボタンが表示されていること
+  if (await langToggle.isHidden()) {
+    throw new Error("lang-toggle button should be visible on playground page");
+  }
+
+  // キーボードアクセシビリティ: Tab で到達できること
+  const isTabReachable = await page.evaluate(() => {
+    const el = document.querySelector(".lang-toggle");
+    return el instanceof HTMLButtonElement && !el.disabled;
+  });
+  if (!isTabReachable) {
+    throw new Error("lang-toggle should be a non-disabled button (keyboard accessible)");
+  }
+
+  // aria-label が設定されていること
+  const ariaLabel = await langToggle.getAttribute("aria-label");
+  if (!ariaLabel) {
+    throw new Error("lang-toggle should have an aria-label attribute");
+  }
+
+  // クリック時に localStorage へ tdsl-locale が保存されること（実際の遷移はテスト外）
+  await page.evaluate(() => localStorage.removeItem("tdsl-locale"));
+
+  // クリック前に location.assign をモックして遷移を防ぐ
+  await page.evaluate(() => {
+    window.__langToggleTarget = null;
+    const orig = window.location.assign.bind(window.location);
+    window.__origAssign = orig;
+    Object.defineProperty(window.location, "assign", {
+      value: (url) => { window.__langToggleTarget = url; },
+      writable: true,
+      configurable: true,
+    });
+  });
+
+  await langToggle.click();
+
+  // localStorage に tdsl-locale が保存されること
+  const stored = await page.evaluate(() => localStorage.getItem("tdsl-locale"));
+  if (!stored) {
+    throw new Error("lang-toggle click should save tdsl-locale to localStorage");
+  }
+
+  // /playground/ は英語版が未提供なので /en/ に遷移すること
+  const target = await page.evaluate(() => window.__langToggleTarget);
+  if (target !== "/en/") {
+    throw new Error(`lang-toggle from /playground/ should redirect to /en/, got: ${target}`);
+  }
+
+  // aria-live で未提供メッセージが通知されること
+  const liveText = await page.evaluate(() => {
+    return document.querySelector("[data-a11y-live]")?.textContent ?? "";
+  });
+  if (!liveText) {
+    throw new Error("lang-toggle should announce unavailability via [data-a11y-live]");
+  }
+
+  // cleanup
+  await page.evaluate(() => localStorage.removeItem("tdsl-locale"));
   await context.close();
 }
 

@@ -6,6 +6,8 @@ export const en = {
   "nav.docs": "Docs",
   "nav.changelog": "Changelog",
   "nav.github": "GitHub",
+  "nav.lang_toggle.aria_label": "Switch language to Japanese",
+  "nav.lang_toggle.unavailable": "This page is not available in English. Redirecting to the top page.",
   "footer.copyright": "© 2024 keroway",
   "footer.links": "Footer navigation",
   "a11y.menu.title": "Accessibility settings",
