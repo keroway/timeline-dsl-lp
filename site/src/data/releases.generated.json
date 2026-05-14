@@ -1,15 +1,22 @@
 {
   "repository": "keroway/timeline-dsl",
   "source": "github-releases",
-  "fetchedAt": "2026-05-13T12:20:13.252Z",
+  "fetchedAt": "2026-05-14T09:35:03.300Z",
   "latest": {
-    "tagName": "v1.6.0",
-    "name": "v1.6.0",
-    "publishedAt": "2026-05-13T10:22:31Z",
-    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.6.0",
-    "body": "## What's Changed\n* fix(render): 年ラベル間隔を scale とラベル幅から計算し重なりを防ぐ by @keroway in https://github.com/keroway/timeline-dsl/pull/199\n* feat(webui): examples.ts にサンプルを拡充し文法カバレッジを広げる (#200) by @keroway in https://github.com/keroway/timeline-dsl/pull/204\n* feat(webui): ?source= URL クエリパラメータ対応で deep link を可能にする (#201) by @keroway in https://github.com/keroway/timeline-dsl/pull/205\n* feat(webui): コンパイル失敗時に直前成功 SVG を保持し stale バッジを表示 (#202) by @keroway in https://github.com/keroway/timeline-dsl/pull/206\n* docs(webui): .tdsl syntax highlighting の grammar 整合方針を明文化する (#203) by @keroway in https://github.com/keroway/timeline-dsl/pull/208\n* feat(wikidata): Wikidata precision の月・日精度を IR に保持する by @keroway in https://github.com/keroway/timeline-dsl/pull/209\n* docs: README.md を英語化し日本語版を README.ja.md として温存する by @keroway in https://github.com/keroway/timeline-dsl/pull/210\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.5.0...v1.6.0"
+    "tagName": "v1.7.0",
+    "name": "v1.7.0",
+    "publishedAt": "2026-05-14T06:42:17Z",
+    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.7.0",
+    "body": "## What's Changed\n* feat(webui): テンプレートギャラリーモーダルで examples/*.tdsl を全件ロード可能にする by @keroway in https://github.com/keroway/timeline-dsl/pull/217\n* feat(render): 月・日精度のタイムライン軸表示対応 by @keroway in https://github.com/keroway/timeline-dsl/pull/218\n* chore: プロジェクト用 Claude Code plugin 設定を追加する by @keroway in https://github.com/keroway/timeline-dsl/pull/219\n* chore(webui): lang-tdsl/keywords.ts を真実源として tmLanguage のキーワードをビルド時自動生成する by @keroway in https://github.com/keroway/timeline-dsl/pull/220\n* chore: v1.7.0 リリース（バージョンバンプ・CHANGELOG 更新） by @keroway in https://github.com/keroway/timeline-dsl/pull/221\n* fix(ci): cross ビルド後の aarch64 Linux バイナリに strip を実行しないよう修正 by @keroway in https://github.com/keroway/timeline-dsl/pull/222\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.6.0...v1.7.0"
   },
   "releases": [
+    {
+      "tagName": "v1.7.0",
+      "name": "v1.7.0",
+      "publishedAt": "2026-05-14T06:42:17Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.7.0",
+      "body": "## What's Changed\n* feat(webui): テンプレートギャラリーモーダルで examples/*.tdsl を全件ロード可能にする by @keroway in https://github.com/keroway/timeline-dsl/pull/217\n* feat(render): 月・日精度のタイムライン軸表示対応 by @keroway in https://github.com/keroway/timeline-dsl/pull/218\n* chore: プロジェクト用 Claude Code plugin 設定を追加する by @keroway in https://github.com/keroway/timeline-dsl/pull/219\n* chore(webui): lang-tdsl/keywords.ts を真実源として tmLanguage のキーワードをビルド時自動生成する by @keroway in https://github.com/keroway/timeline-dsl/pull/220\n* chore: v1.7.0 リリース（バージョンバンプ・CHANGELOG 更新） by @keroway in https://github.com/keroway/timeline-dsl/pull/221\n* fix(ci): cross ビルド後の aarch64 Linux バイナリに strip を実行しないよう修正 by @keroway in https://github.com/keroway/timeline-dsl/pull/222\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.6.0...v1.7.0"
+    },
     {
       "tagName": "v1.6.0",
       "name": "v1.6.0",
