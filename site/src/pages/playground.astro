@@ -1,8 +1,5 @@
 ---
-import SocialMeta from "../components/SocialMeta.astro";
-import SiteHeader from "../components/SiteHeader.astro";
-import SiteFooter from "../components/SiteFooter.astro";
-import "../styles/global.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
 
 const pageTitle = "Playground — Timeline DSL";
 const pageDescription =
@@ -98,18 +95,7 @@ map wd.han_dynasty to span {
 ] as const;
 ---
 
-<!doctype html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={pageDescription} />
-    <SocialMeta title={pageTitle} description={pageDescription} pathname="/playground/" />
-    <title>{pageTitle}</title>
-  </head>
-  <body>
-    <div class="page-shell playground-shell">
-      <SiteHeader currentPath="/playground/" />
+<BaseLayout title={pageTitle} description={pageDescription} pathname="/playground/" shellClass="playground-shell">
 
       <main class="playground-main" data-playground-root data-playground-state="loading">
         <section class="playground-head" aria-labelledby="playground-heading">
@@ -218,9 +204,7 @@ map wd.han_dynasty to span {
         </section>
       </main>
 
-      <SiteFooter currentPath="/playground/" />
-    </div>
-
+  <Fragment slot="body-end">
     <div class="tdsl-tooltip" id="tdsl-tooltip" role="tooltip" aria-hidden="true"></div>
     <script is:inline type="application/json" id="playground-samples" set:html={JSON.stringify(samples)} />
     <script>
@@ -581,5 +565,5 @@ map wd.han_dynasty to span {
 
       preview?.addEventListener("pointerleave", hideTooltip);
     </script>
-  </body>
-</html>
+  </Fragment>
+</BaseLayout>
