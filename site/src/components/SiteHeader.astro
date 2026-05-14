@@ -1,9 +1,14 @@
 ---
+import { getT, type Locale } from "../i18n/index";
+
 interface Props {
   currentPath?: string;
 }
 
 const { currentPath = "" } = Astro.props;
+const locale = (Astro.currentLocale ?? "ja") as Locale;
+const t = getT(locale);
+const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
 ---
 
 <header class="site-header">
@@ -20,7 +25,13 @@ const { currentPath = "" } = Astro.props;
       <a href="/docs/">Docs</a>
       <a href="/changelog/" aria-current={currentPath === "/changelog/" ? "page" : undefined}>Changelog</a>
       <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
-      <button class="a11y-toggle" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="a11y-menu" aria-label="アクセシビリティ設定">
+      <button
+        class="lang-toggle"
+        type="button"
+        aria-label={t("nav.lang_toggle.aria_label")}
+        data-unavailable-msg={t("nav.lang_toggle.unavailable")}
+      >{targetLocaleLabel}</button>
+      <button class="a11y-toggle" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="a11y-menu" aria-label={t("a11y.menu.toggle_aria_label")}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -169,6 +180,31 @@ const { currentPath = "" } = Astro.props;
 </style>
 
 <script>
+  import { getLocaleFromUrl, getT } from "../i18n/index";
+  import type { A11yTextSize } from "../lib/a11y-settings";
   import { initA11yMenu } from "../lib/a11y-settings";
-  initA11yMenu({ toggleSelector: ".a11y-toggle", menuId: "a11y-menu" });
+  import { initLangToggle } from "../lib/i18n-toggle";
+
+  const locale = getLocaleFromUrl(new URL(window.location.href));
+  const t = getT(locale);
+
+  const TEXT_SIZE_KEYS: Record<A11yTextSize, Parameters<typeof t>[0]> = {
+    normal: "a11y.text_size.normal",
+    large: "a11y.text_size.large",
+    "extra-large": "a11y.text_size.extra_large",
+    "xx-large": "a11y.text_size.xx_large",
+  };
+
+  initA11yMenu({
+    toggleSelector: ".a11y-toggle",
+    menuId: "a11y-menu",
+    messages: {
+      reducedMotion: { on: t("a11y.live.reduced_motion_on"), off: t("a11y.live.reduced_motion_off") },
+      highContrast: { on: t("a11y.live.high_contrast_on"), off: t("a11y.live.high_contrast_off") },
+      textSpacing: { on: t("a11y.live.text_spacing_on"), off: t("a11y.live.text_spacing_off") },
+      textSize: (size: A11yTextSize) =>
+        t("a11y.live.text_size").replace("{size}", t(TEXT_SIZE_KEYS[size])),
+    },
+  });
+  initLangToggle({ buttonSelector: ".lang-toggle", currentLocale: locale });
 </script>
