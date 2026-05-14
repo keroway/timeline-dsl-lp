@@ -1,0 +1,30 @@
+import { ja, type Dictionary, type DictionaryKeys } from "./ja";
+import { en } from "./en";
+
+export type { Dictionary, DictionaryKeys };
+export { ja, en };
+
+const LOCALES = ["ja", "en"] as const;
+export type Locale = (typeof LOCALES)[number];
+
+const dictionaries: Record<Locale, Dictionary> = { ja, en };
+
+export function isLocale(value: unknown): value is Locale {
+  return LOCALES.includes(value as Locale);
+}
+
+export function getLocaleFromUrl(url: URL): Locale {
+  const [, first] = url.pathname.split("/");
+  return isLocale(first) ? first : "ja";
+}
+
+export function localizedPath(path: string, locale: Locale): string {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  if (locale === "ja") return normalized;
+  return `/en${normalized}`;
+}
+
+export function getT(locale: Locale): (key: DictionaryKeys) => string {
+  const dict = dictionaries[locale];
+  return (key) => dict[key];
+}

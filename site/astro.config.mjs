@@ -18,7 +18,10 @@ export default defineConfig({
     starlight({
       title: "Timeline DSL",
       description: "Timeline DSL の LP とドキュメント",
-      defaultLocale: "ja",
+      locales: {
+        root: { label: "日本語", lang: "ja" },
+        en: { label: "English" },
+      },
       favicon: "/favicon.svg",
       social: [
         {
@@ -34,35 +37,39 @@ export default defineConfig({
       sidebar: [
         {
           label: "はじめる",
+          translations: { en: "Get Started" },
           items: [
-            { label: "概要", slug: "docs" },
+            { label: "概要", translations: { en: "Overview" }, slug: "docs" },
             { label: "Playground", slug: "docs/playground" },
-            { label: "インストール", slug: "docs/installation" },
+            { label: "インストール", translations: { en: "Installation" }, slug: "docs/installation" },
             { label: "Quick Start", slug: "docs/quick-start" },
           ],
         },
         {
           label: "文法",
-          items: [{ label: "文法とサンプル", slug: "docs/grammar" }],
+          translations: { en: "Grammar" },
+          items: [{ label: "文法とサンプル", translations: { en: "Grammar & Examples" }, slug: "docs/grammar" }],
         },
         {
           label: "CLI",
           items: [
             { label: "Commands", slug: "docs/commands" },
             { label: "Configuration", slug: "docs/configuration" },
-            { label: "CIで検証", slug: "docs/github-actions" },
+            { label: "CIで検証", translations: { en: "Validate in CI" }, slug: "docs/github-actions" },
             { label: "Homebrew", slug: "docs/homebrew" },
           ],
         },
         {
           label: "開発者向け",
+          translations: { en: "For Developers" },
           items: [
-            { label: "コントリビューター向け", slug: "docs/contributing" },
-            { label: "サイトのデプロイ", slug: "docs/deployment" },
+            { label: "コントリビューター向け", translations: { en: "Contributing" }, slug: "docs/contributing" },
+            { label: "サイトのデプロイ", translations: { en: "Site Deployment" }, slug: "docs/deployment" },
           ],
         },
         {
           label: "サポート",
+          translations: { en: "Support" },
           items: [
             { label: "Troubleshooting", slug: "docs/troubleshooting" },
             { label: "FAQ", slug: "docs/faq" },
