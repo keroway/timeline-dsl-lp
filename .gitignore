@@ -3,8 +3,9 @@ dist/
 .astro/
 .DS_Store
 
-# Local agent and browser automation state
-.claude/
+# Local agent and browser automation state (.claude/settings.json is tracked)
+.claude/*
+!.claude/settings.json
 .playwright-mcp/
 
 # Generated verification artifacts
