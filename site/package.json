@@ -13,6 +13,8 @@
     "smoke:wasm": "node scripts/smoke-tdsl-wasm.mjs",
     "smoke:playground": "node scripts/smoke-playground.mjs",
     "smoke:playground:browser": "node scripts/smoke-playground.mjs --browser",
+    "smoke:i18n": "node scripts/smoke-i18n.mjs",
+    "smoke:i18n:browser": "node scripts/smoke-i18n.mjs --browser",
     "build": "pnpm smoke:wasm && astro check && astro build",
     "preview": "astro preview"
   },
