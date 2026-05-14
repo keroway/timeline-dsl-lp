@@ -203,6 +203,24 @@ map wd.items to span {
 
 `filter` に使える演算子は `==`、`!=`、`<`、`<=`、`>`、`>=`、`&&`、`||`、`!`、`null`、`claim()` です。複数の `filter` を並べると AND 条件として扱われます。
 
+## 月・日精度のタイムライン軸表示
+
+v1.7.0 以降、タイムライン軸は月・日単位の精度に対応しています。Wikidata から取り込んだ日付に月や日の情報が含まれる場合、年だけでなく月・日の目盛りをもとに位置が決まります。
+
+```tdsl
+timeline "近現代史" {
+    title "近現代史";
+    unit year;
+    range 1900..2000;
+    calendar proleptic_gregorian;
+}
+
+lane "出来事" as events { kind custom; order 10; }
+event events 1945 "第二次世界大戦終結" {};
+```
+
+静的な `event` は年単位の指定ですが、Wikidata クレーム由来の値が月・日精度を持つ場合、タイムライン軸上で正確な位置に配置されます。CLIで `tdsl render` した出力で確認できます。
+
 ## map の `??`（フォールバック）演算子
 
 `label` だけでなく `start`、`end`、`time` にも `??` 演算子を使えます。左辺が null のとき右辺を試します。
