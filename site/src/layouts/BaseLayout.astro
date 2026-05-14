@@ -1,0 +1,50 @@
+---
+import SocialMeta from "../components/SocialMeta.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  pathname: string;
+  locale?: string;
+  ogImagePath?: string;
+  version?: string | null;
+  shellClass?: string;
+}
+
+const {
+  title,
+  description,
+  pathname,
+  locale = "ja",
+  ogImagePath,
+  version,
+  shellClass,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <SocialMeta
+      title={title}
+      description={description}
+      pathname={pathname}
+      imagePath={ogImagePath}
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class:list={["page-shell", shellClass]}>
+      <SiteHeader currentPath={pathname} />
+      <slot />
+      <SiteFooter currentPath={pathname} version={version} />
+    </div>
+    <slot name="body-end" />
+  </body>
+</html>
