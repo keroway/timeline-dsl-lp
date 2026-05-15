@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config";
+import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import tdslGrammar from "./src/lib/tdsl.tmLanguage.json" with { type: "json" };
 
@@ -15,6 +16,15 @@ export default defineConfig({
     },
   },
   integrations: [
+    sitemap({
+      i18n: {
+        defaultLocale: "ja",
+        locales: {
+          ja: "ja",
+          en: "en",
+        },
+      },
+    }),
     starlight({
       title: "Timeline DSL",
       description: "Timeline DSL の LP とドキュメント",

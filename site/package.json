@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.1.1",
+    "@astrojs/sitemap": "^3.7.2",
     "@astrojs/starlight": "0.39.2",
     "@codemirror/commands": "^6.10.3",
     "@codemirror/language": "^6.12.3",

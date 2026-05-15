@@ -11,6 +11,9 @@ importers:
       '@astrojs/markdown-remark':
         specifier: 7.1.1
         version: 7.1.1
+      '@astrojs/sitemap':
+        specifier: ^3.7.2
+        version: 3.7.2
       '@astrojs/starlight':
         specifier: 0.39.2
         version: 0.39.2(astro@6.3.1(@types/node@24.12.3)(rollup@4.60.3)(yaml@2.8.4))(typescript@6.0.3)
