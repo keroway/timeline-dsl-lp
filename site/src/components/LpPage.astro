@@ -177,7 +177,7 @@ const heroDslExample = t("lp.hero.dsl_example");
 const pathname = locale === "ja" ? "/" : "/en/";
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} pathname={pathname} locale={locale} version={latest?.tagName}>
+<BaseLayout title={pageTitle} description={pageDescription} pathname={pathname} locale={locale} showAlternates={true} version={latest?.tagName}>
 
       <main>
         <section class="hero">

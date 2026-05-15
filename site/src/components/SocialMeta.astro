@@ -4,6 +4,7 @@ type Props = {
   description: string;
   pathname: string;
   imagePath?: string;
+  locale?: string;
 };
 
 const {
@@ -11,6 +12,7 @@ const {
   description,
   pathname,
   imagePath = "/og/timeline-dsl.svg",
+  locale = "ja",
 } = Astro.props;
 
 const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
@@ -29,6 +31,7 @@ const imageUrl = new URL(imagePath, siteUrl).toString();
 <meta property="og:url" content={pageUrl} />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Timeline DSL" />
+<meta property="og:locale" content={locale === "en" ? "en_US" : "ja_JP"} />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
