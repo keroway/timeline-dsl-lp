@@ -16,6 +16,7 @@ export function check_source(source: string): string;
 
 /**
  * Compile TDSL source to IR (JSON string), without Wikidata resolution.
+ * `source_span` fields are populated for each static item (for bidirectional jump).
  * Returns Ok(json_string) or Err(error_message).
  */
 export function compile_to_ir(source: string): string;
@@ -35,6 +36,8 @@ export function render_html_from_source(source: string): string;
  * Render SVG from TDSL source (static items only).
  * `scale` controls pixels-per-year. Pass `0.0` (or negative) to auto-calculate
  * from the IR's `meta.range` (clamped to `0.5..=50.0`).
+ * `source_span` (line numbers) are embedded as `data-line` attributes in the SVG
+ * for bidirectional editor↔preview jump.
  * Returns Ok(svg_string) or Err(error_message).
  */
 export function render_svg_from_source(source: string, scale: number): string;
