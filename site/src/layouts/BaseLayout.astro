@@ -12,6 +12,7 @@ interface Props {
   ogImagePath?: string;
   version?: string | null;
   shellClass?: string;
+  showAlternates?: boolean;
 }
 
 const {
@@ -22,7 +23,24 @@ const {
   ogImagePath,
   version,
   shellClass,
+  showAlternates = false,
 } = Astro.props;
+
+const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+// pathname が "/en/" で始まる場合はプレフィックスを取り除く
+const rootPath = pathname.startsWith("/en/") ? pathname.slice(3) : pathname;
+const jaUrl = new URL(rootPath, siteUrl).toString();
+const enUrl = new URL(`/en${rootPath}`, siteUrl).toString();
+const canonicalUrl = locale === "en" ? enUrl : jaUrl;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  url: new URL(pathname, siteUrl).toString(),
+  name: title,
+  description: description,
+  inLanguage: locale === "en" ? "en" : "ja",
+};
 ---
 
 <!doctype html>
@@ -36,7 +54,17 @@ const {
       description={description}
       pathname={pathname}
       imagePath={ogImagePath}
+      locale={locale}
     />
+    <link rel="canonical" href={canonicalUrl} />
+    {showAlternates && (
+      <>
+        <link rel="alternate" hreflang="ja" href={jaUrl} />
+        <link rel="alternate" hreflang="en" href={enUrl} />
+        <link rel="alternate" hreflang="x-default" href={jaUrl} />
+      </>
+    )}
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <title>{title}</title>
   </head>
   <body>
