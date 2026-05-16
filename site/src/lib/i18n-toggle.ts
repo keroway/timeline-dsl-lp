@@ -1,7 +1,7 @@
 export const LOCALE_KEY = "tdsl-locale";
 
 // Pages without an /en/ version redirect to the English LP root
-const EN_UNAVAILABLE_PREFIXES = ["/docs/"];
+const EN_UNAVAILABLE_PREFIXES: string[] = [];
 
 interface InitOpts {
   buttonSelector: string;
