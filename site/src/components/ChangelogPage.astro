@@ -1,0 +1,120 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
+import rehypeSanitize from "rehype-sanitize";
+import releasesData from "../data/releases.generated.json";
+import { getT, type Locale } from "../i18n/index";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+
+type Release = {
+  tagName: string;
+  name: string;
+  publishedAt: string;
+  url: string;
+  body: string;
+};
+
+const releases = releasesData.releases as Release[];
+const latest = releasesData.latest as Release | null;
+
+const pathname = locale === "ja" ? "/changelog/" : "/en/changelog/";
+
+const dateLocale = locale === "ja" ? "ja-JP" : "en-US";
+const markdownProcessor = await createMarkdownProcessor({
+  gfm: true,
+  rehypePlugins: [rehypeSanitize],
+  syntaxHighlight: false,
+});
+
+const formatDate = (value: string | null | undefined) => {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat(dateLocale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+};
+
+const fetchedAt = formatDate(releasesData.fetchedAt) || t("changelog.fetched_at.unknown");
+const renderedReleases = await Promise.all(
+  releases.map(async (release) => ({
+    ...release,
+    bodyHtml: release.body
+      ? (await markdownProcessor.render(release.body)).code
+      : "",
+  })),
+);
+---
+
+<BaseLayout
+  title={t("changelog.page.title")}
+  description={t("changelog.page.description")}
+  pathname={pathname}
+  locale={locale}
+  showAlternates={true}
+  version={latest?.tagName || releases[0]?.tagName}
+>
+
+  <main>
+    <section class="page-hero">
+      <div class="page-hero-inner">
+        <p class="eyebrow">{t("changelog.eyebrow")}</p>
+        <h1>Changelog</h1>
+        <p class="lead">
+          {releases.length > 0
+            ? t("changelog.lead.has_data").replace("{repository}", releasesData.repository)
+            : t("changelog.lead.no_data")}
+        </p>
+        <p class="release-meta">{t("changelog.last_fetched").replace("{date}", fetchedAt)}</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="releases-heading">
+      <div class="section-header">
+        <h2 id="releases-heading">Releases</h2>
+      </div>
+
+      {renderedReleases.length > 0 ? (
+        <div class="release-list">
+          {renderedReleases.map((release) => (
+            <article class="release-item">
+              <div class="release-item-header">
+                <div>
+                  <p class="release-version">{release.tagName}</p>
+                  <h3>{release.name || release.tagName}</h3>
+                </div>
+                <time datetime={release.publishedAt}>
+                  {formatDate(release.publishedAt) || t("changelog.release.date_unknown")}
+                </time>
+              </div>
+              {release.body ? (
+                <div class="release-notes" set:html={release.bodyHtml} />
+              ) : (
+                <p class="empty-copy">{t("changelog.release.no_body")}</p>
+              )}
+              {release.url && (
+                <a class="release-link" href={release.url}>
+                  {t("changelog.release.view_on_github")}
+                </a>
+              )}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <h3>{t("changelog.empty.heading")}</h3>
+          <p>{t("changelog.empty.body")}</p>
+        </div>
+      )}
+    </section>
+  </main>
+
+</BaseLayout>
