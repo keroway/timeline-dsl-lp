@@ -1,0 +1,130 @@
+---
+title: Commands
+description: A reference for the main commands of the Timeline DSL CLI.
+---
+
+`tdsl` handles validation, compilation to JSON IR, HTML rendering, Wikidata-based timeline generation, and template scaffolding for `.tdsl` files.
+
+```sh
+tdsl --help
+tdsl help <command>
+```
+
+## Basic Workflow
+
+```sh
+tdsl check sample.tdsl
+tdsl lint sample.tdsl
+tdsl build sample.tdsl --pretty --output sample.json
+tdsl render sample.tdsl --output sample.html
+```
+
+| Command | Description |
+|---|---|
+| `tdsl check <FILE>` | Run a syntax and semantic check |
+| `tdsl lint <FILE>` | Run a quality check |
+| `tdsl build <FILE>` | Compile `.tdsl` to IR JSON |
+| `tdsl render <FILE>` | Render to a standalone HTML file |
+| `tdsl ast <FILE>` | Output the AST for debugging |
+| `tdsl decompile <FILE>` | Decompile JSON IR back to `.tdsl` (v1.1.0+) |
+| `tdsl merge <FILES...>` | Merge multiple `.tdsl` files into one (v1.2.0+) |
+
+`build` and `render` may perform network access when processing files that include Wikidata imports. Use `--offline` if you only want to process locally-defined items.
+
+```sh
+tdsl build sample.tdsl --offline --pretty
+tdsl render sample.tdsl --offline --output sample.html
+```
+
+### decompile
+
+Reverse-generates `.tdsl` source from a JSON IR. This is the inverse of `build`, useful when you want to recover DSL source from an existing IR (v1.1.0+).
+
+```sh
+tdsl decompile sample.json --output sample.tdsl
+```
+
+### merge
+
+Merges multiple `.tdsl` files into one. Useful when you manage lanes or events across separate files and want to combine them into a single file (v1.2.0+).
+
+```sh
+tdsl merge part1.tdsl part2.tdsl --output combined.tdsl
+tdsl build combined.tdsl --pretty --output combined.json
+```
+
+## Starting from Wikidata
+
+Search for candidate QIDs on Wikidata, verify the timeline-relevant information, then generate a `.tdsl` scaffold.
+
+```sh
+tdsl search "Han dynasty" --lang en -n 5
+tdsl inspect Q7209 --lang en
+tdsl scaffold wikidata \
+  --qids Q7183,Q7209 \
+  --timeline "Chinese Dynasties (generated)" \
+  --lang en \
+  --target auto \
+  --lane-mode per-entity \
+  --output china.tdsl
+tdsl render china.tdsl --output china.html
+```
+
+| Command | Description |
+|---|---|
+| `tdsl search <QUERY>` | Search Wikidata for candidate QIDs |
+| `tdsl inspect <QID>` | Verify the timeline plan for a QID |
+| `tdsl fetch <QID>` | Display data for a Wikidata entity |
+| `tdsl resolve <URL>` | Resolve a Wikipedia article URL to a Wikidata QID |
+| `tdsl scaffold wikidata` | Generate a `.tdsl` scaffold from multiple QIDs |
+
+`search`, `inspect`, and `resolve` support `--json` for use in CI or integration with other tools.
+
+## Starting Manually
+
+Create an empty timeline and add entries via CSV.
+
+```sh
+tdsl init \
+  --output manual.tdsl \
+  --timeline "Fictional World Timeline" \
+  --range-start 1000 \
+  --range-end 1300 \
+  --lanes "kingdom:kingdom,incidents:incidents"
+
+tdsl import-csv items.csv --append manual.tdsl
+tdsl lint manual.tdsl --fix
+tdsl render manual.tdsl --output manual.html
+```
+
+`import-csv` takes a UTF-8 CSV with a header row of `lane,type,start,end,time,label,tags,id`.
+
+## Cache Management
+
+`tdsl build` / `tdsl render` cache Wikidata fetch results locally. Use the `tdsl cache` subcommand to manage the cache (v1.1.0+).
+
+```sh
+tdsl cache list            # List cached entries
+tdsl cache clear           # Delete all cached entries
+tdsl cache clear --dry-run # Preview what would be deleted (without actually deleting)
+```
+
+| Command | Description |
+|---|---|
+| `tdsl cache list` | Show cached entries and their sizes |
+| `tdsl cache clear` | Delete all cache entries |
+
+The cache is stored under the OS data directory (`data_dir` from the `dirs` crate). Pass `--no-cache` to bypass the cache and re-fetch from Wikidata.
+
+## Common Options
+
+| Option | Applies To | Description |
+|---|---|---|
+| `--pretty` | `build` | Pretty-print the JSON output |
+| `--output`, `-o` | `build`, `render`, `init`, `import-csv` | Specify the output path |
+| `--offline` | `build`, `render` | Skip Wikidata fetching |
+| `--no-cache` | `build`, `render` | Re-fetch from Wikidata without using the cache |
+| `--cache-ttl <seconds>` | `build`, `render` | Specify the TTL for the Wikidata cache |
+| `--wikidata-timeout <seconds>` | `build`, `render`, `search`, `inspect` | Set the HTTP timeout for Wikidata requests (v1.4.0+) |
+| `--format text,json` | `lint` | Specify the output format for lint results |
+| `--fix` | `lint` | Apply safe fixes to the file |
