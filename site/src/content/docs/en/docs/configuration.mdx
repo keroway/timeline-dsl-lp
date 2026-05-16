@@ -1,0 +1,74 @@
+---
+title: Configuration
+description: Configuration and runtime options for the Timeline DSL CLI.
+---
+
+Timeline DSL does not require a dedicated configuration file. Behavior is controlled through declarations in your `.tdsl` file and CLI options.
+
+## Basic `.tdsl` Settings
+
+The display name, unit, range, and calendar system for the entire timeline are declared in the `timeline` block.
+
+```tdsl
+timeline "Chinese Dynasties" {
+    title "Chinese Dynasties";
+    unit year;
+    range -500..2000;
+    calendar proleptic_gregorian;
+}
+```
+
+Lane categories (vertical axis) are defined with `lane`. `span`, `event`, and `event_range` reference already-defined lanes.
+
+```tdsl
+lane "Han" as han { kind dynasty; order 20; }
+
+span han -206..220 "Han" { tags ["dynasty"]; source wd:Q7209; id "span:han"; };
+event han -209 "Dazexiang Uprising" {};
+event_range han 184..204 "Yellow Turban Rebellion" { tags ["war"]; };
+```
+
+## Wikidata Fetching
+
+`build` and `render` perform network fetching when processing `.tdsl` files that include Wikidata imports.
+
+```sh
+tdsl build china_with_import.tdsl --pretty
+tdsl render china_with_import.tdsl --output china.html
+```
+
+Use `--offline` to process only static items without network access.
+
+```sh
+tdsl build china_with_import.tdsl --offline --pretty
+```
+
+Use `--no-cache` to re-fetch without the cache, or `--cache-ttl <seconds>` to change the cache TTL. The default TTL is 86400 seconds.
+
+## HTML Rendering
+
+`tdsl render` outputs a standalone HTML file. Display adjustments are specified via CLI options.
+
+```sh
+tdsl render sample.tdsl \
+  --output sample.html \
+  --scale 5 \
+  --lane-height 60 \
+  --left-gutter 120 \
+  --top-margin 40 \
+  --theme pastel
+```
+
+`--theme` accepts `default`, `dark`, `print`, or `pastel`. To inject additional CSS, use `--custom-css path/to/custom.css`.
+
+## Lint
+
+`tdsl lint` supports `text` and `json` output formats.
+
+```sh
+tdsl lint sample.tdsl
+tdsl lint sample.tdsl --format json
+tdsl lint sample.tdsl --fix
+```
+
+`--fix` applies safe fixes to the file, including: removing duplicate tags, removing empty tags, swapping `start` and `end` when they are in the wrong order, and generating stable IDs for entries without one.

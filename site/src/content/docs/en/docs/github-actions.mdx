@@ -1,0 +1,150 @@
+---
+title: Validate in CI
+description: Examples for validating and rendering your .tdsl files with GitHub Actions.
+---
+
+This page provides examples for continuously validating `.tdsl` files in your own repository. It is not a guide for deploying Timeline DSL itself or this documentation site.
+
+## Using the Composite Action (Recommended)
+
+With `uses: keroway/timeline-dsl@v1`, you can render `.tdsl` files to SVG or HTML without any manual installation. It supports Linux, macOS, and Windows runners.
+
+```yaml
+name: Render Timeline
+
+on:
+  push:
+    paths: ['**/*.tdsl']
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: keroway/timeline-dsl@v1
+        with:
+          file: examples/china_dynasties.tdsl
+          format: svg
+          output: output/china.svg
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: timeline-svg
+          path: output/
+```
+
+### Inputs
+
+| Input | Required | Default | Description |
+| --- | --- | --- | --- |
+| `file` | ✅ | — | Path to the `.tdsl` file to render |
+| `format` | — | `svg` | Output format: `svg` or `html` |
+| `output` | — | `<basename>.<format>` | Output file path |
+| `offline` | — | `false` | Offline mode (skip Wikidata fetching) |
+| `interactive` | — | `false` | Interactive HTML output (only when `format: html`) |
+| `theme` | — | (CLI default) | Theme: `default` / `dark` / `print` / `pastel` |
+| `scale` | — | (CLI default) | Horizontal axis pixels-per-year rate |
+| `version` | — | `latest` | The tdsl version to use (e.g. `v1.6.0`) |
+
+### Outputs
+
+| Output | Description |
+| --- | --- |
+| `output_path` | Absolute path to the generated output file |
+
+### Example: Artifact changed .tdsl files as SVG previews on PRs
+
+```yaml
+name: TDSL Preview
+
+on:
+  pull_request:
+    paths: ['**/*.tdsl']
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: keroway/timeline-dsl@v1
+        with:
+          file: examples/china_dynasties.tdsl
+          format: svg
+          offline: 'true'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tdsl-preview
+          path: '*.svg'
+```
+
+## Installing the tdsl CLI Directly
+
+If you need to run multiple `tdsl` commands, install it directly via the install script.
+
+In GitHub Actions, run `tdsl check`, `tdsl lint`, and optionally `tdsl build` against your `.tdsl` files. For stable validation of files that use Wikidata, add `--offline` to `build` to process only static items.
+
+### Example: Validate on an Ubuntu runner
+
+On Ubuntu runners, install `tdsl` via the install script and add `~/.local/bin` to `PATH`.
+
+```yaml
+name: Timeline DSL
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  tdsl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tdsl
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Check timeline
+        run: tdsl check examples/china_dynasties.tdsl
+
+      - name: Lint timeline
+        run: tdsl lint examples/china_dynasties.tdsl --format json
+
+      - name: Build JSON
+        run: tdsl build examples/china_dynasties.tdsl --pretty --output timeline.json
+```
+
+### Example: Install via Homebrew
+
+On macOS runners, you can install via Homebrew.
+
+```yaml
+jobs:
+  tdsl:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tdsl
+        run: |
+          brew tap keroway/tap
+          brew install tdsl
+```
+
+## Files with Wikidata Imports
+
+Use the standard `build` or `render` to validate files including network fetching. Add `--offline` when you want reproducible CI runs.
+
+```sh
+tdsl build examples/china_with_import.tdsl --pretty
+tdsl build examples/china_with_import.tdsl --offline --pretty
+```
+
+`search`, `inspect`, `resolve`, and `scaffold wikidata` require a network connection to Wikidata or Wikipedia.
