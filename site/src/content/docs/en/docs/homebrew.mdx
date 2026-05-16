@@ -1,0 +1,63 @@
+---
+title: Homebrew
+description: Homebrew and other installation methods.
+---
+
+On macOS and Linux, you can install `tdsl` via Homebrew.
+
+```sh
+brew tap keroway/tap
+brew install tdsl
+tdsl --help
+```
+
+To update, use the standard Homebrew commands.
+
+```sh
+brew update
+brew upgrade tdsl
+```
+
+## One-Line Install
+
+If you prefer not to use Homebrew, you can use the install script to download a pre-built binary.
+
+```sh
+curl -sSfL https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.sh | sh
+```
+
+The default install location is `~/.local/bin/tdsl`. If `~/.local/bin` is not in your `PATH`, add it to your shell's configuration file.
+
+```sh
+export PATH="${HOME}/.local/bin:${PATH}"
+```
+
+## Windows (Manual Binary Installation)
+
+Homebrew is not available on Windows. Download the binary manually from the GitHub Releases page.
+
+1. Open [GitHub Releases](https://github.com/keroway/timeline-dsl/releases/latest).
+2. Download `tdsl-windows-x86_64.zip` from the Assets section.
+3. Extract the ZIP and place `tdsl.exe` in a folder of your choice (e.g. `C:\Users\<YourName>\bin`).
+4. Add that folder to your `PATH`.
+
+   **PowerShell (user scope):**
+
+   ```powershell
+   $dir = "$env:USERPROFILE\bin"
+   [System.Environment]::SetEnvironmentVariable("Path", "$([System.Environment]::GetEnvironmentVariable('Path','User'));$dir", "User")
+   ```
+
+5. Open a new terminal and verify the installation.
+
+   ```powershell
+   tdsl --help
+   ```
+
+## Install via cargo
+
+If you have a Rust toolchain installed, you can install `tdsl-cli` directly from the GitHub repository.
+
+```sh
+cargo install --git https://github.com/keroway/timeline-dsl tdsl-cli
+```
