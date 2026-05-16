@@ -1,0 +1,168 @@
+---
+title: Site Deployment
+description: Developer instructions for publishing this documentation site on Cloudflare Pages.
+---
+
+This page is for developers who maintain Timeline DSL itself or this documentation site. It is not intended for users who create timelines using `.tdsl` files.
+
+This documentation site is published via Cloudflare Pages' GitHub integration. GitHub Actions serves as CI to verify `pnpm build`, while Cloudflare Pages handles publishing and creating Preview URLs.
+
+## Prerequisites
+
+The Cloudflare Pages project is named `timeline-dsl`, with `main` as the production branch.
+
+Configure the Cloudflare Pages Build settings as follows.
+
+| Setting | Value |
+| --- | --- |
+| Root directory | `site` |
+| Build command | `pnpm build` |
+| Build output directory | `dist` |
+| Deploy command | (no setting appears) |
+
+The Cloudflare Pages build image automatically runs dependency installation. You can include `pnpm install --frozen-lockfile && pnpm build` in the build command and the build will succeed, but since install would run twice, use `pnpm build` only.
+
+If Deploy command is required, or if a deploy command for non-production branches is shown, you are looking at the Workers Builds settings screen. Workers Builds runs a Wrangler deploy command after the build command, but since this site operates as a static Pages site, do not use it.
+
+## Execution timing
+
+| Trigger | Purpose | Pages branch |
+| --- | --- | --- |
+| `pull_request` | Creates a preview deployment | PR branch |
+| `push` to `main` | Production publish | `main` |
+| `release.published` | Not used as a deploy trigger | - |
+| `workflow_dispatch` | Manually re-run GitHub Actions CI | - |
+
+For pull requests, both the GitHub Actions `Site build` workflow and the Cloudflare Pages preview deployment run separately.
+
+## Verifying previews
+
+The Cloudflare Pages Preview URL can be found from the PR's checks, Deployments, or the Cloudflare Pages dashboard.
+
+1. Open the Preview URL from the Cloudflare Pages check or Deployments on the PR.
+2. Verify that `/` displays correctly on the Preview URL.
+3. Verify that `/docs/` displays correctly on the Preview URL.
+4. For PRs that include Playground changes, run smoke tests against the Preview URL.
+
+```sh
+cd site
+PLAYGROUND_BASE_URL="https://<preview>.pages.dev" pnpm smoke:playground
+```
+
+`smoke:playground` verifies `/playground/`, `/wasm/tdsl_wasm.js`, and `/wasm/tdsl_wasm_bg.wasm` over HTTP. It will fail if WASM assets return 404, if the `.wasm` MIME type is mismatched, or if an overly aggressive cache policy is applied to unversioned assets.
+
+To verify Playground screen interactions, run the browser smoke in an environment where the Playwright package and Chromium are available. Playwright is not included as a required build dependency. Screenshots are not generated and are not kept as artifacts in the repo.
+
+```sh
+cd site
+PLAYGROUND_BASE_URL="https://<preview>.pages.dev" pnpm smoke:playground:browser
+```
+
+The browser smoke verifies the following.
+
+- `/playground/` is displayed.
+- With the initial sample, an SVG preview appears inside `data-smoke="playground-preview"`.
+- Breaking the input in `data-smoke="playground-editor"` causes an error to appear in `data-smoke="playground-diagnostics"`.
+- Restoring the input causes the SVG preview to recover.
+- When a WASM asset returns 404, the load failure is visible to the user.
+
+The Playground implementation maintains the following attributes for smoke testing.
+
+| Target | Selector |
+| --- | --- |
+| editor | `data-smoke="playground-editor"` |
+| preview container | `data-smoke="playground-preview"` |
+| diagnostics container | `data-smoke="playground-diagnostics"` |
+
+## Error handling
+
+If `Worker Name`, `Executing user deploy command: npx wrangler deploy`, or `Non-production branch deploy command` appears in the Cloudflare build log, the project was created as Workers Builds. Create a new Pages project in the Cloudflare dashboard and connect this repository via Pages' `Import an existing Git repository`.
+
+If you continue with Workers Builds, you will need Wrangler configuration and a deploy command for Workers Static Assets, but these are not needed for this LP/documentation site. `Missing file or directory: public/.assetsignore` is the result of Wrangler attempting additional setup for Workers/Astro, which is resolved by recreating as a Pages project.
+
+References:
+
+- [Cloudflare Pages build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/)
+- [Cloudflare Workers Builds configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)
+- [Cloudflare Pages preview deployments](https://developers.cloudflare.com/pages/configuration/preview-deployments/)
+
+## Local verification
+
+```sh
+cd site
+pnpm install --frozen-lockfile
+pnpm build
+```
+
+For branches that implement Playground, run smoke tests against the local preview as well.
+
+```sh
+cd site
+pnpm build
+pnpm preview -- --host 127.0.0.1 --port 4321
+```
+
+Run in a separate terminal.
+
+```sh
+cd site
+PLAYGROUND_BASE_URL="http://127.0.0.1:4321" pnpm smoke:playground
+PLAYGROUND_BASE_URL="http://127.0.0.1:4321" pnpm smoke:playground:browser
+```
+
+## Updating the WASM bundle
+
+When using Timeline DSL WASM from Playground and runnable docs, centralize the call interface on the LP side in `src/lib/tdsl-wasm.ts`. Do not directly import `tdsl_wasm.js` or wasm-bindgen generated files from Astro / Starlight components.
+
+From timeline-dsl v1.2.0 onwards, `tdsl-wasm-<version>.tar.gz` is attached to GitHub Releases. On the LP side, vendor the wasm-pack output into `public/wasm/`. Even when migrating to npm package distribution, the targets for replacement are limited to `src/lib/tdsl-wasm.ts`, `public/wasm/`, `scripts/smoke-tdsl-wasm.mjs`, `scripts/smoke-playground.mjs`, and this update procedure.
+
+When updating, verify the following files.
+
+| File | What to check |
+| --- | --- |
+| `src/lib/tdsl-wasm.ts` | import path, fallback message, public API names |
+| `public/wasm/tdsl_wasm.js` | wasm-bindgen JS glue |
+| `public/wasm/tdsl_wasm.d.ts` | TypeScript types |
+| `public/wasm/tdsl_wasm_bg.wasm` | WASM binary |
+| `public/wasm/tdsl_wasm_bg.wasm.d.ts` | WASM binary import types |
+| `public/wasm/package.json` | package metadata |
+| `scripts/smoke-tdsl-wasm.mjs` | export names called by Node smoke |
+| `scripts/smoke-playground.mjs` | asset paths and screen interactions for preview smoke |
+
+Normally, obtain the WASM bundle from GitHub Release assets. Specify the release tag you want to apply as `<version>` (e.g., `v1.4.0`). Check the latest tag on the [Releases page](https://github.com/keroway/timeline-dsl/releases).
+
+```sh
+cd ../timeline-dsl-lp
+curl -L "https://github.com/keroway/timeline-dsl/releases/download/<version>/tdsl-wasm-<version>.tar.gz" -o /tmp/tdsl-wasm.tar.gz
+tar -xzf /tmp/tdsl-wasm.tar.gz -C site/public/wasm
+```
+
+To use local build artifacts from the main repo, first update the WASM.
+
+```sh
+cd ../timeline-dsl
+wasm-pack build crates/tdsl-wasm --target web --out-dir apps/webui/src/wasm --no-opt
+```
+
+Sync the generated files to the LP repo.
+
+```sh
+cd ../timeline-dsl-lp
+cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm.js site/public/wasm/tdsl_wasm.js
+cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm.d.ts site/public/wasm/tdsl_wasm.d.ts
+cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm_bg.wasm site/public/wasm/tdsl_wasm_bg.wasm
+cp ../timeline-dsl/apps/webui/src/wasm/tdsl_wasm_bg.wasm.d.ts site/public/wasm/tdsl_wasm_bg.wasm.d.ts
+cp ../timeline-dsl/apps/webui/src/wasm/package.json site/public/wasm/package.json
+```
+
+After updating, run smoke tests and build.
+
+```sh
+cd site
+pnpm smoke:wasm
+pnpm build
+```
+
+For updates that include Playground, also run `pnpm smoke:playground` against the local preview or Cloudflare Pages Preview.
+
+The WASM wrapper targets static `.tdsl` validation, IR generation, and SVG/HTML rendering. Wikidata import resolution and network fetching are not supported in the browser-side WASM, and are treated as diagnostics on the Playground side.

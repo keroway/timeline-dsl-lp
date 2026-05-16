@@ -1,0 +1,73 @@
+---
+title: Troubleshooting
+description: Common issues and how to diagnose them when using the Timeline DSL CLI.
+---
+
+## `tdsl` not found
+
+If `tdsl --help` cannot be run after installation, check whether the installation directory is in your `PATH`.
+
+```sh
+which tdsl
+tdsl --help
+```
+
+When using the install script, the default installation path is `~/.local/bin/tdsl`.
+
+```sh
+export PATH="${HOME}/.local/bin:${PATH}"
+```
+
+## Diagnosing syntax errors in `.tdsl` files
+
+First, run `check` to perform syntax and semantic checking. Use `ast` if you want to inspect the parse result.
+
+```sh
+tdsl check sample.tdsl
+tdsl ast sample.tdsl
+```
+
+## Fixing lane reference and ID issues
+
+`lint` detects undefined lane references, duplicate IDs, `start > end`, empty labels, and empty or duplicate tag elements. Items that can be safely fixed can be corrected with `--fix`.
+
+```sh
+tdsl lint sample.tdsl
+tdsl lint sample.tdsl --fix
+```
+
+Use JSON format for CI or other tools.
+
+```sh
+tdsl lint sample.tdsl --format json
+```
+
+## Unstable Wikidata fetching
+
+If you want to avoid the effects of network or cache issues with files containing Wikidata imports, use `--offline` to process only static items.
+
+```sh
+tdsl build sample.tdsl --offline --pretty
+tdsl render sample.tdsl --offline --output sample.html
+```
+
+Use `--no-cache` to re-fetch the latest data, or `--cache-ttl <seconds>` to change the cache TTL.
+
+```sh
+tdsl build sample.tdsl --no-cache --pretty
+tdsl build sample.tdsl --cache-ttl 0 --pretty
+```
+
+## Adjusting HTML appearance
+
+Adjust the display options for `render`.
+
+```sh
+tdsl render sample.tdsl \
+  --output sample.html \
+  --scale 5 \
+  --lane-height 80 \
+  --theme dark
+```
+
+Use `--custom-css` to add custom CSS.
