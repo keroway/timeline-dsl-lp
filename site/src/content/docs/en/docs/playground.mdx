@@ -1,0 +1,76 @@
+---
+title: Playground
+description: How to use the Playground to try Timeline DSL entirely in your browser.
+---
+
+import { LinkButton } from "@astrojs/starlight/components";
+
+The [Playground](/playground/) is a tool that lets you edit `.tdsl` files in your browser and see syntax validation and SVG previews in real time. No installation required — it's ideal for learning Timeline DSL syntax or quickly validating snippets.
+
+<LinkButton href="/playground/" target="_blank" variant="primary">Open Playground</LinkButton>
+
+## Key features
+
+### Real-time validation
+
+As you type `.tdsl` in the editor, syntax checking runs automatically. Errors and warnings are displayed in the diagnostics panel at the bottom of the screen, with line numbers and detailed messages.
+
+### SVG preview
+
+When validation passes, an SVG rendering of the timeline is shown in the right panel. The preview updates every time you change the code.
+
+If a compile error occurs, the last successful preview is preserved and a "Showing last successful preview" badge is overlaid on the preview panel. The badge disappears once the error is fixed.
+
+### Template gallery
+
+Click the "Templates" button in the toolbar to open the template gallery modal. You can browse all `.tdsl` samples included in `examples/` as a thumbnail grid and load any of them into the editor with a single click.
+
+| Sample | Description |
+| --- | --- |
+| Chinese Dynasties | A practical example with dynasty `span` / `event` / `event_range` entries |
+| Modern History | A practical example with modern `span` / `event_range` entries |
+| DSL Basic Grammar (minimal) | A minimal sample covering `span` / `event` / `event_range` |
+| Wikidata Import (requires network) | A reference example for Wikidata import syntax (not executable in WebUI) |
+
+Selecting a sample from the gallery replaces the current editor content. If you want to keep your current work, download it first.
+
+### Download `.tdsl`
+
+Click the "Download" button in the toolbar to download the current editor content as `timeline.tdsl`.
+
+### Adjusting the editor/preview split
+
+Drag the handle between the editor and preview left or right to adjust the split ratio between 15% and 85%. The default is editor 40% / preview 60%.
+
+### Mobile and tablet support
+
+The layout switches automatically based on screen width.
+
+| Width | Layout |
+| --- | --- |
+| ≤768px (smartphone) | Editor / Preview tab switching |
+| 769px–1024px (tablet) | Top-and-bottom two-row layout |
+| 1025px and above (desktop) | Left-right split layout |
+
+### Sharing via `?source=` query
+
+Adding a `?source=` query to the URL opens the Playground with the specified source code already loaded in the editor. The "Open this sample in the Playground" links in Quick Start and grammar documentation use this mechanism.
+
+```txt
+/playground/?source=timeline%20%22サンプル%22%20%7B...%7D
+```
+
+## Limitations
+
+The Playground runs on WebAssembly inside your browser. The following features are not available:
+
+- `import wikidata` — requires external network access
+- Writing to the filesystem — direct saving to a local `.tdsl` file requires the CLI
+
+For transitioning to a full workflow, see [Installation](/en/docs/installation/) and [Quick Start](/en/docs/quick-start/).
+
+## Related links
+
+- [Grammar & Samples](/en/docs/grammar/) — `.tdsl` syntax reference
+- [Quick Start](/en/docs/quick-start/) — Your first workflow with the CLI
+- [Installation](/en/docs/installation/) — CLI setup
