@@ -1,0 +1,243 @@
+---
+title: Grammar
+description: Explains the Timeline DSL grammar with short, runnable .tdsl examples you can try in the Playground.
+---
+
+Examples with Playground links are written as short, complete `.tdsl` files. Each link passes the same content to the Playground as a `source` query.
+
+## Minimal Timeline
+
+```tdsl
+timeline "Reading Notes" {
+    title "Reading Notes";
+    unit year;
+    range 2024..2026;
+    calendar proleptic_gregorian;
+}
+
+lane "Books" as books { kind custom; order 10; }
+
+event books 2025 "Trying Timeline DSL" { id "event:first"; };
+```
+
+[Open in Playground](/playground/?source=timeline+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22+%7B%0A++++title+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22%3B%0A++++unit+year%3B%0A++++range+2024..2026%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E6%9C%AC%22+as+books+%7B+kind+custom%3B+order+10%3B+%7D%0A%0Aevent+books+2025+%22Timeline+DSL%E3%82%92%E8%A9%A6%E3%81%99%22+%7B+id+%22event%3Afirst%22%3B+%7D%3B)
+
+A `.tdsl` file combines `timeline` (the overall timeline), `lane` (vertical axis), and time elements: `event`, `span`, and `event_range`.
+
+## timeline and range
+
+```tdsl
+timeline "Product Roadmap" {
+    title "Product Roadmap";
+    unit year;
+    range 2025..2027;
+    calendar proleptic_gregorian;
+}
+
+lane "milestones" as milestones { kind custom; order 10; }
+event milestones 2026 "Public Beta" {};
+```
+
+[Open in Playground](/playground/?source=timeline+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22+%7B%0A++++title+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9E%E3%82%A4%E3%83%AB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%B3%22+as+milestones+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+milestones+2026+%22%E5%85%AC%E9%96%8B%E3%83%99%E3%83%BC%E3%82%BF%22+%7B%7D%3B)
+
+`range 2025..2027;` defines the display and validation range. A good starting point is to fix `unit year;` and `calendar proleptic_gregorian;` to build a year-based timeline.
+
+## lane
+
+`lane` is the vertical axis of the timeline. Give it a short ID with `as milestones`, which is then referenced by subsequent `event`, `span`, and `event_range` entries.
+
+```tdsl
+lane "milestones" as milestones { kind custom; order 10; }
+event milestones 2026 "Public Beta" {};
+```
+
+`order` controls display order — smaller values appear higher. `kind` is treated as classification metadata.
+
+## event
+
+`event` is a point event placed at a single year.
+
+```tdsl
+timeline "Product Roadmap" {
+    title "Product Roadmap";
+    unit year;
+    range 2025..2027;
+    calendar proleptic_gregorian;
+}
+
+lane "milestones" as milestones { kind custom; order 10; }
+event milestones 2026 "Public Beta" { tags ["release"]; id "event:beta"; };
+```
+
+[Open in Playground](/playground/?source=timeline+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22+%7B%0A++++title+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9E%E3%82%A4%E3%83%AB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%B3%22+as+milestones+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+milestones+2026+%22%E5%85%AC%E9%96%8B%E3%83%99%E3%83%BC%E3%82%BF%22+%7B+tags+%5B%22release%22%5D%3B+id+%22event%3Abeta%22%3B+%7D%3B)
+
+Write it as `event <lane-id> <year> "<label>" { ... };`. The label is displayed on the timeline.
+
+## span
+
+`span` is used for items with a start year and end year, such as durations or phases.
+
+```tdsl
+timeline "Small Project" {
+    title "Small Project";
+    unit year;
+    range 2025..2028;
+    calendar proleptic_gregorian;
+}
+
+lane "phases" as phases { kind custom; order 10; }
+span phases 2025..2026 "Design" { tags ["phase"]; id "span:design"; };
+span phases 2026..2028 "Build" { tags ["phase"]; id "span:build"; };
+```
+
+[Open in Playground](/playground/?source=timeline+%22%E5%B0%8F%E3%81%95%E3%81%AA%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%22+%7B%0A++++title+%22%E5%B0%8F%E3%81%95%E3%81%AA%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%22%3B%0A++++unit+year%3B%0A++++range+2025..2028%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E5%B7%A5%E7%A8%8B%22+as+phases+%7B+kind+custom%3B+order+10%3B+%7D%0Aspan+phases+2025..2026+%22%E8%A8%AD%E8%A8%88%22+%7B+tags+%5B%22phase%22%5D%3B+id+%22span%3Adesign%22%3B+%7D%3B%0Aspan+phases+2026..2028+%22%E5%AE%9F%E8%A3%85%22+%7B+tags+%5B%22phase%22%5D%3B+id+%22span%3Abuild%22%3B+%7D%3B)
+
+Write it as `span <lane-id> <start>..<end> "<label>" { ... };`.
+
+## event_range
+
+`event_range` is used for periods you want to treat as events, such as wars, transition periods, or incident responses.
+
+```tdsl
+timeline "Release Plan" {
+    title "Release Plan";
+    unit year;
+    range 2025..2027;
+    calendar proleptic_gregorian;
+}
+
+lane "Work" as work { kind custom; order 10; }
+event_range work 2025..2026 "Transition Period" { tags ["migration"]; };
+event work 2027 "New system goes live" {};
+```
+
+[Open in Playground](/playground/?source=timeline+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E8%A8%88%E7%94%BB%22+%7B%0A++++title+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E8%A8%88%E7%94%BB%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E4%BD%9C%E6%A5%AD%22+as+work+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent_range+work+2025..2026+%22%E7%A7%BB%E8%A1%8C%E6%9C%9F%E9%96%93%22+%7B+tags+%5B%22migration%22%5D%3B+%7D%3B%0Aevent+work+2027+%22%E6%96%B0%E4%BD%93%E5%88%B6%E3%81%A7%E9%81%8B%E7%94%A8%E9%96%8B%E5%A7%8B%22+%7B%7D%3B)
+
+It looks similar to `span` in that it has a duration, but semantically it means "an event with a duration." Use `span` for eras or membership periods, and `event_range` for work, incidents, or wars — the distinction makes the timeline easier to read.
+
+## tags, id, and metadata
+
+`event`, `span`, and `event_range` all accept common metadata inside `{ ... }`.
+
+```tdsl
+timeline "Release History" {
+    title "Release History";
+    unit year;
+    range 2024..2026;
+    calendar proleptic_gregorian;
+}
+
+lane "Releases" as releases { kind custom; order 10; }
+event releases 2026 "v1.0 Released" {
+    tags ["release", "stable"];
+    source wd:Q95;
+    origin manual;
+    id "event:v1";
+};
+```
+
+[Open in Playground](/playground/?source=timeline+%22%E5%85%AC%E9%96%8B%E5%B1%A5%E6%AD%B4%22+%7B%0A++++title+%22%E5%85%AC%E9%96%8B%E5%B1%A5%E6%AD%B4%22%3B%0A++++unit+year%3B%0A++++range+2024..2026%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%22+as+releases+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+releases+2026+%22v1.0%E5%85%AC%E9%96%8B%22+%7B%0A++++tags+%5B%22release%22%2C+%22stable%22%5D%3B%0A++++source+wd%3AQ95%3B%0A++++origin+manual%3B%0A++++id+%22event%3Av1%22%3B%0A%7D%3B)
+
+`tags` is for classification, `id` is a stable identifier used for review and diff tracking. `source wd:Q95;` records a Wikidata QID as provenance metadata. `origin manual;` indicates hand-written data.
+
+## import and Wikidata Web Constraints
+
+To use Wikidata, import QIDs with `import wikidata` and transform them into timeline elements with `map`.
+
+```tdsl
+timeline "Chinese Dynasties" {
+    title "Chinese Dynasties";
+    unit year;
+    range -300..300;
+    calendar proleptic_gregorian;
+}
+
+lane "Dynasties" as dynasties { kind dynasty; order 10; }
+
+event dynasties -221 "Qin unifies China" { tags ["manual"]; };
+
+import wikidata as wd {
+    entity Q7209 as han_dynasty;
+    policy merge_by_source;
+}
+
+map wd.han_dynasty to span {
+    lane dynasties;
+    start claim(P571).year;
+    end claim(P576).year;
+    label label@ja ?? label@en;
+    tags ["dynasty", "imported"];
+}
+```
+
+[Open in Playground](/playground/?source=timeline+%22%E4%B8%AD%E5%9B%BD%E7%8E%8B%E6%9C%9D%22+%7B%0A++++title+%22%E4%B8%AD%E5%9B%BD%E7%8E%8B%E6%9C%9D%22%3B%0A++++unit+year%3B%0A++++range+-300..300%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E7%8E%8B%E6%9C%9D%22+as+dynasties+%7B+kind+dynasty%3B+order+10%3B+%7D%0A%0Aevent+dynasties+-221+%22%E7%A7%A6%E3%81%AE%E5%A4%A9%E4%B8%8B%E7%B5%B1%E4%B8%80%22+%7B+tags+%5B%22manual%22%5D%3B+%7D%3B%0A%0Aimport+wikidata+as+wd+%7B%0A++++entity+Q7209+as+han_dynasty%3B%0A++++policy+merge_by_source%3B%0A%7D%0A%0Amap+wd.han_dynasty+to+span+%7B%0A++++lane+dynasties%3B%0A++++start+claim%28P571%29.year%3B%0A++++end+claim%28P576%29.year%3B%0A++++label+label%40ja+%3F%3F+label%40en%3B%0A++++tags+%5B%22dynasty%22%2C+%22imported%22%5D%3B%0A%7D)
+
+In the browser-based Playground, Wikidata network fetches are not performed. You can open the file for syntax checking, but items from `import` may be omitted from the rendered output. For content you want reliably displayed on the web, write it as static `event`, `span`, or `event_range` entries — like the `event dynasties -221 ...` example above.
+
+To resolve Wikidata and output JSON or HTML, use the CLI.
+
+```sh
+tdsl build china.tdsl --pretty --output china.json
+tdsl render china.tdsl --output china.html
+```
+
+To avoid network fetches in CI, add the `--offline` flag.
+
+```sh
+tdsl build china.tdsl --offline --pretty
+```
+
+## filter Clause in map
+
+You can add a `filter` clause to a `map` block to include only entities that match the condition, filtering out unwanted data.
+
+```tdsl
+map wd.items to span {
+    lane dynasties;
+    start claim(P571).year;
+    end   claim(P576).year;
+    label label@ja ?? label@en;
+    filter claim(P31) == "Q7209";
+}
+```
+
+Operators available in `filter`: `==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`, `!`, `null`, `claim()`. Multiple `filter` clauses are combined as AND conditions.
+
+## Month and Day Precision on the Timeline Axis
+
+Since v1.7.0, the timeline axis supports month and day precision. When dates imported from Wikidata include month or day information, positions are determined based on month and day markers rather than year alone.
+
+```tdsl
+timeline "Modern History" {
+    title "Modern History";
+    unit year;
+    range 1900..2000;
+    calendar proleptic_gregorian;
+}
+
+lane "events" as events { kind custom; order 10; }
+event events 1945 "End of World War II" {};
+```
+
+Static `event` entries use year-level precision, but Wikidata claim values that carry month and day precision will be placed at their exact positions on the timeline axis. You can verify this in the output of `tdsl render` from the CLI.
+
+## `??` (Fallback) Operator in map
+
+The `??` operator can be used not only for `label` but also for `start`, `end`, and `time`. When the left-hand side is null, the right-hand side is tried.
+
+```tdsl
+map wd.items to span {
+    lane dynasties;
+    start claim(P580).year ?? claim(P571).year;
+    end   claim(P582).year ?? claim(P576).year;
+    label label@ja ?? label@en;
+}
+```
+
+Fully compatible with existing single-expression forms (e.g., `start claim(P571).year`). Use this when you want to extract the first valid value from multiple properties.
+
+## What's Next
+
+- [Quick Start](/en/docs/quick-start/) — Learn the save, validate, and render workflow
+- [Commands](/en/docs/commands/) — Explore CLI commands
+- [Validate in CI](/en/docs/github-actions/) — Integrate with GitHub Actions
