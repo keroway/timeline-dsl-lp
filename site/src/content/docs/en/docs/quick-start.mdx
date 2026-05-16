@@ -1,0 +1,56 @@
+---
+title: Quick Start
+description: Learn the basic syntax of Timeline DSL, try it in the Playground, and maintain it locally with the CLI.
+---
+
+Start by reading a short `.tdsl` file, try it in the Playground, then save and validate it with the CLI.
+
+## 1. Read
+
+```tdsl
+timeline "Reading Notes" {
+    title "Reading Notes";
+    unit year;
+    range 2024..2026;
+    calendar proleptic_gregorian;
+}
+
+lane "Books" as books { kind custom; order 10; }
+
+event books 2025 "Trying Timeline DSL" { id "event:first"; };
+```
+
+Use `timeline` for the overall timeline, `lane` for vertical axes, and `event` for individual occurrences. The [Grammar & Samples](/en/docs/grammar/) page has short examples explaining how to read the syntax.
+
+## 2. Try it in the Playground
+
+[Open this sample in the Playground](/playground/?source=timeline+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22+%7B%0A++++title+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22%3B%0A++++unit+year%3B%0A++++range+2024..2026%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E6%9C%AC%22+as+books+%7B+kind+custom%3B+order+10%3B+%7D%0A%0Aevent+books+2025+%22Timeline+DSL%E3%82%92%E8%A9%A6%E3%81%99%22+%7B+id+%22event%3Afirst%22%3B+%7D%3B)
+
+In the Playground, the source passed via the `source` query is loaded directly into the editor, where you can validate it and view the SVG preview — all in your browser.
+
+## 3. Save and validate with the CLI
+
+Save the same content as `sample.tdsl` and validate it with the CLI.
+
+```sh
+tdsl check sample.tdsl
+tdsl lint sample.tdsl
+```
+
+If the output is successful, the file has passed syntax and basic quality checks. Use `build` to inspect the result as JSON.
+
+```sh
+tdsl build sample.tdsl --pretty --output sample.json
+```
+
+To view it in a browser, render it as a standalone HTML file.
+
+```sh
+tdsl render sample.tdsl --output sample.html
+```
+
+## Next steps
+
+- Review `span`, `event_range`, and Wikidata import constraints in [Grammar & Samples](/en/docs/grammar/)
+- Explore CLI commands for each use case in [Commands](/en/docs/commands/)
+- Automate `tdsl check` and `tdsl lint` in [Validate in CI](/en/docs/github-actions/)
