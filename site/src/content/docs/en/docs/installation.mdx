@@ -1,0 +1,47 @@
+---
+title: Installation
+description: How to install the Timeline DSL CLI.
+---
+
+Timeline DSL is used as a CLI tool. This guide assumes installation via Homebrew as the primary method.
+
+```sh
+brew tap keroway/tap
+brew install tdsl
+```
+
+After installation, verify that the CLI runs correctly.
+
+```sh
+tdsl --help
+```
+
+## Requirements
+
+- macOS or Linux (via Homebrew)
+- Windows (manual binary installation)
+- Git
+
+For installation methods other than Homebrew (Linux one-liner, Windows binary, cargo), see [Homebrew and Other Installation Methods](/en/docs/homebrew/).
+
+## VS Code Extension
+
+Since v1.0.0, a VS Code extension providing syntax highlighting is available. It has been published on the Marketplace since v1.2.0, and snippets are available from v1.4.0 onwards.
+
+### Installation
+
+Search for `Timeline DSL` in the VS Code Extensions panel (`Ctrl+Shift+X` / `Cmd+Shift+X`) and install it. Alternatively, run the following command.
+
+```sh
+code --install-extension keroway.timeline-dsl
+```
+
+### Available snippets
+
+| Prefix | Expands to |
+| --- | --- |
+| `timeline` | Template for a `timeline` block (includes `title`, `unit`, `range`, and `calendar`) |
+| `lane` | Template for a `lane` definition (includes `kind` and `order`) |
+| `span` | Template for a `span` event (with start and end dates) |
+
+Snippets are active in files with the `.tdsl` extension.
