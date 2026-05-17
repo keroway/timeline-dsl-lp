@@ -1,0 +1,160 @@
+---
+import { renderSvgFromSource } from "../lib/tdsl-wasm-node.mts";
+
+interface Props {
+  source: string;
+  caption?: string;
+  scale?: number;
+}
+
+const { source, caption, scale } = Astro.props;
+
+let svg = "";
+let renderError = "";
+try {
+  svg = await renderSvgFromSource(source, scale ?? 0);
+} catch (e) {
+  renderError = e instanceof Error ? e.message : String(e);
+}
+
+const playgroundUrl = `/playground/?source=${encodeURIComponent(source)}`;
+---
+
+<figure class="timeline-embed">
+  {svg && (
+    <div
+      class="timeline-svg-wrap"
+      role="img"
+      aria-label={caption ?? "Timeline DSL で生成した年表"}
+    >
+      {/* SVG は自社 WASM ライブラリが生成する信頼済みコンテンツ */}
+      <div class="timeline-svg" set:html={svg} />
+    </div>
+  )}
+  {renderError && (
+    <div class="timeline-error" role="alert">
+      <p>年表の生成に失敗しました: {renderError}</p>
+    </div>
+  )}
+
+  {caption && <figcaption class="timeline-caption">{caption}</figcaption>}
+
+  <div class="timeline-actions">
+    <a href={playgroundUrl} class="timeline-playground-link">
+      Playground で編集する
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M7 17L17 7M17 7H7M17 7v10" />
+      </svg>
+    </a>
+  </div>
+
+  <details class="timeline-source">
+    <summary>DSL ソースを見る</summary>
+    <pre class="timeline-source-code"><code>{source}</code></pre>
+  </details>
+</figure>
+
+<style>
+  .timeline-embed {
+    margin: 2rem 0;
+    padding: 0;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--color-bg);
+  }
+
+  .timeline-svg-wrap {
+    overflow-x: auto;
+    background: var(--color-panel);
+    padding: 1rem;
+  }
+
+  .timeline-svg :global(svg) {
+    display: block;
+    max-width: none;
+  }
+
+  .timeline-error {
+    padding: 1rem 1.5rem;
+    color: var(--color-warm);
+    background: color-mix(in srgb, var(--color-warm), transparent 92%);
+    font-size: 0.9rem;
+  }
+
+  .timeline-error p {
+    margin: 0;
+  }
+
+  .timeline-caption {
+    display: block;
+    padding: 0.75rem 1.25rem 0;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    font-style: italic;
+  }
+
+  .timeline-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+  }
+
+  .timeline-playground-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.875rem;
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+
+  .timeline-playground-link:hover {
+    color: var(--color-accent-strong);
+    text-decoration: underline;
+  }
+
+  .timeline-source {
+    border-top: 1px solid var(--color-line);
+    font-size: 0.875rem;
+  }
+
+  .timeline-source summary {
+    padding: 0.6rem 1.25rem;
+    cursor: pointer;
+    color: var(--color-muted);
+    user-select: none;
+  }
+
+  .timeline-source summary:hover {
+    color: var(--color-ink);
+  }
+
+  .timeline-source-code {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    background: var(--color-panel);
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .timeline-source-code code {
+    background: none;
+    padding: 0;
+  }
+</style>
