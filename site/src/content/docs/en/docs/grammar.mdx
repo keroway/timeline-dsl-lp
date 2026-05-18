@@ -205,7 +205,7 @@ Operators available in `filter`: `==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`, `
 
 ## Month and Day Precision on the Timeline Axis
 
-Since v1.7.0, the timeline axis supports month and day precision. When dates imported from Wikidata include month or day information, positions are determined based on month and day markers rather than year alone.
+Since v1.7.0, the timeline axis supports month and day precision. In v1.9.0, you can now write **date literals `YYYY-MM-DD` / `YYYY-MM`** directly in the `time` / `start` / `end` fields of static `event` / `span` entries.
 
 ```tdsl
 timeline "Modern History" {
@@ -216,10 +216,11 @@ timeline "Modern History" {
 }
 
 lane "events" as events { kind custom; order 10; }
-event events 1945 "End of World War II" {};
+event events 1945-08-15 "End of World War II" {};
+event events 1914-07 "Outbreak of World War I" {};
 ```
 
-Static `event` entries use year-level precision, but Wikidata claim values that carry month and day precision will be placed at their exact positions on the timeline axis. You can verify this in the output of `tdsl render` from the CLI.
+Date literals are placed at their exact positions on the timeline axis. When you specify month precision (`YYYY-MM`), it is treated as the first day of that month. Wikidata claim values that carry month or day precision are placed at their exact positions in the same way.
 
 ## `??` (Fallback) Operator in map
 
