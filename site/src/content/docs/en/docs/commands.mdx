@@ -28,6 +28,7 @@ tdsl render sample.tdsl --output sample.html
 | `tdsl ast <FILE>` | Output the AST for debugging |
 | `tdsl decompile <FILE>` | Decompile JSON IR back to `.tdsl` (v1.1.0+) |
 | `tdsl merge <FILES...>` | Merge multiple `.tdsl` files into one (v1.2.0+) |
+| `tdsl completions <SHELL>` | Generate shell completion scripts (v1.9.0+) |
 
 `build` and `render` may perform network access when processing files that include Wikidata imports. Use `--offline` if you only want to process locally-defined items.
 
@@ -51,6 +52,21 @@ Merges multiple `.tdsl` files into one. Useful when you manage lanes or events a
 ```sh
 tdsl merge part1.tdsl part2.tdsl --output combined.tdsl
 tdsl build combined.tdsl --pretty --output combined.json
+```
+
+### completions
+
+Generates shell completion scripts you can source. Supports bash / zsh / fish / pwsh / elvish (v1.9.0+).
+
+```sh
+# bash
+tdsl completions bash >> ~/.bashrc
+
+# zsh
+tdsl completions zsh > ~/.zfunc/_tdsl
+
+# fish
+tdsl completions fish > ~/.config/fish/completions/tdsl.fish
 ```
 
 ## Starting from Wikidata
