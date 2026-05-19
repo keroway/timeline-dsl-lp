@@ -49,6 +49,7 @@ export default defineConfig({
       ],
       components: {
         SocialIcons: "./src/components/DocsA11yMenu.astro",
+        Head: "./src/components/StarlightHead.astro",
       },
       customCss: ["./src/styles/starlight.css"],
       sidebar: [

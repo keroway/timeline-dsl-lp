@@ -15,6 +15,7 @@
     "smoke:playground:browser": "node scripts/smoke-playground.mjs --browser",
     "smoke:i18n": "node scripts/smoke-i18n.mjs",
     "smoke:i18n:browser": "node scripts/smoke-i18n.mjs --browser",
+    "smoke:seo": "node scripts/smoke-seo.mjs",
     "build": "pnpm smoke:wasm && astro check && astro build",
     "preview": "astro preview"
   },
