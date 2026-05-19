@@ -1157,6 +1157,22 @@ h1 {
   gap: 1rem;
 }
 
+.usecase-showcase-link {
+  margin: 1.5rem 0 0;
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+.usecase-showcase-link a {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.usecase-showcase-link a:hover {
+  text-decoration: underline;
+}
+
 .usecase {
   display: grid;
   grid-template-columns: 12rem minmax(0, 1fr);

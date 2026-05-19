@@ -50,6 +50,11 @@ const msgs = {
         <p class="eyebrow">{t("gallery.eyebrow")}</p>
         <h1>Gallery</h1>
         <p class="lead">{t("gallery.lead")}</p>
+        {locale === "ja" && (
+          <p class="gallery-showcase-link">
+            <a href="/showcase/">{t("gallery.see_showcase")}</a>
+          </p>
+        )}
       </div>
     </section>
 
@@ -211,6 +216,21 @@ const msgs = {
 <style>
   .gallery-section {
     padding-bottom: 4rem;
+  }
+
+  .gallery-showcase-link {
+    margin: 0.75rem 0 0;
+    font-size: 0.9375rem;
+  }
+
+  .gallery-showcase-link a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .gallery-showcase-link a:hover {
+    text-decoration: underline;
   }
 
   .gallery-grid {
