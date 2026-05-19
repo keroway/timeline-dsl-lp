@@ -4,6 +4,8 @@ export const ja = {
   "nav.docs": "Docs",
   "nav.changelog": "Changelog",
   "nav.github": "GitHub",
+  "nav.search.aria_label": "検索",
+  "nav.search.not_built": "検索インデックスが見つかりません。pnpm build を実行してください。",
   "nav.lang_toggle.aria_label": "言語を英語に切り替える",
   "nav.lang_toggle.unavailable": "このページは英語版が未提供のため、トップページへ移動します。",
   "footer.copyright": "© 2024 keroway",
