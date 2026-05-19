@@ -1,0 +1,31 @@
+---
+import Default from "@astrojs/starlight/components/Head.astro";
+import { breadcrumbLd, graphLd, organizationLd, type BreadcrumbItem } from "../lib/seo-jsonld";
+
+const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const route = Astro.locals.starlightRoute;
+const isJa = route.lang === "ja";
+const docsHomeId = "docs";
+
+const homeUrl = isJa ? "/" : "/en/";
+const docsHomeUrl = isJa ? "/docs/" : "/en/docs/";
+const docsHomeLabel = isJa ? "ドキュメント" : "Docs";
+const siteLabel = "Timeline DSL";
+
+const pageTitle = route.entry?.data.title ?? siteLabel;
+const currentPath = new URL(Astro.url).pathname;
+
+const breadcrumbItems: BreadcrumbItem[] = [
+  { name: siteLabel, url: homeUrl },
+  { name: docsHomeLabel, url: docsHomeUrl },
+];
+
+if (route.id !== docsHomeId && currentPath !== docsHomeUrl) {
+  breadcrumbItems.push({ name: pageTitle, url: currentPath });
+}
+
+const jsonLd = graphLd([organizationLd(siteUrl), breadcrumbLd(breadcrumbItems, siteUrl)]);
+---
+
+<Default />
+<script is:inline type="application/ld+json" set:html={jsonLd} />

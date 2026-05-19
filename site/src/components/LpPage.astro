@@ -4,6 +4,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import releasesData from "../data/releases.generated.json";
 import tdslGrammar from "../lib/tdsl.tmLanguage.json" with { type: "json" };
 import { getT, type Locale } from "../i18n/index";
+import { softwareApplicationLd } from "../lib/seo-jsonld";
 
 interface Props {
   locale: Locale;
@@ -175,9 +176,12 @@ const useCases = [
 
 const heroDslExample = t("lp.hero.dsl_example");
 const pathname = locale === "ja" ? "/" : "/en/";
+
+const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const homeJsonLd = [softwareApplicationLd(siteUrl, locale)];
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} pathname={pathname} locale={locale} showAlternates={true} version={latest?.tagName}>
+<BaseLayout title={pageTitle} description={pageDescription} pathname={pathname} locale={locale} version={latest?.tagName} extraJsonLd={homeJsonLd}>
 
       <main>
         <section class="hero">
