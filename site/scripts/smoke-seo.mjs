@@ -35,6 +35,7 @@ async function smokeSeo(rootUrl) {
     "/playground/",
     "/gallery/",
     "/changelog/",
+    "/showcase/",
     "/showcase/oda-nobunaga/",
     "/showcase/natsume-soseki/",
     "/docs/",
@@ -54,6 +55,7 @@ async function smokeSeo(rootUrl) {
   const jsonLdTargets = [
     { path: "/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'] },
     { path: "/en/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'] },
+    { path: "/showcase/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"', '"@type":"CollectionPage"'] },
     { path: "/showcase/oda-nobunaga/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'] },
     { path: "/showcase/natsume-soseki/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'] },
     { path: "/docs/", required: ['"@type":"Organization"', '"@type":"BreadcrumbList"'] },
