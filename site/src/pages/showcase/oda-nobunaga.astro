@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import TimelineEmbed from "../../components/TimelineEmbed.astro";
+import { breadcrumbLd } from "../../lib/seo-jsonld";
 
 const source = `timeline "織田信長の生涯 (1534–1582)" {
     title "織田信長の生涯";
@@ -30,6 +31,16 @@ event politics 1573 "室町幕府滅亡" {};
 event politics 1576 "安土城築城開始" {};
 event politics 1580 "惣無事令" {};
 `;
+
+const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "Timeline DSL", url: "/" },
+    { name: "Showcase", url: "/showcase/" },
+    { name: "織田信長の生涯", url: "/showcase/oda-nobunaga/" },
+  ],
+  siteUrl,
+);
 ---
 
 <BaseLayout
@@ -37,6 +48,7 @@ event politics 1580 "惣無事令" {};
   description="Timeline DSL で記述した織田信長の生涯年表。合戦・政治の 3 レーン構成で 1534 年から 1582 年を俯瞰する。"
   pathname="/showcase/oda-nobunaga/"
   locale="ja"
+  extraJsonLd={[breadcrumb]}
 >
   <main class="showcase-page">
     <div class="showcase-inner">

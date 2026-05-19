@@ -59,7 +59,6 @@ const renderedReleases = await Promise.all(
   description={t("changelog.page.description")}
   pathname={pathname}
   locale={locale}
-  showAlternates={true}
   version={latest?.tagName || releases[0]?.tagName}
 >
 

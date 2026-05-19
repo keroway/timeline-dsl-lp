@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import TimelineEmbed from "../../components/TimelineEmbed.astro";
+import { breadcrumbLd } from "../../lib/seo-jsonld";
 
 const source = `timeline "夏目漱石の生涯 (1867–1916)" {
     title "夏目漱石の生涯";
@@ -36,6 +37,16 @@ event works 1914 "「こころ」" {};
 event works 1915 "「道草」" {};
 event works 1916 "「明暗」（絶筆・未完）" {};
 `;
+
+const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "Timeline DSL", url: "/" },
+    { name: "Showcase", url: "/showcase/" },
+    { name: "夏目漱石の生涯", url: "/showcase/natsume-soseki/" },
+  ],
+  siteUrl,
+);
 ---
 
 <BaseLayout
@@ -43,6 +54,7 @@ event works 1916 "「明暗」（絶筆・未完）" {};
   description="Timeline DSL で記述した夏目漱石の生涯年表。生涯・学業教職・作品の 3 レーン構成で 1867 年から 1916 年を俯瞰する。"
   pathname="/showcase/natsume-soseki/"
   locale="ja"
+  extraJsonLd={[breadcrumb]}
 >
   <main class="showcase-page">
     <div class="showcase-inner">

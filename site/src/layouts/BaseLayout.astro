@@ -2,6 +2,8 @@
 import SocialMeta from "../components/SocialMeta.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import { graphLd, organizationLd, webPageLd } from "../lib/seo-jsonld";
+import type { Locale } from "../i18n";
 import "../styles/global.css";
 
 interface Props {
@@ -13,6 +15,7 @@ interface Props {
   version?: string | null;
   shellClass?: string;
   showAlternates?: boolean;
+  extraJsonLd?: Record<string, unknown>[];
 }
 
 const {
@@ -23,7 +26,8 @@ const {
   ogImagePath,
   version,
   shellClass,
-  showAlternates = false,
+  showAlternates = true,
+  extraJsonLd = [],
 } = Astro.props;
 
 const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
@@ -33,14 +37,12 @@ const jaUrl = new URL(rootPath, siteUrl).toString();
 const enUrl = new URL(`/en${rootPath}`, siteUrl).toString();
 const canonicalUrl = locale === "en" ? enUrl : jaUrl;
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  url: new URL(pathname, siteUrl).toString(),
-  name: title,
-  description: description,
-  inLanguage: locale === "en" ? "en" : "ja",
-};
+const seoLocale: Locale = locale === "en" ? "en" : "ja";
+const jsonLdGraph = graphLd([
+  organizationLd(siteUrl),
+  webPageLd({ siteUrl, pathname, title, description, locale: seoLocale }),
+  ...extraJsonLd,
+]);
 ---
 
 <!doctype html>
@@ -64,7 +66,7 @@ const jsonLd = {
         <link rel="alternate" hreflang="x-default" href={jaUrl} />
       </>
     )}
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline type="application/ld+json" set:html={jsonLdGraph} />
     <title>{title}</title>
   </head>
   <body>
