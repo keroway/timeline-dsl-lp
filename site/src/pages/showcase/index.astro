@@ -1,0 +1,247 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { breadcrumbLd } from "../../lib/seo-jsonld";
+import { getT } from "../../i18n/index";
+
+const locale = "ja" as const;
+const t = getT(locale);
+
+const showcases = [
+  {
+    href: "/showcase/oda-nobunaga/",
+    title: "織田信長の生涯",
+    summary:
+      "戦国時代の覇者・織田信長（1534–1582）の生涯を 3 レーン構成で俯瞰する年表。",
+    period: "1534 〜 1582 年（49 年間）",
+    lanes: "生涯 / 合戦 / 天下布武",
+    events: "13",
+  },
+  {
+    href: "/showcase/natsume-soseki/",
+    title: "夏目漱石の生涯",
+    summary:
+      "明治から大正にかけて活躍した文豪・夏目漱石（1867–1916）の生涯と作品を辿る年表。",
+    period: "1867 〜 1916 年（49 年間）",
+    lanes: "生涯 / 学業・教職 / 作品",
+    events: "20",
+  },
+];
+
+const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "Timeline DSL", url: "/" },
+    { name: "Showcase", url: "/showcase/" },
+  ],
+  siteUrl,
+);
+
+const collectionLd = {
+  "@type": "CollectionPage",
+  name: t("showcase.index.page.title"),
+  description: t("showcase.index.page.description"),
+  url: new URL("/showcase/", siteUrl).toString(),
+  inLanguage: "ja",
+  hasPart: showcases.map((s) => ({
+    "@type": "WebPage",
+    name: s.title,
+    url: new URL(s.href, siteUrl).toString(),
+  })),
+};
+---
+
+<BaseLayout
+  title={t("showcase.index.page.title")}
+  description={t("showcase.index.page.description")}
+  pathname="/showcase/"
+  locale={locale}
+  extraJsonLd={[breadcrumb, collectionLd]}
+>
+  <main>
+    <section class="page-hero">
+      <div class="page-hero-inner">
+        <p class="eyebrow">{t("showcase.index.eyebrow")}</p>
+        <h1>Showcase</h1>
+        <p class="lead">{t("showcase.index.lead")}</p>
+      </div>
+    </section>
+
+    <section class="section showcase-section" aria-labelledby="showcase-heading">
+      <h2 id="showcase-heading" class="sr-only">事例一覧</h2>
+      <div class="showcase-grid">
+        {
+          showcases.map((item) => (
+            <article class="showcase-card">
+              <a class="showcase-card-link" href={item.href}>
+                <h3 class="showcase-card-title">{item.title}</h3>
+                <p class="showcase-card-summary">{item.summary}</p>
+                <dl class="showcase-card-meta">
+                  <div>
+                    <dt>{t("showcase.card.period")}</dt>
+                    <dd>{item.period}</dd>
+                  </div>
+                  <div>
+                    <dt>{t("showcase.card.lanes")}</dt>
+                    <dd>{item.lanes}</dd>
+                  </div>
+                  <div>
+                    <dt>{t("showcase.card.events")}</dt>
+                    <dd>{item.events}</dd>
+                  </div>
+                </dl>
+                <span class="showcase-card-cta">
+                  {t("showcase.card.view")}
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M7 17L17 7M17 7H7M17 7v10" />
+                  </svg>
+                </span>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .showcase-section {
+    padding-bottom: 4rem;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr));
+    gap: 2rem;
+  }
+
+  .showcase-card {
+    display: flex;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background: var(--color-panel);
+    overflow: hidden;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+
+  .showcase-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  :root[data-a11y-reduced-motion="true"] .showcase-card {
+    transition: none;
+  }
+
+  :root[data-a11y-reduced-motion="true"] .showcase-card:hover {
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .showcase-card {
+      transition: none;
+    }
+
+    .showcase-card:hover {
+      transform: none;
+    }
+  }
+
+  .showcase-card-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1.5rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .showcase-card-link:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
+    border-radius: 10px;
+  }
+
+  .showcase-card-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 760;
+    color: var(--color-ink);
+  }
+
+  .showcase-card-summary {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+    line-height: var(--line-height-base);
+  }
+
+  .showcase-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0.25rem 0 0;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg);
+    border-radius: 6px;
+    border: 1px solid var(--color-line);
+    font-size: 0.8125rem;
+  }
+
+  .showcase-card-meta div {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .showcase-card-meta dt {
+    color: var(--color-muted);
+    font-weight: 500;
+  }
+
+  .showcase-card-meta dt::after {
+    content: ":";
+  }
+
+  .showcase-card-meta dd {
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .showcase-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.25rem;
+    color: var(--color-accent);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .showcase-card:hover .showcase-card-cta {
+    text-decoration: underline;
+  }
+</style>
