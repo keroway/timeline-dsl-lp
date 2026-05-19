@@ -5,6 +5,13 @@ import tdslGrammar from "./src/lib/tdsl.tmLanguage.json" with { type: "json" };
 
 export default defineConfig({
   site: "https://timeline-dsl.pages.dev",
+  vite: {
+    build: {
+      rollupOptions: {
+        external: ["/pagefind/pagefind-ui.js"],
+      },
+    },
+  },
   markdown: {
     shikiConfig: {
       themes: {
