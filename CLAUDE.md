@@ -67,3 +67,14 @@ Playground / runnable docs は `site/src/lib/tdsl-wasm.ts` 経由で WASM を呼
 
 - 着手: assignees + `in-progress` ラベル + 着手コメントの 3 点セット
 - CLOSED issue には触らない
+
+## Claude Code setup
+
+このリポジトリは Claude Code 専用に以下を整備している。実装に入る前に必ず参照する。
+
+- **実装ルール**: `.claude/rules/implementation-policy.md` — 変更の最小性、root-cause 修正、デザイントークン、i18n ペア同期、SEO/JSON-LD、smoke 拡充、Issue 運用などを定義。
+- **Web ディレクター agent**: `.claude/agents/web-director.md` — UX/a11y/ブランド整合性と SEO/i18n/hreflang/JSON-LD の最終判定担当。実装方針の事前相談 / PR 直前の最終チェックに `Agent` ツールで `subagent_type: web-director` を指定して呼ぶ。
+- **Hooks** (`.claude/hooks/`):
+  - `astro-check-on-edit.sh` — PostToolUse (Edit/Write/MultiEdit) で `site/src/` 配下の `.astro` / `.ts` / `.tsx` / `.mdx` / `.mjs` 編集後に `astro check` を実行。型エラー時は exit 2 で feedback。
+  - `stop-checks.sh` — Stop 時に (1) i18n ペアドリフト (ja/en の片方しか変更されていない) を検知して通知、(2) 現在ブランチの PR で失敗している GitHub checks があれば一覧表示。
+- 設定本体: `.claude/settings.json`
