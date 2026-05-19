@@ -389,6 +389,11 @@ const homeJsonLd = [softwareApplicationLd(siteUrl, locale)];
               </article>
             ))}
           </div>
+          {locale === "ja" && (
+            <p class="usecase-showcase-link">
+              <a href="/showcase/">{t("lp.usecase.see_showcase")}</a>
+            </p>
+          )}
         </section>
 
         <section class="install-band" aria-labelledby="install-heading">
