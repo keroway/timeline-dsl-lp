@@ -54,6 +54,17 @@ tdsl merge part1.tdsl part2.tdsl --output combined.tdsl
 tdsl build combined.tdsl --pretty --output combined.json
 ```
 
+### render
+
+`.tdsl` をスタンドアロンHTML / SVG / PNG として描画します。`--format` で出力形式を切り替えます。`--format png` は v1.10.0〜対応です。
+
+```sh
+tdsl render sample.tdsl --format svg --output sample.svg
+tdsl render sample.tdsl --format png --output sample.png
+```
+
+PNG 出力は内部 SVG を `resvg` でラスタライズします。CJK レーンラベルは system fonts（Noto Sans JP / Hiragino Sans / Yu Gothic 等）が読み込まれている環境で描画できます。
+
 ### completions
 
 シェル補完スクリプトを生成して読み込みます。bash / zsh / fish / pwsh / elvish に対応しています（v1.9.0〜）。
@@ -113,7 +124,7 @@ tdsl lint manual.tdsl --fix
 tdsl render manual.tdsl --output manual.html
 ```
 
-`import-csv` は `lane,type,start,end,time,label,tags,id` のヘッダー行を持つUTF-8 CSVを入力にします。
+`import-csv` は `lane,type,start,end,time,label,tags,id` のヘッダー行を持つUTF-8 CSVを入力にします。`start` / `end` / `time` 列は `YYYY` / `YYYY-MM` / `YYYY-MM-DD` の 3 精度を受理します（月・日精度は v1.10.0〜）。
 
 ## キャッシュ管理
 

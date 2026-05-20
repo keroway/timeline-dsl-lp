@@ -22,6 +22,16 @@ export function check_source(source: string): string;
 export function compile_to_ir(source: string): string;
 
 /**
+ * Format TDSL source by re-emitting from the AST.
+ *
+ * Parses `source` and re-emits a normalized form (2-space indent, single blank line
+ * between top-level statements). Comments in the original source are **not preserved**
+ * because they are skipped at the PEG layer.
+ * Returns Ok(formatted_source) on success, Err(parse_error_message) on parse failure.
+ */
+export function format_source(source: string): string;
+
+/**
  * Initialize the panic hook for better error messages in the browser console.
  */
 export function main(): void;
@@ -48,6 +58,7 @@ export interface InitOutput {
     readonly memory: WebAssembly.Memory;
     readonly check_source: (a: number, b: number, c: number) => void;
     readonly compile_to_ir: (a: number, b: number, c: number) => void;
+    readonly format_source: (a: number, b: number, c: number) => void;
     readonly render_html_from_source: (a: number, b: number, c: number) => void;
     readonly render_svg_from_source: (a: number, b: number, c: number, d: number) => void;
     readonly main: () => void;
