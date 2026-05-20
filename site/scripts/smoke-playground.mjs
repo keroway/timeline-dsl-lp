@@ -81,6 +81,8 @@ async function smokeHttpSurface(rootUrl) {
   assertIncludes(playgroundHtml, "data-smoke=\"playground-editor\"", "playground editor smoke selector");
   assertIncludes(playgroundHtml, "data-smoke=\"playground-preview\"", "playground preview smoke selector");
   assertIncludes(playgroundHtml, "data-smoke=\"playground-diagnostics\"", "playground diagnostics smoke selector");
+  assertIncludes(playgroundHtml, "data-copy-link", "playground copy-link button");
+  assertIncludes(playgroundHtml, "data-share-live", "playground share live region");
 
   const wasmJs = await get(`${rootUrl}${WASM_JS_PATH}`);
   assertStatus(wasmJs, WASM_JS_PATH);

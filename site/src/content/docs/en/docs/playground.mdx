@@ -60,6 +60,16 @@ Adding a `?source=` query to the URL opens the Playground with the specified sou
 /playground/?source=timeline%20%22サンプル%22%20%7B...%7D
 ```
 
+### "Copy as link" button
+
+Click the **Copy as link** button in the toolbar to copy a URL containing the current editor source as a gzip-compressed payload. Opening the link in a new tab restores the same source — handy for sharing code in issues or social posts.
+
+```txt
+/playground/?src=<gzip + base64url-encoded source>
+```
+
+If the full URL would exceed 8,192 characters, the share fails with a message (use `.tdsl` file download and attachment instead).
+
 ## Limitations
 
 The Playground runs on WebAssembly inside your browser. The following features are not available:
