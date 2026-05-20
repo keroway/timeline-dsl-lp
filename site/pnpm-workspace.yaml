@@ -17,6 +17,9 @@ onlyBuiltDependencies:
   # Astro 6 が画像最適化に使う ネイティブビルド依存。
   # node-gyp の install スクリプトでプラットフォーム別バイナリを取得する。
   - sharp
+  # Astro / Vite が内部で使うバンドラ。
+  # install スクリプトでプラットフォーム別バイナリの解決を検証する。
+  - esbuild
 
 # git:/http: など標準レジストリ以外を経由した間接依存をブロックする。
 blockExoticSubdeps: true
