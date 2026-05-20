@@ -114,6 +114,9 @@ const msgs = {
   diagnosticsWaiting: t("playground.diagnostics.waiting"),
   diagnosticsEmpty: t("playground.diagnostics.empty"),
   retry: t("playground.retry"),
+  shareCopySuccess: t("playground.share.copy_success"),
+  shareCopyError: t("playground.share.copy_error"),
+  shareTooLong: t("playground.share.too_long"),
 };
 ---
 
@@ -169,6 +172,14 @@ const msgs = {
         <button class="button button-secondary" type="button" data-open-file>
           {t("playground.toolbar.open_file")}
         </button>
+        <button
+          class="button button-secondary"
+          type="button"
+          data-copy-link
+          aria-label={t("playground.toolbar.copy_link_aria")}
+        >
+          {t("playground.toolbar.copy_link")}
+        </button>
         <button class="button button-secondary" type="button" data-download-tdsl>
           {t("playground.toolbar.save_tdsl")}
         </button>
@@ -179,6 +190,13 @@ const msgs = {
           {t("playground.toolbar.save_html")}
         </button>
       </div>
+      <div
+        class="playground-share-live"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        data-share-live
+      ></div>
     </section>
 
     <section class="playground-workspace" aria-label="Timeline DSL editor and preview">
@@ -250,6 +268,11 @@ const msgs = {
       import { bracketMatching, indentOnInput } from "@codemirror/language";
       import { checkTdslSource, renderTdslSvg, renderTdslHtml } from "../lib/tdsl-wasm";
       import { createPanZoom } from "../lib/playground-pan-zoom";
+      import {
+        buildShareUrl,
+        extractSourceFromLocation,
+        MAX_SHARE_URL_LENGTH,
+      } from "../lib/playground-share";
 
       type PlaygroundSample = {
         id: string;
@@ -278,6 +301,9 @@ const msgs = {
         diagnosticsWaiting: string;
         diagnosticsEmpty: string;
         retry: string;
+        shareCopySuccess: string;
+        shareCopyError: string;
+        shareTooLong: string;
       };
 
       const root = document.querySelector<HTMLElement>("[data-playground-root]");
@@ -296,6 +322,8 @@ const msgs = {
       const downloadHtmlButton = document.querySelector<HTMLButtonElement>("[data-download-html]");
       const openFileButton = document.querySelector<HTMLButtonElement>("[data-open-file]");
       const openFileInput = document.querySelector<HTMLInputElement>("[data-open-file-input]");
+      const copyLinkButton = document.querySelector<HTMLButtonElement>("[data-copy-link]");
+      const shareLive = document.querySelector<HTMLElement>("[data-share-live]");
       const scaleSelect = document.querySelector<HTMLSelectElement>("[data-scale-select]");
       const sampleDataElement = document.getElementById("playground-samples");
       const samples = JSON.parse(sampleDataElement?.textContent || "[]") as PlaygroundSample[];
@@ -517,14 +545,16 @@ const msgs = {
         parent: editorHost!,
       });
 
-      const sourceParam = new URLSearchParams(window.location.search).get("source");
-      if (sourceParam) {
-        applySource(sourceParam);
-        if (sampleSelect) sampleSelect.value = "";
-      } else {
-        updateEditorMeta();
-        runPlayground();
-      }
+      void (async () => {
+        const sharedSource = await extractSourceFromLocation(window.location.search);
+        if (sharedSource !== null) {
+          applySource(sharedSource);
+          if (sampleSelect) sampleSelect.value = "";
+        } else {
+          updateEditorMeta();
+          runPlayground();
+        }
+      })();
 
       sampleSelect?.addEventListener("change", () => {
         const sample = samples.find((item) => item.id === sampleSelect.value);
@@ -550,6 +580,38 @@ const msgs = {
       });
 
       openFileButton?.addEventListener("click", () => openFileInput?.click());
+
+      const announceShare = (message: string) => {
+        if (!shareLive) return;
+        shareLive.textContent = "";
+        // Force re-announcement when the same message fires twice in a row.
+        window.requestAnimationFrame(() => {
+          shareLive.textContent = message;
+        });
+      };
+
+      copyLinkButton?.addEventListener("click", async () => {
+        if (!copyLinkButton) return;
+        const source = view.state.doc.toString();
+        copyLinkButton.disabled = true;
+        try {
+          const result = await buildShareUrl({
+            source,
+            origin: window.location.origin,
+            pathname: window.location.pathname,
+          });
+          if (!result.ok) {
+            announceShare(msgs.shareTooLong.replace("{limit}", String(MAX_SHARE_URL_LENGTH)));
+            return;
+          }
+          await navigator.clipboard.writeText(result.url);
+          announceShare(msgs.shareCopySuccess);
+        } catch {
+          announceShare(msgs.shareCopyError);
+        } finally {
+          copyLinkButton.disabled = false;
+        }
+      });
 
       openFileInput?.addEventListener("change", () => {
         const file = openFileInput?.files?.[0];
