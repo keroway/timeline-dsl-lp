@@ -54,6 +54,17 @@ tdsl merge part1.tdsl part2.tdsl --output combined.tdsl
 tdsl build combined.tdsl --pretty --output combined.json
 ```
 
+### render
+
+Renders `.tdsl` to a standalone HTML, SVG, or PNG file. Use `--format` to choose the output format. `--format png` is supported from v1.10.0+.
+
+```sh
+tdsl render sample.tdsl --format svg --output sample.svg
+tdsl render sample.tdsl --format png --output sample.png
+```
+
+PNG output rasterizes the internal SVG with `resvg`. CJK lane labels are rendered as long as the host environment has system fonts available (Noto Sans JP, Hiragino Sans, Yu Gothic, etc.).
+
 ### completions
 
 Generates shell completion scripts you can source. Supports bash / zsh / fish / pwsh / elvish (v1.9.0+).
@@ -113,7 +124,7 @@ tdsl lint manual.tdsl --fix
 tdsl render manual.tdsl --output manual.html
 ```
 
-`import-csv` takes a UTF-8 CSV with a header row of `lane,type,start,end,time,label,tags,id`.
+`import-csv` takes a UTF-8 CSV with a header row of `lane,type,start,end,time,label,tags,id`. The `start` / `end` / `time` columns accept three precisions — `YYYY`, `YYYY-MM`, and `YYYY-MM-DD` (month/day precision is supported from v1.10.0+).
 
 ## Cache Management
 

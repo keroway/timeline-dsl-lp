@@ -1,15 +1,22 @@
 {
   "repository": "keroway/timeline-dsl",
   "source": "github-releases",
-  "fetchedAt": "2026-05-18T00:13:34.657Z",
+  "fetchedAt": "2026-05-20T15:51:56.763Z",
   "latest": {
-    "tagName": "v1.9.0",
-    "name": "v1.9.0",
-    "publishedAt": "2026-05-17T13:52:51Z",
-    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.9.0",
-    "body": "## What's Changed\n* docs: チュートリアルおよび DSL 仕様書の英語翻訳を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/223\n* feat(webui): ヘッダーを「ファイル/テンプレート/エクスポート/設定/About」に縮約・再編 by @keroway in https://github.com/keroway/timeline-dsl/pull/224\n* feat(webui): 設定パネルを LocalStorage に永続化し PNG 背景・スケール・履歴トグルを追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/225\n* feat(webui): examples/internet_history.tdsl をサンプル群に追加しギャラリーから利用可能にする by @keroway in https://github.com/keroway/timeline-dsl/pull/232\n* feat(webui): ダークモード自動追従 (prefers-color-scheme) と Toast 通知整備 by @keroway in https://github.com/keroway/timeline-dsl/pull/233\n* feat(webui): pako 圧縮 + URL Hash で共有 URL コピー機能を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/234\n* feat(webui): LocalStorage 自動保存とリストア by @keroway in https://github.com/keroway/timeline-dsl/pull/235\n* feat(webui): 履歴スナップショット（自動5件 + 手動保存） by @keroway in https://github.com/keroway/timeline-dsl/pull/236\n* feat(webui): プレビュー↔エディタ双方向ジャンプ (#230) by @keroway in https://github.com/keroway/timeline-dsl/pull/237\n* chore: v1.8.0 リリース（バージョンバンプ・CHANGELOG 更新） by @keroway in https://github.com/keroway/timeline-dsl/pull/238\n* feat(webui): Ctrl/Cmd+S で .tdsl ソースをダウンロードするキーボードショートカット by @keroway in https://github.com/keroway/timeline-dsl/pull/246\n* docs(spec): 月・日精度の時間表現 仕様設計を追加 (#242) by @keroway in https://github.com/keroway/timeline-dsl/pull/249\n* feat(parser): 日付リテラル（YYYY-MM-DD / YYYY-MM）のパースサポート (#243) by @keroway in https://github.com/keroway/timeline-dsl/pull/250\n* feat(core): 月・日精度の静的 lowering ・range 拡張・decompile 対応 (#247) by @keroway in https://github.com/keroway/timeline-dsl/pull/251\n* feat(render): unit day サポート（day_ticks と日精度ラベル）(#248) by @keroway in https://github.com/keroway/timeline-dsl/pull/252\n* feat(cli): シェル補完スクリプト生成コマンド（tdsl completions）(#244) by @keroway in https://github.com/keroway/timeline-dsl/pull/253\n* feat(webui): プレビュー全画面表示モードを追加 (#241) by @keroway in https://github.com/keroway/timeline-dsl/pull/254\n* feat(webui): 分割ペイン比率を LocalStorage に永続化 (#240) by @keroway in https://github.com/keroway/timeline-dsl/pull/255\n* feat(webui): エディタにインラインエラーハイライトを追加 (#239) by @keroway in https://github.com/keroway/timeline-dsl/pull/256\n* chore: v1.9.0 リリース（バージョンバンプ・CHANGELOG 更新） by @keroway in https://github.com/keroway/timeline-dsl/pull/257\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.7.0...v1.9.0"
+    "tagName": "v1.10.0",
+    "name": "v1.10.0",
+    "publishedAt": "2026-05-20T14:18:44Z",
+    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.10.0",
+    "body": ""
   },
   "releases": [
+    {
+      "tagName": "v1.10.0",
+      "name": "v1.10.0",
+      "publishedAt": "2026-05-20T14:18:44Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.10.0",
+      "body": ""
+    },
     {
       "tagName": "v1.9.0",
       "name": "v1.9.0",
