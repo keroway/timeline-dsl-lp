@@ -1,0 +1,25 @@
+# pnpm のセキュリティ寄りデフォルトを opt-in する。
+# pnpm 11 ではこれらが既定値になる予定。10.x のうちに先取りしている。
+# 参考: https://pnpm.io/blog/2025/12/29/pnpm-in-2025
+
+# 公開からの経過時間 (分) がこの値未満のバージョンを解決対象から除外する。
+# 1440 分 = 1 日 (pnpm 11 の既定値)。pnpm add / pnpm update 時に効く。
+# CI の `pnpm install --frozen-lockfile` では既決のバージョンを使うので影響しない。
+minimumReleaseAge: 1440
+
+# 緊急修正等で cooldown を待たずに導入したいパッケージはここで例外指定する。
+minimumReleaseAgeExclude: []
+
+# postinstall などのライフサイクルスクリプト実行を明示許可制にする。
+# 許可は onlyBuiltDependencies で列挙する。
+strictDepBuilds: true
+onlyBuiltDependencies:
+  # Astro 6 が画像最適化に使う ネイティブビルド依存。
+  # node-gyp の install スクリプトでプラットフォーム別バイナリを取得する。
+  - sharp
+
+# git:/http: など標準レジストリ以外を経由した間接依存をブロックする。
+blockExoticSubdeps: true
+
+# provenance (公開方法の信頼レベル) が下がる更新を拒否する。
+trustPolicy: no-downgrade
