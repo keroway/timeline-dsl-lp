@@ -11,6 +11,7 @@ export const ja = {
   "nav.lang_toggle.unavailable": "このページは英語版が未提供のため、トップページへ移動します。",
   "footer.copyright": "© 2024 keroway",
   "footer.links": "フッターナビゲーション",
+  "a11y.skip_link": "メインコンテンツへスキップ",
   "a11y.menu.title": "アクセシビリティ設定",
   "a11y.menu.toggle_aria_label": "アクセシビリティ設定",
   "a11y.section.visual": "視覚効果・動き",

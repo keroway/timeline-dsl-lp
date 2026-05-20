@@ -3,7 +3,7 @@ import SocialMeta from "../components/SocialMeta.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import { graphLd, organizationLd, webPageLd } from "../lib/seo-jsonld";
-import type { Locale } from "../i18n";
+import { getT, type Locale } from "../i18n";
 import "../styles/global.css";
 
 interface Props {
@@ -38,6 +38,7 @@ const enUrl = new URL(`/en${rootPath}`, siteUrl).toString();
 const canonicalUrl = locale === "en" ? enUrl : jaUrl;
 
 const seoLocale: Locale = locale === "en" ? "en" : "ja";
+const t = getT(seoLocale);
 const jsonLdGraph = graphLd([
   organizationLd(siteUrl),
   webPageLd({ siteUrl, pathname, title, description, locale: seoLocale }),
@@ -70,6 +71,7 @@ const jsonLdGraph = graphLd([
     <title>{title}</title>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">{t("a11y.skip_link")}</a>
     <div class:list={["page-shell", shellClass]}>
       <SiteHeader currentPath={pathname} />
       <slot />
@@ -78,3 +80,22 @@ const jsonLdGraph = graphLd([
     <slot name="body-end" />
   </body>
 </html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 9999;
+    padding: 0.5rem 1rem;
+    background: var(--color-accent, #000);
+    color: #fff;
+    border-radius: 0 0 4px 4px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: top 0.1s;
+  }
+  .skip-link:focus {
+    top: 0;
+  }
+</style>
