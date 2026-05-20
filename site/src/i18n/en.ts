@@ -13,6 +13,7 @@ export const en = {
   "nav.lang_toggle.unavailable": "This page is not available in English. Redirecting to the top page.",
   "footer.copyright": "© 2024 keroway",
   "footer.links": "Footer navigation",
+  "a11y.skip_link": "Skip to main content",
   "a11y.menu.title": "Accessibility settings",
   "a11y.menu.toggle_aria_label": "Accessibility settings",
   "a11y.section.visual": "Visual effects & motion",

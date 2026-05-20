@@ -65,34 +65,34 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
   <div id="docs-a11y-menu" class="a11y-menu" hidden>
     <div class="a11y-menu-inner">
       <div class="a11y-section">
-        <h3>視覚効果・動き</h3>
+        <h3>{t("a11y.section.visual")}</h3>
         <div class="a11y-field">
           <label>
             <input type="checkbox" data-a11y-reduced-motion />
-            動きを抑える (Reduced motion)
+            {t("a11y.field.reduced_motion")}
           </label>
         </div>
         <div class="a11y-field">
           <label>
             <input type="checkbox" data-a11y-high-contrast />
-            高コントラスト表示
+            {t("a11y.field.high_contrast")}
           </label>
         </div>
       </div>
       <div class="a11y-section">
-        <h3>読みやすさ</h3>
+        <h3>{t("a11y.section.readability")}</h3>
         <div class="a11y-field">
           <label>
             <input type="checkbox" data-a11y-text-spacing-input />
-            テキストの余白を広げる
+            {t("a11y.field.text_spacing")}
           </label>
         </div>
         <div class="a11y-field">
           <select data-a11y-text-size>
-            <option value="normal">標準 (100%)</option>
-            <option value="large">大きく (125%)</option>
-            <option value="extra-large">さらに大きく (150%)</option>
-            <option value="xx-large">最大 (200%)</option>
+            <option value="normal">{t("a11y.text_size.normal")}</option>
+            <option value="large">{t("a11y.text_size.large")}</option>
+            <option value="extra-large">{t("a11y.text_size.extra_large")}</option>
+            <option value="xx-large">{t("a11y.text_size.xx_large")}</option>
           </select>
         </div>
       </div>
