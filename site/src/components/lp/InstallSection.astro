@@ -1,0 +1,65 @@
+---
+import { getT, type Locale } from "../../i18n/index";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+---
+
+<section class="install-band" aria-labelledby="install-heading">
+  <div class="section install-layout">
+    <div class="section-header">
+      <h2 id="install-heading">{t("lp.install.heading")}</h2>
+      <p>
+        {t("lp.install.lead")}
+      </p>
+    </div>
+    <div class="command-copy">
+      <pre class="command"><code id="install-command">brew install keroway/tap/timeline-dsl</code></pre>
+      <button
+        class="copy-button"
+        type="button"
+        data-copy-target="install-command"
+        data-copy-success-label={t("cta.copy_success")}
+        data-copy-error-label={t("cta.copy_error")}
+        aria-label={t("cta.install_copy_aria_label")}
+      >
+        <svg
+          class="copy-button__icon copy-button__icon--clipboard"
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <rect x="9" y="3" width="6" height="3" rx="1" />
+          <path d="M9 4.5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-12a2 2 0 0 0-2-2h-2" />
+        </svg>
+        <svg
+          class="copy-button__icon copy-button__icon--check"
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <polyline points="5 12 10 17 19 8" />
+        </svg>
+      </button>
+      <span class="copy-status" aria-live="polite" aria-atomic="true"></span>
+    </div>
+  </div>
+</section>

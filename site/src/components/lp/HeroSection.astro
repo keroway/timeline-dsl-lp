@@ -1,0 +1,117 @@
+---
+import { Code } from "astro:components";
+import { getT, type Locale } from "../../i18n/index";
+import releasesData from "../../data/releases.generated.json";
+import tdslGrammar from "../../lib/tdsl.tmLanguage.json" with { type: "json" };
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const tdslLang = tdslGrammar as any;
+const tdslCodeThemes = { light: "github-light", dark: "github-dark" } as const;
+
+type Release = {
+  tagName: string;
+  name: string;
+  publishedAt: string;
+  url: string;
+  body: string;
+};
+
+const latest = releasesData.latest as Release | null;
+const latestLabel = latest?.tagName || "未取得";
+const latestName = latest?.name || latest?.tagName || "リリース情報は準備中です";
+const shouldShowLatestName = latestName !== latestLabel;
+
+const dateLocale = locale === "ja" ? "ja-JP" : "en-US";
+const formatDate = (value: string | null | undefined) => {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat(dateLocale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+};
+
+const latestPublishedAt = formatDate(latest?.publishedAt);
+const heroDslExample = t("lp.hero.dsl_example");
+---
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow">Browser-first timeline authoring</p>
+      <h1>Timeline DSL</h1>
+      <p class="lead">
+        {t("lp.hero.lead")}
+      </p>
+      <div class="actions">
+        <a class="button button-primary" href={locale === "ja" ? "/playground/" : "/en/playground/"}>{t("cta.try_playground")}</a>
+        <a class="button button-secondary" href={locale === "ja" ? "/docs/" : "/en/docs/"}>{t("cta.view_docs")}</a>
+        <a class="button button-secondary" href="https://github.com/keroway/timeline-dsl">
+          {t("cta.view_github")}
+        </a>
+      </div>
+      <div class="release-summary" aria-label="Latest release">
+        <span class="release-label">Latest</span>
+        <strong>{latestLabel}</strong>
+        {shouldShowLatestName && <span>{latestName}</span>}
+        {latestPublishedAt && <time datetime={latest?.publishedAt}>{latestPublishedAt}</time>}
+        {latest?.url && <a href={latest.url}>{t("cta.release_notes")}</a>}
+      </div>
+    </div>
+    <div class="hero-visual" aria-label="Timeline DSL workflow preview">
+      <div class="editor-panel">
+        <div class="panel-bar">
+          <span>world-history.tdsl</span>
+          <span>validated</span>
+        </div>
+        <Code
+          class="code-sample"
+          code={heroDslExample}
+          lang={tdslLang}
+          themes={tdslCodeThemes}
+          defaultColor={false}
+        />
+      </div>
+      <div class="timeline-preview" aria-hidden="true">
+        <div class="preview-header">
+          <span>Rendered timeline</span>
+          <span>980 - 1260</span>
+        </div>
+        <div class="timeline-axis">
+          <span>980</span>
+          <span>1060</span>
+          <span>1140</span>
+          <span>1220</span>
+        </div>
+        <div class="lane-row">
+          <span class="lane-label">{t("lp.hero.timeline.kingdom")}</span>
+          <span class="span-block span-realm">{t("lp.hero.timeline.dynasty")}</span>
+        </div>
+        <div class="lane-row">
+          <span class="lane-label">{t("lp.hero.timeline.incident")}</span>
+          <span class="event-dot dot-one"></span>
+          <span class="span-block span-war">{t("lp.hero.timeline.war")}</span>
+        </div>
+        <div class="lane-row">
+          <span class="lane-label">{t("lp.hero.timeline.person")}</span>
+          <span class="span-block span-person">{t("lp.hero.timeline.pilgrim")}</span>
+          <span class="event-dot dot-two"></span>
+        </div>
+      </div>
+      <div class="command-strip" aria-hidden="true">
+        <span class="prompt">$</span>
+        <span class="command-strip__command">tdsl check world-history.tdsl</span>
+        <strong class="command-strip__result">0 errors</strong>
+      </div>
+    </div>
+  </div>
+</section>
