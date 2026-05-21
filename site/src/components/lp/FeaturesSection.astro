@@ -1,0 +1,91 @@
+---
+import { Code } from "astro:components";
+import { getT, type Locale } from "../../i18n/index";
+import { getFeatures } from "../../data/lp-content";
+import tdslGrammar from "../../lib/tdsl.tmLanguage.json" with { type: "json" };
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const tdslLang = tdslGrammar as any;
+const tdslCodeThemes = { light: "github-light", dark: "github-dark" } as const;
+
+const features = getFeatures(locale);
+---
+
+<section class="section feature-section" aria-labelledby="features-heading">
+  <div class="section-header">
+    <h2 id="features-heading">{t("lp.features.heading")}</h2>
+    <p>
+      {t("lp.features.lead")}
+    </p>
+  </div>
+  <div class="feature-grid">
+    {features.map((feature) => (
+      <article class="feature">
+        <p class="feature-kicker">{feature.kicker}</p>
+        <div class="feature-figure" aria-hidden="true">
+          {feature.visual.type === "author" && (
+            <div class="feature-code">
+              <div class="feature-figure-bar">
+                <span>{feature.visual.filename}</span>
+                <span>.tdsl</span>
+              </div>
+              <Code
+                code={feature.visual.lines.join("\n")}
+                lang={tdslLang}
+                themes={tdslCodeThemes}
+                defaultColor={false}
+              />
+            </div>
+          )}
+          {feature.visual.type === "validate" && (
+            <div class="feature-terminal">
+              <div class="feature-command">
+                <span class="prompt">$</span>
+                <span>{feature.visual.command}</span>
+              </div>
+              <div class="diagnostic-list">
+                {feature.visual.diagnostics.map((item) => (
+                  <p class={`diagnostic ${item.tone}`}>
+                    <span>{item.label}</span>
+                    <strong>{item.text}</strong>
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
+          {feature.visual.type === "render" && (
+            <div class="feature-mini-timeline">
+              <div class="mini-timeline-head">
+                <span>preview.html</span>
+                <strong>{feature.visual.range}</strong>
+              </div>
+              <div class="mini-ticks">
+                {feature.visual.ticks.map((tick) => <span>{tick}</span>)}
+              </div>
+              {feature.visual.lanes.map((lane) => (
+                <div class="mini-lane">
+                  <span class="mini-lane-label">{lane.label}</span>
+                  <span
+                    class={`mini-span ${lane.tone}`}
+                    style={`--start: ${lane.start}; --width: ${lane.width};`}
+                  >
+                    {lane.text}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <h3>{feature.title}</h3>
+        <p>{feature.body}</p>
+      </article>
+    ))}
+  </div>
+</section>

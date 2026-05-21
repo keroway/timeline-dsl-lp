@@ -1,0 +1,39 @@
+---
+import { getT, type Locale } from "../../i18n/index";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+---
+
+<section class="workflow-band" aria-labelledby="workflow-heading">
+  <div class="section workflow-layout">
+    <div class="section-header">
+      <p class="eyebrow">From source to artifact</p>
+      <h2 id="workflow-heading">{t("lp.workflow.heading")}</h2>
+      <p>
+        {t("lp.workflow.lead")}
+      </p>
+    </div>
+    <div class="workflow-rail" aria-label="Timeline DSL workflow">
+      <article class="workflow-step">
+        <span class="step-number">01</span>
+        <h3>{t("lp.workflow.step1.title")}</h3>
+        <p>{t("lp.workflow.step1.body")}</p>
+      </article>
+      <article class="workflow-step">
+        <span class="step-number">02</span>
+        <h3>{t("lp.workflow.step2.title")}</h3>
+        <p>{t("lp.workflow.step2.body")}</p>
+      </article>
+      <article class="workflow-step">
+        <span class="step-number">03</span>
+        <h3>{t("lp.workflow.step3.title")}</h3>
+        <p>{t("lp.workflow.step3.body")}</p>
+      </article>
+    </div>
+  </div>
+</section>
