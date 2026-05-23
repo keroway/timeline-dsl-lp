@@ -1,0 +1,20 @@
+---
+import { getT, type Locale } from "../../i18n/index";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+---
+
+<aside class="playground-panel diagnostics-workbench" aria-label="Diagnostics">
+  <div class="playground-panel-bar">
+    <span>{t("playground.diagnostics.panel")}</span>
+    <span data-diagnostics-meta>0</span>
+  </div>
+  <div class="diagnostics-surface" data-smoke="playground-diagnostics" data-diagnostics>
+    <p class="diagnostics-empty">{t("playground.diagnostics.waiting")}</p>
+  </div>
+</aside>
