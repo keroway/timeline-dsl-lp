@@ -1,0 +1,16 @@
+---
+// Playground のエディタ枠（CodeMirror のマウント対象）。
+// クライアント挙動は playground-controller.ts / playground-editor.ts が担う。
+---
+
+<div class="playground-panel editor-workbench">
+  <div class="playground-panel-bar">
+    <span>source.tdsl</span>
+    <span data-editor-meta>0 lines</span>
+  </div>
+  <div
+    class="cm-editor-host"
+    data-editor-host
+    data-smoke="playground-editor"
+  ></div>
+</div>
