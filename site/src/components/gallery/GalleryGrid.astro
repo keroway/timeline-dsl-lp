@@ -1,0 +1,43 @@
+---
+import { getT, type Locale } from "../../i18n/index";
+import GalleryCard from "./GalleryCard.astro";
+
+interface Props {
+  samples: Array<{
+    id: string;
+    title: string;
+    description: string;
+    tags: string[];
+    source: string;
+  }>;
+  locale: Locale;
+}
+
+const { samples, locale } = Astro.props;
+const t = getT(locale);
+---
+
+<section class="section gallery-section" aria-labelledby="gallery-heading">
+  <div class="section-header">
+    <h2 id="gallery-heading">{t("gallery.section.heading")}</h2>
+    <p>{t("gallery.section.count").replace("{count}", String(samples.length))}</p>
+  </div>
+
+  <div class="gallery-grid">
+    {samples.map((sample) => (
+      <GalleryCard sample={sample} locale={locale} />
+    ))}
+  </div>
+</section>
+
+<style>
+  .gallery-section {
+    padding-bottom: 4rem;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr));
+    gap: 2rem;
+  }
+</style>
