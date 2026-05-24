@@ -5,6 +5,13 @@ import tdslGrammar from "./src/lib/tdsl.tmLanguage.json" with { type: "json" };
 
 export default defineConfig({
   site: "https://timeline-dsl.pages.dev",
+  // dev / preview 両方に適用される。PORT env があればそれを使い (portless が割り当てる
+  // エフェメラルポートに追従)、無ければ従来通り 4321。host を 127.0.0.1 に固定して
+  // preview が ::1 のみ bind する問題 (127.0.0.1 で ECONNREFUSED) も回避する。
+  server: {
+    host: "127.0.0.1",
+    port: process.env.PORT ? Number(process.env.PORT) : 4321,
+  },
   vite: {
     build: {
       rollupOptions: {

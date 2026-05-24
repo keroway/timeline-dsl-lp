@@ -32,6 +32,31 @@ pnpm smoke:playground:browser   # Playwright ブラウザ smoke テスト
 pnpm exec playwright install chromium
 ```
 
+## Parallel dev（portless / 任意）
+
+複数ブランチ・worktree を同時に動かすときの 4321 衝突を避けたい場合、
+[portless](https://github.com/vercel-labs/portless) で名前付き `.localhost` URL を使える。
+**任意ツール**であり、未導入なら従来通り `pnpm dev`（4321）で動く。CI / Cloudflare デプロイには一切影響しない。
+
+```sh
+npm i -g portless                # 一度だけ。初回 portless 実行時に 443番/ローカルCA のため管理者権限へ自動昇格
+cd site && portless              # https://timeline-dsl.localhost で起動（ポートは自動割当）
+```
+
+仕組み: `astro.config.mjs` の `server.port` は `process.env.PORT` を読むため、portless が渡す
+エフェメラルポートに追従する。worktree のブランチ名は URL に自動で前置される（`branch.timeline-dsl.localhost`）。
+
+smoke を portless URL に向ける場合は各 `*_BASE_URL` を渡す:
+
+```sh
+PLAYGROUND_BASE_URL=https://timeline-dsl.localhost pnpm smoke:playground
+I18N_BASE_URL=https://timeline-dsl.localhost pnpm smoke:i18n
+SEO_BASE_URL=https://timeline-dsl.localhost pnpm smoke:seo
+```
+
+注意: portless の URL は HTTPS + ローカル CA。node fetch / Playwright が CA を信頼できず browser smoke が
+証明書エラーになる場合は、従来の `http://127.0.0.1:4321`（`pnpm preview` / `pnpm dev`）にフォールバックする。
+
 ## Project structure
 
 ```
