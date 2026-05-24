@@ -1,21 +1,35 @@
 {
   "repository": "keroway/timeline-dsl",
   "source": "github-releases",
-  "fetchedAt": "2026-05-20T15:51:56.763Z",
+  "fetchedAt": "2026-05-24T16:34:20.083Z",
   "latest": {
-    "tagName": "v1.10.0",
-    "name": "v1.10.0",
-    "publishedAt": "2026-05-20T14:18:44Z",
-    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.10.0",
-    "body": ""
+    "tagName": "v1.11.0",
+    "name": "v1.11.0",
+    "publishedAt": "2026-05-24T11:46:21Z",
+    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.11.0",
+    "body": "## What's Changed\n* feat(render): PNG 出力に --dpi / --png-scale オプションを追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/296\n* docs(adr): tdsl-wasm 配布方式と Obsidian 連携の方針を ADR-0001 で確定 (#291) by @keroway in https://github.com/keroway/timeline-dsl/pull/297\n* feat(wasm): tdsl-wasm を npm @keroway/tdsl-wasm として自動 publish する CI を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/298\n* docs(readme): 技術スタックバッジと mermaid アーキ図、docs/architecture.md を追加 (#299) by @keroway in https://github.com/keroway/timeline-dsl/pull/300\n* feat(render): SVG CSS を tdsl-root にスコープし font_family をカスタマイズ可能に (#293) by @keroway in https://github.com/keroway/timeline-dsl/pull/301\n* feat(parser): 時間式に整数オフセット演算（+ / -）を追加 (#148) by @keroway in https://github.com/keroway/timeline-dsl/pull/302\n* chore(vscode): editors/vscode/package.json と Marketplace 公開 version の運用整合 (#290) by @keroway in https://github.com/keroway/timeline-dsl/pull/303\n* docs(adr): PDF 出力方式の選定を ADR-0002 で確定 (#265) by @keroway in https://github.com/keroway/timeline-dsl/pull/304\n* feat(render): tdsl render --format pdf によるベクタ PDF 出力 (#265) by @keroway in https://github.com/keroway/timeline-dsl/pull/305\n* docs(security): record uuid Dependabot alert #3 dismissal rationale by @keroway in https://github.com/keroway/timeline-dsl/pull/306\n* feat(lsp): tdsl-lsp クレート新設 + tdsl lsp サブコマンド + Diagnostics (#307) by @keroway in https://github.com/keroway/timeline-dsl/pull/312\n* chore: v1.11.0 リリース（バージョンバンプ・CHANGELOG 更新） by @keroway in https://github.com/keroway/timeline-dsl/pull/313\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.10.1...v1.11.0\n"
   },
   "releases": [
+    {
+      "tagName": "v1.11.0",
+      "name": "v1.11.0",
+      "publishedAt": "2026-05-24T11:46:21Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.11.0",
+      "body": "## What's Changed\n* feat(render): PNG 出力に --dpi / --png-scale オプションを追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/296\n* docs(adr): tdsl-wasm 配布方式と Obsidian 連携の方針を ADR-0001 で確定 (#291) by @keroway in https://github.com/keroway/timeline-dsl/pull/297\n* feat(wasm): tdsl-wasm を npm @keroway/tdsl-wasm として自動 publish する CI を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/298\n* docs(readme): 技術スタックバッジと mermaid アーキ図、docs/architecture.md を追加 (#299) by @keroway in https://github.com/keroway/timeline-dsl/pull/300\n* feat(render): SVG CSS を tdsl-root にスコープし font_family をカスタマイズ可能に (#293) by @keroway in https://github.com/keroway/timeline-dsl/pull/301\n* feat(parser): 時間式に整数オフセット演算（+ / -）を追加 (#148) by @keroway in https://github.com/keroway/timeline-dsl/pull/302\n* chore(vscode): editors/vscode/package.json と Marketplace 公開 version の運用整合 (#290) by @keroway in https://github.com/keroway/timeline-dsl/pull/303\n* docs(adr): PDF 出力方式の選定を ADR-0002 で確定 (#265) by @keroway in https://github.com/keroway/timeline-dsl/pull/304\n* feat(render): tdsl render --format pdf によるベクタ PDF 出力 (#265) by @keroway in https://github.com/keroway/timeline-dsl/pull/305\n* docs(security): record uuid Dependabot alert #3 dismissal rationale by @keroway in https://github.com/keroway/timeline-dsl/pull/306\n* feat(lsp): tdsl-lsp クレート新設 + tdsl lsp サブコマンド + Diagnostics (#307) by @keroway in https://github.com/keroway/timeline-dsl/pull/312\n* chore: v1.11.0 リリース（バージョンバンプ・CHANGELOG 更新） by @keroway in https://github.com/keroway/timeline-dsl/pull/313\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.10.1...v1.11.0\n"
+    },
+    {
+      "tagName": "v1.10.1",
+      "name": "v1.10.1",
+      "publishedAt": "2026-05-20T15:56:19Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.10.1",
+      "body": "## What's Changed\n* fix(release): rust-toolchain.toml 下でクロスビルドターゲットを保証 (v1.10.1 hotfix) by @keroway in https://github.com/keroway/timeline-dsl/pull/289\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.10.0...v1.10.1"
+    },
     {
       "tagName": "v1.10.0",
       "name": "v1.10.0",
       "publishedAt": "2026-05-20T14:18:44Z",
       "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.10.0",
-      "body": ""
+      "body": "## What's Changed\n* docs: dsl-spec.md の EBNF を月日精度対応に更新 by @keroway in https://github.com/keroway/timeline-dsl/pull/268\n* chore(vscode): スニペットに月日リテラル対応を追加 (#259) by @keroway in https://github.com/keroway/timeline-dsl/pull/269\n* chore(webui): ESLint 違反を解消し CI で lint を実行する by @keroway in https://github.com/keroway/timeline-dsl/pull/271\n* docs: CLI サブコマンドリファレンス（docs/cli-spec.md）を新規作成 by @keroway in https://github.com/keroway/timeline-dsl/pull/272\n* feat(cli): tdsl import-csv に月日リテラル対応 (#260) by @keroway in https://github.com/keroway/timeline-dsl/pull/273\n* chore: Claude Code 用補助設定をリポジトリに追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/274\n* test(render): tdsl-render クレートのテスト整備 by @keroway in https://github.com/keroway/timeline-dsl/pull/275\n* feat(webui): エディタに Format ボタンと Ctrl+Shift+F を追加 (#262) by @keroway in https://github.com/keroway/timeline-dsl/pull/276\n* chore(toolchain): pin Rust via rust-toolchain.toml (#278 PR 1/4) by @keroway in https://github.com/keroway/timeline-dsl/pull/279\n* chore(ci): unify Node.js to 22 LTS (#278 PR 2/4) by @keroway in https://github.com/keroway/timeline-dsl/pull/280\n* chore(deps): bump getrandom to 0.3 in tdsl-wasm (#278 PR 3/4) by @keroway in https://github.com/keroway/timeline-dsl/pull/281\n* chore(vscode,wasm-pack): raise engines.vscode and pin wasm-pack (#278 PR 4/4) by @keroway in https://github.com/keroway/timeline-dsl/pull/282\n* revert(vscode): restore engines.vscode to ^1.75.0 (#278 follow-up) by @keroway in https://github.com/keroway/timeline-dsl/pull/283\n* test(wasm): tdsl-wasm クレートのテスト整備 (#266) by @keroway in https://github.com/keroway/timeline-dsl/pull/286\n* feat(render): PNG output via resvg (#263) by @keroway in https://github.com/keroway/timeline-dsl/pull/287\n* chore(deps): bump getrandom from 0.3.4 to 0.4.2 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/285\n* chore: v1.10.0 リリース（バージョンバンプ・CHANGELOG 更新） by @keroway in https://github.com/keroway/timeline-dsl/pull/288\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.9.0...v1.10.0\n"
     },
     {
       "tagName": "v1.9.0",
