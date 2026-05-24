@@ -1,32 +1,16 @@
-const DEFAULT_BASE_URL = "http://127.0.0.1:4321";
+import {
+  DEFAULT_BASE_URL,
+  assertIncludes,
+  assertStatus,
+  get,
+  normalizeBaseUrl,
+  parseArgs,
+} from "./lib/smoke-helpers.mjs";
 
 const args = parseArgs(process.argv.slice(2));
 const baseUrl = normalizeBaseUrl(args.baseUrl ?? process.env.SEO_BASE_URL ?? DEFAULT_BASE_URL);
 
 await smokeSeo(baseUrl);
-
-function parseArgs(rawArgs) {
-  const parsed = { baseUrl: undefined };
-  for (let index = 0; index < rawArgs.length; index += 1) {
-    const arg = rawArgs[index];
-    if (arg === "--base-url") {
-      parsed.baseUrl = rawArgs[index + 1];
-      index += 1;
-      continue;
-    }
-    if (arg.startsWith("--base-url=")) {
-      parsed.baseUrl = arg.slice("--base-url=".length);
-      continue;
-    }
-    throw new Error(`Unknown argument: ${arg}`);
-  }
-  return parsed;
-}
-
-function normalizeBaseUrl(value) {
-  if (!value) return DEFAULT_BASE_URL;
-  return value.endsWith("/") ? value.slice(0, -1) : value;
-}
 
 async function smokeSeo(rootUrl) {
   const hreflangTargets = [
@@ -88,26 +72,6 @@ async function smokeSeo(rootUrl) {
   assertIncludes(robotsBody, "Sitemap:", "robots.txt must include a Sitemap line");
   assertIncludes(robotsBody, "sitemap-index.xml", "robots.txt Sitemap must point to sitemap-index.xml");
   console.log("robots.txt: served with User-agent / Sitemap entries. ✓");
-}
-
-async function get(url) {
-  const response = await fetch(url, { redirect: "manual" });
-  if (response.status >= 300 && response.status < 400) {
-    throw new Error(`${url} redirected with ${response.status}; smoke expects a directly served page.`);
-  }
-  return response;
-}
-
-function assertStatus(response, label) {
-  if (!response.ok) {
-    throw new Error(`${label} returned HTTP ${response.status}`);
-  }
-}
-
-function assertIncludes(value, expected, label) {
-  if (!value.includes(expected)) {
-    throw new Error(`${label}. Expected to find: ${expected}`);
-  }
 }
 
 function assertExcludes(value, unexpected, label) {
