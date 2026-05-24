@@ -23,6 +23,22 @@
   --line-height-base: 1.65;
   --letter-spacing-base: 0em;
   --word-spacing-base: normal;
+  /* Spacing scale (DESIGN.md §4) — gap / margin / padding の段階値 */
+  --space-2xs: 0.35rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.7rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 2.7rem;
+  /* Radius scale (DESIGN.md §4) */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+  /* セクション/ヘッダー/フッターの共通最大幅（DESIGN.md §4） */
+  --layout-width: min(1120px, calc(100% - 2rem));
 }
 
 :root[data-a11y-text-size="xx-large"] {
@@ -123,8 +139,8 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  width: min(1120px, calc(100% - 2rem));
+  gap: var(--space-md);
+  width: var(--layout-width);
   margin: 0 auto;
   padding: 0.9rem 0;
 }
@@ -142,7 +158,7 @@ button:focus-visible {
   place-items: center;
   width: 2rem;
   height: 2rem;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   background: #232526;
   box-shadow: 0 8px 20px color-mix(in srgb, var(--color-ink), transparent 86%);
@@ -158,7 +174,7 @@ button:focus-visible {
   display: flex;
   align-items: center;
   min-width: 0;
-  gap: 0.35rem;
+  gap: var(--space-2xs);
 }
 
 .nav-links a,
@@ -168,7 +184,7 @@ button:focus-visible {
   justify-content: center;
   min-height: 2.5rem;
   padding: 0.55rem 0.85rem;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
   font-weight: 620;
   text-decoration: none;
@@ -190,7 +206,7 @@ button:focus-visible {
 
 .nav-links a:focus-visible,
 .button:focus-visible {
-  border-radius: 6px;
+  border-radius: var(--radius-md);
 }
 
 .lang-toggle {
@@ -199,9 +215,9 @@ button:focus-visible {
   justify-content: center;
   min-width: 2.5rem;
   height: 2.5rem;
-  padding: 0 0.5rem;
+  padding: 0 var(--space-xs);
   border: 1px solid var(--color-line);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--color-bg);
   color: var(--color-muted);
   font-size: 0.8rem;
@@ -698,7 +714,7 @@ h1 {
 }
 
 .section {
-  width: min(1120px, calc(100% - 2rem));
+  width: var(--layout-width);
   margin: 0 auto;
   padding: 3rem 0;
 }
@@ -709,7 +725,7 @@ h1 {
 }
 
 .page-hero-inner {
-  width: min(1120px, calc(100% - 2rem));
+  width: var(--layout-width);
   margin: 0 auto;
   padding: clamp(2.2rem, 4vw, 3.5rem) 0;
 }
@@ -727,7 +743,7 @@ h1 {
 
 .section-header {
   max-width: 44rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-lg);
 }
 
 .section-header h2 {
@@ -2006,8 +2022,8 @@ h1 {
   display: grid;
   grid-template-columns: minmax(13rem, 1.1fr) minmax(10rem, 0.8fr) minmax(18rem, 1fr);
   align-items: center;
-  gap: 1.25rem 2rem;
-  width: min(1120px, calc(100% - 2rem));
+  gap: 1.25rem var(--space-xl);
+  width: var(--layout-width);
   margin: 0 auto;
   padding: 1.45rem 0;
   font-size: 0.92rem;
@@ -2046,7 +2062,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--space-2xs);
 }
 
 .footer-nav a,
@@ -2056,7 +2072,7 @@ h1 {
   gap: 0.45rem;
   min-height: 2.25rem;
   padding: 0.42rem 0.62rem;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   color: var(--color-muted);
   font-weight: 650;
   text-decoration: none;
