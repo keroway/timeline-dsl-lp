@@ -1,4 +1,13 @@
-const DEFAULT_BASE_URL = "http://127.0.0.1:4321";
+import {
+  DEFAULT_BASE_URL,
+  assertContentType,
+  assertIncludes,
+  assertStatus,
+  get,
+  normalizeBaseUrl,
+  parseArgs,
+} from "./lib/smoke-helpers.mjs";
+
 const PLAYGROUND_PATH = "/playground/";
 const WASM_JS_PATH = "/wasm/tdsl_wasm.js";
 const WASM_BINARY_PATH = "/wasm/tdsl_wasm_bg.wasm";
@@ -25,7 +34,7 @@ const BROKEN_SAMPLE = `timeline "Smoke" {
 event project 2026 "Missing lane" { id "event:broken"; };
 `;
 
-const args = parseArgs(process.argv.slice(2));
+const args = parseArgs(process.argv.slice(2), { booleanFlags: ["browser"] });
 const baseUrl = normalizeBaseUrl(args.baseUrl ?? process.env.PLAYGROUND_BASE_URL ?? DEFAULT_BASE_URL);
 const runBrowserSmoke = args.browser || process.env.PLAYGROUND_BROWSER_SMOKE === "1";
 
@@ -35,41 +44,6 @@ if (runBrowserSmoke) {
   await smokeBrowserFlow(baseUrl);
 } else {
   console.log("Browser flow skipped. Add --browser to check editor, diagnostics, preview recovery, and visible WASM load errors.");
-}
-
-function parseArgs(rawArgs) {
-  const parsed = { browser: false, baseUrl: undefined };
-
-  for (let index = 0; index < rawArgs.length; index += 1) {
-    const arg = rawArgs[index];
-    if (arg === "--browser") {
-      parsed.browser = true;
-      continue;
-    }
-
-    if (arg === "--base-url") {
-      parsed.baseUrl = rawArgs[index + 1];
-      index += 1;
-      continue;
-    }
-
-    if (arg.startsWith("--base-url=")) {
-      parsed.baseUrl = arg.slice("--base-url=".length);
-      continue;
-    }
-
-    throw new Error(`Unknown argument: ${arg}`);
-  }
-
-  return parsed;
-}
-
-function normalizeBaseUrl(value) {
-  if (!value) {
-    return DEFAULT_BASE_URL;
-  }
-
-  return value.endsWith("/") ? value.slice(0, -1) : value;
 }
 
 async function smokeHttpSurface(rootUrl) {
@@ -364,28 +338,6 @@ async function importPlaywright() {
   }
 }
 
-async function get(url) {
-  const response = await fetch(url, { redirect: "manual" });
-  if (response.status >= 300 && response.status < 400) {
-    throw new Error(`${url} redirected with ${response.status}; smoke expects a directly served asset/page.`);
-  }
-
-  return response;
-}
-
-function assertStatus(response, label) {
-  if (!response.ok) {
-    throw new Error(`${label} returned HTTP ${response.status}`);
-  }
-}
-
-function assertContentType(response, label, expectedTypes) {
-  const contentType = response.headers.get("content-type") ?? "";
-  if (!expectedTypes.some((expectedType) => contentType.toLowerCase().includes(expectedType))) {
-    throw new Error(`${label} returned unexpected Content-Type: ${contentType || "(missing)"}`);
-  }
-}
-
 function assertCachePolicy(response, label) {
   const cacheControl = response.headers.get("cache-control") ?? "";
   const maxAgeMatch = /(?:^|,\s*)max-age=(\d+)/i.exec(cacheControl);
@@ -393,11 +345,5 @@ function assertCachePolicy(response, label) {
 
   if (/immutable/i.test(cacheControl) || maxAge > 3600) {
     throw new Error(`${label} uses an aggressive cache policy for an unversioned WASM asset: ${cacheControl}`);
-  }
-}
-
-function assertIncludes(value, expected, label) {
-  if (!value.includes(expected)) {
-    throw new Error(`Missing ${label}. Add ${expected} for the Playground smoke test contract.`);
   }
 }
