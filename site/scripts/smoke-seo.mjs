@@ -35,9 +35,6 @@ async function smokeSeo(rootUrl) {
     "/playground/",
     "/gallery/",
     "/changelog/",
-    "/showcase/",
-    "/showcase/oda-nobunaga/",
-    "/showcase/natsume-soseki/",
     "/docs/",
     "/en/docs/",
   ];
@@ -51,6 +48,18 @@ async function smokeSeo(rootUrl) {
     assertIncludes(html, 'hreflang="x-default"', `${path} must include hreflang=x-default`);
   }
   console.log(`hreflang: 3 tags confirmed on ${hreflangTargets.length} pages. ✓`);
+
+  // Showcase は JA-only（/en/showcase/ は未実装 / issue #208）。
+  // 存在しない en 版を指す hreflang を出力せず、canonical のみ持つことを検証する。
+  const jaOnlyTargets = ["/showcase/", "/showcase/oda-nobunaga/", "/showcase/natsume-soseki/"];
+  for (const path of jaOnlyTargets) {
+    const res = await get(`${rootUrl}${path}`);
+    assertStatus(res, path);
+    const html = await res.text();
+    assertExcludes(html, "hreflang=", `${path} (JA-only) must not advertise a nonexistent /en/ alternate`);
+    assertIncludes(html, 'rel="canonical"', `${path} must still expose a canonical link`);
+  }
+  console.log(`hreflang: JA-only pages omit alternates on ${jaOnlyTargets.length} pages. ✓`);
 
   const jsonLdTargets = [
     { path: "/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'] },
@@ -98,5 +107,11 @@ function assertStatus(response, label) {
 function assertIncludes(value, expected, label) {
   if (!value.includes(expected)) {
     throw new Error(`${label}. Expected to find: ${expected}`);
+  }
+}
+
+function assertExcludes(value, unexpected, label) {
+  if (value.includes(unexpected)) {
+    throw new Error(`${label}. Expected NOT to find: ${unexpected}`);
   }
 }
