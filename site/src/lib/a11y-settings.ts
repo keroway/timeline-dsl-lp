@@ -172,35 +172,31 @@ export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): vo
     }, 0);
   });
 
-  reducedMotionInput?.addEventListener("change", () => {
-    const prev = loadSettings();
-    const next = { ...prev, reducedMotion: reducedMotionInput.checked };
-    saveSettings(next);
-    applySettings(next);
-    if (prev.reducedMotion !== next.reducedMotion) {
-      announce(menu, msgs.reducedMotion[next.reducedMotion ? "on" : "off"]);
-    }
-  });
+  const bindCheckboxSetting = (
+    input: HTMLInputElement | null,
+    key: "reducedMotion" | "highContrast" | "textSpacing",
+    getMessage: (s: A11ySettings) => string
+  ): void => {
+    input?.addEventListener("change", () => {
+      const prev = loadSettings();
+      const next: A11ySettings = { ...prev, [key]: input.checked };
+      saveSettings(next);
+      applySettings(next);
+      if (prev[key] !== next[key]) {
+        announce(menu, getMessage(next));
+      }
+    });
+  };
 
-  highContrastInput?.addEventListener("change", () => {
-    const prev = loadSettings();
-    const next = { ...prev, highContrast: highContrastInput.checked };
-    saveSettings(next);
-    applySettings(next);
-    if (prev.highContrast !== next.highContrast) {
-      announce(menu, msgs.highContrast[next.highContrast ? "on" : "off"]);
-    }
-  });
-
-  textSpacingInput?.addEventListener("change", () => {
-    const prev = loadSettings();
-    const next = { ...prev, textSpacing: textSpacingInput.checked };
-    saveSettings(next);
-    applySettings(next);
-    if (prev.textSpacing !== next.textSpacing) {
-      announce(menu, msgs.textSpacing[next.textSpacing ? "on" : "off"]);
-    }
-  });
+  bindCheckboxSetting(reducedMotionInput, "reducedMotion", (s) =>
+    msgs.reducedMotion[s.reducedMotion ? "on" : "off"]
+  );
+  bindCheckboxSetting(highContrastInput, "highContrast", (s) =>
+    msgs.highContrast[s.highContrast ? "on" : "off"]
+  );
+  bindCheckboxSetting(textSpacingInput, "textSpacing", (s) =>
+    msgs.textSpacing[s.textSpacing ? "on" : "off"]
+  );
 
   textSizeInput?.addEventListener("change", () => {
     const prev = loadSettings();
