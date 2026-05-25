@@ -63,7 +63,22 @@
 
 ### High-contrast variant
 
-`:root[data-a11y-contrast="high"]` では Windows ハイコントラストに近い系統色（純青 `#0000ff` / 純黒 `#000000` 等）に切り替えます。lane の色も同じ規則で、画面上で確実に区別できる飽和色に置換されます。詳細は global.css の対応ブロックを参照してください。
+`:root[data-a11y-contrast="high"]`（light）では Windows ハイコントラストに近い系統色（純青 `#0000ff` / 純黒 `#000000` 等）に切り替えます。lane の色も同じ規則で、背景 `#ffffff` に対し画面上で確実に区別できる飽和色に置換します。新色は WCAG AAA（7:1）を目標、最低でも AA（4.5:1）を満たします。
+
+| Token | Value | 背景 `#ffffff` に対するコントラスト比 |
+| --- | --- | --- |
+| `--color-accent` | `#0000ff` | 8.59:1 |
+| `--color-accent-strong` | `#000080` | 16.01:1 |
+| `--color-warm` | `#800000` | 10.95:1 |
+| `--color-gold` | `#806000` | 5.85:1 |
+| `--color-plum` | `#600060` | 12.60:1 |
+| `--color-sky` | `#00557a` | 8.14:1 |
+
+`--color-sky` は外部要因 lane のセマンティクスを保つため青系（natural の `#2c6f9f` に近い色相）を維持しつつ、cyan 成分を持たせて純青の accent（`#0000ff` / `#000080`）と色相で区別します（過去は accent-strong と同じ `#000080` で同色衝突していた）。
+
+`--color-gold`（5.85:1）は AAA 未達・AA 充足の **既存値**であり、今回の同色衝突解消の対象外です。AAA への引き上げ可否は #210 の後続 sub-issue で検討します。
+
+dark の `@media (prefers-color-scheme: dark)` 下の high-contrast ブロックは lane を再宣言していないため、`--color-sky` は上表の light HC 値 `#00557a` を継承して黒背景に乗ります（黒に対し 2.58:1 = AA 未達。旧 `#000080` の 1.31:1 からは改善するが最適ではない）。lane の dark high-contrast 値は #210 の後続 sub-issue で再定義して確定します。
 
 ### 使用ルール
 
