@@ -47,6 +47,8 @@
 | `--color-plum` | `#7b4569` | 人物・主体・登場（plum） |
 | `--color-sky` | `#2c6f9f` | 外部要因・環境・地理（sky） |
 
+lane 色のバー（`.span-block` / `.mini-span` / `.usecase-bar`）に乗る前景は `--color-on-lane`（`#ffffff`）に集約します。lane 背景は light / dark とも有色・暗色のため白が最適前景で、terminal と同じく **テーマ非依存**（`:root` に 1 度だけ定義し、dark / high-contrast でも override しない＝白が最大コントラスト）。ただし **gold lane 上の白はコントラスト未達**（通常 light で `#d69a24` 背景に対し 2.47:1 = AA 未達、light HC で `#806000` に対し 5.85:1 = AAA 未達）です。これは前景（白）ではなく lane 背景（`--color-gold`）側の濃度に起因し、`--color-gold` の引き上げは lane セマンティクス（周年 = gold）の維持と両立させる必要があるため、後続 issue で別途扱います。
+
 ### Dark mode
 
 `@media (prefers-color-scheme: dark)` で以下を上書きします。lane パレットは light と共通です。
@@ -127,6 +129,19 @@ dark の `@media (prefers-color-scheme: dark)` 下の high-contrast ブロック
 | `--color-terminal-error` | `#ff8a75` | 9.14:1 |
 
 ok / warn / error は HC で輝度が近接するため、**色相（緑 / 黄 / 赤橙）で区別** します。輝度差ではなく色相分離に依存する設計のため、smoke では 3 値が相互に異なること（等値でないこと）と `bg ≠ ink` を回帰防止アサーションとして検証します。HC では output / diag-muted / dot 既定を `#d8e0e8` に集約しています（暗色面上の可読性を最優先するため）。
+
+### Status colors（playground）
+
+playground のステータス文字（`[data-playground-state="..."] .playground-status`）は `--color-bg` 上に乗る **テーマ依存** の前景です。ready は `--color-accent-strong`、error は `--color-warm` を再利用しますが、warn は gold 系のテキストが必要で、`--color-gold`（light `#d69a24`）は白背景で約 2:1 とテキスト不適のため専用トークン `--color-status-warn` を持ちます。warn / ready / error は色相（amber / teal / 赤橙）で区別します。
+
+| テーマ | `--color-status-warn` | 背景に対するコントラスト比 |
+| --- | --- | --- |
+| light | `#845d0c` | 白 `#ffffff` に対し 5.90:1（AA） |
+| dark | `#e6c46e` | `#111920` に対し 10.55:1（AAA） |
+| light HC | `#5c4500` | 白 `#ffffff` に対し 9.11:1（AAA） |
+| dark HC | `#ffd24a` | 黒 `#000000` に対し 14.57:1（AAA）。`--color-terminal-warn` HC と意図的に同値 |
+
+**既知の未達（error の dark 適応）**: error は `--color-warm` を再利用しますが暗背景向けに再宣言されないため、dark base では `:root` の `#a74718` が `#111920` に乗り 3.01:1（AA 未達）、dark HC では light HC 値 `#800000` が黒に乗りさらに低くなります。warn を dark で明色化（10.55:1）したことで warn > error の輝度逆転が生じますが、両者は色相（amber vs 赤橙）で区別可能です。error の dark 適応（`--color-status-error` のトークン化）は本 issue（warn 直値のみ）のスコープ外で、後続 issue で扱います。
 
 ### 使用ルール
 

@@ -228,6 +228,24 @@ async function smokeA11yMenu(rootUrl, browser) {
     );
   }
 
+  // 回帰防止 (#220): high-contrast で playground ステータスの warn が
+  // ready(accent-strong) / error(warm) と相互に異なる（色相分離が潰れていない）こと
+  const hcStatus = await page.evaluate(() => {
+    const cs = getComputedStyle(document.documentElement);
+    const read = (name) => cs.getPropertyValue(name).trim();
+    return {
+      ready: read("--color-accent-strong"),
+      warn: read("--color-status-warn"),
+      error: read("--color-warm"),
+    };
+  });
+  const statusColors = [hcStatus.ready, hcStatus.warn, hcStatus.error];
+  if (new Set(statusColors).size !== statusColors.length) {
+    throw new Error(
+      `high-contrast: playground status の ready/warn/error が相互に区別できない (${statusColors.join(", ")})`,
+    );
+  }
+
   // テキストスペーシング ON → html 属性反映
   const textSpacingCb = menu.locator("[data-a11y-text-spacing-input]").first();
   await textSpacingCb.check();

@@ -212,7 +212,7 @@
   align-items: center;
   min-height: 1.9rem;
   padding: 0.3rem 0.65rem;
-  color: #ffffff;
+  color: var(--color-on-lane);
   font-size: 0.78rem;
   font-weight: 740;
 }
@@ -615,7 +615,7 @@
   margin: 0;
   overflow: hidden;
   padding: 0.62rem 0.68rem;
-  color: #23313f;
+  color: var(--color-ink);
   font-family: var(--font-mono);
   font-size: 0.64rem;
   line-height: 1.56;
@@ -729,7 +729,7 @@
   min-height: 1.35rem;
   margin-left: var(--start);
   padding: 0 0.42rem;
-  color: #ffffff;
+  color: var(--color-on-lane);
   font-size: 0.62rem;
   font-weight: 740;
   white-space: nowrap;
@@ -908,7 +908,7 @@
   min-width: 3.25rem;
   height: 1.85rem;
   padding: 0 0.45rem;
-  color: #ffffff;
+  color: var(--color-on-lane);
   box-shadow: 0 8px 18px rgba(21, 32, 44, 0.12);
 }
 
