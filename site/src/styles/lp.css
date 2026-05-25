@@ -268,14 +268,14 @@
   width: fit-content;
   max-width: 96%;
   padding: 0.75rem 0.95rem;
-  background: #121921;
-  color: #eaf1f8;
+  background: var(--color-terminal-bg);
+  color: var(--color-terminal-ink);
   font-family: var(--font-mono);
   font-size: 0.82rem;
 }
 
 .command-strip strong {
-  color: #8de0a2;
+  color: var(--color-terminal-ok);
 }
 
 .command-strip__command,
@@ -374,36 +374,36 @@
 .hero-editor-motion-enabled .lane-row:nth-child(5) { animation-delay: 1600ms; }
 
 .terminal {
-  border: 1px solid #cdd4df;
-  background: #121921;
-  color: #eaf1f8;
-  box-shadow: 0 20px 48px rgba(21, 32, 44, 0.16);
+  border: 1px solid var(--color-terminal-border);
+  background: var(--color-terminal-bg);
+  color: var(--color-terminal-ink);
+  box-shadow: 0 20px 48px var(--color-terminal-shadow);
 }
 
 .terminal-bar {
   display: flex;
   gap: 0.4rem;
   padding: 0.85rem var(--space-md);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--color-terminal-bar-border);
 }
 
 .terminal-dot {
   width: 0.72rem;
   height: 0.72rem;
   border-radius: var(--radius-pill);
-  background: #738090;
+  background: var(--color-terminal-dot);
 }
 
 .terminal-dot:nth-child(1) {
-  background: #df6a54;
+  background: var(--color-terminal-dot-warm);
 }
 
 .terminal-dot:nth-child(2) {
-  background: #d8ad43;
+  background: var(--color-terminal-dot-gold);
 }
 
 .terminal-dot:nth-child(3) {
-  background: #58a96d;
+  background: var(--color-terminal-dot-green);
 }
 
 .terminal-body {
@@ -416,11 +416,11 @@
 }
 
 .prompt {
-  color: #72d8c9;
+  color: var(--color-terminal-prompt);
 }
 
 .output {
-  color: #aeb9c5;
+  color: var(--color-terminal-output);
 }
 
 @keyframes reveal-fade-up {
@@ -631,14 +631,14 @@
 }
 
 .feature-terminal {
-  background: #121921;
-  color: #eaf1f8;
+  background: var(--color-terminal-bg);
+  color: var(--color-terminal-ink);
 }
 
 .feature-terminal .feature-command {
   justify-content: flex-start;
-  border-bottom-color: rgba(255, 255, 255, 0.11);
-  color: #eaf1f8;
+  border-bottom-color: var(--color-terminal-bar-border);
+  color: var(--color-terminal-ink);
 }
 
 .diagnostic-list {
@@ -653,14 +653,14 @@
   gap: 0.45rem;
   align-items: baseline;
   margin: 0;
-  color: #b8c4d1;
+  color: var(--color-terminal-diag-muted);
   font-family: var(--font-mono);
   font-size: 0.64rem;
   line-height: 1.45;
 }
 
 .diagnostic span {
-  color: #eaf1f8;
+  color: var(--color-terminal-ink);
   font-weight: 760;
 }
 
@@ -671,15 +671,15 @@
 }
 
 .diagnostic.ok span {
-  color: #8de0a2;
+  color: var(--color-terminal-ok);
 }
 
 .diagnostic.warn span {
-  color: #e0bd66;
+  color: var(--color-terminal-warn);
 }
 
 .diagnostic.error span {
-  color: #ff947d;
+  color: var(--color-terminal-error);
 }
 
 .feature-mini-timeline {
