@@ -50,7 +50,7 @@
 
 [data-playground-state="warn"] .playground-status {
   border-left-color: var(--color-gold);
-  color: #845d0c;
+  color: var(--color-status-warn);
 }
 
 [data-playground-state="error"] .playground-status {

@@ -11,6 +11,14 @@
   --color-gold: #d69a24;
   --color-plum: #7b4569;
   --color-sky: #2c6f9f;
+  /* lane 色のバー（span-block / mini-span / usecase-bar）に乗る固定前景。lane 背景は
+     light / dark とも有色・暗色のため白が最適前景で、terminal 同様にテーマ非依存。HC でも
+     白が最大コントラストのため override しない。注意: gold lane 上の白は light 2.47:1 /
+     HC 5.85:1 で AA/AAA 未達だが、これは lane 背景（--color-gold）側の既存課題で後続 issue 扱い */
+  --color-on-lane: #ffffff;
+  /* playground の warn ステータス文字。gold は light 値が白背景でテキスト不適（約2:1）のため
+     専用トークン化する。warn サーフェス（--color-bg）はテーマ依存なので 4 ブロックで定義する */
+  --color-status-warn: #845d0c;
   /* Terminal surface (DESIGN.md §2) — 意図的に dark。ページテーマ非依存で
      light / dark とも同一見た目のため :root に 1 度だけ定義する。HC のみ
      下の high-contrast ブロックで上書きする。dot は lane ではなくウィンドウ信号色 */
@@ -80,6 +88,8 @@
   --color-gold: #806000;
   --color-plum: #600060;
   --color-sky: #00557a;
+  /* warn 文字は白背景で AAA (9.11:1)。on-lane は白固定のため HC でも override 不要 */
+  --color-status-warn: #5c4500;
   /* Terminal は HC でも意図的に dark を維持。near-black (#000) 上で全色 AAA (7:1+) */
   --color-terminal-bg: #000000;
   --color-terminal-ink: #ffffff;
@@ -116,6 +126,8 @@
     --color-panel: #1a2434;
     --color-accent: #1a9e96;
     --color-accent-strong: #22c4bb;
+    /* dark base での warn 文字。暗背景 (#111920) 上で明 amber に上げ AA 以上 (10.55:1) */
+    --color-status-warn: #e6c46e;
   }
 
   :root[data-a11y-contrast="high"] {
@@ -126,6 +138,8 @@
     --color-panel: #000000;
     --color-accent: #00ffff;
     --color-accent-strong: #80ffff;
+    /* warn 文字は黒背景で AAA (14.57:1)。terminal-warn HC と意図的に同値 */
+    --color-status-warn: #ffd24a;
     /* Terminal HC: dark ページと黒背景を共有するが、light HC と同値で統一する */
     --color-terminal-bg: #000000;
     --color-terminal-ink: #ffffff;
