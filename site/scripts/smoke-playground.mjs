@@ -189,6 +189,20 @@ async function smokeA11yMenu(rootUrl, browser) {
     throw new Error("data-a11y-contrast=high should be set on html element");
   }
 
+  // 回帰防止 (#218): high-contrast で accent-strong と sky lane が同色衝突しないこと
+  const hcTokens = await page.evaluate(() => {
+    const cs = getComputedStyle(document.documentElement);
+    return {
+      accentStrong: cs.getPropertyValue("--color-accent-strong").trim(),
+      sky: cs.getPropertyValue("--color-sky").trim(),
+    };
+  });
+  if (hcTokens.accentStrong === hcTokens.sky) {
+    throw new Error(
+      `high-contrast: --color-accent-strong と --color-sky が同色 (${hcTokens.sky}) — lane の区別がつかない`,
+    );
+  }
+
   // テキストスペーシング ON → html 属性反映
   const textSpacingCb = menu.locator("[data-a11y-text-spacing-input]").first();
   await textSpacingCb.check();
