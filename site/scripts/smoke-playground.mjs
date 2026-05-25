@@ -203,6 +203,31 @@ async function smokeA11yMenu(rootUrl, browser) {
     );
   }
 
+  // 回帰防止 (#219): high-contrast で terminal の bg/ink が区別でき、
+  // diagnostic の ok/warn/error が相互に異なる（色相分離が潰れていない）こと
+  const hcTerminal = await page.evaluate(() => {
+    const cs = getComputedStyle(document.documentElement);
+    const read = (name) => cs.getPropertyValue(name).trim();
+    return {
+      bg: read("--color-terminal-bg"),
+      ink: read("--color-terminal-ink"),
+      ok: read("--color-terminal-ok"),
+      warn: read("--color-terminal-warn"),
+      error: read("--color-terminal-error"),
+    };
+  });
+  if (hcTerminal.bg === hcTerminal.ink) {
+    throw new Error(
+      `high-contrast: --color-terminal-bg と --color-terminal-ink が同色 (${hcTerminal.bg}) — terminal 上のテキストが読めない`,
+    );
+  }
+  const diagColors = [hcTerminal.ok, hcTerminal.warn, hcTerminal.error];
+  if (new Set(diagColors).size !== diagColors.length) {
+    throw new Error(
+      `high-contrast: diagnostic の ok/warn/error が相互に区別できない (${diagColors.join(", ")})`,
+    );
+  }
+
   // テキストスペーシング ON → html 属性反映
   const textSpacingCb = menu.locator("[data-a11y-text-spacing-input]").first();
   await textSpacingCb.check();

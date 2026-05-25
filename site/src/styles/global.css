@@ -11,6 +11,24 @@
   --color-gold: #d69a24;
   --color-plum: #7b4569;
   --color-sky: #2c6f9f;
+  /* Terminal surface (DESIGN.md §2) — 意図的に dark。ページテーマ非依存で
+     light / dark とも同一見た目のため :root に 1 度だけ定義する。HC のみ
+     下の high-contrast ブロックで上書きする。dot は lane ではなくウィンドウ信号色 */
+  --color-terminal-bg: #121921;
+  --color-terminal-ink: #eaf1f8;
+  --color-terminal-border: #cdd4df;
+  --color-terminal-shadow: rgba(21, 32, 44, 0.16);
+  --color-terminal-bar-border: rgba(255, 255, 255, 0.1);
+  --color-terminal-dot: #738090;
+  --color-terminal-dot-warm: #df6a54;
+  --color-terminal-dot-gold: #d8ad43;
+  --color-terminal-dot-green: #58a96d;
+  --color-terminal-prompt: #72d8c9;
+  --color-terminal-output: #aeb9c5;
+  --color-terminal-diag-muted: #b8c4d1;
+  --color-terminal-ok: #8de0a2;
+  --color-terminal-warn: #e0bd66;
+  --color-terminal-error: #ff947d;
   --font-display:
     "Avenir Next", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic",
     "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
@@ -62,6 +80,22 @@
   --color-gold: #806000;
   --color-plum: #600060;
   --color-sky: #00557a;
+  /* Terminal は HC でも意図的に dark を維持。near-black (#000) 上で全色 AAA (7:1+) */
+  --color-terminal-bg: #000000;
+  --color-terminal-ink: #ffffff;
+  --color-terminal-border: #ffffff;
+  --color-terminal-shadow: transparent;
+  --color-terminal-bar-border: rgba(255, 255, 255, 0.6);
+  --color-terminal-dot: #d8e0e8;
+  --color-terminal-dot-warm: #ff8a75;
+  --color-terminal-dot-gold: #ffd24a;
+  --color-terminal-dot-green: #5fe08a;
+  --color-terminal-prompt: #5ff0e0;
+  --color-terminal-output: #d8e0e8;
+  --color-terminal-diag-muted: #d8e0e8;
+  --color-terminal-ok: #7dffa0;
+  --color-terminal-warn: #ffd24a;
+  --color-terminal-error: #ff8a75;
 }
 
 :root[data-a11y-text-size="large"] {
@@ -92,6 +126,22 @@
     --color-panel: #000000;
     --color-accent: #00ffff;
     --color-accent-strong: #80ffff;
+    /* Terminal HC: dark ページと黒背景を共有するが、light HC と同値で統一する */
+    --color-terminal-bg: #000000;
+    --color-terminal-ink: #ffffff;
+    --color-terminal-border: #ffffff;
+    --color-terminal-shadow: transparent;
+    --color-terminal-bar-border: rgba(255, 255, 255, 0.6);
+    --color-terminal-dot: #d8e0e8;
+    --color-terminal-dot-warm: #ff8a75;
+    --color-terminal-dot-gold: #ffd24a;
+    --color-terminal-dot-green: #5fe08a;
+    --color-terminal-prompt: #5ff0e0;
+    --color-terminal-output: #d8e0e8;
+    --color-terminal-diag-muted: #d8e0e8;
+    --color-terminal-ok: #7dffa0;
+    --color-terminal-warn: #ffd24a;
+    --color-terminal-error: #ff8a75;
   }
 }
 
