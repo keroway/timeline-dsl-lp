@@ -80,6 +80,54 @@
 
 dark の `@media (prefers-color-scheme: dark)` 下の high-contrast ブロックは lane を再宣言していないため、`--color-sky` は上表の light HC 値 `#00557a` を継承して黒背景に乗ります（黒に対し 2.58:1 = AA 未達。旧 `#000080` の 1.31:1 からは改善するが最適ではない）。lane の dark high-contrast 値は #210 の後続 sub-issue で再定義して確定します。
 
+### Terminal surface
+
+ヒーローの `.terminal` / `.command-strip`、feature カードの `.feature-terminal` / `.diagnostic` は **意図的に dark** な面です。ページテーマ（light / dark）に依存せず常に暗色で、コードや CLI 出力を「実行環境」として見せるための演出です。色は `--color-terminal-*` トークンに集約します。
+
+| Token | Value | 用途（由来） |
+| --- | --- | --- |
+| `--color-terminal-bg` | `#121921` | terminal / command-strip / feature-terminal の背景 |
+| `--color-terminal-ink` | `#eaf1f8` | terminal 上の主要テキスト |
+| `--color-terminal-border` | `#cdd4df` | `.terminal` の外枠（ページ側との境界） |
+| `--color-terminal-shadow` | `rgba(21, 32, 44, 0.16)` | `.terminal` のドロップシャドウ色 |
+| `--color-terminal-bar-border` | `rgba(255, 255, 255, 0.1)` | terminal-bar / feature-command の内部区切り線 |
+| `--color-terminal-dot` | `#738090` | ウィンドウ操作ドット（既定） |
+| `--color-terminal-dot-warm` | `#df6a54` | ウィンドウ操作ドット（close 相当） |
+| `--color-terminal-dot-gold` | `#d8ad43` | ウィンドウ操作ドット（minimize 相当） |
+| `--color-terminal-dot-green` | `#58a96d` | ウィンドウ操作ドット（maximize 相当） |
+| `--color-terminal-prompt` | `#72d8c9` | プロンプト記号 |
+| `--color-terminal-output` | `#aeb9c5` | terminal 出力行のテキスト |
+| `--color-terminal-diag-muted` | `#b8c4d1` | diagnostic リストのラベル列 |
+| `--color-terminal-ok` | `#8de0a2` | diagnostic ok / command-strip 強調（成功） |
+| `--color-terminal-warn` | `#e0bd66` | diagnostic warn（警告） |
+| `--color-terminal-error` | `#ff947d` | diagnostic error（エラー） |
+
+**テーマ非依存の例外**: terminal サーフェスは light / dark で同一見た目が仕様のため、`--color-terminal-*` は `:root` に **1 度だけ** 定義し、dark base ブロック（`@media (prefers-color-scheme: dark)` 直下の `:root`）では再定義しません。§2 末尾「使用ルール」の "3 系統同時定義" のうち dark 相当は base ではなく **high-contrast dark ブロックで担保** します（これは terminal に限った明示的な例外です）。
+
+**ウィンドウ操作ドットは lane ではありません**。`dot-warm` / `dot-gold` / `dot-green` は macOS 風の close / minimize / maximize を模した信号色で、lane パレット（起点 / 周年 / 人物 / 外部要因）のセマンティクスとは無関係です。lane トークンを参照しないことで意味の混線を避けています。
+
+**High-contrast**: terminal は HC でも dark を維持するため、背景 `#ffffff` 向けに暗くした lane HC 値（上表）はそのまま使えません。`:root[data-a11y-contrast="high"]`（light HC）と dark HC ブロックの **両方** で、near-black（`#000000`）面に乗る明るい飽和色へ上書きします。全色を背景 `#000000` に対し WCAG AAA（7:1）以上で揃えています。
+
+| Token | HC Value | 背景 `#000000` に対するコントラスト比 |
+| --- | --- | --- |
+| `--color-terminal-bg` | `#000000` | — |
+| `--color-terminal-ink` | `#ffffff` | 21.00:1 |
+| `--color-terminal-border` | `#ffffff` | 21.00:1 |
+| `--color-terminal-shadow` | `transparent` | —（HC では影を無効化） |
+| `--color-terminal-bar-border` | `rgba(255, 255, 255, 0.6)` | —（半透明を上げて視認性確保） |
+| `--color-terminal-dot` | `#d8e0e8` | 15.75:1 |
+| `--color-terminal-dot-warm` | `#ff8a75` | 9.14:1 |
+| `--color-terminal-dot-gold` | `#ffd24a` | 14.57:1 |
+| `--color-terminal-dot-green` | `#5fe08a` | 12.52:1 |
+| `--color-terminal-prompt` | `#5ff0e0` | 15.03:1 |
+| `--color-terminal-output` | `#d8e0e8` | 15.75:1 |
+| `--color-terminal-diag-muted` | `#d8e0e8` | 15.75:1 |
+| `--color-terminal-ok` | `#7dffa0` | 16.68:1 |
+| `--color-terminal-warn` | `#ffd24a` | 14.57:1 |
+| `--color-terminal-error` | `#ff8a75` | 9.14:1 |
+
+ok / warn / error は HC で輝度が近接するため、**色相（緑 / 黄 / 赤橙）で区別** します。輝度差ではなく色相分離に依存する設計のため、smoke では 3 値が相互に異なること（等値でないこと）と `bg ≠ ink` を回帰防止アサーションとして検証します。HC では output / diag-muted / dot 既定を `#d8e0e8` に集約しています（暗色面上の可読性を最優先するため）。
+
 ### 使用ルール
 
 - アクセント色（`--color-accent` / `--color-accent-strong`）は CTA とフォーカスリングに限定し、本文中に散布しない。
