@@ -45,3 +45,41 @@ code --install-extension keroway.timeline-dsl
 | `span` | `span` イベントのテンプレート（開始・終了日時付き） |
 
 スニペットはファイル拡張子が `.tdsl` のファイルで有効です。
+
+VS Code 拡張は構文ハイライトとスニペットを提供します。診断・補完・ホバー・定義ジャンプといった対話的な機能は、次の言語サーバ（LSP）が担当します。
+
+## 言語サーバ (LSP)
+
+v1.11.0 以降、`tdsl lsp` で Timeline DSL の言語サーバ（LSP）を起動できます。LSP は標準入出力（stdio）で通信するため、LSP クライアントを持つエディタ（VS Code・Neovim・Helix・Emacs など）から接続して、`.tdsl` 編集中に対話的な支援を受けられます。VS Code 拡張（構文ハイライト + スニペット）とは独立した仕組みです。
+
+| 機能 | 内容 | バージョン |
+| --- | --- | --- |
+| 診断（Diagnostics） | 構文・意味エラーを編集中にリアルタイム表示する | v1.11.0〜 |
+| 補完（Completion） | DSL キーワードを補完する | v1.12.0〜 |
+| ホバー（Hover） | lane ID / QID のホバー情報を表示する | v1.12.0〜 |
+| 定義ジャンプ（Goto Definition） | lane 参照から lane 宣言へジャンプする | v1.12.0〜 |
+
+起動コマンドは引数を取りません。
+
+```sh
+tdsl lsp
+```
+
+各エディタからは、コマンド `tdsl lsp` を `.tdsl`（言語 ID: `tdsl`）に紐づく言語サーバとして登録します。Neovim（0.10 以降のコア LSP、プラグイン不要）の例:
+
+```lua
+vim.filetype.add({ extension = { tdsl = "tdsl" } })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "tdsl",
+  callback = function()
+    vim.lsp.start({
+      name = "tdsl-lsp",
+      cmd = { "tdsl", "lsp" },
+      root_dir = vim.fs.root(0, { ".git" }),
+    })
+  end,
+})
+```
+
+`tdsl lsp` の概要は [Commands](/docs/commands/#lsp) も参照してください。
