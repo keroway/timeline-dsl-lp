@@ -29,6 +29,7 @@ tdsl render sample.tdsl --output sample.html
 | `tdsl decompile <FILE>` | Decompile JSON IR back to `.tdsl` (v1.1.0+) |
 | `tdsl merge <FILES...>` | Merge multiple `.tdsl` files into one (v1.2.0+) |
 | `tdsl completions <SHELL>` | Generate shell completion scripts (v1.9.0+) |
+| `tdsl lsp` | Start the language server (LSP) (v1.11.0+) |
 
 `build` and `render` may perform network access when processing files that include Wikidata imports. Use `--offline` if you only want to process locally-defined items.
 
@@ -79,6 +80,16 @@ tdsl completions zsh > ~/.zfunc/_tdsl
 # fish
 tdsl completions fish > ~/.config/fish/completions/tdsl.fish
 ```
+
+### lsp
+
+Starts the Timeline DSL language server (LSP) over stdio (v1.11.0+). Once connected from your editor's LSP client, you get real-time diagnostics, completion, hover, and goto-definition while editing `.tdsl` files.
+
+```sh
+tdsl lsp
+```
+
+`tdsl lsp` takes no arguments and speaks the LSP JSON-RPC protocol over standard input/output. See [Installation](/en/docs/installation/#language-server-lsp) for editor configuration and the list of supported features.
 
 ## Starting from Wikidata
 

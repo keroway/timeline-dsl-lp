@@ -45,3 +45,41 @@ code --install-extension keroway.timeline-dsl
 | `span` | Template for a `span` event (with start and end dates) |
 
 Snippets are active in files with the `.tdsl` extension.
+
+The VS Code extension provides syntax highlighting and snippets. Interactive features such as diagnostics, completion, hover, and goto-definition are handled by the language server (LSP) described below.
+
+## Language Server (LSP)
+
+Since v1.11.0, you can start the Timeline DSL language server (LSP) with `tdsl lsp`. The server communicates over standard input/output (stdio), so any editor with an LSP client (VS Code, Neovim, Helix, Emacs, etc.) can connect to it and get interactive assistance while editing `.tdsl` files. It is independent of the VS Code extension (which only provides syntax highlighting and snippets).
+
+| Feature | Description | Version |
+| --- | --- | --- |
+| Diagnostics | Reports syntax and semantic errors in real time while editing | v1.11.0+ |
+| Completion | Completes DSL keywords | v1.12.0+ |
+| Hover | Shows hover information for lane IDs / QIDs | v1.12.0+ |
+| Goto Definition | Jumps from a lane reference to its lane declaration | v1.12.0+ |
+
+The launch command takes no arguments.
+
+```sh
+tdsl lsp
+```
+
+In each editor, register the command `tdsl lsp` as the language server bound to `.tdsl` (language ID: `tdsl`). Example for Neovim (core LSP from 0.10+, no plugin required):
+
+```lua
+vim.filetype.add({ extension = { tdsl = "tdsl" } })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "tdsl",
+  callback = function()
+    vim.lsp.start({
+      name = "tdsl-lsp",
+      cmd = { "tdsl", "lsp" },
+      root_dir = vim.fs.root(0, { ".git" }),
+    })
+  end,
+})
+```
+
+See also [Commands](/en/docs/commands/#lsp) for an overview of `tdsl lsp`.
