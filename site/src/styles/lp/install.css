@@ -1,0 +1,86 @@
+.install-band {
+  border-top: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-panel);
+}
+
+.install-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+  gap: var(--space-lg);
+  align-items: center;
+}
+
+.command {
+  margin: 0;
+  overflow-x: auto;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  padding: var(--space-md) 3.4rem var(--space-md) var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.command-copy {
+  position: relative;
+  min-width: 0;
+}
+
+.copy-button {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.copy-button:hover {
+  background: var(--color-panel);
+}
+
+.copy-button__icon {
+  display: block;
+}
+
+.copy-button__icon--check {
+  display: none;
+  color: var(--color-accent);
+}
+
+.copy-button.is-copied {
+  border-color: var(--color-accent);
+}
+
+.copy-button.is-copied .copy-button__icon--clipboard {
+  display: none;
+}
+
+.copy-button.is-copied .copy-button__icon--check {
+  display: block;
+}
+
+.copy-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 820px) {
+  .install-layout {
+    grid-template-columns: 1fr;
+  }
+}
