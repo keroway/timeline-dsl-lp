@@ -29,6 +29,7 @@ tdsl render sample.tdsl --output sample.html
 | `tdsl decompile <FILE>` | JSON IRを `.tdsl` に逆コンパイルする（v1.1.0〜） |
 | `tdsl merge <FILES...>` | 複数の `.tdsl` ファイルを結合する（v1.2.0〜） |
 | `tdsl completions <SHELL>` | シェル補完スクリプトを生成する（v1.9.0〜） |
+| `tdsl lsp` | 言語サーバ（LSP）を起動する（v1.11.0〜） |
 
 `build` と `render` は Wikidata import を含むファイルでネットワークアクセスを行うことがあります。ローカル定義だけを処理したい場合は `--offline` を指定します。
 
@@ -79,6 +80,16 @@ tdsl completions zsh > ~/.zfunc/_tdsl
 # fish
 tdsl completions fish > ~/.config/fish/completions/tdsl.fish
 ```
+
+### lsp
+
+Timeline DSL の言語サーバ（LSP）を stdio 経由で起動します（v1.11.0〜）。エディタの LSP クライアントから接続すると、`.tdsl` 編集中にリアルタイム診断・補完・ホバー・定義ジャンプが利用できます。
+
+```sh
+tdsl lsp
+```
+
+`tdsl lsp` は引数を取らず、標準入出力で LSP の JSON-RPC を話します。エディタ側の設定や対応機能の一覧は [インストール](/docs/installation/#言語サーバ-lsp) を参照してください。
 
 ## Wikidata起点
 
