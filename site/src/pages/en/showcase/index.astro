@@ -1,28 +1,28 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { breadcrumbLd } from "../../lib/seo-jsonld";
-import { getT } from "../../i18n/index";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { breadcrumbLd } from "../../../lib/seo-jsonld";
+import { getT } from "../../../i18n/index";
 
-const locale = "ja" as const;
+const locale = "en" as const;
 const t = getT(locale);
 
 const showcases = [
   {
-    href: "/showcase/oda-nobunaga/",
-    title: "織田信長の生涯",
+    href: "/en/showcase/oda-nobunaga/",
+    title: "The Life of Oda Nobunaga",
     summary:
-      "戦国時代の覇者・織田信長（1534–1582）の生涯を 3 レーン構成で俯瞰する年表。",
-    period: "1534 〜 1582 年（49 年間）",
-    lanes: "生涯 / 合戦 / 天下布武",
+      "A three-lane timeline spanning the life of Oda Nobunaga (1534–1582), the dominant warlord of Japan's Sengoku era.",
+    period: "1534 – 1582 (49 years)",
+    lanes: "Life / Battles / Unification",
     events: "13",
   },
   {
-    href: "/showcase/natsume-soseki/",
-    title: "夏目漱石の生涯",
+    href: "/en/showcase/natsume-soseki/",
+    title: "The Life of Natsume Soseki",
     summary:
-      "明治から大正にかけて活躍した文豪・夏目漱石（1867–1916）の生涯と作品を辿る年表。",
-    period: "1867 〜 1916 年（49 年間）",
-    lanes: "生涯 / 学業・教職 / 作品",
+      "A three-lane timeline tracing the life and literary works of Natsume Soseki (1867–1916), active from the Meiji to Taisho era.",
+    period: "1867 – 1916 (49 years)",
+    lanes: "Life / Career & Teaching / Works",
     events: "20",
   },
 ];
@@ -30,8 +30,8 @@ const showcases = [
 const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
 const breadcrumb = breadcrumbLd(
   [
-    { name: "Timeline DSL", url: "/" },
-    { name: "Showcase", url: "/showcase/" },
+    { name: "Timeline DSL", url: "/en/" },
+    { name: "Showcase", url: "/en/showcase/" },
   ],
   siteUrl,
 );
@@ -40,8 +40,8 @@ const collectionLd = {
   "@type": "CollectionPage",
   name: t("showcase.index.page.title"),
   description: t("showcase.index.page.description"),
-  url: new URL("/showcase/", siteUrl).toString(),
-  inLanguage: "ja",
+  url: new URL("/en/showcase/", siteUrl).toString(),
+  inLanguage: "en",
   hasPart: showcases.map((s) => ({
     "@type": "WebPage",
     name: s.title,
@@ -53,7 +53,7 @@ const collectionLd = {
 <BaseLayout
   title={t("showcase.index.page.title")}
   description={t("showcase.index.page.description")}
-  pathname="/showcase/"
+  pathname="/en/showcase/"
   locale={locale}
   extraJsonLd={[breadcrumb, collectionLd]}
 >
@@ -67,7 +67,7 @@ const collectionLd = {
     </section>
 
     <section class="section showcase-section" aria-labelledby="showcase-heading">
-      <h2 id="showcase-heading" class="sr-only">事例一覧</h2>
+      <h2 id="showcase-heading" class="sr-only">Examples</h2>
       <div class="showcase-grid">
         {
           showcases.map((item) => (
