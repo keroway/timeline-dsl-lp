@@ -45,13 +45,9 @@ const msgs = {
         <p class="eyebrow">{t("gallery.eyebrow")}</p>
         <h1>Gallery</h1>
         <p class="lead">{t("gallery.lead")}</p>
-        {/* Showcase は JA-only（/en/showcase/ 未実装）のため、英語版 Gallery からはリンクを出さない。
-            英語版 Showcase 実装時（issue #208）にこの locale ガードを解除する。 */}
-        {locale === "ja" && (
-          <p class="gallery-showcase-link">
-            <a href="/showcase/">{t("gallery.see_showcase")}</a>
-          </p>
-        )}
+        <p class="gallery-showcase-link">
+          <a href={locale === "ja" ? "/showcase/" : "/en/showcase/"}>{t("gallery.see_showcase")}</a>
+        </p>
       </div>
     </section>
 
