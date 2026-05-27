@@ -1,80 +1,81 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import TimelineEmbed from "../../components/TimelineEmbed.astro";
-import { breadcrumbLd } from "../../lib/seo-jsonld";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import TimelineEmbed from "../../../components/TimelineEmbed.astro";
+import { breadcrumbLd } from "../../../lib/seo-jsonld";
 
-const source = `timeline "織田信長の生涯 (1534–1582)" {
-    title "織田信長の生涯";
+const source = `timeline "The Life of Oda Nobunaga (1534–1582)" {
+    title "The Life of Oda Nobunaga";
     unit year;
     range 1534..1583;
     calendar proleptic_gregorian;
 }
 
-lane "生涯" as life { kind custom; order 10; }
-lane "合戦" as battle { kind custom; order 20; }
-lane "天下布武" as politics { kind custom; order 30; }
+lane "Life" as life { kind custom; order 10; }
+lane "Battles" as battle { kind custom; order 20; }
+lane "Unification" as politics { kind custom; order 30; }
 
-span life 1534..1582 "信長の生涯" {};
-event life 1534 "誕生（尾張国那古野城）" {};
-event life 1551 "家督相続" {};
-event life 1582 "本能寺の変（享年 48）" {};
+span life 1534..1582 "Nobunaga's Life" {};
+event life 1534 "Born (Nagoya Castle, Owari Province)" {};
+event life 1551 "Inherited the clan" {};
+event life 1582 "Honnō-ji Incident (age 48)" {};
 
-event battle 1560 "桶狭間の戦い（今川義元討取）" {};
-event battle 1570 "姉川の戦い" {};
-event battle 1573 "槙島城の戦い（足利義昭放逐）" {};
-event battle 1575 "長篠の戦い（鉄砲三段撃ち）" {};
-event battle 1580 "石山合戦終結" {};
+event battle 1560 "Battle of Okehazama (defeated Imagawa Yoshimoto)" {};
+event battle 1570 "Battle of Anegawa" {};
+event battle 1573 "Battle of Makishima (exiled Ashikaga Yoshiaki)" {};
+event battle 1575 "Battle of Nagashino (volley fire tactics)" {};
+event battle 1580 "End of the Ishiyama Hongan-ji War" {};
 
-event politics 1559 "尾張国統一" {};
-event politics 1568 "上洛・足利義昭を擁立" {};
-event politics 1573 "室町幕府滅亡" {};
-event politics 1576 "安土城築城開始" {};
-event politics 1580 "惣無事令" {};
+event politics 1559 "Unified Owari Province" {};
+event politics 1568 "Marched on Kyoto, installed Ashikaga Yoshiaki" {};
+event politics 1573 "Fall of the Muromachi Shogunate" {};
+event politics 1576 "Began construction of Azuchi Castle" {};
+event politics 1580 "Sōbuji Edict" {};
 `;
 
 const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
 const breadcrumb = breadcrumbLd(
   [
-    { name: "Timeline DSL", url: "/" },
-    { name: "Showcase", url: "/showcase/" },
-    { name: "織田信長の生涯", url: "/showcase/oda-nobunaga/" },
+    { name: "Timeline DSL", url: "/en/" },
+    { name: "Showcase", url: "/en/showcase/" },
+    { name: "The Life of Oda Nobunaga", url: "/en/showcase/oda-nobunaga/" },
   ],
   siteUrl,
 );
 ---
 
 <BaseLayout
-  title="織田信長の生涯 — Showcase | Timeline DSL"
-  description="Timeline DSL で記述した織田信長の生涯年表。合戦・政治の 3 レーン構成で 1534 年から 1582 年を俯瞰する。"
-  pathname="/showcase/oda-nobunaga/"
-  locale="ja"
+  title="The Life of Oda Nobunaga — Showcase | Timeline DSL"
+  description="A Timeline DSL timeline covering the life of Oda Nobunaga (1534–1582), the dominant warlord of Japan's Sengoku era. Three lanes — Life, Battles, and Unification — provide a 48-year overview."
+  pathname="/en/showcase/oda-nobunaga/"
+  locale="en"
   extraJsonLd={[breadcrumb]}
 >
   <main id="main-content" class="showcase-page">
     <div class="showcase-inner">
-      <nav class="showcase-breadcrumb" aria-label="パンくずリスト">
-        <a href="/showcase/">Showcase</a>
+      <nav class="showcase-breadcrumb" aria-label="Breadcrumb">
+        <a href="/en/showcase/">Showcase</a>
         <span aria-hidden="true"> / </span>
-        <span aria-current="page">織田信長の生涯</span>
+        <span aria-current="page">The Life of Oda Nobunaga</span>
       </nav>
 
       <header class="showcase-header">
-        <h1 class="showcase-title">織田信長の生涯</h1>
+        <h1 class="showcase-title">The Life of Oda Nobunaga</h1>
         <p class="showcase-description">
-          戦国時代の覇者・織田信長（1534–1582）の生涯を Timeline DSL で表現した年表です。
-          生涯・合戦・天下布武の 3 レーンで、48 年間の軌跡を俯瞰します。
+          A Timeline DSL timeline covering the life of Oda Nobunaga (1534–1582),
+          the dominant warlord of Japan's Sengoku era.
+          Three lanes — Life, Battles, and Unification — provide a 48-year overview.
         </p>
         <dl class="showcase-meta">
           <div>
-            <dt>期間</dt>
-            <dd>1534 〜 1582 年（49 年間）</dd>
+            <dt>Period</dt>
+            <dd>1534 – 1582 (49 years)</dd>
           </div>
           <div>
-            <dt>レーン</dt>
-            <dd>生涯 / 合戦 / 天下布武</dd>
+            <dt>Lanes</dt>
+            <dd>Life / Battles / Unification</dd>
           </div>
           <div>
-            <dt>イベント数</dt>
+            <dt>Events</dt>
             <dd>13</dd>
           </div>
         </dl>
@@ -82,28 +83,27 @@ const breadcrumb = breadcrumbLd(
 
       <TimelineEmbed
         source={source}
-        caption="織田信長の生涯年表。Playground でクリックして DSL を編集・カスタマイズできます。"
+        caption="Timeline of Oda Nobunaga's life. Click to open in the Playground and edit or customize the DSL."
       />
 
       <section class="showcase-notes">
-        <h2>Timeline DSL の使い所</h2>
+        <h2>Timeline DSL in action</h2>
         <ul>
           <li>
-            <code>span</code> で連続する期間（生涯全体）を表現し、
-            <code>event</code> で単発の出来事を記録しています。
+            <code>span</code> covers Nobunaga's entire lifetime, while
+            <code>event</code> records individual milestones — both coexist in the same timeline.
           </li>
           <li>
-            <code>lane</code> を 3 つに分けることで、同じ時期に起きた複数の出来事を
-            並列して俯瞰できます。
+            Three <code>lane</code> declarations let you read parallel threads of the same era
+            side by side: personal life, military campaigns, and political moves.
           </li>
           <li>
-            <code>unit year</code> + <code>calendar proleptic_gregorian</code> の組み合わせで
-            歴史年表に最適な西暦表示が得られます。
+            <code>unit year</code> + <code>calendar proleptic_gregorian</code> gives a clean
+            Western calendar display ideal for historical timelines.
           </li>
         </ul>
         <p>
-          <a href="/docs/">文法リファレンス</a> を見れば、
-          自分の年表を数分で作成できます。
+          See the <a href="/en/docs/">syntax reference</a> to build your own timeline in minutes.
         </p>
       </section>
     </div>
