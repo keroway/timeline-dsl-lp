@@ -57,14 +57,17 @@ tdsl build combined.tdsl --pretty --output combined.json
 
 ### render
 
-`.tdsl` をスタンドアロンHTML / SVG / PNG として描画します。`--format` で出力形式を切り替えます。`--format png` は v1.10.0〜対応です。
+`.tdsl` をスタンドアロンHTML / SVG / PNG / PDF として描画します。`--format` で出力形式を切り替えます。`--format png` は v1.10.0〜、`--format pdf` は v1.11.0〜対応です。
 
 ```sh
 tdsl render sample.tdsl --format svg --output sample.svg
 tdsl render sample.tdsl --format png --output sample.png
+tdsl render sample.tdsl --format pdf --output sample.pdf
 ```
 
-PNG 出力は内部 SVG を `resvg` でラスタライズします。CJK レーンラベルは system fonts（Noto Sans JP / Hiragino Sans / Yu Gothic 等）が読み込まれている環境で描画できます。
+PNG 出力は内部 SVG を `resvg` でラスタライズします。CJK レーンラベルは system fonts（Noto Sans JP / Hiragino Sans / Yu Gothic 等）が読み込まれている環境で描画できます。`--dpi`（デフォルト 96）でラスタライズ解像度を、`--png-scale` でピクセルサイズの倍率を指定できます。`--dpi` と `--png-scale` は同時に指定できません（v1.11.0〜）。
+
+PDF 出力はベクタ形式で出力します。印刷・高解像度表示に適しています（v1.11.0〜）。
 
 ### completions
 
@@ -164,5 +167,8 @@ tdsl cache clear --dry-run # 削除対象を確認する（実際には削除し
 | `--no-cache` | `build`, `render` | Wikidataキャッシュを使わず再取得する |
 | `--cache-ttl <秒>` | `build`, `render` | WikidataキャッシュのTTLを指定する |
 | `--wikidata-timeout <秒>` | `build`, `render`, `search`, `inspect` | WikidataへのHTTPタイムアウト秒数を指定する（v1.4.0〜） |
+| `--format html,svg,png,pdf` | `render` | 出力形式を指定する（デフォルト `html`、`--format pdf` は v1.11.0〜） |
+| `--dpi <数値>` | `render` | PNG ラスタライズ解像度を指定する（デフォルト 96、`--png-scale` と排他、v1.11.0〜） |
+| `--png-scale <倍率>` | `render` | PNG 出力の倍率を指定する（`--dpi` と排他、v1.11.0〜） |
 | `--format text,json` | `lint` | lint結果の出力形式を指定する |
 | `--fix` | `lint` | 安全な修正をファイルへ適用する |

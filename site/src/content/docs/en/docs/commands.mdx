@@ -57,14 +57,17 @@ tdsl build combined.tdsl --pretty --output combined.json
 
 ### render
 
-Renders `.tdsl` to a standalone HTML, SVG, or PNG file. Use `--format` to choose the output format. `--format png` is supported from v1.10.0+.
+Renders `.tdsl` to a standalone HTML, SVG, PNG, or PDF file. Use `--format` to choose the output format. `--format png` is supported from v1.10.0+; `--format pdf` from v1.11.0+.
 
 ```sh
 tdsl render sample.tdsl --format svg --output sample.svg
 tdsl render sample.tdsl --format png --output sample.png
+tdsl render sample.tdsl --format pdf --output sample.pdf
 ```
 
-PNG output rasterizes the internal SVG with `resvg`. CJK lane labels are rendered as long as the host environment has system fonts available (Noto Sans JP, Hiragino Sans, Yu Gothic, etc.).
+PNG output rasterizes the internal SVG with `resvg`. CJK lane labels are rendered as long as the host environment has system fonts available (Noto Sans JP, Hiragino Sans, Yu Gothic, etc.). Use `--dpi` (default 96) to set the rasterization resolution, or `--png-scale` to set a fixed pixel scale multiplier. `--dpi` and `--png-scale` are mutually exclusive (v1.11.0+).
+
+PDF output produces a vector-format file suitable for printing and high-resolution display (v1.11.0+).
 
 ### completions
 
@@ -164,5 +167,8 @@ The cache is stored under the OS data directory (`data_dir` from the `dirs` crat
 | `--no-cache` | `build`, `render` | Re-fetch from Wikidata without using the cache |
 | `--cache-ttl <seconds>` | `build`, `render` | Specify the TTL for the Wikidata cache |
 | `--wikidata-timeout <seconds>` | `build`, `render`, `search`, `inspect` | Set the HTTP timeout for Wikidata requests (v1.4.0+) |
+| `--format html,svg,png,pdf` | `render` | Specify the output format (default `html`; `--format pdf` from v1.11.0+) |
+| `--dpi <number>` | `render` | Rasterization DPI for PNG output (default 96; mutually exclusive with `--png-scale`; v1.11.0+) |
+| `--png-scale <multiplier>` | `render` | Fixed pixel scale multiplier for PNG output (mutually exclusive with `--dpi`; v1.11.0+) |
 | `--format text,json` | `lint` | Specify the output format for lint results |
 | `--fix` | `lint` | Apply safe fixes to the file |
