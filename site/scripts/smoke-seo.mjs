@@ -17,7 +17,9 @@ async function smokeSeo(rootUrl) {
     "/",
     "/en/",
     "/playground/",
+    "/en/playground/",
     "/gallery/",
+    "/en/gallery/",
     "/changelog/",
     "/docs/",
     "/en/docs/",
@@ -42,6 +44,8 @@ async function smokeSeo(rootUrl) {
   const jsonLdTargets = [
     { path: "/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'] },
     { path: "/en/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'] },
+    { path: "/en/playground/", required: ['"@type":"Organization"', '"@type":"WebPage"'] },
+    { path: "/en/gallery/", required: ['"@type":"Organization"', '"@type":"WebPage"'] },
     { path: "/showcase/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"', '"@type":"CollectionPage"'] },
     { path: "/en/showcase/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"', '"@type":"CollectionPage"'] },
     { path: "/showcase/oda-nobunaga/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'] },
