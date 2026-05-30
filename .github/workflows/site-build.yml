@@ -37,3 +37,33 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+
+      - name: Start preview server
+        run: pnpm preview &
+
+      - name: Wait for preview server
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:4321 -o /dev/null; then
+              echo "Preview server ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Preview server failed to start within 30 seconds" >&2
+          exit 1
+
+      - name: smoke:seo
+        run: pnpm smoke:seo
+        env:
+          SEO_BASE_URL: http://127.0.0.1:4321
+
+      - name: smoke:i18n
+        run: pnpm smoke:i18n
+        env:
+          I18N_BASE_URL: http://127.0.0.1:4321
+
+      - name: smoke:playground
+        run: pnpm smoke:playground
+        env:
+          PLAYGROUND_BASE_URL: http://127.0.0.1:4321
