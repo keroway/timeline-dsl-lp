@@ -198,13 +198,32 @@
   height: 100%;
 }
 
+/* キーボードフォーカスの可視化（WCAG 2.4.7 / 1.4.11）。host が overflow:hidden のため
+   outline は負オフセットで内側に描く（クリップ回避）。outline は最前面に描画されるため
+   gutter / content に隠れず全エッジで視認できる。base theme の `1px dotted #212121` を
+   accent outline で上書きする。
+   二重リング: 内側に --color-terminal-ink（テーマ非依存の明色）を重ね、light-HC で
+   accent (#0000ff ≈ 2:1) 単色が暗い terminal 面で 3:1 未達になるケースを分離リングで補う。
+   transition を持たないため prefers-reduced-motion / data-a11y-reduced-motion の両系統を満たす。 */
+.cm-editor-host:focus-within .cm-editor {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.cm-editor-host:focus-within {
+  outline: 1px solid var(--color-terminal-ink);
+  outline-offset: -4px;
+}
+
+/* reduced-motion 時はカーソル点滅を止める。CM6 の blink animation は
+   `.cm-cursorLayer`（JS が animationName を切り替える）に乗るため、ここを対象にする。 */
 @media (prefers-reduced-motion: reduce) {
-  .cm-editor-host .cm-cursor {
+  .cm-editor-host .cm-cursorLayer {
     animation: none !important;
   }
 }
 
-:root[data-a11y-reduced-motion="true"] .cm-editor-host .cm-cursor {
+:root[data-a11y-reduced-motion="true"] .cm-editor-host .cm-cursorLayer {
   animation: none !important;
 }
 
