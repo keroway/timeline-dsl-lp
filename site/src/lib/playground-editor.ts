@@ -49,7 +49,10 @@ const darkTheme = EditorView.theme(
       color: "inherit",
     },
     ".cm-scroller": { overflow: "auto", fontFamily: "inherit" },
-    ".cm-focused": { outline: "none" },
+    // フォーカスリングは playground.css の `.cm-editor-host:focus-within` 側で
+    // デザイントークン（--color-accent / --color-terminal-ink）を使って定義する。
+    // EditorView.theme は CSS 変数を参照できないため、ここでは指定しない
+    // （base theme の `1px dotted #212121` は CSS 側で上書きされる）。
     ".cm-cursor, .cm-dropCursor": { borderLeftColor: "#eaf1f8" },
   },
   { dark: true },
