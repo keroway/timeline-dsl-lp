@@ -40,7 +40,17 @@ async function smokeHttpSurface(rootUrl) {
   assertIncludes(enHtml, "Timeline DSL", "/en/ must include brand name");
   assertIncludes(enHtml, "Author and validate timelines", "/en/ must include English page title");
 
+  // Showcase pages (both locales)
+  const jaShowcaseRes = await get(`${rootUrl}/showcase/`);
+  assertStatus(jaShowcaseRes, "/showcase/");
+  assertContentType(jaShowcaseRes, "/showcase/", ["text/html"]);
+
+  const enShowcaseRes = await get(`${rootUrl}/en/showcase/`);
+  assertStatus(enShowcaseRes, "/en/showcase/");
+  assertContentType(enShowcaseRes, "/en/showcase/", ["text/html"]);
+
   console.log("HTTP smoke: / and /en/ both return 200 with correct lang attributes. ✓");
+  console.log("HTTP smoke: /showcase/ and /en/showcase/ both return 200. ✓");
 }
 
 async function smokeBrowserFlow(rootUrl) {
@@ -54,6 +64,12 @@ async function smokeBrowserFlow(rootUrl) {
 
     // Check /en/ → lang toggle → /
     await checkLangToggle(browser, rootUrl, "/en/", "/", "en → ja toggle");
+
+    // Check /showcase/ → lang toggle → /en/showcase/
+    await checkLangToggle(browser, rootUrl, "/showcase/", "/en/showcase/", "ja showcase → en showcase toggle");
+
+    // Check /en/showcase/ → lang toggle → /showcase/
+    await checkLangToggle(browser, rootUrl, "/en/showcase/", "/showcase/", "en showcase → ja showcase toggle");
   } finally {
     await browser.close();
   }
