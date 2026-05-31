@@ -1,8 +1,7 @@
 export const LOCALE_KEY = "tdsl-locale";
 
 // Pages without an /en/ version redirect to the English LP root.
-// Showcase is JA-only until the English version ships (issue #208).
-const EN_UNAVAILABLE_PREFIXES: string[] = ["/showcase/"];
+const EN_UNAVAILABLE_PREFIXES: string[] = [];
 
 interface InitOpts {
   buttonSelector: string;
