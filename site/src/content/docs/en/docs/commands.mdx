@@ -69,6 +69,12 @@ PNG output rasterizes the internal SVG with `resvg`. CJK lane labels are rendere
 
 PDF output produces a vector-format file suitable for printing and high-resolution display (v1.11.0+).
 
+Pass `--orientation vertical` to draw the time axis top-to-bottom in a vertical layout (default `horizontal`, v1.13.0+). All output formats (HTML / SVG / PNG / PDF) are supported.
+
+```sh
+tdsl render sample.tdsl --orientation vertical --output sample.svg
+```
+
 ### completions
 
 Generates shell completion scripts you can source. Supports bash / zsh / fish / pwsh / elvish (v1.9.0+).
@@ -86,7 +92,7 @@ tdsl completions fish > ~/.config/fish/completions/tdsl.fish
 
 ### lsp
 
-Starts the Timeline DSL language server (LSP) over stdio (v1.11.0+). Once connected from your editor's LSP client, you get real-time diagnostics, completion, hover, and goto-definition while editing `.tdsl` files.
+Starts the Timeline DSL language server (LSP) over stdio (v1.11.0+). Once connected from your editor's LSP client, you get real-time diagnostics, completion, hover, goto-definition, references, rename, code actions, and document symbols while editing `.tdsl` files.
 
 ```sh
 tdsl lsp
@@ -170,5 +176,6 @@ The cache is stored under the OS data directory (`data_dir` from the `dirs` crat
 | `--format html,svg,png,pdf` | `render` | Specify the output format (default `html`; `--format pdf` from v1.11.0+) |
 | `--dpi <number>` | `render` | Rasterization DPI for PNG output (default 96; mutually exclusive with `--png-scale`; v1.11.0+) |
 | `--png-scale <multiplier>` | `render` | Fixed pixel scale multiplier for PNG output (mutually exclusive with `--dpi`; v1.11.0+) |
+| `--orientation horizontal,vertical` | `render` | Specify the timeline orientation (default `horizontal`; v1.13.0+) |
 | `--format text,json` | `lint` | Specify the output format for lint results |
 | `--fix` | `lint` | Apply safe fixes to the file |
