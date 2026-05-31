@@ -53,6 +53,31 @@ event milestones 2026 "Public Beta" {};
 
 `order` controls display order — smaller values appear higher. `kind` is treated as classification metadata.
 
+## group
+
+`group` bundles multiple `lane`s and visually organizes them with a group label and separator lines (v1.13.0+). Place `lane`s inside `group "<name>" { ... }`.
+
+```tdsl
+timeline "Org Timeline" {
+    title "Org Timeline";
+    unit year;
+    range 2025..2027;
+    calendar proleptic_gregorian;
+}
+
+group "Engineering" {
+    lane "Frontend" as frontend { kind custom; order 10; }
+    lane "Backend" as backend { kind custom; order 20; }
+}
+
+event frontend 2026 "UI Revamp" { id "event:ui"; };
+event backend 2026 "API v2" { id "event:api"; };
+```
+
+[Open in Playground](/playground/?source=timeline+%22%E7%B5%84%E7%B9%94%E3%81%AE%E5%B9%B4%E8%A1%A8%22+%7B%0A++++title+%22%E7%B5%84%E7%B9%94%E3%81%AE%E5%B9%B4%E8%A1%A8%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Agroup+%22%E9%96%8B%E7%99%BA%E3%83%81%E3%83%BC%E3%83%A0%22+%7B%0A++++lane+%22%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89%22+as+frontend+%7B+kind+custom%3B+order+10%3B+%7D%0A++++lane+%22%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%22+as+backend+%7B+kind+custom%3B+order+20%3B+%7D%0A%7D%0A%0Aevent+frontend+2026+%22UI+%E5%88%B7%E6%96%B0%22+%7B+id+%22event%3Aui%22%3B+%7D%3B%0Aevent+backend+2026+%22API+v2%22+%7B+id+%22event%3Aapi%22%3B+%7D%3B)
+
+The group name is shown as a label above its lanes, separated by boundary lines. A `lane` that does not belong to a `group` is rendered independently, so you can adopt grouping incrementally in existing timelines (backward compatible).
+
 ## event
 
 `event` is a point event placed at a single year.
