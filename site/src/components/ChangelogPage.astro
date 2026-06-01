@@ -5,6 +5,7 @@ import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import rehypeSanitize from "rehype-sanitize";
 import releasesData from "../data/releases.generated.json";
 import { getT, type Locale } from "../i18n/index";
+import { changelogLd } from "../lib/seo-jsonld";
 
 interface Props {
   locale: Locale;
@@ -25,6 +26,9 @@ const releases = releasesData.releases as Release[];
 const latest = releasesData.latest as Release | null;
 
 const pathname = locale === "ja" ? "/changelog/" : "/en/changelog/";
+
+const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const changelogJsonLd = changelogLd({ siteUrl, pathname, locale, releases });
 
 const dateLocale = locale === "ja" ? "ja-JP" : "en-US";
 const markdownProcessor = await createMarkdownProcessor({
@@ -61,6 +65,7 @@ const renderedReleases = await Promise.all(
   pathname={pathname}
   locale={locale}
   version={latest?.tagName || releases[0]?.tagName}
+  extraJsonLd={[changelogJsonLd]}
 >
 
   <main id="main-content">

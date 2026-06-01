@@ -72,6 +72,53 @@ export function breadcrumbLd(items: BreadcrumbItem[], siteUrl: URL): JsonLdNode 
   };
 }
 
+export type ChangelogRelease = {
+  name: string;
+  tagName: string;
+  publishedAt: string;
+  url: string;
+  body: string;
+};
+
+/** Markdown 本文から description 用のプレーンテキスト断片を作る（コードブロック・記号を落とす）。 */
+function plainSnippet(markdown: string, max = 280): string {
+  const text = markdown
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/[#>*_~`[\]()|-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return text.length > max ? `${text.slice(0, max).trimEnd()}…` : text;
+}
+
+export function changelogLd(input: {
+  siteUrl: URL;
+  pathname: string;
+  locale: Locale;
+  releases: ChangelogRelease[];
+}): JsonLdNode {
+  const lang = input.locale === "en" ? "en" : "ja";
+  const pageUrl = absolute(input.siteUrl, input.pathname);
+  return {
+    "@type": "CollectionPage",
+    url: pageUrl,
+    mainEntityOfPage: pageUrl,
+    inLanguage: lang,
+    isPartOf: { "@id": ORGANIZATION_ID },
+    hasPart: input.releases.map((release) => {
+      const description = plainSnippet(release.body ?? "");
+      return {
+        "@type": "Article",
+        name: release.name || release.tagName,
+        datePublished: release.publishedAt,
+        url: release.url,
+        inLanguage: lang,
+        ...(description ? { description } : {}),
+      };
+    }),
+  };
+}
+
 export function graphLd(nodes: JsonLdNode[]): string {
   return JSON.stringify({
     "@context": "https://schema.org",
