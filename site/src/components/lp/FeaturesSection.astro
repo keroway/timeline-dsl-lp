@@ -30,7 +30,7 @@ const features = getFeatures(locale);
     {features.map((feature) => (
       <article class="feature">
         <p class="feature-kicker">{feature.kicker}</p>
-        <div class="feature-figure" aria-hidden="true">
+        <div class="feature-figure" aria-hidden="true" inert>
           {feature.visual.type === "author" && (
             <div class="feature-code">
               <div class="feature-figure-bar">
