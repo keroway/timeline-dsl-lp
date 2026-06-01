@@ -51,7 +51,7 @@ lane 色のバー（`.span-block` / `.mini-span` / `.usecase-bar`）に乗る前
 
 ### Dark mode
 
-`@media (prefers-color-scheme: dark)` で以下を上書きします。lane パレットは light と共通です。
+`@media (prefers-color-scheme: dark)` で以下を上書きします。lane パレットも dark 背景（`#111920`）向けに再定義します（light 値の流用ではコントラスト・色相整合が崩れるため）。
 
 | Token | Value |
 | --- | --- |
@@ -62,6 +62,15 @@ lane 色のバー（`.span-block` / `.mini-span` / `.usecase-bar`）に乗る前
 | `--color-panel` | `#1a2434` |
 | `--color-accent` | `#1a9e96` |
 | `--color-accent-strong` | `#22c4bb` |
+
+dark base の lane パレットは、白前景（`--color-on-lane` `#ffffff`）に対し AA（4.5:1）以上、かつ暗背景でバーが視認できる輝度（vs `#111920` ≥ 3:1）を満たす値へ調整します。warm=起点 / gold=周年 / plum=人物 / sky=外部要因 の色相は維持します。
+
+| Token | Value | 白前景に対する比 | 背景 `#111920` に対する比 |
+| --- | --- | --- | --- |
+| `--color-warm` | `#b8501c` | 5.00:1 | 3.55:1 |
+| `--color-gold` | `#9a6a12` | 4.73:1 | 3.75:1 |
+| `--color-plum` | `#915581` | 5.50:1 | 3.23:1 |
+| `--color-sky` | `#2f7bb0` | 4.58:1 | 3.87:1 |
 
 ### High-contrast variant
 
@@ -80,7 +89,16 @@ lane 色のバー（`.span-block` / `.mini-span` / `.usecase-bar`）に乗る前
 
 `--color-gold`（5.85:1）は AAA 未達・AA 充足の **既存値**であり、今回の同色衝突解消の対象外です。AAA への引き上げ可否は #210 の後続 sub-issue で検討します。
 
-dark の `@media (prefers-color-scheme: dark)` 下の high-contrast ブロックは lane を再宣言していないため、`--color-sky` は上表の light HC 値 `#00557a` を継承して黒背景に乗ります（黒に対し 2.58:1 = AA 未達。旧 `#000080` の 1.31:1 からは改善するが最適ではない）。lane の dark high-contrast 値は #210 の後続 sub-issue で再定義して確定します。
+dark の `@media (prefers-color-scheme: dark)` 下の high-contrast ブロックでも lane パレットを再宣言します（**解消済み**）。light HC 値（warm `#800000` 等）は黒背景（`#000000`）で沈むため流用せず、黒背景でバーが視認でき（vs 黒 ≥ 3:1）かつ白前景で AA 以上を満たす値へ置換します。warm=起点 / gold=周年 / plum=人物 / sky=外部要因 の色相は維持します。
+
+| Token | Value | 白前景に対する比 | 背景 `#000000` に対する比 |
+| --- | --- | --- | --- |
+| `--color-warm` | `#c0461a` | 5.08:1 | 4.13:1 |
+| `--color-gold` | `#8f6410` | 5.25:1 | 4.00:1 |
+| `--color-plum` | `#8a4f76` | 6.07:1 | 3.46:1 |
+| `--color-sky` | `#2f78ac` | 4.77:1 | 4.40:1 |
+
+白前景 AAA（7:1）と vs 黒 3:1 は輝度帯が重ならず両立しないため、白前景は AA（4.5:1）以上を確保しつつ、バー可視性（vs 黒）を優先します。
 
 ### Terminal surface
 
@@ -132,16 +150,16 @@ ok / warn / error は HC で輝度が近接するため、**色相（緑 / 黄 /
 
 ### Status colors（playground）
 
-playground のステータス文字（`[data-playground-state="..."] .playground-status`）は `--color-bg` 上に乗る **テーマ依存** の前景です。ready は `--color-accent-strong`、error は `--color-warm` を再利用しますが、warn は gold 系のテキストが必要で、`--color-gold`（light `#d69a24`）は白背景で約 2:1 とテキスト不適のため専用トークン `--color-status-warn` を持ちます。warn / ready / error は色相（amber / teal / 赤橙）で区別します。
+playground のステータス文字（`[data-playground-state="..."] .playground-status`）は `--color-bg` 上に乗る **テーマ依存** の前景です。ready は `--color-accent-strong` を再利用し、warn / error は専用トークン（`--color-status-warn` / `--color-status-error`）を持ちます。`--color-gold`（light `#d69a24`）は白背景で約 2:1、`--color-warm`（light `#a74718`）は dark 背景で約 3:1 とそれぞれテキスト不適のためトークン化しています。warn / ready / error は色相（amber / teal / 赤橙）で区別します。
 
-| テーマ | `--color-status-warn` | 背景に対するコントラスト比 |
+| テーマ | `--color-status-warn` | `--color-status-error` |
 | --- | --- | --- |
-| light | `#845d0c` | 白 `#ffffff` に対し 5.90:1（AA） |
-| dark | `#e6c46e` | `#111920` に対し 10.55:1（AAA） |
-| light HC | `#5c4500` | 白 `#ffffff` に対し 9.11:1（AAA） |
-| dark HC | `#ffd24a` | 黒 `#000000` に対し 14.57:1（AAA）。`--color-terminal-warn` HC と意図的に同値 |
+| light | `#845d0c`（白に 5.90:1 / AA） | `#c62828`（白に 5.62:1 / AA） |
+| dark | `#e6c46e`（`#111920` に 10.55:1 / AAA） | `#ff8a78`（`#111920` に 7.74:1 / AAA） |
+| light HC | `#5c4500`（白に 9.11:1 / AAA） | `#960000`（白に 9.14:1 / AAA） |
+| dark HC | `#ffd24a`（黒に 14.57:1 / AAA）。terminal-warn HC と同値 | `#ff8a75`（黒に 9.14:1 / AAA）。terminal-error HC と同値 |
 
-**既知の未達（error の dark 適応）**: error は `--color-warm` を再利用しますが暗背景向けに再宣言されないため、dark base では `:root` の `#a74718` が `#111920` に乗り 3.01:1（AA 未達）、dark HC では light HC 値 `#800000` が黒に乗りさらに低くなります。warn を dark で明色化（10.55:1）したことで warn > error の輝度逆転が生じますが、両者は色相（amber vs 赤橙）で区別可能です。error の dark 適応（`--color-status-error` のトークン化）は本 issue（warn 直値のみ）のスコープ外で、後続 issue で扱います。
+**error の dark 適応（解消済み）**: 従来 error は `--color-warm` を再利用しており、dark base では `#a74718` が `#111920` 上で 3.01:1（AA 未達）でした。専用トークン `--color-status-error` を 4 系統で定義して解消しています。warn を dark で明色化したことで warn > error の輝度逆転が残りますが、両者は色相（amber vs 赤橙）で区別可能です。
 
 ### 使用ルール
 

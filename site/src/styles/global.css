@@ -19,6 +19,10 @@
   /* playground の warn ステータス文字。gold は light 値が白背景でテキスト不適（約2:1）のため
      専用トークン化する。warn サーフェス（--color-bg）はテーマ依存なので 4 ブロックで定義する */
   --color-status-warn: #845d0c;
+  /* playground の error ステータス文字。従来 --color-warm を流用していたが dark 背景で AA 未達
+     （約3:1）のため専用トークン化する（DESIGN.md §2）。warn 同様サーフェス（--color-bg）依存で
+     4 ブロックで定義する。light は白背景で AA (5.62:1)、warn(amber)/ready(teal) と色相で区別 */
+  --color-status-error: #c62828;
   /* Terminal surface (DESIGN.md §2) — 意図的に dark。ページテーマ非依存で
      light / dark とも同一見た目のため :root に 1 度だけ定義する。HC のみ
      下の high-contrast ブロックで上書きする。dot は lane ではなくウィンドウ信号色 */
@@ -90,6 +94,8 @@
   --color-sky: #00557a;
   /* warn 文字は白背景で AAA (9.11:1)。on-lane は白固定のため HC でも override 不要 */
   --color-status-warn: #5c4500;
+  /* error 文字は白背景で AAA (9.14:1)。warn(amber)/ready(青) と色相で区別 */
+  --color-status-error: #960000;
   /* Terminal は HC でも意図的に dark を維持。near-black (#000) 上で全色 AAA (7:1+) */
   --color-terminal-bg: #000000;
   --color-terminal-ink: #ffffff;
@@ -128,6 +134,15 @@
     --color-accent-strong: #22c4bb;
     /* dark base での warn 文字。暗背景 (#111920) 上で明 amber に上げ AA 以上 (10.55:1) */
     --color-status-warn: #e6c46e;
+    /* dark base での error 文字。暗背景 (#111920) 上で明 red に上げ AA 以上 (7.74:1) */
+    --color-status-error: #ff8a78;
+    /* lane パレット（DESIGN.md §2）。dark 背景では light 値を流用せず、白前景 (--color-on-lane)
+       に対し AA 以上、かつ暗背景でバーが視認できる輝度へ調整する。warm=起点 / gold=周年 /
+       plum=人物 / sky=外部要因 の色相は維持。白文字: warm 5.0 / gold 4.7 / plum 5.5 / sky 4.6 */
+    --color-warm: #b8501c;
+    --color-gold: #9a6a12;
+    --color-plum: #915581;
+    --color-sky: #2f7bb0;
   }
 
   :root[data-a11y-contrast="high"] {
@@ -140,6 +155,15 @@
     --color-accent-strong: #80ffff;
     /* warn 文字は黒背景で AAA (14.57:1)。terminal-warn HC と意図的に同値 */
     --color-status-warn: #ffd24a;
+    /* error 文字は黒背景で AAA (9.14:1)。terminal-error HC と同値で統一 */
+    --color-status-error: #ff8a75;
+    /* dark HC の lane パレット（DESIGN.md §2）。黒背景 (#000) でバーが視認でき (vs 黒 >= 3:1)、
+       かつ白前景 (--color-on-lane) で AA 以上を満たす値。light HC (warm #800000 等) は黒背景で
+       沈むため流用しない。白文字: warm 5.1 / gold 5.3 / plum 6.1 / sky 4.8、vs 黒: 4.1 / 4.0 / 3.5 / 4.4 */
+    --color-warm: #c0461a;
+    --color-gold: #8f6410;
+    --color-plum: #8a4f76;
+    --color-sky: #2f78ac;
     /* Terminal HC: dark ページと黒背景を共有するが、light HC と同値で統一する */
     --color-terminal-bg: #000000;
     --color-terminal-ink: #ffffff;
