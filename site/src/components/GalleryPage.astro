@@ -123,8 +123,32 @@ const msgs = {
     }
   };
 
-  for (const sample of samplesData) {
-    await renderSample(sample);
+  // ビューポート内（および近傍）に入ったサンプルだけ遅延描画する。第一スクリーン外の
+  // 即時描画と 479KB WASM の即時ロードを避け、LCP / INP を改善する。WASM は
+  // renderTdslSvg → loadTdslWasm() の singleton キャッシュで初回描画時に 1 度だけロードされる。
+  if ("IntersectionObserver" in window) {
+    const samplesById = new Map(samplesData.map((s) => [s.id, s]));
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          obs.unobserve(entry.target);
+          const id = entry.target.getAttribute("data-gallery-preview");
+          const sample = id ? samplesById.get(id) : undefined;
+          if (sample) renderSample(sample);
+        }
+      },
+      { rootMargin: "200px 0px" },
+    );
+    for (const sample of samplesData) {
+      const el = document.querySelector(`[data-gallery-preview="${sample.id}"]`);
+      if (el) observer.observe(el);
+    }
+  } else {
+    // IntersectionObserver 非対応環境では従来どおり全サンプルを順次描画する。
+    for (const sample of samplesData) {
+      await renderSample(sample);
+    }
   }
 </script>
 
