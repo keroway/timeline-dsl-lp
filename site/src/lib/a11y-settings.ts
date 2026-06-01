@@ -120,10 +120,16 @@ export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): vo
     if (textSizeInput) textSizeInput.value = settings.textSize;
   }
 
-  function getFirstFocusable(): HTMLElement | null {
-    return menu!.querySelector<HTMLElement>(
-      'input:not([disabled]), select:not([disabled]), button:not([disabled])'
+  function getFocusableElements(): HTMLElement[] {
+    return Array.from(
+      menu!.querySelectorAll<HTMLElement>(
+        'input:not([disabled]), select:not([disabled]), button:not([disabled])'
+      )
     );
+  }
+
+  function getFirstFocusable(): HTMLElement | null {
+    return getFocusableElements()[0] ?? null;
   }
 
   function closeMenu(restoreFocus = true) {
@@ -152,6 +158,26 @@ export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): vo
     if (e.key === "Escape") {
       e.stopPropagation();
       closeMenu();
+      return;
+    }
+    // Focus trap (WCAG 2.1.2): Tab/Shift+Tab loop within the open menu. Trapping keeps
+    // focus inside, so the focusout handler below only ever sees an in-menu activeElement
+    // for keyboard navigation and never closes the menu mid-cycle.
+    if (e.key === "Tab") {
+      const focusables = getFocusableElements();
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || !menu.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }
   });
 
