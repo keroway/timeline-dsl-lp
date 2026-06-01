@@ -61,6 +61,32 @@ tdsl render sample.tdsl \
 
 `--theme` accepts `default`, `dark`, `print`, or `pastel`. To inject additional CSS, use `--custom-css path/to/custom.css`.
 
+## Choosing an Output Format
+
+`tdsl render` can output HTML / SVG / PNG / PDF, switched via `--format`. Choose based on your use case.
+
+| Format | Option | Characteristics | Typical use |
+| --- | --- | --- | --- |
+| HTML | (default) | Standalone HTML | Web display, browser preview |
+| SVG | `--format svg` | Vector / scalable | Web embedding, articles |
+| PNG | `--format png` | Raster (v1.10.0+) | Social sharing, previews |
+| PDF | `--format pdf` | Vector (v1.11.0+) | Print, high-resolution display |
+
+PNG is a raster image, so you can adjust its resolution. Use `--dpi <N>` (default 96) to scale from SVG user units by `dpi / 96`, or `--png-scale <factor>` to specify the multiplier directly. The two cannot be combined (v1.11.0+).
+
+```sh
+tdsl render sample.tdsl --format png --dpi 192 --output sample.png
+tdsl render sample.tdsl --format png --png-scale 2.0 --output sample.png
+```
+
+PDF is emitted as a vector format, so it does not degrade when printed or displayed at high resolution (v1.11.0+).
+
+```sh
+tdsl render sample.tdsl --format pdf --output sample.pdf
+```
+
+See `render` in [Commands](/en/docs/commands/) for details on each option.
+
 ## Lint
 
 `tdsl lint` supports `text` and `json` output formats.
