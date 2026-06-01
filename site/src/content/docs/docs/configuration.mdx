@@ -61,6 +61,32 @@ tdsl render sample.tdsl \
 
 `--theme` は `default`、`dark`、`print`、`pastel` を指定できます。追加CSSを注入する場合は `--custom-css path/to/custom.css` を使います。
 
+## 出力形式の選択
+
+`tdsl render` は HTML / SVG / PNG / PDF を出力できます。`--format` で切り替え、用途に応じて使い分けます。
+
+| 形式 | オプション | 特徴 | 主な用途 |
+| --- | --- | --- | --- |
+| HTML | （デフォルト） | スタンドアロン HTML | Web 表示・ブラウザ確認 |
+| SVG | `--format svg` | ベクタ / スケーラブル | Web 埋め込み・記事 |
+| PNG | `--format png` | ラスタ（v1.10.0〜） | SNS 共有・プレビュー |
+| PDF | `--format pdf` | ベクタ（v1.11.0〜） | 印刷・高解像度表示 |
+
+PNG はラスタ画像のため解像度を調整できます。`--dpi <N>`（デフォルト 96）で SVG ユーザー単位からの倍率を `dpi / 96` で決めるか、`--png-scale <倍率>` で倍率を直接指定します。両者は同時に指定できません（v1.11.0〜）。
+
+```sh
+tdsl render sample.tdsl --format png --dpi 192 --output sample.png
+tdsl render sample.tdsl --format png --png-scale 2.0 --output sample.png
+```
+
+PDF はベクタ形式で出力するため、印刷や高解像度表示でも劣化しません（v1.11.0〜）。
+
+```sh
+tdsl render sample.tdsl --format pdf --output sample.pdf
+```
+
+各オプションの詳細は [Commands](/docs/commands/) の `render` を参照してください。
+
 ## Lint
 
 `tdsl lint` は `text` と `json` の出力形式に対応します。
