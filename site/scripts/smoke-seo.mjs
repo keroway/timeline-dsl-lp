@@ -54,6 +54,8 @@ async function smokeSeo(rootUrl) {
     { path: "/en/showcase/natsume-soseki/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'] },
     { path: "/docs/", required: ['"@type":"Organization"', '"@type":"BreadcrumbList"'] },
     { path: "/en/docs/", required: ['"@type":"Organization"', '"@type":"BreadcrumbList"'] },
+    { path: "/changelog/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"CollectionPage"', '"@type":"Article"'] },
+    { path: "/en/changelog/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"CollectionPage"', '"@type":"Article"'] },
   ];
   for (const { path, required } of jsonLdTargets) {
     const res = await get(`${rootUrl}${path}`);
