@@ -27,7 +27,9 @@ const darkTheme = EditorView.theme(
     },
     ".cm-gutters": {
       background: "#0e1520",
-      color: "#4e6a80",
+      // 行番号は WCAG 2.1 AA のコントラスト比 4.5:1 を満たす必要がある。
+      // #6f8ea3 on #0e1520 ≈ 5.4:1（旧 #4e6a80 は約 3.3:1 で未達だった）。
+      color: "#6f8ea3",
       border: "none",
       borderRight: "1px solid #1e2d3d",
     },

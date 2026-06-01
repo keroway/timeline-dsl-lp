@@ -24,9 +24,10 @@ pnpm fetch:releases             # GitHub releases を site/src/data/ に取得
 pnpm smoke:wasm                 # WASM 単体 smoke テスト
 pnpm smoke:playground           # Playground の HTTP smoke テスト
 pnpm smoke:playground:browser   # Playwright ブラウザ smoke テスト
+pnpm smoke:a11y                 # 主要ページの WCAG 2.1 AA 自動監査（axe-core, 要 Chromium）
 ```
 
-`pnpm smoke:playground:browser` を初回実行する前に、Chromium バイナリの取得が必要:
+`pnpm smoke:playground:browser` / `pnpm smoke:a11y` を初回実行する前に、Chromium バイナリの取得が必要:
 
 ```sh
 pnpm exec playwright install chromium

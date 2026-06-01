@@ -38,6 +38,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
+      - name: Install Playwright Chromium (for a11y smoke)
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Start preview server
         run: pnpm preview &
 
@@ -67,3 +70,8 @@ jobs:
         run: pnpm smoke:playground
         env:
           PLAYGROUND_BASE_URL: http://127.0.0.1:4321
+
+      - name: smoke:a11y
+        run: pnpm smoke:a11y
+        env:
+          A11Y_BASE_URL: http://127.0.0.1:4321
