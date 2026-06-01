@@ -7,10 +7,15 @@ import {
   normalizeBaseUrl,
   parseArgs,
 } from "./lib/smoke-helpers.mjs";
+import { ja } from "../src/i18n/ja.ts";
+import { en } from "../src/i18n/en.ts";
 
 const args = parseArgs(process.argv.slice(2), { booleanFlags: ["browser"] });
 const baseUrl = normalizeBaseUrl(args.baseUrl ?? process.env.I18N_BASE_URL ?? DEFAULT_BASE_URL);
 const runBrowserSmoke = args.browser || process.env.I18N_BROWSER_SMOKE === "1";
+
+// Static (HTTP-independent) check first: ja / en dictionaries must share the same key set.
+smokeDictionaryParity();
 
 await smokeHttpSurface(baseUrl);
 
@@ -18,6 +23,41 @@ if (runBrowserSmoke) {
   await smokeBrowserFlow(baseUrl);
 } else {
   console.log("Browser flow skipped. Add --browser to check language toggle behavior.");
+}
+
+function collectKeyPaths(obj, prefix, out) {
+  for (const [key, value] of Object.entries(obj)) {
+    const path = prefix ? `${prefix}.${key}` : key;
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      collectKeyPaths(value, path, out);
+    } else {
+      out.add(path);
+    }
+  }
+}
+
+function smokeDictionaryParity() {
+  const jaKeys = new Set();
+  const enKeys = new Set();
+  collectKeyPaths(ja, "", jaKeys);
+  collectKeyPaths(en, "", enKeys);
+
+  const missingInEn = [...jaKeys].filter((key) => !enKeys.has(key)).sort();
+  const missingInJa = [...enKeys].filter((key) => !jaKeys.has(key)).sort();
+
+  if (missingInEn.length || missingInJa.length) {
+    if (missingInEn.length) {
+      console.error(`i18n parity: ${missingInEn.length} key(s) in ja.ts missing from en.ts:`);
+      for (const key of missingInEn) console.error(`  - ${key}`);
+    }
+    if (missingInJa.length) {
+      console.error(`i18n parity: ${missingInJa.length} key(s) in en.ts missing from ja.ts:`);
+      for (const key of missingInJa) console.error(`  - ${key}`);
+    }
+    throw new Error("i18n dictionary key parity check failed (ja.ts / en.ts diverged).");
+  }
+
+  console.log(`i18n parity: ja.ts / en.ts share all ${jaKeys.size} keys. ✓`);
 }
 
 async function smokeHttpSurface(rootUrl) {
