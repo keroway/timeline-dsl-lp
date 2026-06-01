@@ -262,6 +262,23 @@ map wd.items to span {
 
 既存の単項式（`start claim(P571).year`）と完全互換です。複数のプロパティから最初の有効値を取り出したいときに使います。
 
+## map の整数オフセット演算（`+` / `-`）
+
+`map` ブロックの時間値式（`start` / `end` / `time`）では、claim 由来の年に整数を加算・減算できます（v1.11.0〜）。アクセサ（`.year` など）の直後に `+N` / `-N` を書きます。
+
+```tdsl
+map wd.people to span {
+    lane people;
+    start claim(P569).year +1;   // 誕生年 + 1
+    end   claim(P570).year -5;   // 没年 − 5
+    label label@ja ?? label@en;
+}
+```
+
+- オフセットは claim 解決後の**年**に対して適用されます。負数は `-N`、`+0` も有効です。
+- `??`（フォールバック）と組み合わせられます。オフセットは各 claim 項ごとに付きます: `start claim(P580).year ?? claim(P571).year +1;`。
+- `decompile` / `inspect` の出力や Playground の Format でも `+ N` / `- N` 形式で再現されます。
+
 ## 次に進む
 
 - [Quick Start](/docs/quick-start/) で保存、検証、描画の流れを確認する

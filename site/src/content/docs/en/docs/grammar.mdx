@@ -262,6 +262,23 @@ map wd.items to span {
 
 Fully compatible with existing single-expression forms (e.g., `start claim(P571).year`). Use this when you want to extract the first valid value from multiple properties.
 
+## Integer Offset Operators (`+` / `-`) in map
+
+In a `map` block's time-value expressions (`start` / `end` / `time`), you can add or subtract an integer from a claim-derived year (v1.11.0+). Write `+N` / `-N` immediately after the accessor (e.g. `.year`).
+
+```tdsl
+map wd.people to span {
+    lane people;
+    start claim(P569).year +1;   // birth year + 1
+    end   claim(P570).year -5;   // death year − 5
+    label label@ja ?? label@en;
+}
+```
+
+- The offset is applied to the **year** after the claim is resolved. Negatives are written `-N`, and `+0` is valid.
+- It composes with `??` (fallback); the offset attaches to each claim term: `start claim(P580).year ?? claim(P571).year +1;`.
+- `decompile` / `inspect` output and the Playground Format reproduce it as `+ N` / `- N`.
+
 ## What's Next
 
 - [Quick Start](/en/docs/quick-start/) — Learn the save, validate, and render workflow
