@@ -159,7 +159,7 @@ playground のステータス文字（`[data-playground-state="..."] .playground
 | light HC | `#5c4500`（白に 9.11:1 / AAA） | `#960000`（白に 9.14:1 / AAA） |
 | dark HC | `#ffd24a`（黒に 14.57:1 / AAA）。terminal-warn HC と同値 | `#ff8a75`（黒に 9.14:1 / AAA）。terminal-error HC と同値 |
 
-**error の dark 適応（解消済み）**: 従来 error は `--color-warm` を再利用しており、dark base では `#a74718` が `#111920` 上で 3.01:1（AA 未達）でした。専用トークン `--color-status-error` を 4 系統で定義して解消しています。warn を dark で明色化したことで warn > error の輝度逆転が残りますが、両者は色相（amber vs 赤橙）で区別可能です。
+**error の dark 適応（解消済み）**: 従来 error は `--color-warm` を再利用しており、dark base では `#a74718` が `#111920` 上で 3.01:1（AA 未達）でした。専用トークン `--color-status-error` を 4 系統で定義して解消しています。warn を dark で明色化したことで warn > error の輝度逆転が残りますが、これは可読性優先の**意図的なトレードオフ**で、両者は色相（amber vs 赤橙）で区別可能です。
 
 ### 使用ルール
 

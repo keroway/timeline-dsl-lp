@@ -159,7 +159,7 @@
     --color-status-error: #ff8a75;
     /* dark HC の lane パレット（DESIGN.md §2）。黒背景 (#000) でバーが視認でき (vs 黒 >= 3:1)、
        かつ白前景 (--color-on-lane) で AA 以上を満たす値。light HC (warm #800000 等) は黒背景で
-       沈むため流用しない。白文字: warm 5.1 / gold 5.3 / plum 6.1 / sky 4.8、vs 黒: 4.1 / 4.0 / 3.5 / 4.4 */
+       沈むため流用しない。白文字: warm 5.1 / gold 5.3 / plum 6.1 / sky 4.8、vs 黒: 4.13 / 4.00 / 3.46 / 4.40 */
     --color-warm: #c0461a;
     --color-gold: #8f6410;
     --color-plum: #8a4f76;
