@@ -54,8 +54,8 @@
 }
 
 [data-playground-state="error"] .playground-status {
-  border-left-color: var(--color-warm);
-  color: var(--color-warm);
+  border-left-color: var(--color-status-error);
+  color: var(--color-status-error);
 }
 
 .playground-toolbar {
@@ -366,7 +366,7 @@
 }
 
 .playground-diagnostic.error {
-  border-left-color: var(--color-warm);
+  border-left-color: var(--color-status-error);
 }
 
 .playground-diagnostic.warning {
@@ -379,7 +379,7 @@
 }
 
 .playground-diagnostic.error span {
-  color: var(--color-warm);
+  color: var(--color-status-error);
 }
 
 .playground-diagnostic.warning span {
@@ -426,7 +426,7 @@
 
 @keyframes pg-flash-error {
   from {
-    background: color-mix(in srgb, var(--color-warm), transparent 65%);
+    background: color-mix(in srgb, var(--color-status-error), transparent 65%);
   }
 
   to {
