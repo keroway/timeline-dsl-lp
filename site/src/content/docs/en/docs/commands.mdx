@@ -98,7 +98,9 @@ Starts the Timeline DSL language server (LSP) over stdio (v1.11.0+). Once connec
 tdsl lsp
 ```
 
-`tdsl lsp` takes no arguments and speaks the LSP JSON-RPC protocol over standard input/output. See [Installation](/en/docs/installation/#language-server-lsp) for editor configuration and the list of supported features.
+Code actions (quick fixes) auto-fix with the same output as `tdsl lint --fix`. Only fixable lint issues (`start_gt_end` / `invalid_tags` / `missing_id`) are covered, and applying a fix loses comments.
+
+`tdsl lsp` takes no arguments and speaks the LSP JSON-RPC protocol over standard input/output. See [Installation](/en/docs/installation/#language-server-lsp) for editor configuration (Neovim / Helix / VS Code), how each feature behaves, and the fixable / non-fixable lint details.
 
 ## Starting from Wikidata
 

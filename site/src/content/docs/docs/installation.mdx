@@ -86,4 +86,41 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 ```
 
+Helix の場合は `languages.toml` に登録します。
+
+```toml
+# ~/.config/helix/languages.toml
+[language-server.tdsl-lsp]
+command = "tdsl"
+args = ["lsp"]
+
+[[language]]
+name = "tdsl"
+scope = "source.tdsl"
+file-types = ["tdsl"]
+language-servers = ["tdsl-lsp"]
+```
+
+VS Code には `.tdsl` 専用の LSP クライアントは無いため、汎用 LSP クライアント拡張から「言語 ID `tdsl` / コマンド `tdsl lsp` / stdio」として登録します。構文ハイライトとスニペットを提供する VS Code 拡張とは独立して動くため、両方を同時に有効化できます。
+
+### 各機能の使い方
+
+- **診断 / 補完 / ホバー / 定義ジャンプ**: 編集中に構文・意味エラーがリアルタイム表示され、DSL キーワードの補完、lane ID / QID のホバー、lane 参照から宣言へのジャンプが使えます。
+- **参照検索（References）**: lane の宣言または参照箇所にカーソルを置くと、その lane ID の全参照（`lane` 宣言・`span` / `event` / `event_range` の `lane` 指定・`map` の `lane` プロパティ）が一覧されます。
+- **リネーム（Rename）**: lane ID 上でリネームすると宣言と全参照が一括置換されます。lane ID 以外（キーワードや文字列リテラル）の上ではリネームできません。
+- **ドキュメントシンボル（Document Symbol）**: `timeline` > `lane` > 項目（`span` / `event` / `event_range`）の階層でアウトラインを返します。
+
+すべての機能はソーステキストの静的解析で動き、ネットワーク I/O は不要（offline）です。
+
+### コードアクションと fixable / non-fixable lint
+
+コードアクションは `tdsl lint --fix` 相当の自動修正を quick fix として提示します。lint には自動修正できるものとできないものがあります。
+
+| 種別        | 対象 lint                                       | コードアクション                                    |
+| ----------- | ----------------------------------------------- | --------------------------------------------------- |
+| fixable     | `start_gt_end` / `invalid_tags` / `missing_id`  | quick fix「自動修正可能な lint をすべて修正」を提示 |
+| non-fixable | `unknown_lane` / `duplicate_id` / `empty_label` | quick fix は出ない（手で修正する）                  |
+
+fixable な issue が 1 件も無い場合、quick fix は表示されません。適用すると `tdsl lint --fix` と**同一の emitter** でドキュメント全文が整形・置換されるため、ソース中の**コメントは失われます**（全文再 emit 方式のため）。出力は `tdsl lint --fix` と一致します。
+
 `tdsl lsp` の概要は [Commands](/docs/commands/#lsp) も参照してください。
