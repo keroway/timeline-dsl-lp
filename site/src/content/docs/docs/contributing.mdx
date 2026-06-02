@@ -7,11 +7,42 @@ description: Timeline DSL とこのドキュメントサイトを開発する人
 
 `.tdsl` ファイルを作成・検証・レンダリングするだけの場合は、[インストール](/docs/installation/) と [Quick Start](/docs/quick-start/) から読み進めてください。
 
-## このセクションに置く内容
+## ローカルセットアップ
 
-- このドキュメントサイトのデプロイと Preview 確認
-- pull request 作成時の確認手順
-- リポジトリの開発・運用に関する補足
+このサイトは Astro + Starlight 製で、コマンドはすべて `site/` 配下で実行します。パッケージマネージャは pnpm、Node.js は 24 を使います。
+
+```sh
+cd site
+pnpm install --frozen-lockfile  # 依存をインストール
+pnpm dev                        # 開発サーバー（http://localhost:4321）
+```
+
+## smoke の実行
+
+変更を push する前に、対応する smoke でリグレッションを確認します。
+
+| コマンド                | 用途                                                            |
+| ----------------------- | --------------------------------------------------------------- |
+| `pnpm build`            | `smoke:wasm` → `astro check` → `astro build`。CI が見る最低条件 |
+| `pnpm smoke:wasm`       | WASM バインディングの単体 smoke                                 |
+| `pnpm smoke:playground` | Playground の HTTP smoke                                        |
+| `pnpm smoke:i18n`       | ja / en ペアと hreflang の整合                                  |
+| `pnpm smoke:seo`        | title / meta / OGP / JSON-LD の検証                             |
+
+UI を変更したときは、ブラウザ smoke（`pnpm smoke:playground:browser`）もローカルで一度通してください（CI では走りません）。初回は `pnpm exec playwright install chromium` が必要です。
+
+## pull request の規約
+
+- コミットは [Conventional Commits](https://www.conventionalcommits.org/) 形式（`feat:` / `fix:` / `docs:` など）で書きます。
+- PR 本文に対応 issue を `Closes #N` で必ず紐付け、PR タイトルは 70 文字以内に収めます。
+- 変更が複数の責務に跨る場合は PR を分けます（1 PR = 1 論理的変更）。
+- main への force push は禁止です（CI 履歴と Cloudflare Pages のデプロイ履歴が壊れます）。
+- マージ前に Cloudflare Pages の preview デプロイが Green であることを確認します。
+
+## i18n ペアとデザイントークン
+
+- `ja` のドキュメントを編集したら、対応する `en` のページも同じ PR の中で更新します。日本語ページに英語タイトルを残さないでください。
+- 新しい色を直書きせず、`site/src/styles/global.css` の `--color-*` トークンを使います。新色が必要な場合は light / dark / high-contrast の 3 セットを同時に追加します。
 
 ## 関連ページ
 
