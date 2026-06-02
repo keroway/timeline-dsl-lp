@@ -1,5 +1,5 @@
 ---
-import { getT, type Locale } from "../../i18n/index";
+import { getT, type Locale, type DictionaryKeys } from "../../i18n/index";
 import GalleryCard from "./GalleryCard.astro";
 
 interface Props {
@@ -15,6 +15,14 @@ interface Props {
 
 const { samples, locale } = Astro.props;
 const t = getT(locale);
+
+// 全サンプルのタグを出現順・重複排除で集約し、filter チップの並びにする
+const allTags: string[] = [];
+for (const sample of samples) {
+  for (const tag of sample.tags) {
+    if (!allTags.includes(tag)) allTags.push(tag);
+  }
+}
 ---
 
 <section class="section gallery-section" aria-labelledby="gallery-heading">
@@ -22,6 +30,27 @@ const t = getT(locale);
     <h2 id="gallery-heading">{t("gallery.section.heading")}</h2>
     <p>{t("gallery.section.count").replace("{count}", String(samples.length))}</p>
   </div>
+
+  {/* filter bar は JS で hidden を外して有効化する。no-JS では非表示のまま全カードが見える */}
+  <div class="gallery-filter" role="group" aria-label={t("gallery.filter.aria_label")} hidden>
+    <span class="gallery-filter-label" aria-hidden="true">{t("gallery.filter.label")}</span>
+    <button type="button" class="gallery-filter-chip" data-filter-all aria-pressed="true">
+      {t("gallery.filter.all")}
+    </button>
+    {
+      allTags.map((tag) => (
+        <button
+          type="button"
+          class="gallery-filter-chip"
+          data-filter-tag={tag}
+          aria-pressed="false"
+        >
+          {t(`gallery.tag.${tag}` as DictionaryKeys)}
+        </button>
+      ))
+    }
+  </div>
+  <p class="gallery-filter-status" data-filter-status aria-live="polite" hidden></p>
 
   <div class="gallery-grid">
     {samples.map((sample) => <GalleryCard sample={sample} locale={locale} />)}
@@ -37,5 +66,68 @@ const t = getT(locale);
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr));
     gap: 2rem;
+  }
+
+  .gallery-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .gallery-filter-label {
+    margin-right: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+
+  .gallery-filter-chip {
+    padding: 0.3em 0.85em;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-bg);
+    color: var(--color-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition:
+      background 0.15s,
+      color 0.15s,
+      border-color 0.15s;
+  }
+
+  .gallery-filter-chip:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  /* 選択は背景色に加え font-weight でも示し、high-contrast でも色のみに依存しない */
+  .gallery-filter-chip[aria-pressed="true"] {
+    border-color: var(--color-accent-strong);
+    background: var(--color-accent);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .gallery-filter-chip:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .gallery-filter-status {
+    margin: 0 0 1rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-filter-chip {
+      transition: none;
+    }
+  }
+
+  :root[data-a11y-reduced-motion="true"] .gallery-filter-chip {
+    transition: none;
   }
 </style>
