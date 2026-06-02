@@ -86,4 +86,41 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 ```
 
+For Helix, register it in `languages.toml`.
+
+```toml
+# ~/.config/helix/languages.toml
+[language-server.tdsl-lsp]
+command = "tdsl"
+args = ["lsp"]
+
+[[language]]
+name = "tdsl"
+scope = "source.tdsl"
+file-types = ["tdsl"]
+language-servers = ["tdsl-lsp"]
+```
+
+VS Code has no dedicated `.tdsl` LSP client, so register it from a generic LSP client extension as "language ID `tdsl` / command `tdsl lsp` / stdio". It runs independently of the VS Code extension that provides syntax highlighting and snippets, so you can enable both at once.
+
+### How each feature behaves
+
+- **Diagnostics / completion / hover / goto-definition**: syntax and semantic errors show up in real time while editing, and you get DSL keyword completion, hover for lane IDs / QIDs, and jumps from a lane reference to its declaration.
+- **References**: place the cursor on a lane declaration or reference to list all references of that lane ID (`lane` declaration, the `lane` field of `span` / `event` / `event_range`, and the `lane` property of `map`).
+- **Rename**: renaming on a lane ID replaces the declaration and all references at once. Rename is rejected on anything other than a lane ID (keywords, string literals).
+- **Document Symbol**: returns an outline in the hierarchy `timeline` > `lane` > items (`span` / `event` / `event_range`).
+
+All features run on static analysis of the source text and need no network I/O (offline).
+
+### Code actions and fixable / non-fixable lint
+
+Code actions offer auto-fixes equivalent to `tdsl lint --fix` as quick fixes. Some lint issues are auto-fixable and some are not.
+
+| Kind        | Lint issues                                     | Code action                                             |
+| ----------- | ----------------------------------------------- | ------------------------------------------------------- |
+| fixable     | `start_gt_end` / `invalid_tags` / `missing_id`  | Offers the quick fix "fix all auto-fixable lint issues" |
+| non-fixable | `unknown_lane` / `duplicate_id` / `empty_label` | No quick fix (fix it by hand)                           |
+
+When there are no fixable issues, no quick fix is shown. Applying it reformats and replaces the entire document with the **same emitter** as `tdsl lint --fix`, so **comments in the source are lost** (it re-emits the whole document). The output matches `tdsl lint --fix`.
+
 See also [Commands](/en/docs/commands/#lsp) for an overview of `tdsl lsp`.
