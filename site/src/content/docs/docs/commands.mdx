@@ -98,7 +98,9 @@ Timeline DSL の言語サーバ（LSP）を stdio 経由で起動します（v1.
 tdsl lsp
 ```
 
-`tdsl lsp` は引数を取らず、標準入出力で LSP の JSON-RPC を話します。エディタ側の設定や対応機能の一覧は [インストール](/docs/installation/#言語サーバ-lsp) を参照してください。
+コードアクション（quick fix）は `tdsl lint --fix` と同一の出力で自動修正します。fixable な lint（`start_gt_end` / `invalid_tags` / `missing_id`）のみ対象で、適用するとコメントは失われます。
+
+`tdsl lsp` は引数を取らず、標準入出力で LSP の JSON-RPC を話します。エディタ側の設定（Neovim / Helix / VS Code）や各機能の使い方、fixable / non-fixable lint の詳細は [インストール](/docs/installation/#言語サーバ-lsp) を参照してください。
 
 ## Wikidata起点
 
