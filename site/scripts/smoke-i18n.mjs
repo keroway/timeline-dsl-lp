@@ -89,8 +89,62 @@ async function smokeHttpSurface(rootUrl) {
   assertStatus(enShowcaseRes, "/en/showcase/");
   assertContentType(enShowcaseRes, "/en/showcase/", ["text/html"]);
 
+  // Gallery pages: tag filter UI と locale 別タグラベルを検証する
+  const jaGalleryRes = await get(`${rootUrl}/gallery/`);
+  assertStatus(jaGalleryRes, "/gallery/");
+  assertContentType(jaGalleryRes, "/gallery/", ["text/html"]);
+  const jaGalleryHtml = await jaGalleryRes.text();
+  assertIncludes(jaGalleryHtml, 'role="group"', "/gallery/ must render the filter group");
+  assertIncludes(jaGalleryHtml, "data-filter-all", "/gallery/ must render the All filter chip");
+  assertIncludes(jaGalleryHtml, "data-filter-tag=", "/gallery/ must render tag filter chips");
+  assertIncludes(
+    jaGalleryHtml,
+    "data-tags=",
+    "/gallery/ cards must expose data-tags for filtering",
+  );
+  assertIncludes(
+    jaGalleryHtml,
+    "プロジェクト管理",
+    "/gallery/ must show localized (ja) tag labels",
+  );
+
+  const enGalleryRes = await get(`${rootUrl}/en/gallery/`);
+  assertStatus(enGalleryRes, "/en/gallery/");
+  assertContentType(enGalleryRes, "/en/gallery/", ["text/html"]);
+  const enGalleryHtml = await enGalleryRes.text();
+  assertIncludes(enGalleryHtml, "data-filter-tag=", "/en/gallery/ must render tag filter chips");
+  for (const enTag of ["History", "Project management", "Worldbuilding", "Biography"]) {
+    assertIncludes(
+      enGalleryHtml,
+      enTag,
+      `/en/gallery/ must show localized (en) tag label "${enTag}"`,
+    );
+  }
+  // Regression guard: en ページにタグラベルの日本語が漏れてはいけない。
+  // title / description / DSL source には現状日本語が残るため、それらに出現しない
+  // 「タグラベル固有の語」だけをネガティブ検査対象にする。
+  // 将来サンプル追加でこれらの語が title/description/source に混入すると誤検知するので、
+  // その際は検査語を見直すこと。
+  for (const jpTag of ["プロジェクト管理", "世界観", "伝記"]) {
+    assertExcludes(
+      enGalleryHtml,
+      jpTag,
+      `/en/gallery/ must not leak Japanese tag label "${jpTag}"`,
+    );
+  }
+
   console.log("HTTP smoke: / and /en/ both return 200 with correct lang attributes. ✓");
   console.log("HTTP smoke: /showcase/ and /en/showcase/ both return 200. ✓");
+  console.log(
+    "HTTP smoke: /gallery/ and /en/gallery/ expose tag filter UI with localized labels. ✓",
+  );
+}
+
+// helper の汎用アサーションにないネガティブ検査（このスクリプト固有）。
+function assertExcludes(value, unexpected, label) {
+  if (value.includes(unexpected)) {
+    throw new Error(`${label}. Expected NOT to find: ${unexpected}`);
+  }
 }
 
 async function smokeBrowserFlow(rootUrl) {
@@ -122,11 +176,52 @@ async function smokeBrowserFlow(rootUrl) {
       "/showcase/",
       "en showcase → ja showcase toggle",
     );
+
+    // Gallery のタグ filter トグル動作を検証する
+    await checkGalleryFilter(browser, rootUrl);
   } finally {
     await browser.close();
   }
 
   console.log("Browser smoke: language toggle navigation verified. ✓");
+  console.log("Browser smoke: gallery tag filter verified. ✓");
+}
+
+async function checkGalleryFilter(browser, rootUrl) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await page.goto(`${rootUrl}/gallery/`);
+
+  // filter bar は初期 hidden で、JS が有効化したときだけ表示される
+  await page.locator(".gallery-filter").waitFor({ state: "visible" });
+
+  const totalCards = await page.locator(".gallery-card").count();
+  const firstChip = page.locator("[data-filter-tag]").first();
+  const tagValue = await firstChip.getAttribute("data-filter-tag");
+  await firstChip.click();
+
+  if ((await firstChip.getAttribute("aria-pressed")) !== "true") {
+    throw new Error("gallery filter: clicked chip did not become aria-pressed=true");
+  }
+
+  const visibleAfter = await page.locator(".gallery-card:not([hidden])").count();
+  if (visibleAfter === 0 || visibleAfter >= totalCards) {
+    throw new Error(
+      `gallery filter: expected fewer visible cards after filtering by "${tagValue}", got ${visibleAfter}/${totalCards}`,
+    );
+  }
+
+  // 「すべて」で全件に戻る
+  await page.locator("[data-filter-all]").click();
+  const visibleReset = await page.locator(".gallery-card:not([hidden])").count();
+  if (visibleReset !== totalCards) {
+    throw new Error(
+      `gallery filter: All chip did not restore all cards (${visibleReset}/${totalCards})`,
+    );
+  }
+
+  await context.close();
 }
 
 async function checkLangToggle(browser, rootUrl, startPath, expectedPath, label) {
