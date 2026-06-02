@@ -20,6 +20,9 @@ onlyBuiltDependencies:
   # Astro / Vite が内部で使うバンドラ。
   # install スクリプトでプラットフォーム別バイナリの解決を検証する。
   - esbuild
+  # git pre-commit フックを .git/hooks/ にインストールする。
+  # postinstall で自動設定するが、prepare スクリプトでも手動再実行できる。
+  - simple-git-hooks
 
 # git:/http: など標準レジストリ以外を経由した間接依存をブロックする。
 blockExoticSubdeps: true

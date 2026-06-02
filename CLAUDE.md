@@ -21,6 +21,10 @@ pnpm dev                        # 開発サーバー（localhost:4321）
 pnpm build                      # smoke:wasm → astro check → astro build
 pnpm preview                    # ビルド成果物をローカルプレビュー
 pnpm fetch:releases             # GitHub releases を site/src/data/ に取得
+pnpm lint                       # ESLint（.astro/.ts/.mjs/.js）
+pnpm lint:fix                   # ESLint 自動修正
+pnpm format                     # Prettier で全ファイルを整形
+pnpm format:check               # Prettier フォーマットチェック（CI 用）
 pnpm smoke:wasm                 # WASM 単体 smoke テスト
 pnpm smoke:playground           # Playground の HTTP smoke テスト
 pnpm smoke:playground:browser   # Playwright ブラウザ smoke テスト
@@ -77,6 +81,22 @@ site/
 Playground / runnable docs は `site/src/lib/tdsl-wasm.ts` 経由で WASM を呼ぶ。
 バイナリは `site/public/wasm/` に vendoring 済み。更新時は本体リポジトリの
 `crates/tdsl-wasm` を `wasm-pack build --target web` し、生成物を `site/public/wasm/` に同期する。
+
+## Git hooks（pre-commit）
+
+`pnpm install` を実行すると `prepare` スクリプトが `simple-git-hooks` を初期化し、
+`.git/hooks/pre-commit` にローカルゲートを自動インストールする。
+
+| ステップ | 対象 | 内容 |
+|---------|------|------|
+| lint-staged | ステージ済み `.astro` / `.ts` / `.mjs` / `.mdx` / `.js` | Prettier フォーマット + ESLint 自動修正 |
+| astro check | `site/src/**` に変更がある場合 | 型チェック |
+
+フックの再インストールが必要な場合:
+
+```sh
+cd site && pnpm prepare
+```
 
 ## Deploy policy
 
