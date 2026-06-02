@@ -13,12 +13,12 @@ The Cloudflare Pages project is named `timeline-dsl`, with `main` as the product
 
 Configure the Cloudflare Pages Build settings as follows.
 
-| Setting | Value |
-| --- | --- |
-| Root directory | `site` |
-| Build command | `pnpm build` |
-| Build output directory | `dist` |
-| Deploy command | (no setting appears) |
+| Setting                | Value                |
+| ---------------------- | -------------------- |
+| Root directory         | `site`               |
+| Build command          | `pnpm build`         |
+| Build output directory | `dist`               |
+| Deploy command         | (no setting appears) |
 
 The Cloudflare Pages build image automatically runs dependency installation. You can include `pnpm install --frozen-lockfile && pnpm build` in the build command and the build will succeed, but since install would run twice, use `pnpm build` only.
 
@@ -26,12 +26,12 @@ If Deploy command is required, or if a deploy command for non-production branche
 
 ## Execution timing
 
-| Trigger | Purpose | Pages branch |
-| --- | --- | --- |
-| `pull_request` | Creates a preview deployment | PR branch |
-| `push` to `main` | Production publish | `main` |
-| `release.published` | Not used as a deploy trigger | - |
-| `workflow_dispatch` | Manually re-run GitHub Actions CI | - |
+| Trigger             | Purpose                           | Pages branch |
+| ------------------- | --------------------------------- | ------------ |
+| `pull_request`      | Creates a preview deployment      | PR branch    |
+| `push` to `main`    | Production publish                | `main`       |
+| `release.published` | Not used as a deploy trigger      | -            |
+| `workflow_dispatch` | Manually re-run GitHub Actions CI | -            |
 
 For pull requests, both the GitHub Actions `Site build` workflow and the Cloudflare Pages preview deployment run separately.
 
@@ -68,10 +68,10 @@ The browser smoke verifies the following.
 
 The Playground implementation maintains the following attributes for smoke testing.
 
-| Target | Selector |
-| --- | --- |
-| editor | `data-smoke="playground-editor"` |
-| preview container | `data-smoke="playground-preview"` |
+| Target                | Selector                              |
+| --------------------- | ------------------------------------- |
+| editor                | `data-smoke="playground-editor"`      |
+| preview container     | `data-smoke="playground-preview"`     |
 | diagnostics container | `data-smoke="playground-diagnostics"` |
 
 ## Error handling
@@ -118,16 +118,16 @@ From timeline-dsl v1.2.0 onwards, `tdsl-wasm-<version>.tar.gz` is attached to Gi
 
 When updating, verify the following files.
 
-| File | What to check |
-| --- | --- |
-| `src/lib/tdsl-wasm.ts` | import path, fallback message, public API names |
-| `public/wasm/tdsl_wasm.js` | wasm-bindgen JS glue |
-| `public/wasm/tdsl_wasm.d.ts` | TypeScript types |
-| `public/wasm/tdsl_wasm_bg.wasm` | WASM binary |
-| `public/wasm/tdsl_wasm_bg.wasm.d.ts` | WASM binary import types |
-| `public/wasm/package.json` | package metadata |
-| `scripts/smoke-tdsl-wasm.mjs` | export names called by Node smoke |
-| `scripts/smoke-playground.mjs` | asset paths and screen interactions for preview smoke |
+| File                                 | What to check                                         |
+| ------------------------------------ | ----------------------------------------------------- |
+| `src/lib/tdsl-wasm.ts`               | import path, fallback message, public API names       |
+| `public/wasm/tdsl_wasm.js`           | wasm-bindgen JS glue                                  |
+| `public/wasm/tdsl_wasm.d.ts`         | TypeScript types                                      |
+| `public/wasm/tdsl_wasm_bg.wasm`      | WASM binary                                           |
+| `public/wasm/tdsl_wasm_bg.wasm.d.ts` | WASM binary import types                              |
+| `public/wasm/package.json`           | package metadata                                      |
+| `scripts/smoke-tdsl-wasm.mjs`        | export names called by Node smoke                     |
+| `scripts/smoke-playground.mjs`       | asset paths and screen interactions for preview smoke |
 
 Normally, obtain the WASM bundle from GitHub Release assets. Specify the release tag you want to apply as `<version>` (e.g., `v1.4.0`). Check the latest tag on the [Releases page](https://github.com/keroway/timeline-dsl/releases).
 

@@ -21,33 +21,37 @@ const useCases = getUseCases(locale);
     </p>
   </div>
   <div class="usecase-grid">
-    {useCases.map((useCase) => (
-      <article class={`usecase ${useCase.tone}`}>
-        <div class="usecase-map" aria-hidden="true">
-          <div class="usecase-map-head">
-            <span>{useCase.range}</span>
-          </div>
-          {useCase.map.map((item) => (
-            <div
-              class={`usecase-bar ${item.tone}`}
-              style={`--start: ${item.start}; --width: ${item.width};`}
-            >
-              <span class="usecase-year">{item.year}</span>
-              <span class="usecase-label">{item.label}</span>
+    {
+      useCases.map((useCase) => (
+        <article class={`usecase ${useCase.tone}`}>
+          <div class="usecase-map" aria-hidden="true">
+            <div class="usecase-map-head">
+              <span>{useCase.range}</span>
             </div>
-          ))}
-        </div>
-        <div>
-          <p class="usecase-sample">{useCase.sample}</p>
-          <h3>{useCase.title}</h3>
-          <p>{useCase.body}</p>
-        </div>
-      </article>
-    ))}
+            {useCase.map.map((item) => (
+              <div
+                class={`usecase-bar ${item.tone}`}
+                style={`--start: ${item.start}; --width: ${item.width};`}
+              >
+                <span class="usecase-year">{item.year}</span>
+                <span class="usecase-label">{item.label}</span>
+              </div>
+            ))}
+          </div>
+          <div>
+            <p class="usecase-sample">{useCase.sample}</p>
+            <h3>{useCase.title}</h3>
+            <p>{useCase.body}</p>
+          </div>
+        </article>
+      ))
+    }
   </div>
-  {locale === "ja" && (
-    <p class="usecase-showcase-link">
-      <a href="/showcase/">{t("lp.usecase.see_showcase")}</a>
-    </p>
-  )}
+  {
+    locale === "ja" && (
+      <p class="usecase-showcase-link">
+        <a href="/showcase/">{t("lp.usecase.see_showcase")}</a>
+      </p>
+    )
+  }
 </section>

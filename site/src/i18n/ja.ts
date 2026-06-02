@@ -39,9 +39,12 @@ export const ja = {
   "cta.copy_success": "コピーしました",
   "cta.copy_error": "コピーに失敗しました",
   "lp.page.title": "Timeline DSL — 年表をテキストで記述・検証するCLIツール",
-  "lp.page.description": "Timeline DSL は、年表をテキストで管理し、ブラウザでの即時検証とCLIでの継続的なビルドを支える開発者向けツールです。",
-  "lp.hero.lead": "年表をテキストで記述し、ブラウザで即座に検証・プレビューできます。Playground で構成を検証してから CLI や CI へ移行でき、歴史、創作設定、教材、組織の沿革をGit管理しやすい形式で扱えます。",
-  "lp.hero.dsl_example": 'timeline "架空世界年表" {\n  range 980..1260;\n}\n\nlane "王国" as realm;\nlane "事件" as incident;\n\nspan realm 990..1184 "灰都王朝";\nevent incident 1042 "北方遠征";\nevent_range incident 1130..1137 "継承戦争";',
+  "lp.page.description":
+    "Timeline DSL は、年表をテキストで管理し、ブラウザでの即時検証とCLIでの継続的なビルドを支える開発者向けツールです。",
+  "lp.hero.lead":
+    "年表をテキストで記述し、ブラウザで即座に検証・プレビューできます。Playground で構成を検証してから CLI や CI へ移行でき、歴史、創作設定、教材、組織の沿革をGit管理しやすい形式で扱えます。",
+  "lp.hero.dsl_example":
+    'timeline "架空世界年表" {\n  range 980..1260;\n}\n\nlane "王国" as realm;\nlane "事件" as incident;\n\nspan realm 990..1184 "灰都王朝";\nevent incident 1042 "北方遠征";\nevent_range incident 1130..1137 "継承戦争";',
   "lp.hero.timeline.kingdom": "王国",
   "lp.hero.timeline.incident": "事件",
   "lp.hero.timeline.person": "人物",
@@ -49,36 +52,48 @@ export const ja = {
   "lp.hero.timeline.war": "継承戦争",
   "lp.hero.timeline.pilgrim": "巡礼王",
   "lp.features.heading": "年表作成を、再現できる作業にする",
-  "lp.features.lead": "Timeline DSL は、手作業の図版編集ではなく、レビュー可能な入力ファイルとCLI出力を中心にした年表作成を目指します。",
+  "lp.features.lead":
+    "Timeline DSL は、手作業の図版編集ではなく、レビュー可能な入力ファイルとCLI出力を中心にした年表作成を目指します。",
   "lp.feature.author.title": "ブラウザ・CLI 双方での記述",
-  "lp.feature.author.body": "イベント、期間、レーン、注釈を `.tdsl` として記述し、Playground での即時プレビューを経て、差分レビューに適した形式でソースを保管できます。",
-  "lp.feature.author.code_sample": 'timeline "教材用年表" {\n  range 1850..1912;\n}\nlane "政治" as politics;\nevent politics 1868 "明治改元";',
+  "lp.feature.author.body":
+    "イベント、期間、レーン、注釈を `.tdsl` として記述し、Playground での即時プレビューを経て、差分レビューに適した形式でソースを保管できます。",
+  "lp.feature.author.code_sample":
+    'timeline "教材用年表" {\n  range 1850..1912;\n}\nlane "政治" as politics;\nevent politics 1868 "明治改元";',
   "lp.feature.validate.title": "壊れた年表をすぐ検出",
-  "lp.feature.validate.body": "Playgroundで構文やlane参照を確認し、ローカルやCIでは `tdsl check` と `tdsl lint` で品質を担保できます。",
+  "lp.feature.validate.body":
+    "Playgroundで構文やlane参照を確認し、ローカルやCIでは `tdsl check` と `tdsl lint` で品質を担保できます。",
   "lp.feature.render.title": "汎用的な HTML / SVG への出力",
-  "lp.feature.render.body": "ドキュメントサイトや GitHub Pages 等に容易に組み込める、静的な成果物を生成できます。",
+  "lp.feature.render.body":
+    "ドキュメントサイトや GitHub Pages 等に容易に組み込める、静的な成果物を生成できます。",
   "lp.feature.render.lane1.label": "政治",
   "lp.feature.render.lane1.text": "制度改革",
   "lp.feature.render.lane2.label": "社会",
   "lp.feature.render.lane2.text": "産業化",
   "lp.workflow.heading": "書く、確かめる、見せるまでを同じ流れに置く",
-  "lp.workflow.lead": "`.tdsl` は成果物そのものではなく、年表を再生成するための入力です。ブラウザで試し、保存したファイルをCLIとCIへ渡すことで、長く更新する年表ほど扱いやすくなります。",
+  "lp.workflow.lead":
+    "`.tdsl` は成果物そのものではなく、年表を再生成するための入力です。ブラウザで試し、保存したファイルをCLIとCIへ渡すことで、長く更新する年表ほど扱いやすくなります。",
   "lp.workflow.step1.title": "ブラウザでのプロトタイピング",
-  "lp.workflow.step1.body": "Playgroundで `.tdsl` を編集し、WASMによる検証とSVGプレビューをすぐ確認します。",
+  "lp.workflow.step1.body":
+    "Playgroundで `.tdsl` を編集し、WASMによる検証とSVGプレビューをすぐ確認します。",
   "lp.workflow.step2.title": "CLI によるローカル検証",
-  "lp.workflow.step2.body": "ダウンロードした `.tdsl` を `tdsl check` と `tdsl lint` に通し、参照ミスや重複を公開前に見つけます。",
+  "lp.workflow.step2.body":
+    "ダウンロードした `.tdsl` を `tdsl check` と `tdsl lint` に通し、参照ミスや重複を公開前に見つけます。",
   "lp.workflow.step3.title": "CI による品質管理と自動ビルド",
-  "lp.workflow.step3.body": "GitHub Actionsで検証を続け、教材、社内資料、ドキュメントサイトへ置けるHTML / SVGへ描画します。",
+  "lp.workflow.step3.body":
+    "GitHub Actionsで検証を続け、教材、社内資料、ドキュメントサイトへ置けるHTML / SVGへ描画します。",
   "lp.usecases.heading": "専門ツールとして、使い道は広く",
-  "lp.usecases.lead": "一般向けの年表メーカーではなく、更新し続ける年表をテキストとして扱いたい人に向いています。",
+  "lp.usecases.lead":
+    "一般向けの年表メーカーではなく、更新し続ける年表をテキストとして扱いたい人に向いています。",
   "lp.usecase.story.title": "物語・ゲーム設定",
-  "lp.usecase.story.body": "王朝、戦争、人物の生没、章ごとの事件をレーンで分け、設定資料として更新し続けられます。",
+  "lp.usecase.story.body":
+    "王朝、戦争、人物の生没、章ごとの事件をレーンで分け、設定資料として更新し続けられます。",
   "lp.usecase.story.sample": "架空世界年表",
   "lp.usecase.story.bar1": "王朝成立",
   "lp.usecase.story.bar2": "北方",
   "lp.usecase.story.bar3": "継承",
   "lp.usecase.classroom.title": "授業・教材",
-  "lp.usecase.classroom.body": "時代区分と出来事を並べ、授業で扱う範囲だけをHTMLとして配布できます。",
+  "lp.usecase.classroom.body":
+    "時代区分と出来事を並べ、授業で扱う範囲だけをHTMLとして配布できます。",
   "lp.usecase.classroom.sample": "日本史 / 世界史",
   "lp.usecase.classroom.bar1": "開国",
   "lp.usecase.classroom.bar2": "明治改元",
@@ -90,17 +105,21 @@ export const ja = {
   "lp.usecase.company.bar2": "製品",
   "lp.usecase.company.bar3": "海外",
   "lp.usecase.research.title": "調査・研究メモ",
-  "lp.usecase.research.body": "Wikidataの候補探索から手元の追記まで、出典確認前の仮説もテキストで管理できます。",
+  "lp.usecase.research.body":
+    "Wikidataの候補探索から手元の追記まで、出典確認前の仮説もテキストで管理できます。",
   "lp.usecase.research.sample": "Wikidata scaffold",
   "lp.usecase.research.bar1": "候補",
   "lp.usecase.research.bar2": "出典",
   "lp.usecase.research.bar3": "追記",
   "lp.install.heading": "CLI によるローカル・CI への統合",
-  "lp.install.lead": "Playground で構成を検証できたら、Homebrew で CLI を導入し、ローカルでの保守や CI による自動ビルド環境を構築できます。詳しいセットアップはQuick Startで確認できます。",
+  "lp.install.lead":
+    "Playground で構成を検証できたら、Homebrew で CLI を導入し、ローカルでの保守や CI による自動ビルド環境を構築できます。詳しいセットアップはQuick Startで確認できます。",
   "gallery.page.title": "Gallery — Timeline DSL",
-  "gallery.page.description": "Timeline DSL のサンプル年表一覧。各サンプルを Playground で編集・カスタマイズできます。",
+  "gallery.page.description":
+    "Timeline DSL のサンプル年表一覧。各サンプルを Playground で編集・カスタマイズできます。",
   "gallery.eyebrow": "サンプル集",
-  "gallery.lead": "Timeline DSL のサンプル年表一覧です。各カードの「Edit this example」から Playground で編集・カスタマイズできます。",
+  "gallery.lead":
+    "Timeline DSL のサンプル年表一覧です。各カードの「Edit this example」から Playground で編集・カスタマイズできます。",
   "gallery.section.heading": "サンプル年表",
   "gallery.section.count": "{count} 種類のサンプルを掲載しています。",
   "gallery.tags.aria_label": "タグ",
@@ -109,9 +128,11 @@ export const ja = {
   "gallery.error.retry": "再試行",
   "gallery.see_showcase": "より詳しい事例ページは Showcase をご覧ください →",
   "showcase.index.page.title": "Showcase — Timeline DSL",
-  "showcase.index.page.description": "Timeline DSL で構築した詳しい年表事例の一覧です。歴史人物・年表の構造例を実ページで確認できます。",
+  "showcase.index.page.description":
+    "Timeline DSL で構築した詳しい年表事例の一覧です。歴史人物・年表の構造例を実ページで確認できます。",
   "showcase.index.eyebrow": "実例集",
-  "showcase.index.lead": "Timeline DSL で構築した詳しい年表事例の一覧です。各カードから歴史人物の生涯を 3 レーン構成で読み解けます。",
+  "showcase.index.lead":
+    "Timeline DSL で構築した詳しい年表事例の一覧です。各カードから歴史人物の生涯を 3 レーン構成で読み解けます。",
   "showcase.card.period": "期間",
   "showcase.card.lanes": "レーン",
   "showcase.card.events": "イベント数",
@@ -121,18 +142,22 @@ export const ja = {
   "changelog.page.description": "Timeline DSL の GitHub Releases から生成した changelog です。",
   "changelog.eyebrow": "GitHub Releases",
   "changelog.lead.has_data": "{repository} のリリース情報を表示しています。",
-  "changelog.lead.no_data": "リリース情報はまだ取得されていません。GitHub Releases の取得後にここへ表示されます。",
+  "changelog.lead.no_data":
+    "リリース情報はまだ取得されていません。GitHub Releases の取得後にここへ表示されます。",
   "changelog.last_fetched": "最終取得: {date}",
   "changelog.fetched_at.unknown": "未取得",
   "changelog.release.date_unknown": "公開日未取得",
   "changelog.release.no_body": "リリースノート本文はありません。",
   "changelog.release.view_on_github": "GitHubで見る",
   "changelog.empty.heading": "表示できるリリースはまだありません",
-  "changelog.empty.body": "取得スクリプトが成功すると、生成されたリリース一覧がこのページに表示されます。",
+  "changelog.empty.body":
+    "取得スクリプトが成功すると、生成されたリリース一覧がこのページに表示されます。",
   "playground.page.title": "Playground — Timeline DSL",
-  "playground.page.description": "ブラウザ内で .tdsl を編集し、Timeline DSL の検証結果と SVG プレビューを確認できます。",
+  "playground.page.description":
+    "ブラウザ内で .tdsl を編集し、Timeline DSL の検証結果と SVG プレビューを確認できます。",
   "playground.eyebrow": "ブラウザ Playground",
-  "playground.lead": "`.tdsl` を編集すると、ブラウザ内の WASM で検証し、SVG プレビューを更新します。",
+  "playground.lead":
+    "`.tdsl` を編集すると、ブラウザ内の WASM で検証し、SVG プレビューを更新します。",
   "playground.status.init": "WASM を初期化中...",
   "playground.status.checking": "検証中...",
   "playground.status.error": "構文または参照エラーを検出しました",

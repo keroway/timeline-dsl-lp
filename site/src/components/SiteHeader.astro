@@ -20,13 +20,22 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
       <span>Timeline DSL</span>
     </a>
     <div class="nav-links">
-      <a href="/playground/" aria-current={currentPath === "/playground/" ? "page" : undefined}>Playground</a>
-      <a href="/gallery/" aria-current={currentPath === "/gallery/" ? "page" : undefined}>Gallery</a>
-      {locale === "ja" && (
-        <a href="/showcase/" aria-current={currentPath === "/showcase/" ? "page" : undefined}>Showcase</a>
-      )}
+      <a href="/playground/" aria-current={currentPath === "/playground/" ? "page" : undefined}
+        >Playground</a
+      >
+      <a href="/gallery/" aria-current={currentPath === "/gallery/" ? "page" : undefined}>Gallery</a
+      >
+      {
+        locale === "ja" && (
+          <a href="/showcase/" aria-current={currentPath === "/showcase/" ? "page" : undefined}>
+            Showcase
+          </a>
+        )
+      }
       <a href="/docs/">Docs</a>
-      <a href="/changelog/" aria-current={currentPath === "/changelog/" ? "page" : undefined}>Changelog</a>
+      <a href="/changelog/" aria-current={currentPath === "/changelog/" ? "page" : undefined}
+        >Changelog</a
+      >
       <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
       <button
         class="search-toggle"
@@ -34,7 +43,17 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
         aria-label={t("nav.search.aria_label")}
         id="site-search-btn"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.35-4.35"></path>
         </svg>
@@ -43,10 +62,26 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
         class="lang-toggle"
         type="button"
         aria-label={t("nav.lang_toggle.aria_label")}
-        data-unavailable-msg={t("nav.lang_toggle.unavailable")}
-      >{targetLocaleLabel}</button>
-      <button class="a11y-toggle" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="a11y-menu" aria-label={t("a11y.menu.toggle_aria_label")}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        data-unavailable-msg={t("nav.lang_toggle.unavailable")}>{targetLocaleLabel}</button
+      >
+      <button
+        class="a11y-toggle"
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded="false"
+        aria-controls="a11y-menu"
+        aria-label={t("a11y.menu.toggle_aria_label")}
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="12" y1="8" x2="12" y2="16"></line>
           <line x1="8" y1="12" x2="16" y2="12"></line>
@@ -95,7 +130,8 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
 </header>
 
 <dialog class="site-search-dialog" id="site-search-dialog" aria-label={t("nav.search.aria_label")}>
-  <div class="site-search-inner" id="site-search-ui" data-not-built-msg={t("nav.search.not_built")}></div>
+  <div class="site-search-inner" id="site-search-ui" data-not-built-msg={t("nav.search.not_built")}>
+  </div>
 </dialog>
 
 <style>
@@ -208,7 +244,10 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
     background: var(--color-bg);
     color: var(--color-muted);
     cursor: pointer;
-    transition: color 0.2s, background 0.2s, border-color 0.2s;
+    transition:
+      color 0.2s,
+      background 0.2s,
+      border-color 0.2s;
   }
 
   .search-toggle:hover {
@@ -264,7 +303,10 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
     toggleSelector: ".a11y-toggle",
     menuId: "a11y-menu",
     messages: {
-      reducedMotion: { on: t("a11y.live.reduced_motion_on"), off: t("a11y.live.reduced_motion_off") },
+      reducedMotion: {
+        on: t("a11y.live.reduced_motion_on"),
+        off: t("a11y.live.reduced_motion_off"),
+      },
       highContrast: { on: t("a11y.live.high_contrast_on"), off: t("a11y.live.high_contrast_off") },
       textSpacing: { on: t("a11y.live.text_spacing_on"), off: t("a11y.live.text_spacing_off") },
       textSize: (size: A11yTextSize) =>

@@ -1,6 +1,10 @@
 .playground-shell {
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-panel), transparent 10%), transparent 16rem),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-panel), transparent 10%),
+      transparent 16rem
+    ),
     var(--color-bg);
 }
 
@@ -233,8 +237,18 @@
   min-height: 100%;
   overflow: hidden;
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 93%) 1px, transparent 1px) 0 0 / 2.8rem 100%,
-    linear-gradient(180deg, color-mix(in srgb, var(--color-ink), transparent 94%) 1px, transparent 1px) 0 0 / 100% 2.8rem,
+    linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--color-accent), transparent 93%) 1px,
+        transparent 1px
+      )
+      0 0 / 2.8rem 100%,
+    linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-ink), transparent 94%) 1px,
+        transparent 1px
+      )
+      0 0 / 100% 2.8rem,
     var(--color-panel);
   transition: opacity 0.15s ease;
   touch-action: none;
@@ -278,7 +292,9 @@
   background: color-mix(in srgb, var(--color-bg), transparent 15%);
   color: var(--color-muted);
   cursor: pointer;
-  transition: background 0.1s ease, color 0.1s ease;
+  transition:
+    background 0.1s ease,
+    color 0.1s ease;
 }
 
 .pan-zoom-reset:hover {
@@ -479,15 +495,19 @@
   }
 }
 
-:root[data-a11y-reduced-motion="true"] [data-playground-state="loading"] .playground-status::before {
+:root[data-a11y-reduced-motion="true"]
+  [data-playground-state="loading"]
+  .playground-status::before {
   animation: none;
 }
 
-:root[data-a11y-reduced-motion="true"] :is(
-  [data-playground-state="ready"],
-  [data-playground-state="warn"],
-  [data-playground-state="error"]
-) .playground-status {
+:root[data-a11y-reduced-motion="true"]
+  :is(
+    [data-playground-state="ready"],
+    [data-playground-state="warn"],
+    [data-playground-state="error"]
+  )
+  .playground-status {
   animation: none;
 }
 

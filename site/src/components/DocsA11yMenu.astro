@@ -35,8 +35,8 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
     class="lang-toggle docs-lang-toggle"
     type="button"
     aria-label={t("nav.lang_toggle.aria_label")}
-    data-unavailable-msg={t("nav.lang_toggle.unavailable")}
-  >{targetLocaleLabel}</button>
+    data-unavailable-msg={t("nav.lang_toggle.unavailable")}>{targetLocaleLabel}</button
+  >
   <button
     class="a11y-toggle"
     type="button"
@@ -249,7 +249,10 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
     toggleSelector: ".a11y-toggle",
     menuId: "docs-a11y-menu",
     messages: {
-      reducedMotion: { on: t("a11y.live.reduced_motion_on"), off: t("a11y.live.reduced_motion_off") },
+      reducedMotion: {
+        on: t("a11y.live.reduced_motion_on"),
+        off: t("a11y.live.reduced_motion_off"),
+      },
       highContrast: { on: t("a11y.live.high_contrast_on"), off: t("a11y.live.high_contrast_off") },
       textSpacing: { on: t("a11y.live.text_spacing_on"), off: t("a11y.live.text_spacing_off") },
       textSize: (size: A11yTextSize) =>

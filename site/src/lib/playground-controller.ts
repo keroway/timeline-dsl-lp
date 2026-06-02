@@ -1,10 +1,6 @@
 import { checkTdslSource, renderTdslSvg, renderTdslHtml } from "./tdsl-wasm";
 import { createPanZoom } from "./playground-pan-zoom";
-import {
-  buildShareUrl,
-  extractSourceFromLocation,
-  MAX_SHARE_URL_LENGTH,
-} from "./playground-share";
+import { buildShareUrl, extractSourceFromLocation, MAX_SHARE_URL_LENGTH } from "./playground-share";
 import { createPlaygroundEditor } from "./playground-editor";
 import type { PlaygroundSample } from "../data/playground-samples";
 
@@ -63,14 +59,15 @@ export function initPlayground(): void {
   const i18nEl = document.getElementById("playground-i18n");
   const msgs = JSON.parse(i18nEl?.textContent || "{}") as PlaygroundMsgs;
 
-  const panZoom = preview && panZoomStage
-    ? createPanZoom({
-        surface: preview,
-        stage: panZoomStage,
-        resetButton: panZoomReset,
-        tooltipEl: document.getElementById("tdsl-tooltip"),
-      })
-    : null;
+  const panZoom =
+    preview && panZoomStage
+      ? createPanZoom({
+          surface: preview,
+          stage: panZoomStage,
+          resetButton: panZoomReset,
+          tooltipEl: document.getElementById("tdsl-tooltip"),
+        })
+      : null;
 
   const debounceMs = 420;
   let debounceTimer: number | undefined;
@@ -165,7 +162,9 @@ export function initPlayground(): void {
         setStatus(msgs.statusError, "error");
         setText(previewMeta, lastSvg ? "previous preview kept" : "no preview");
         if (!lastSvg) {
-          stage.replaceChildren(Object.assign(document.createElement("p"), { textContent: msgs.previewFixErrors }));
+          stage.replaceChildren(
+            Object.assign(document.createElement("p"), { textContent: msgs.previewFixErrors }),
+          );
         }
         return;
       }
@@ -181,7 +180,10 @@ export function initPlayground(): void {
       downloadSvgButton?.removeAttribute("disabled");
       downloadHtmlButton?.removeAttribute("disabled");
       setText(previewMeta, "updated");
-      setStatus(result.length > 0 ? msgs.statusWarn : msgs.statusOk, result.length > 0 ? "warn" : "ready");
+      setStatus(
+        result.length > 0 ? msgs.statusWarn : msgs.statusOk,
+        result.length > 0 ? "warn" : "ready",
+      );
     } catch (error) {
       if (runId !== latestRunId) return;
 

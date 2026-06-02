@@ -21,21 +21,25 @@ const playgroundUrl = `/playground/?source=${encodeURIComponent(source)}`;
 ---
 
 <figure class="timeline-embed">
-  {svg && (
-    <div
-      class="timeline-svg-wrap"
-      role="img"
-      aria-label={caption ?? "Timeline DSL で生成した年表"}
-    >
-      {/* SVG は自社 WASM ライブラリが生成する信頼済みコンテンツ */}
-      <div class="timeline-svg" set:html={svg} />
-    </div>
-  )}
-  {renderError && (
-    <div class="timeline-error" role="alert">
-      <p>年表の生成に失敗しました: {renderError}</p>
-    </div>
-  )}
+  {
+    svg && (
+      <div
+        class="timeline-svg-wrap"
+        role="img"
+        aria-label={caption ?? "Timeline DSL で生成した年表"}
+      >
+        {/* SVG は自社 WASM ライブラリが生成する信頼済みコンテンツ */}
+        <div class="timeline-svg" set:html={svg} />
+      </div>
+    )
+  }
+  {
+    renderError && (
+      <div class="timeline-error" role="alert">
+        <p>年表の生成に失敗しました: {renderError}</p>
+      </div>
+    )
+  }
 
   {caption && <figcaption class="timeline-caption">{caption}</figcaption>}
 
@@ -53,7 +57,7 @@ const playgroundUrl = `/playground/?source=${encodeURIComponent(source)}`;
         stroke-linejoin="round"
         aria-hidden="true"
       >
-        <path d="M7 17L17 7M17 7H7M17 7v10" />
+        <path d="M7 17L17 7M17 7H7M17 7v10"></path>
       </svg>
     </a>
   </div>

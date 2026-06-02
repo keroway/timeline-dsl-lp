@@ -19,17 +19,17 @@ tdsl build sample.tdsl --pretty --output sample.json
 tdsl render sample.tdsl --output sample.html
 ```
 
-| コマンド | 用途 |
-|---|---|
-| `tdsl check <FILE>` | 構文・意味チェックを実行する |
-| `tdsl lint <FILE>` | 品質チェックを実行する |
-| `tdsl build <FILE>` | `.tdsl` をIR JSONにコンパイルする |
-| `tdsl render <FILE>` | スタンドアロンHTMLに描画する |
-| `tdsl ast <FILE>` | デバッグ用にASTを出力する |
-| `tdsl decompile <FILE>` | JSON IRを `.tdsl` に逆コンパイルする（v1.1.0〜） |
-| `tdsl merge <FILES...>` | 複数の `.tdsl` ファイルを結合する（v1.2.0〜） |
-| `tdsl completions <SHELL>` | シェル補完スクリプトを生成する（v1.9.0〜） |
-| `tdsl lsp` | 言語サーバ（LSP）を起動する（v1.11.0〜） |
+| コマンド                   | 用途                                             |
+| -------------------------- | ------------------------------------------------ |
+| `tdsl check <FILE>`        | 構文・意味チェックを実行する                     |
+| `tdsl lint <FILE>`         | 品質チェックを実行する                           |
+| `tdsl build <FILE>`        | `.tdsl` をIR JSONにコンパイルする                |
+| `tdsl render <FILE>`       | スタンドアロンHTMLに描画する                     |
+| `tdsl ast <FILE>`          | デバッグ用にASTを出力する                        |
+| `tdsl decompile <FILE>`    | JSON IRを `.tdsl` に逆コンパイルする（v1.1.0〜） |
+| `tdsl merge <FILES...>`    | 複数の `.tdsl` ファイルを結合する（v1.2.0〜）    |
+| `tdsl completions <SHELL>` | シェル補完スクリプトを生成する（v1.9.0〜）       |
+| `tdsl lsp`                 | 言語サーバ（LSP）を起動する（v1.11.0〜）         |
 
 `build` と `render` は Wikidata import を含むファイルでネットワークアクセスを行うことがあります。ローカル定義だけを処理したい場合は `--offline` を指定します。
 
@@ -117,13 +117,13 @@ tdsl scaffold wikidata \
 tdsl render china.tdsl --output china.html
 ```
 
-| コマンド | 用途 |
-|---|---|
-| `tdsl search <QUERY>` | Wikidataの候補QIDを検索する |
-| `tdsl inspect <QID>` | QIDの年表化方針を確認する |
-| `tdsl fetch <QID>` | Wikidataエンティティのデータを表示する |
-| `tdsl resolve <URL>` | Wikipedia記事URLからWikidata QIDを解決する |
-| `tdsl scaffold wikidata` | 複数QIDから `.tdsl` 雛形を生成する |
+| コマンド                 | 用途                                       |
+| ------------------------ | ------------------------------------------ |
+| `tdsl search <QUERY>`    | Wikidataの候補QIDを検索する                |
+| `tdsl inspect <QID>`     | QIDの年表化方針を確認する                  |
+| `tdsl fetch <QID>`       | Wikidataエンティティのデータを表示する     |
+| `tdsl resolve <URL>`     | Wikipedia記事URLからWikidata QIDを解決する |
+| `tdsl scaffold wikidata` | 複数QIDから `.tdsl` 雛形を生成する         |
 
 `search`、`inspect`、`resolve` は `--json` に対応しています。CIや別ツールから扱う場合に使います。
 
@@ -156,26 +156,26 @@ tdsl cache clear           # すべてのキャッシュを削除する
 tdsl cache clear --dry-run # 削除対象を確認する（実際には削除しない）
 ```
 
-| コマンド | 用途 |
-|---|---|
-| `tdsl cache list` | キャッシュ済みエントリとサイズを表示する |
-| `tdsl cache clear` | すべてのキャッシュエントリを削除する |
+| コマンド           | 用途                                     |
+| ------------------ | ---------------------------------------- |
+| `tdsl cache list`  | キャッシュ済みエントリとサイズを表示する |
+| `tdsl cache clear` | すべてのキャッシュエントリを削除する     |
 
 キャッシュの保存場所はOSのデータディレクトリ（`dirs` クレートの `data_dir`）以下です。`--no-cache` を渡すとキャッシュを使わずにWikidataを再取得します。
 
 ## よく使うオプション
 
-| オプション | 対象 | 用途 |
-|---|---|---|
-| `--pretty` | `build` | JSONを読みやすく整形する |
-| `--output`, `-o` | `build`, `render`, `init`, `import-csv` | 出力先を指定する |
-| `--offline` | `build`, `render` | Wikidata取得をスキップする |
-| `--no-cache` | `build`, `render` | Wikidataキャッシュを使わず再取得する |
-| `--cache-ttl <秒>` | `build`, `render` | WikidataキャッシュのTTLを指定する |
-| `--wikidata-timeout <秒>` | `build`, `render`, `search`, `inspect` | WikidataへのHTTPタイムアウト秒数を指定する（v1.4.0〜） |
-| `--format html,svg,png,pdf` | `render` | 出力形式を指定する（デフォルト `html`、`--format pdf` は v1.11.0〜） |
-| `--dpi <数値>` | `render` | PNG ラスタライズ解像度を指定する（デフォルト 96、`--png-scale` と排他、v1.11.0〜） |
-| `--png-scale <倍率>` | `render` | PNG 出力の倍率を指定する（`--dpi` と排他、v1.11.0〜） |
-| `--orientation horizontal,vertical` | `render` | タイムラインの向きを指定する（デフォルト `horizontal`、v1.13.0〜） |
-| `--format text,json` | `lint` | lint結果の出力形式を指定する |
-| `--fix` | `lint` | 安全な修正をファイルへ適用する |
+| オプション                          | 対象                                    | 用途                                                                               |
+| ----------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------- |
+| `--pretty`                          | `build`                                 | JSONを読みやすく整形する                                                           |
+| `--output`, `-o`                    | `build`, `render`, `init`, `import-csv` | 出力先を指定する                                                                   |
+| `--offline`                         | `build`, `render`                       | Wikidata取得をスキップする                                                         |
+| `--no-cache`                        | `build`, `render`                       | Wikidataキャッシュを使わず再取得する                                               |
+| `--cache-ttl <秒>`                  | `build`, `render`                       | WikidataキャッシュのTTLを指定する                                                  |
+| `--wikidata-timeout <秒>`           | `build`, `render`, `search`, `inspect`  | WikidataへのHTTPタイムアウト秒数を指定する（v1.4.0〜）                             |
+| `--format html,svg,png,pdf`         | `render`                                | 出力形式を指定する（デフォルト `html`、`--format pdf` は v1.11.0〜）               |
+| `--dpi <数値>`                      | `render`                                | PNG ラスタライズ解像度を指定する（デフォルト 96、`--png-scale` と排他、v1.11.0〜） |
+| `--png-scale <倍率>`                | `render`                                | PNG 出力の倍率を指定する（`--dpi` と排他、v1.11.0〜）                              |
+| `--orientation horizontal,vertical` | `render`                                | タイムラインの向きを指定する（デフォルト `horizontal`、v1.13.0〜）                 |
+| `--format text,json`                | `lint`                                  | lint結果の出力形式を指定する                                                       |
+| `--fix`                             | `lint`                                  | 安全な修正をファイルへ適用する                                                     |

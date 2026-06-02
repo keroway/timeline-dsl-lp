@@ -7,7 +7,9 @@ import { LinkButton } from "@astrojs/starlight/components";
 
 [Playground](/playground/) はブラウザ内で `.tdsl` を編集し、構文チェックと SVG プレビューをリアルタイムに確認できるツールです。インストール不要で、Timeline DSL の文法を学習したり、スニペットを素早く検証したりするのに適しています。
 
-<LinkButton href="/playground/" target="_blank" variant="primary">Playground を開く</LinkButton>
+<LinkButton href="/playground/" target="_blank" variant="primary">
+  Playground を開く
+</LinkButton>
 
 ## 主な機能
 
@@ -25,12 +27,12 @@ import { LinkButton } from "@astrojs/starlight/components";
 
 ツールバーの「Templates」ボタンからテンプレートギャラリーモーダルを開けます。`examples/` に収録されたすべての `.tdsl` サンプルをサムネイル一覧で確認し、クリック一発でエディタに読み込めます。
 
-| サンプル | 内容 |
-| --- | --- |
-| 中国王朝 | 王朝の `span` / `event` / `event_range` を含む実践例 |
-| 近現代史 | 近現代の `span` / `event_range` を含む実践例 |
-| DSL 基本文法（最小構成） | `span` / `event` / `event_range` の最小構成サンプル |
-| Wikidata インポート（オフライン不可） | Wikidata import 構文の参考例（WebUI では実行不可） |
+| サンプル                              | 内容                                                 |
+| ------------------------------------- | ---------------------------------------------------- |
+| 中国王朝                              | 王朝の `span` / `event` / `event_range` を含む実践例 |
+| 近現代史                              | 近現代の `span` / `event_range` を含む実践例         |
+| DSL 基本文法（最小構成）              | `span` / `event` / `event_range` の最小構成サンプル  |
+| Wikidata インポート（オフライン不可） | Wikidata import 構文の参考例（WebUI では実行不可）   |
 
 ギャラリーからサンプルを選択するとエディタの内容が置き換わります。作業中の内容を保持したい場合は、先にダウンロードしておいてください。
 
@@ -52,11 +54,11 @@ import { LinkButton } from "@astrojs/starlight/components";
 
 画面幅に応じてレイアウトが自動切り替えします。
 
-| 幅 | レイアウト |
-| --- | --- |
-| ≤768px（スマートフォン） | エディタ／プレビュー タブ切り替え |
-| 769px〜1024px（タブレット） | 上下2段レイアウト |
-| 1025px以上（デスクトップ） | 左右分割レイアウト |
+| 幅                          | レイアウト                        |
+| --------------------------- | --------------------------------- |
+| ≤768px（スマートフォン）    | エディタ／プレビュー タブ切り替え |
+| 769px〜1024px（タブレット） | 上下2段レイアウト                 |
+| 1025px以上（デスクトップ）  | 左右分割レイアウト                |
 
 ### `?source=` クエリによる共有
 

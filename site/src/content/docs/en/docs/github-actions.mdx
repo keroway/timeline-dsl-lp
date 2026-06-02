@@ -14,7 +14,7 @@ name: Render Timeline
 
 on:
   push:
-    paths: ['**/*.tdsl']
+    paths: ["**/*.tdsl"]
 
 jobs:
   render:
@@ -36,21 +36,21 @@ jobs:
 
 ### Inputs
 
-| Input | Required | Default | Description |
-| --- | --- | --- | --- |
-| `file` | ✅ | — | Path to the `.tdsl` file to render |
-| `format` | — | `svg` | Output format: `svg` or `html` |
-| `output` | — | `<basename>.<format>` | Output file path |
-| `offline` | — | `false` | Offline mode (skip Wikidata fetching) |
-| `interactive` | — | `false` | Interactive HTML output (only when `format: html`) |
-| `theme` | — | (CLI default) | Theme: `default` / `dark` / `print` / `pastel` |
-| `scale` | — | (CLI default) | Horizontal axis pixels-per-year rate |
-| `version` | — | `latest` | The tdsl version to use (e.g. `v1.6.0`) |
+| Input         | Required | Default               | Description                                        |
+| ------------- | -------- | --------------------- | -------------------------------------------------- |
+| `file`        | ✅       | —                     | Path to the `.tdsl` file to render                 |
+| `format`      | —        | `svg`                 | Output format: `svg` or `html`                     |
+| `output`      | —        | `<basename>.<format>` | Output file path                                   |
+| `offline`     | —        | `false`               | Offline mode (skip Wikidata fetching)              |
+| `interactive` | —        | `false`               | Interactive HTML output (only when `format: html`) |
+| `theme`       | —        | (CLI default)         | Theme: `default` / `dark` / `print` / `pastel`     |
+| `scale`       | —        | (CLI default)         | Horizontal axis pixels-per-year rate               |
+| `version`     | —        | `latest`              | The tdsl version to use (e.g. `v1.6.0`)            |
 
 ### Outputs
 
-| Output | Description |
-| --- | --- |
+| Output        | Description                                |
+| ------------- | ------------------------------------------ |
 | `output_path` | Absolute path to the generated output file |
 
 ### Example: Artifact changed .tdsl files as SVG previews on PRs
@@ -60,7 +60,7 @@ name: TDSL Preview
 
 on:
   pull_request:
-    paths: ['**/*.tdsl']
+    paths: ["**/*.tdsl"]
 
 jobs:
   preview:
@@ -74,12 +74,12 @@ jobs:
         with:
           file: examples/china_dynasties.tdsl
           format: svg
-          offline: 'true'
+          offline: "true"
 
       - uses: actions/upload-artifact@v4
         with:
           name: tdsl-preview
-          path: '*.svg'
+          path: "*.svg"
 ```
 
 ## Installing the tdsl CLI Directly

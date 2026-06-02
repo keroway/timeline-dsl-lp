@@ -7,7 +7,9 @@ import { LinkButton } from "@astrojs/starlight/components";
 
 The [Playground](/playground/) is a tool that lets you edit `.tdsl` files in your browser and see syntax validation and SVG previews in real time. No installation required — it's ideal for learning Timeline DSL syntax or quickly validating snippets.
 
-<LinkButton href="/playground/" target="_blank" variant="primary">Open Playground</LinkButton>
+<LinkButton href="/playground/" target="_blank" variant="primary">
+  Open Playground
+</LinkButton>
 
 ## Key features
 
@@ -25,12 +27,12 @@ If a compile error occurs, the last successful preview is preserved and a "Showi
 
 Click the "Templates" button in the toolbar to open the template gallery modal. You can browse all `.tdsl` samples included in `examples/` as a thumbnail grid and load any of them into the editor with a single click.
 
-| Sample | Description |
-| --- | --- |
-| Chinese Dynasties | A practical example with dynasty `span` / `event` / `event_range` entries |
-| Modern History | A practical example with modern `span` / `event_range` entries |
-| DSL Basic Grammar (minimal) | A minimal sample covering `span` / `event` / `event_range` |
-| Wikidata Import (requires network) | A reference example for Wikidata import syntax (not executable in WebUI) |
+| Sample                             | Description                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------- |
+| Chinese Dynasties                  | A practical example with dynasty `span` / `event` / `event_range` entries |
+| Modern History                     | A practical example with modern `span` / `event_range` entries            |
+| DSL Basic Grammar (minimal)        | A minimal sample covering `span` / `event` / `event_range`                |
+| Wikidata Import (requires network) | A reference example for Wikidata import syntax (not executable in WebUI)  |
 
 Selecting a sample from the gallery replaces the current editor content. If you want to keep your current work, download it first.
 
@@ -52,11 +54,11 @@ Drag the handle between the editor and preview left or right to adjust the split
 
 The layout switches automatically based on screen width.
 
-| Width | Layout |
-| --- | --- |
-| ≤768px (smartphone) | Editor / Preview tab switching |
-| 769px–1024px (tablet) | Top-and-bottom two-row layout |
-| 1025px and above (desktop) | Left-right split layout |
+| Width                      | Layout                         |
+| -------------------------- | ------------------------------ |
+| ≤768px (smartphone)        | Editor / Preview tab switching |
+| 769px–1024px (tablet)      | Top-and-bottom two-row layout  |
+| 1025px and above (desktop) | Left-right split layout        |
 
 ### Sharing via `?source=` query
 

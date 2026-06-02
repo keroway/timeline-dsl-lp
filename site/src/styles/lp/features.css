@@ -25,8 +25,18 @@
   margin: 0.8rem 0 1.1rem;
   border: 1px solid color-mix(in srgb, var(--color-line), transparent 10%);
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 92%) 1px, transparent 1px) 0 0 / 2.4rem 100%,
-    linear-gradient(180deg, color-mix(in srgb, var(--color-warm), transparent 92%) 1px, transparent 1px) 0 0 / 100% 2.4rem,
+    linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--color-accent), transparent 92%) 1px,
+        transparent 1px
+      )
+      0 0 / 2.4rem 100%,
+    linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-warm), transparent 92%) 1px,
+        transparent 1px
+      )
+      0 0 / 100% 2.4rem,
     var(--color-panel);
   overflow: hidden;
   padding: 0.65rem;
@@ -186,11 +196,21 @@
   white-space: nowrap;
 }
 
-.mini-span.accent { background: var(--color-accent); }
-.mini-span.gold { background: var(--color-gold); }
-.mini-span.plum { background: var(--color-plum); }
-.mini-span.sky { background: var(--color-sky); }
-.mini-span.warm { background: var(--color-warm); }
+.mini-span.accent {
+  background: var(--color-accent);
+}
+.mini-span.gold {
+  background: var(--color-gold);
+}
+.mini-span.plum {
+  background: var(--color-plum);
+}
+.mini-span.sky {
+  background: var(--color-sky);
+}
+.mini-span.warm {
+  background: var(--color-warm);
+}
 
 .feature-grid {
   display: grid;

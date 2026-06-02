@@ -36,7 +36,8 @@ export function loadSettings(): A11ySettings {
     if (!parsed || typeof parsed !== "object") return osDefaults;
     const p = parsed as Record<string, unknown>;
     return {
-      reducedMotion: typeof p.reducedMotion === "boolean" ? p.reducedMotion : osDefaults.reducedMotion,
+      reducedMotion:
+        typeof p.reducedMotion === "boolean" ? p.reducedMotion : osDefaults.reducedMotion,
       highContrast: typeof p.highContrast === "boolean" ? p.highContrast : osDefaults.highContrast,
       textSize: isValidTextSize(p.textSize) ? p.textSize : "normal",
       textSpacing: typeof p.textSpacing === "boolean" ? p.textSpacing : false,
@@ -83,7 +84,10 @@ const TEXT_SIZE_LABELS: Record<A11yTextSize, string> = {
 
 const MESSAGES = {
   reducedMotion: { on: "動きを抑える設定を有効にしました", off: "動きを抑える設定を解除しました" },
-  highContrast: { on: "高コントラスト表示を有効にしました", off: "高コントラスト表示を解除しました" },
+  highContrast: {
+    on: "高コントラスト表示を有効にしました",
+    off: "高コントラスト表示を解除しました",
+  },
   textSpacing: { on: "テキストの余白を広げました", off: "テキストの余白を標準に戻しました" },
   textSize: (size: A11yTextSize) => `文字サイズを${TEXT_SIZE_LABELS[size]}に変更しました`,
 };
@@ -92,7 +96,9 @@ function announce(menuEl: HTMLElement, text: string) {
   const live = menuEl.querySelector<HTMLElement>("[data-a11y-live]");
   if (!live) return;
   live.textContent = "";
-  requestAnimationFrame(() => { live.textContent = text; });
+  requestAnimationFrame(() => {
+    live.textContent = text;
+  });
 }
 
 interface InitOpts {
@@ -123,8 +129,8 @@ export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): vo
   function getFocusableElements(): HTMLElement[] {
     return Array.from(
       menu!.querySelectorAll<HTMLElement>(
-        'input:not([disabled]), select:not([disabled]), button:not([disabled])'
-      )
+        "input:not([disabled]), select:not([disabled]), button:not([disabled])",
+      ),
     );
   }
 
@@ -201,7 +207,7 @@ export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): vo
   const bindCheckboxSetting = (
     input: HTMLInputElement | null,
     key: "reducedMotion" | "highContrast" | "textSpacing",
-    getMessage: (s: A11ySettings) => string
+    getMessage: (s: A11ySettings) => string,
   ): void => {
     input?.addEventListener("change", () => {
       const prev = loadSettings();
@@ -214,14 +220,20 @@ export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): vo
     });
   };
 
-  bindCheckboxSetting(reducedMotionInput, "reducedMotion", (s) =>
-    msgs.reducedMotion[s.reducedMotion ? "on" : "off"]
+  bindCheckboxSetting(
+    reducedMotionInput,
+    "reducedMotion",
+    (s) => msgs.reducedMotion[s.reducedMotion ? "on" : "off"],
   );
-  bindCheckboxSetting(highContrastInput, "highContrast", (s) =>
-    msgs.highContrast[s.highContrast ? "on" : "off"]
+  bindCheckboxSetting(
+    highContrastInput,
+    "highContrast",
+    (s) => msgs.highContrast[s.highContrast ? "on" : "off"],
   );
-  bindCheckboxSetting(textSpacingInput, "textSpacing", (s) =>
-    msgs.textSpacing[s.textSpacing ? "on" : "off"]
+  bindCheckboxSetting(
+    textSpacingInput,
+    "textSpacing",
+    (s) => msgs.textSpacing[s.textSpacing ? "on" : "off"],
   );
 
   textSizeInput?.addEventListener("change", () => {
