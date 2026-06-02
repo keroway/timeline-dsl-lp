@@ -7,6 +7,16 @@ description: Frequently asked questions about the Timeline DSL CLI.
 
 `tdsl build` outputs IR JSON, and `tdsl render` outputs standalone HTML. You can open the HTML in a browser to view the timeline.
 
+## What use cases is it good for?
+
+It suits timelines where you want the source (`.tdsl` text) to be the single source of truth and to manage diffs and reviews in Git. You can build histories, project timelines, biographies, or product release histories from hand-written data or from Wikidata / CSV.
+
+- **Try it quickly**: the browser-only [Playground](/en/docs/playground/) lets you write DSL and render it instantly with no install.
+- **Produce a deliverable**: the [CLI](/en/docs/installation/)'s `tdsl render` outputs standalone HTML (with theme and custom CSS support).
+- **Operate it continuously**: wire `tdsl check` / `tdsl lint` into CI to review timelines like any other code.
+
+If your main goal is a real-time, continuously updating dashboard or an interactive editing UI, that is outside this tool's scope.
+
 ## Can I use it without Wikidata?
 
 Yes. Static `.tdsl` files written by hand using `timeline`, `lane`, `span`, `event`, and `event_range` can be validated, built, and rendered locally. For files that include Wikidata imports, adding `--offline` to `build` and `render` processes only the static items.
