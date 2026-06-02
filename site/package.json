@@ -19,6 +19,7 @@
     "smoke:a11y": "node scripts/smoke-a11y.mjs",
     "build": "pnpm smoke:wasm && astro check && astro build",
     "preview": "astro preview",
+    "prepare": "simple-git-hooks",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -46,6 +47,19 @@
     "playwright": "^1.60.0",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
+    "simple-git-hooks": "^2.11.1",
+    "lint-staged": "^15.5.2",
     "typescript": "6.0.3"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "cd site && pnpm exec lint-staged && if git diff --cached --name-only | grep -q 'site/src/'; then pnpm astro check; fi"
+  },
+  "lint-staged": {
+    "src/**/*.{astro,ts,mjs,mdx,js}": [
+      "prettier --write"
+    ],
+    "src/**/*.{ts,mjs,js}": [
+      "eslint --fix"
+    ]
   }
 }
