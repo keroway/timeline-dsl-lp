@@ -34,8 +34,14 @@ const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
 const homeJsonLd = [softwareApplicationLd(siteUrl, locale)];
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} pathname={pathname} locale={locale} version={latest?.tagName} extraJsonLd={homeJsonLd}>
-
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  pathname={pathname}
+  locale={locale}
+  version={latest?.tagName}
+  extraJsonLd={homeJsonLd}
+>
   <main id="main-content">
     <HeroSection locale={locale} />
     <FeaturesSection locale={locale} />
@@ -45,10 +51,10 @@ const homeJsonLd = [softwareApplicationLd(siteUrl, locale)];
   </main>
 
   <Fragment slot="body-end">
-  <script>
-    import { initCopyButtons, initMotion } from "../lib/lp-motion";
-    initCopyButtons();
-    initMotion();
-  </script>
+    <script>
+      import { initCopyButtons, initMotion } from "../lib/lp-motion";
+      initCopyButtons();
+      initMotion();
+    </script>
   </Fragment>
 </BaseLayout>

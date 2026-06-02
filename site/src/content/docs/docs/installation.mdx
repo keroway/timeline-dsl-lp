@@ -38,11 +38,11 @@ code --install-extension keroway.timeline-dsl
 
 ### 利用可能なスニペット
 
-| プレフィックス | 展開内容 |
-| --- | --- |
-| `timeline` | `timeline` ブロックのテンプレート（`title`、`unit`、`range`、`calendar` 込み） |
-| `lane` | `lane` 定義のテンプレート（`kind`、`order` 込み） |
-| `span` | `span` イベントのテンプレート（開始・終了日時付き） |
+| プレフィックス | 展開内容                                                                       |
+| -------------- | ------------------------------------------------------------------------------ |
+| `timeline`     | `timeline` ブロックのテンプレート（`title`、`unit`、`range`、`calendar` 込み） |
+| `lane`         | `lane` 定義のテンプレート（`kind`、`order` 込み）                              |
+| `span`         | `span` イベントのテンプレート（開始・終了日時付き）                            |
 
 スニペットはファイル拡張子が `.tdsl` のファイルで有効です。
 
@@ -52,16 +52,16 @@ VS Code 拡張は構文ハイライトとスニペットを提供します。診
 
 v1.11.0 以降、`tdsl lsp` で Timeline DSL の言語サーバ（LSP）を起動できます。LSP は標準入出力（stdio）で通信するため、LSP クライアントを持つエディタ（VS Code・Neovim・Helix・Emacs など）から接続して、`.tdsl` 編集中に対話的な支援を受けられます。VS Code 拡張（構文ハイライト + スニペット）とは独立した仕組みです。
 
-| 機能 | 内容 | バージョン |
-| --- | --- | --- |
-| 診断（Diagnostics） | 構文・意味エラーを編集中にリアルタイム表示する | v1.11.0〜 |
-| 補完（Completion） | DSL キーワードを補完する | v1.12.0〜 |
-| ホバー（Hover） | lane ID / QID のホバー情報を表示する | v1.12.0〜 |
-| 定義ジャンプ（Goto Definition） | lane 参照から lane 宣言へジャンプする | v1.12.0〜 |
-| 参照検索（References） | lane ID の宣言・全参照位置を返す | v1.13.0〜 |
-| リネーム（Rename） | lane ID を宣言・全参照まとめて一括置換する | v1.13.0〜 |
-| コードアクション（Code Action） | lint の自動修正を quick fix として提供する | v1.13.0〜 |
-| ドキュメントシンボル（Document Symbol） | timeline > lane > 項目の階層シンボルを返す | v1.13.0〜 |
+| 機能                                    | 内容                                           | バージョン |
+| --------------------------------------- | ---------------------------------------------- | ---------- |
+| 診断（Diagnostics）                     | 構文・意味エラーを編集中にリアルタイム表示する | v1.11.0〜  |
+| 補完（Completion）                      | DSL キーワードを補完する                       | v1.12.0〜  |
+| ホバー（Hover）                         | lane ID / QID のホバー情報を表示する           | v1.12.0〜  |
+| 定義ジャンプ（Goto Definition）         | lane 参照から lane 宣言へジャンプする          | v1.12.0〜  |
+| 参照検索（References）                  | lane ID の宣言・全参照位置を返す               | v1.13.0〜  |
+| リネーム（Rename）                      | lane ID を宣言・全参照まとめて一括置換する     | v1.13.0〜  |
+| コードアクション（Code Action）         | lint の自動修正を quick fix として提供する     | v1.13.0〜  |
+| ドキュメントシンボル（Document Symbol） | timeline > lane > 項目の階層シンボルを返す     | v1.13.0〜  |
 
 起動コマンドは引数を取りません。
 

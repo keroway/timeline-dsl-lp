@@ -18,7 +18,11 @@
     "smoke:seo": "node scripts/smoke-seo.mjs",
     "smoke:a11y": "node scripts/smoke-a11y.mjs",
     "build": "pnpm smoke:wasm && astro check && astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.1.2",
@@ -34,7 +38,14 @@
   "devDependencies": {
     "@astrojs/check": "0.9.9",
     "@axe-core/playwright": "^4.11.3",
+    "@typescript-eslint/eslint-plugin": "^8.60.0",
+    "@typescript-eslint/parser": "^8.60.0",
+    "eslint": "^10.4.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-astro": "^1.7.0",
     "playwright": "^1.60.0",
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1",
     "typescript": "6.0.3"
   }
 }

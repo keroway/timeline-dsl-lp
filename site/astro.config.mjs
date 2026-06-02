@@ -66,21 +66,35 @@ export default defineConfig({
           items: [
             { label: "概要", translations: { en: "Overview" }, slug: "docs" },
             { label: "Playground", slug: "docs/playground" },
-            { label: "インストール", translations: { en: "Installation" }, slug: "docs/installation" },
+            {
+              label: "インストール",
+              translations: { en: "Installation" },
+              slug: "docs/installation",
+            },
             { label: "Quick Start", slug: "docs/quick-start" },
           ],
         },
         {
           label: "文法",
           translations: { en: "Grammar" },
-          items: [{ label: "文法とサンプル", translations: { en: "Grammar & Examples" }, slug: "docs/grammar" }],
+          items: [
+            {
+              label: "文法とサンプル",
+              translations: { en: "Grammar & Examples" },
+              slug: "docs/grammar",
+            },
+          ],
         },
         {
           label: "CLI",
           items: [
             { label: "Commands", slug: "docs/commands" },
             { label: "Configuration", slug: "docs/configuration" },
-            { label: "CIで検証", translations: { en: "Validate in CI" }, slug: "docs/github-actions" },
+            {
+              label: "CIで検証",
+              translations: { en: "Validate in CI" },
+              slug: "docs/github-actions",
+            },
             { label: "Homebrew", slug: "docs/homebrew" },
           ],
         },
@@ -88,8 +102,16 @@ export default defineConfig({
           label: "開発者向け",
           translations: { en: "For Developers" },
           items: [
-            { label: "コントリビューター向け", translations: { en: "Contributing" }, slug: "docs/contributing" },
-            { label: "サイトのデプロイ", translations: { en: "Site Deployment" }, slug: "docs/deployment" },
+            {
+              label: "コントリビューター向け",
+              translations: { en: "Contributing" },
+              slug: "docs/contributing",
+            },
+            {
+              label: "サイトのデプロイ",
+              translations: { en: "Site Deployment" },
+              slug: "docs/deployment",
+            },
           ],
         },
         {

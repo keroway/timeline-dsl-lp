@@ -10,7 +10,8 @@ export const en = {
   "nav.search.aria_label": "Search",
   "nav.search.not_built": "Search index not found. Run pnpm build to generate it.",
   "nav.lang_toggle.aria_label": "Switch language to Japanese",
-  "nav.lang_toggle.unavailable": "This page is not available in English. Redirecting to the top page.",
+  "nav.lang_toggle.unavailable":
+    "This page is not available in English. Redirecting to the top page.",
   "footer.copyright": "© 2024 keroway",
   "footer.links": "Footer navigation",
   "a11y.skip_link": "Skip to main content",
@@ -41,9 +42,12 @@ export const en = {
   "cta.copy_success": "Copied",
   "cta.copy_error": "Copy failed",
   "lp.page.title": "Timeline DSL — Author and validate timelines as text",
-  "lp.page.description": "Timeline DSL is a developer tool for managing timelines as text, with instant browser validation and continuous CLI builds.",
-  "lp.hero.lead": "Describe timelines as text and validate them instantly in the browser. Prototype in the Playground, then move to CLI or CI — history, fiction, curricula, and org histories in a Git-friendly format.",
-  "lp.hero.dsl_example": 'timeline "Fictional World" {\n  range 980..1260;\n}\n\nlane "Realm" as realm;\nlane "Events" as incident;\n\nspan realm 990..1184 "Haito Dynasty";\nevent incident 1042 "Northern Campaign";\nevent_range incident 1130..1137 "Succession War";',
+  "lp.page.description":
+    "Timeline DSL is a developer tool for managing timelines as text, with instant browser validation and continuous CLI builds.",
+  "lp.hero.lead":
+    "Describe timelines as text and validate them instantly in the browser. Prototype in the Playground, then move to CLI or CI — history, fiction, curricula, and org histories in a Git-friendly format.",
+  "lp.hero.dsl_example":
+    'timeline "Fictional World" {\n  range 980..1260;\n}\n\nlane "Realm" as realm;\nlane "Events" as incident;\n\nspan realm 990..1184 "Haito Dynasty";\nevent incident 1042 "Northern Campaign";\nevent_range incident 1130..1137 "Succession War";',
   "lp.hero.timeline.kingdom": "Realm",
   "lp.hero.timeline.incident": "Events",
   "lp.hero.timeline.person": "People",
@@ -51,58 +55,75 @@ export const en = {
   "lp.hero.timeline.war": "Succession War",
   "lp.hero.timeline.pilgrim": "Pilgrim King",
   "lp.features.heading": "Make timeline authoring a reproducible process",
-  "lp.features.lead": "Timeline DSL aims to center timeline creation around reviewable input files and CLI output — not manual diagram editing.",
+  "lp.features.lead":
+    "Timeline DSL aims to center timeline creation around reviewable input files and CLI output — not manual diagram editing.",
   "lp.feature.author.title": "Author in browser and CLI",
-  "lp.feature.author.body": "Describe events, spans, lanes, and annotations as `.tdsl`, get instant previews in the Playground, and store the source in a diff-friendly format.",
-  "lp.feature.author.code_sample": 'timeline "Education timeline" {\n  range 1850..1912;\n}\nlane "Politics" as politics;\nevent politics 1868 "Meiji Restoration";',
+  "lp.feature.author.body":
+    "Describe events, spans, lanes, and annotations as `.tdsl`, get instant previews in the Playground, and store the source in a diff-friendly format.",
+  "lp.feature.author.code_sample":
+    'timeline "Education timeline" {\n  range 1850..1912;\n}\nlane "Politics" as politics;\nevent politics 1868 "Meiji Restoration";',
   "lp.feature.validate.title": "Catch broken timelines immediately",
-  "lp.feature.validate.body": "Check syntax and lane references in the Playground, then use `tdsl check` and `tdsl lint` locally or in CI to ensure quality.",
+  "lp.feature.validate.body":
+    "Check syntax and lane references in the Playground, then use `tdsl check` and `tdsl lint` locally or in CI to ensure quality.",
   "lp.feature.render.title": "Output to generic HTML / SVG",
-  "lp.feature.render.body": "Generate static artifacts that are easy to embed in documentation sites, GitHub Pages, and more.",
+  "lp.feature.render.body":
+    "Generate static artifacts that are easy to embed in documentation sites, GitHub Pages, and more.",
   "lp.feature.render.lane1.label": "Politics",
   "lp.feature.render.lane1.text": "Reform",
   "lp.feature.render.lane2.label": "Society",
   "lp.feature.render.lane2.text": "Industrialization",
   "lp.workflow.heading": "Source to artifact in one continuous flow",
-  "lp.workflow.lead": "`.tdsl` is not the artifact itself — it is the input to regenerate your timeline. Author in the browser, save the file, pass it to CLI and CI. The more you update your timeline, the easier it becomes.",
+  "lp.workflow.lead":
+    "`.tdsl` is not the artifact itself — it is the input to regenerate your timeline. Author in the browser, save the file, pass it to CLI and CI. The more you update your timeline, the easier it becomes.",
   "lp.workflow.step1.title": "Prototype in the browser",
-  "lp.workflow.step1.body": "Edit `.tdsl` in the Playground and immediately see WASM validation results and SVG previews.",
+  "lp.workflow.step1.body":
+    "Edit `.tdsl` in the Playground and immediately see WASM validation results and SVG previews.",
   "lp.workflow.step2.title": "Validate locally with CLI",
-  "lp.workflow.step2.body": "Pass the downloaded `.tdsl` through `tdsl check` and `tdsl lint` to catch reference errors and duplicates before publishing.",
+  "lp.workflow.step2.body":
+    "Pass the downloaded `.tdsl` through `tdsl check` and `tdsl lint` to catch reference errors and duplicates before publishing.",
   "lp.workflow.step3.title": "CI quality gate and auto-build",
-  "lp.workflow.step3.body": "Keep validation running in GitHub Actions and render to HTML / SVG for curricula, internal docs, and documentation sites.",
+  "lp.workflow.step3.body":
+    "Keep validation running in GitHub Actions and render to HTML / SVG for curricula, internal docs, and documentation sites.",
   "lp.usecases.heading": "A specialist tool — broad in application",
-  "lp.usecases.lead": "Not a general-purpose timeline maker, but ideal for anyone who wants to manage a continuously updated timeline as text.",
+  "lp.usecases.lead":
+    "Not a general-purpose timeline maker, but ideal for anyone who wants to manage a continuously updated timeline as text.",
   "lp.usecase.story.title": "Fiction & game worldbuilding",
-  "lp.usecase.story.body": "Split dynasties, wars, character lifespans, and chapter events into lanes and keep updating your setting materials.",
+  "lp.usecase.story.body":
+    "Split dynasties, wars, character lifespans, and chapter events into lanes and keep updating your setting materials.",
   "lp.usecase.story.sample": "Fictional world timeline",
   "lp.usecase.story.bar1": "Dynasty founded",
   "lp.usecase.story.bar2": "Northern",
   "lp.usecase.story.bar3": "Succession",
   "lp.usecase.classroom.title": "Classroom & curriculum",
-  "lp.usecase.classroom.body": "Line up eras and events, then distribute only the relevant range as HTML for class use.",
+  "lp.usecase.classroom.body":
+    "Line up eras and events, then distribute only the relevant range as HTML for class use.",
   "lp.usecase.classroom.sample": "Japanese / World history",
   "lp.usecase.classroom.bar1": "Opening",
   "lp.usecase.classroom.bar2": "Meiji era",
   "lp.usecase.classroom.bar3": "Russo-Japanese",
   "lp.usecase.company.title": "Company history",
-  "lp.usecase.company.body": "Maintain founding, product launches, office openings, and policy changes as a single history.",
+  "lp.usecase.company.body":
+    "Maintain founding, product launches, office openings, and policy changes as a single history.",
   "lp.usecase.company.sample": "Company history",
   "lp.usecase.company.bar1": "Founded",
   "lp.usecase.company.bar2": "Product",
   "lp.usecase.company.bar3": "Global",
   "lp.usecase.research.title": "Research notes",
-  "lp.usecase.research.body": "From Wikidata candidate exploration to personal annotations, manage unverified hypotheses as text.",
+  "lp.usecase.research.body":
+    "From Wikidata candidate exploration to personal annotations, manage unverified hypotheses as text.",
   "lp.usecase.research.sample": "Wikidata scaffold",
   "lp.usecase.research.bar1": "Candidates",
   "lp.usecase.research.bar2": "Sources",
   "lp.usecase.research.bar3": "Annotations",
   "lp.install.heading": "Integrate CLI into local and CI workflows",
-  "lp.install.lead": "Once you've validated your structure in the Playground, install the CLI via Homebrew to set up local maintenance and automated CI builds. See Quick Start for detailed setup.",
+  "lp.install.lead":
+    "Once you've validated your structure in the Playground, install the CLI via Homebrew to set up local maintenance and automated CI builds. See Quick Start for detailed setup.",
   "gallery.page.title": "Gallery — Timeline DSL",
-  "gallery.page.description": "Sample timelines for Timeline DSL. Edit and customize each sample in the Playground.",
+  "gallery.page.description":
+    "Sample timelines for Timeline DSL. Edit and customize each sample in the Playground.",
   "gallery.eyebrow": "Sample collection",
-  "gallery.lead": "A collection of Timeline DSL sample timelines. Click \"Edit this example\" on any card to edit and customize it in the Playground.",
+  "gallery.lead":
+    'A collection of Timeline DSL sample timelines. Click "Edit this example" on any card to edit and customize it in the Playground.',
   "gallery.section.heading": "Sample timelines",
   "gallery.section.count": "{count} samples available.",
   "gallery.tags.aria_label": "Tags",
@@ -111,9 +132,11 @@ export const en = {
   "gallery.error.retry": "Retry",
   "gallery.see_showcase": "Looking for fully built examples? See the Showcase →",
   "showcase.index.page.title": "Showcase — Timeline DSL",
-  "showcase.index.page.description": "A collection of in-depth timeline examples built with Timeline DSL. Explore how historical figures' lives are structured into multi-lane timelines.",
+  "showcase.index.page.description":
+    "A collection of in-depth timeline examples built with Timeline DSL. Explore how historical figures' lives are structured into multi-lane timelines.",
   "showcase.index.eyebrow": "Showcase",
-  "showcase.index.lead": "In-depth timeline examples built with Timeline DSL. Each card walks through a historical figure's life across three lanes.",
+  "showcase.index.lead":
+    "In-depth timeline examples built with Timeline DSL. Each card walks through a historical figure's life across three lanes.",
   "showcase.card.period": "Period",
   "showcase.card.lanes": "Lanes",
   "showcase.card.events": "Events",
@@ -123,18 +146,22 @@ export const en = {
   "changelog.page.description": "Changelog generated from Timeline DSL GitHub Releases.",
   "changelog.eyebrow": "GitHub Releases",
   "changelog.lead.has_data": "Showing release information from {repository}.",
-  "changelog.lead.no_data": "No release information has been fetched yet. It will appear here once the GitHub Releases fetch completes.",
+  "changelog.lead.no_data":
+    "No release information has been fetched yet. It will appear here once the GitHub Releases fetch completes.",
   "changelog.last_fetched": "Last fetched: {date}",
   "changelog.fetched_at.unknown": "Not yet fetched",
   "changelog.release.date_unknown": "Date unknown",
   "changelog.release.no_body": "No release notes.",
   "changelog.release.view_on_github": "View on GitHub",
   "changelog.empty.heading": "No releases to display yet",
-  "changelog.empty.body": "Once the fetch script runs successfully, the generated release list will appear here.",
+  "changelog.empty.body":
+    "Once the fetch script runs successfully, the generated release list will appear here.",
   "playground.page.title": "Playground — Timeline DSL",
-  "playground.page.description": "Edit .tdsl in your browser and see Timeline DSL validation results and SVG previews.",
+  "playground.page.description":
+    "Edit .tdsl in your browser and see Timeline DSL validation results and SVG previews.",
   "playground.eyebrow": "Browser Playground",
-  "playground.lead": "Edit `.tdsl` and it will be validated by WASM in the browser, updating the SVG preview.",
+  "playground.lead":
+    "Edit `.tdsl` and it will be validated by WASM in the browser, updating the SVG preview.",
   "playground.status.init": "Initializing WASM...",
   "playground.status.checking": "Checking...",
   "playground.status.error": "Syntax or reference error detected",

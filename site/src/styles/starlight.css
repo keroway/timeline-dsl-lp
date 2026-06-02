@@ -3,13 +3,13 @@
   --sl-color-accent: #0d766f;
   --sl-color-accent-high: #07413d;
   --sl-font-system:
-    Aptos, "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic UI",
-    "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+    Aptos, "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic UI", "Yu Gothic",
+    "Noto Sans JP", system-ui, sans-serif;
   --sl-font-system-mono:
     "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   --sl-text-h1:
-    "Avenir Next", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic",
-    "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+    "Avenir Next", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic",
+    "Noto Sans JP", system-ui, sans-serif;
 }
 
 :where(h1, h2, h3, h4) {

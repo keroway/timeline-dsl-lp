@@ -68,7 +68,11 @@ export interface PlaygroundEditorOptions {
 }
 
 // Playground 用 CodeMirror エディタを生成して host にマウントする。
-export function createPlaygroundEditor({ host, doc, onDocChange }: PlaygroundEditorOptions): EditorView {
+export function createPlaygroundEditor({
+  host,
+  doc,
+  onDocChange,
+}: PlaygroundEditorOptions): EditorView {
   return new EditorView({
     state: EditorState.create({
       doc,

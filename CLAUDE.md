@@ -21,6 +21,10 @@ pnpm dev                        # 開発サーバー（localhost:4321）
 pnpm build                      # smoke:wasm → astro check → astro build
 pnpm preview                    # ビルド成果物をローカルプレビュー
 pnpm fetch:releases             # GitHub releases を site/src/data/ に取得
+pnpm lint                       # ESLint（.astro/.ts/.mjs/.js）
+pnpm lint:fix                   # ESLint 自動修正
+pnpm format                     # Prettier で全ファイルを整形
+pnpm format:check               # Prettier フォーマットチェック（CI 用）
 pnpm smoke:wasm                 # WASM 単体 smoke テスト
 pnpm smoke:playground           # Playground の HTTP smoke テスト
 pnpm smoke:playground:browser   # Playwright ブラウザ smoke テスト

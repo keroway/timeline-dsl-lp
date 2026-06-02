@@ -157,7 +157,9 @@
   }
 }
 
-:root[data-a11y-reduced-motion="true"] .scroll-reveal-enabled :is(.section-header, .feature, .workflow-step, .usecase) {
+:root[data-a11y-reduced-motion="true"]
+  .scroll-reveal-enabled
+  :is(.section-header, .feature, .workflow-step, .usecase) {
   opacity: 1;
   transform: none;
   animation: none;

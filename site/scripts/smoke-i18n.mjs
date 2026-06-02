@@ -106,10 +106,22 @@ async function smokeBrowserFlow(rootUrl) {
     await checkLangToggle(browser, rootUrl, "/en/", "/", "en → ja toggle");
 
     // Check /showcase/ → lang toggle → /en/showcase/
-    await checkLangToggle(browser, rootUrl, "/showcase/", "/en/showcase/", "ja showcase → en showcase toggle");
+    await checkLangToggle(
+      browser,
+      rootUrl,
+      "/showcase/",
+      "/en/showcase/",
+      "ja showcase → en showcase toggle",
+    );
 
     // Check /en/showcase/ → lang toggle → /showcase/
-    await checkLangToggle(browser, rootUrl, "/en/showcase/", "/showcase/", "en showcase → ja showcase toggle");
+    await checkLangToggle(
+      browser,
+      rootUrl,
+      "/en/showcase/",
+      "/showcase/",
+      "en showcase → ja showcase toggle",
+    );
   } finally {
     await browser.close();
   }
@@ -132,7 +144,9 @@ async function checkLangToggle(browser, rootUrl, startPath, expectedPath, label)
   await page.evaluate(() => {
     window.__langToggleTarget = null;
     Object.defineProperty(window.location, "assign", {
-      value: (url) => { window.__langToggleTarget = url; },
+      value: (url) => {
+        window.__langToggleTarget = url;
+      },
       writable: true,
       configurable: true,
     });
@@ -154,8 +168,8 @@ async function importPlaywright() {
   } catch (cause) {
     throw new Error(
       "Playwright module is installed but the Chromium binary is missing.\n" +
-      "Run: pnpm exec playwright install chromium\n" +
-      "Then rerun: pnpm smoke:i18n:browser -- --base-url <url>",
+        "Run: pnpm exec playwright install chromium\n" +
+        "Then rerun: pnpm smoke:i18n:browser -- --base-url <url>",
       { cause },
     );
   }
