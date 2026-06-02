@@ -30,7 +30,13 @@ export function createPanZoom({
   let tx = 0;
   let ty = 0;
 
-  let pendingPan: { startX: number; startY: number; startTx: number; startTy: number; pointerId: number } | null = null;
+  let pendingPan: {
+    startX: number;
+    startY: number;
+    startTx: number;
+    startTy: number;
+    pointerId: number;
+  } | null = null;
   let panActive = false;
   let rafId: number | null = null;
   let pendingTx = 0;
@@ -55,7 +61,7 @@ export function createPanZoom({
     const rect = surface.getBoundingClientRect();
     const sh = Math.max(
       120,
-      Math.min(surface.clientHeight, window.innerHeight - Math.max(0, rect.top))
+      Math.min(surface.clientHeight, window.innerHeight - Math.max(0, rect.top)),
     );
     const svgW = svg.viewBox.baseVal.width || svg.clientWidth || sw;
     const svgH = svg.viewBox.baseVal.height || svg.clientHeight || sh;
@@ -80,7 +86,13 @@ export function createPanZoom({
 
   const onPointerDown = (e: PointerEvent) => {
     if (e.button !== 0) return;
-    pendingPan = { startX: e.clientX, startY: e.clientY, startTx: tx, startTy: ty, pointerId: e.pointerId };
+    pendingPan = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startTx: tx,
+      startTy: ty,
+      pointerId: e.pointerId,
+    };
     panActive = false;
     surface.setPointerCapture(e.pointerId);
   };

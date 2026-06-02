@@ -24,9 +24,7 @@ const t = getT(locale);
   </div>
 
   <div class="gallery-grid">
-    {samples.map((sample) => (
-      <GalleryCard sample={sample} locale={locale} />
-    ))}
+    {samples.map((sample) => <GalleryCard sample={sample} locale={locale} />)}
   </div>
 </section>
 

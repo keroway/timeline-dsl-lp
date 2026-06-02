@@ -6,11 +6,7 @@
 //   pnpm smoke:a11y
 //   A11Y_BASE_URL=http://127.0.0.1:4321 pnpm smoke:a11y
 //   pnpm smoke:a11y -- --base-url https://example.localhost
-import {
-  DEFAULT_BASE_URL,
-  normalizeBaseUrl,
-  parseArgs,
-} from "./lib/smoke-helpers.mjs";
+import { DEFAULT_BASE_URL, normalizeBaseUrl, parseArgs } from "./lib/smoke-helpers.mjs";
 
 // WCAG 2.0/2.1 の A / AA を対象タグとする (axe-core のルールタグ)。
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
@@ -59,9 +55,7 @@ async function smokeA11y(rootUrl) {
 
         const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
 
-        const violations = results.violations.filter(
-          (violation) => !isAllowed(path, violation.id),
-        );
+        const violations = results.violations.filter((violation) => !isAllowed(path, violation.id));
 
         if (violations.length) {
           for (const violation of violations) {
@@ -90,7 +84,9 @@ async function smokeA11y(rootUrl) {
     throw new Error("a11y smoke failed: axe-core reported WCAG 2.1 AA violations.");
   }
 
-  console.log(`\na11y smoke: all ${PAGES.length} pages pass WCAG 2.1 AA (axe-core ${WCAG_TAGS.join(", ")}). ✓`);
+  console.log(
+    `\na11y smoke: all ${PAGES.length} pages pass WCAG 2.1 AA (axe-core ${WCAG_TAGS.join(", ")}). ✓`,
+  );
   if (ALLOWED_EXCEPTIONS.length) {
     console.log(`a11y smoke: ${ALLOWED_EXCEPTIONS.length} documented exception(s) suppressed.`);
   }
@@ -108,8 +104,8 @@ async function importPlaywright() {
   } catch (cause) {
     throw new Error(
       "Playwright module is installed but the Chromium binary is missing.\n" +
-      "Run: pnpm exec playwright install chromium\n" +
-      "Then rerun: pnpm smoke:a11y -- --base-url <url>",
+        "Run: pnpm exec playwright install chromium\n" +
+        "Then rerun: pnpm smoke:a11y -- --base-url <url>",
       { cause },
     );
   }

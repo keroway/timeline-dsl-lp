@@ -60,13 +60,15 @@ const jsonLdGraph = graphLd([
       locale={locale}
     />
     <link rel="canonical" href={canonicalUrl} />
-    {showAlternates && (
-      <>
-        <link rel="alternate" hreflang="ja" href={jaUrl} />
-        <link rel="alternate" hreflang="en" href={enUrl} />
-        <link rel="alternate" hreflang="x-default" href={jaUrl} />
-      </>
-    )}
+    {
+      showAlternates && (
+        <>
+          <link rel="alternate" hreflang="ja" href={jaUrl} />
+          <link rel="alternate" hreflang="en" href={enUrl} />
+          <link rel="alternate" hreflang="x-default" href={jaUrl} />
+        </>
+      )
+    }
     <script is:inline type="application/ld+json" set:html={jsonLdGraph} />
     <title>{title}</title>
   </head>
