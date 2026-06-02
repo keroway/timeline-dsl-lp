@@ -7,6 +7,16 @@ description: Timeline DSL CLI に関するよくある質問です。
 
 `tdsl build` でIR JSON、`tdsl render` でスタンドアロンHTMLを出力できます。HTMLはブラウザで開いて年表を確認できます。
 
+## どんな用途に向いていますか？
+
+ソース（`.tdsl` テキスト）を真実とし、差分やレビューを Git で管理したい年表に向いています。歴史・プロジェクト・人物史・プロダクトのリリース史などを、手書きまたは Wikidata / CSV 由来のデータから構築できます。
+
+- **手早く試したい**: ブラウザ完結の [Playground](/docs/playground/) で、インストールなしに DSL を書いて即描画できます。
+- **資料・成果物にしたい**: [CLI](/docs/installation/) の `tdsl render` でスタンドアロン HTML（テーマ・独自 CSS 対応）を出力できます。
+- **継続的に運用したい**: `tdsl check` / `tdsl lint` を CI に組み込み、年表をコードと同じレビュー対象にできます。
+
+逐次更新されるリアルタイムなダッシュボードや、対話的な編集 UI が主目的の場合は、本ツールの守備範囲外です。
+
 ## Wikidataなしでも使えますか？
 
 使えます。`timeline`、`lane`、`span`、`event`、`event_range` を手で書く静的な `.tdsl` ファイルはローカルで検証・ビルド・描画できます。Wikidata import を含むファイルでも、`build` と `render` に `--offline` を付けると静的項目だけを処理します。

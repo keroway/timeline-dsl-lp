@@ -7,11 +7,42 @@ This section is for those who fork and develop Timeline DSL itself or this docum
 
 If you only need to create, validate, and render `.tdsl` files, start with [Installation](/en/docs/installation/) and [Quick Start](/en/docs/quick-start/).
 
-## What belongs in this section
+## Local setup
 
-- Deploying this documentation site and verifying previews
-- Verification steps when creating pull requests
-- Supplementary information for repository development and operations
+This site is built with Astro + Starlight, and all commands run under `site/`. It uses pnpm as the package manager and Node.js 24.
+
+```sh
+cd site
+pnpm install --frozen-lockfile  # install dependencies
+pnpm dev                        # dev server (http://localhost:4321)
+```
+
+## Running smoke tests
+
+Before pushing a change, check for regressions with the relevant smoke tests.
+
+| Command                 | Purpose                                                          |
+| ----------------------- | ---------------------------------------------------------------- |
+| `pnpm build`            | `smoke:wasm` → `astro check` → `astro build`. The minimum CI bar |
+| `pnpm smoke:wasm`       | Unit smoke for the WASM bindings                                 |
+| `pnpm smoke:playground` | HTTP smoke for the Playground                                    |
+| `pnpm smoke:i18n`       | ja / en pairing and hreflang consistency                         |
+| `pnpm smoke:seo`        | title / meta / OGP / JSON-LD checks                              |
+
+When you change the UI, also run the browser smoke (`pnpm smoke:playground:browser`) locally once (it does not run in CI). The first run needs `pnpm exec playwright install chromium`.
+
+## Pull request conventions
+
+- Write commits in [Conventional Commits](https://www.conventionalcommits.org/) form (`feat:` / `fix:` / `docs:`, etc.).
+- Always link the issue with `Closes #N` in the PR body, and keep the PR title within 70 characters.
+- Split the PR when a change spans multiple concerns (1 PR = 1 logical change).
+- Force-pushing to main is forbidden (it breaks the CI history and the Cloudflare Pages deployment history).
+- Confirm the Cloudflare Pages preview deployment is green before merging.
+
+## i18n pairs and design tokens
+
+- When you edit a `ja` document, update the matching `en` page in the same PR. Do not leave English titles on Japanese pages.
+- Do not hard-code new colors; use the `--color-*` tokens in `site/src/styles/global.css`. When a new color is genuinely needed, add the light / dark / high-contrast set together.
 
 ## Related pages
 

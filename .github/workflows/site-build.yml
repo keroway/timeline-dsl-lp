@@ -36,6 +36,10 @@ jobs:
           cache-dependency-path: site/pnpm-lock.yaml
 
       - run: pnpm install --frozen-lockfile
+      - name: lint
+        run: pnpm lint
+      - name: format:check
+        run: pnpm format:check
       - run: pnpm build
 
       - name: Install Playwright Chromium (for a11y smoke)

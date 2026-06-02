@@ -71,3 +71,27 @@ tdsl render sample.tdsl \
 ```
 
 Use `--custom-css` to add custom CSS.
+
+## The Playground fails to load WASM
+
+The [Playground](/en/docs/playground/) runs WASM in the browser. If it stays on "Loading…" or nothing renders, first open the Console / Network tab in your browser's developer tools.
+
+- Check that the WASM file request returns `200` and that the response `Content-Type` is `application/wasm`. If it is served as `application/octet-stream` or similar, the browser fails to streaming-compile it.
+- Check that a corporate proxy or ad blocker is not blocking the `.wasm` request.
+- Read the Console error message (`CompileError` / `LinkError`, etc.) as-is to tell whether the cause is network- or runtime-related.
+
+## The Playground shows stale results
+
+If you see old results right after a deploy, the cause is caching.
+
+- Hard reload (macOS: `Cmd+Shift+R` / Windows: `Ctrl+Shift+R`) to bypass the browser cache and refetch.
+- If that does not help, clear the site's Cache Storage / Service Worker from the Application tab in developer tools.
+- If you are trying new DSL syntax and hit a parse error, the WASM loaded by the Playground may be outdated. Confirm that the latest deployment is live.
+
+## Unsupported browsers
+
+The Playground requires [WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly). It works in modern Chrome / Edge / Firefox / Safari, but not in environments where WebAssembly is disabled or in extremely old browsers.
+
+- Update your browser to the latest version, or reopen the page in another modern browser.
+- If a browser extension disables WebAssembly, turn it off.
+- If you need it to run reliably on your machine, consider the browser-independent [CLI](/en/docs/installation/) (`tdsl render`).
