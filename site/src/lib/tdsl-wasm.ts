@@ -41,7 +41,8 @@ export const TDSL_WASM_IMPORT_STRATEGY = {
   kind: "vendored-wasm-pack",
   source: "timeline-dsl/apps/webui/src/wasm",
   assetBasePath: "/wasm/",
-  updateCommand: "wasm-pack build crates/tdsl-wasm --target web --out-dir apps/webui/src/wasm --no-opt",
+  updateCommand:
+    "wasm-pack build crates/tdsl-wasm --target web --out-dir apps/webui/src/wasm --no-opt",
 } as const;
 
 export const TDSL_WASM_FALLBACK_MESSAGE =
@@ -111,7 +112,8 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
       status: "ready",
       api: {
         compileToIr: rawModule.compile_to_ir,
-        renderSvgFromSource: (source, scale) => rawModule.render_svg_from_source(source, scale ?? RENDER_SVG_AUTO_SCALE),
+        renderSvgFromSource: (source, scale) =>
+          rawModule.render_svg_from_source(source, scale ?? RENDER_SVG_AUTO_SCALE),
         renderHtmlFromSource: rawModule.render_html_from_source,
         checkSource(source) {
           return parseDiagnostics(rawModule.check_source(source));
@@ -150,18 +152,27 @@ function isDiagnostic(value: unknown): value is TdslDiagnostic {
   );
 }
 
-function withWikidataImportWarning(source: string, diagnostics: TdslDiagnostic[]): TdslDiagnostic[] {
+function withWikidataImportWarning(
+  source: string,
+  diagnostics: TdslDiagnostic[],
+): TdslDiagnostic[] {
   if (!/(^|\n)\s*import\s+/.test(source)) {
     return diagnostics;
   }
 
   return [
     ...diagnostics,
-    toDiagnostic("ブラウザ版 WASM は Wikidata import の解決に対応していません。静的項目だけを検証・描画します。", "warning"),
+    toDiagnostic(
+      "ブラウザ版 WASM は Wikidata import の解決に対応していません。静的項目だけを検証・描画します。",
+      "warning",
+    ),
   ];
 }
 
-function toDiagnostic(message: string, severityOrCause: TdslDiagnosticSeverity | unknown = "error"): TdslDiagnostic {
+function toDiagnostic(
+  message: string,
+  severityOrCause: TdslDiagnosticSeverity | unknown = "error",
+): TdslDiagnostic {
   return {
     severity: severityOrCause === "warning" ? "warning" : "error",
     message,

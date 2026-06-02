@@ -19,17 +19,17 @@ tdsl build sample.tdsl --pretty --output sample.json
 tdsl render sample.tdsl --output sample.html
 ```
 
-| Command | Description |
-|---|---|
-| `tdsl check <FILE>` | Run a syntax and semantic check |
-| `tdsl lint <FILE>` | Run a quality check |
-| `tdsl build <FILE>` | Compile `.tdsl` to IR JSON |
-| `tdsl render <FILE>` | Render to a standalone HTML file |
-| `tdsl ast <FILE>` | Output the AST for debugging |
-| `tdsl decompile <FILE>` | Decompile JSON IR back to `.tdsl` (v1.1.0+) |
-| `tdsl merge <FILES...>` | Merge multiple `.tdsl` files into one (v1.2.0+) |
-| `tdsl completions <SHELL>` | Generate shell completion scripts (v1.9.0+) |
-| `tdsl lsp` | Start the language server (LSP) (v1.11.0+) |
+| Command                    | Description                                     |
+| -------------------------- | ----------------------------------------------- |
+| `tdsl check <FILE>`        | Run a syntax and semantic check                 |
+| `tdsl lint <FILE>`         | Run a quality check                             |
+| `tdsl build <FILE>`        | Compile `.tdsl` to IR JSON                      |
+| `tdsl render <FILE>`       | Render to a standalone HTML file                |
+| `tdsl ast <FILE>`          | Output the AST for debugging                    |
+| `tdsl decompile <FILE>`    | Decompile JSON IR back to `.tdsl` (v1.1.0+)     |
+| `tdsl merge <FILES...>`    | Merge multiple `.tdsl` files into one (v1.2.0+) |
+| `tdsl completions <SHELL>` | Generate shell completion scripts (v1.9.0+)     |
+| `tdsl lsp`                 | Start the language server (LSP) (v1.11.0+)      |
 
 `build` and `render` may perform network access when processing files that include Wikidata imports. Use `--offline` if you only want to process locally-defined items.
 
@@ -117,13 +117,13 @@ tdsl scaffold wikidata \
 tdsl render china.tdsl --output china.html
 ```
 
-| Command | Description |
-|---|---|
-| `tdsl search <QUERY>` | Search Wikidata for candidate QIDs |
-| `tdsl inspect <QID>` | Verify the timeline plan for a QID |
-| `tdsl fetch <QID>` | Display data for a Wikidata entity |
-| `tdsl resolve <URL>` | Resolve a Wikipedia article URL to a Wikidata QID |
-| `tdsl scaffold wikidata` | Generate a `.tdsl` scaffold from multiple QIDs |
+| Command                  | Description                                       |
+| ------------------------ | ------------------------------------------------- |
+| `tdsl search <QUERY>`    | Search Wikidata for candidate QIDs                |
+| `tdsl inspect <QID>`     | Verify the timeline plan for a QID                |
+| `tdsl fetch <QID>`       | Display data for a Wikidata entity                |
+| `tdsl resolve <URL>`     | Resolve a Wikipedia article URL to a Wikidata QID |
+| `tdsl scaffold wikidata` | Generate a `.tdsl` scaffold from multiple QIDs    |
 
 `search`, `inspect`, and `resolve` support `--json` for use in CI or integration with other tools.
 
@@ -156,26 +156,26 @@ tdsl cache clear           # Delete all cached entries
 tdsl cache clear --dry-run # Preview what would be deleted (without actually deleting)
 ```
 
-| Command | Description |
-|---|---|
-| `tdsl cache list` | Show cached entries and their sizes |
-| `tdsl cache clear` | Delete all cache entries |
+| Command            | Description                         |
+| ------------------ | ----------------------------------- |
+| `tdsl cache list`  | Show cached entries and their sizes |
+| `tdsl cache clear` | Delete all cache entries            |
 
 The cache is stored under the OS data directory (`data_dir` from the `dirs` crate). Pass `--no-cache` to bypass the cache and re-fetch from Wikidata.
 
 ## Common Options
 
-| Option | Applies To | Description |
-|---|---|---|
-| `--pretty` | `build` | Pretty-print the JSON output |
-| `--output`, `-o` | `build`, `render`, `init`, `import-csv` | Specify the output path |
-| `--offline` | `build`, `render` | Skip Wikidata fetching |
-| `--no-cache` | `build`, `render` | Re-fetch from Wikidata without using the cache |
-| `--cache-ttl <seconds>` | `build`, `render` | Specify the TTL for the Wikidata cache |
-| `--wikidata-timeout <seconds>` | `build`, `render`, `search`, `inspect` | Set the HTTP timeout for Wikidata requests (v1.4.0+) |
-| `--format html,svg,png,pdf` | `render` | Specify the output format (default `html`; `--format pdf` from v1.11.0+) |
-| `--dpi <number>` | `render` | Rasterization DPI for PNG output (default 96; mutually exclusive with `--png-scale`; v1.11.0+) |
-| `--png-scale <multiplier>` | `render` | Fixed pixel scale multiplier for PNG output (mutually exclusive with `--dpi`; v1.11.0+) |
-| `--orientation horizontal,vertical` | `render` | Specify the timeline orientation (default `horizontal`; v1.13.0+) |
-| `--format text,json` | `lint` | Specify the output format for lint results |
-| `--fix` | `lint` | Apply safe fixes to the file |
+| Option                              | Applies To                              | Description                                                                                    |
+| ----------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `--pretty`                          | `build`                                 | Pretty-print the JSON output                                                                   |
+| `--output`, `-o`                    | `build`, `render`, `init`, `import-csv` | Specify the output path                                                                        |
+| `--offline`                         | `build`, `render`                       | Skip Wikidata fetching                                                                         |
+| `--no-cache`                        | `build`, `render`                       | Re-fetch from Wikidata without using the cache                                                 |
+| `--cache-ttl <seconds>`             | `build`, `render`                       | Specify the TTL for the Wikidata cache                                                         |
+| `--wikidata-timeout <seconds>`      | `build`, `render`, `search`, `inspect`  | Set the HTTP timeout for Wikidata requests (v1.4.0+)                                           |
+| `--format html,svg,png,pdf`         | `render`                                | Specify the output format (default `html`; `--format pdf` from v1.11.0+)                       |
+| `--dpi <number>`                    | `render`                                | Rasterization DPI for PNG output (default 96; mutually exclusive with `--png-scale`; v1.11.0+) |
+| `--png-scale <multiplier>`          | `render`                                | Fixed pixel scale multiplier for PNG output (mutually exclusive with `--dpi`; v1.11.0+)        |
+| `--orientation horizontal,vertical` | `render`                                | Specify the timeline orientation (default `horizontal`; v1.13.0+)                              |
+| `--format text,json`                | `lint`                                  | Specify the output format for lint results                                                     |
+| `--fix`                             | `lint`                                  | Apply safe fixes to the file                                                                   |

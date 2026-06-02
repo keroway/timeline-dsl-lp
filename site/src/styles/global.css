@@ -42,13 +42,12 @@
   --color-terminal-warn: #e0bd66;
   --color-terminal-error: #ff947d;
   --font-display:
-    "Avenir Next", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic",
-    "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+    "Avenir Next", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic",
+    "Noto Sans JP", system-ui, sans-serif;
   --font-sans:
-    Aptos, "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic UI",
-    "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
-  --font-mono:
-    "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    Aptos, "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic UI", "Yu Gothic",
+    "Noto Sans JP", system-ui, sans-serif;
+  --font-mono: "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   --font-size-base: 1rem;
   --line-height-base: 1.65;
   --letter-spacing-base: 0em;
@@ -424,7 +423,11 @@ h1 {
 .site-footer {
   border-top: 1px solid var(--color-line);
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 93%), color-mix(in srgb, var(--color-gold), transparent 96%)),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-accent), transparent 93%),
+      color-mix(in srgb, var(--color-gold), transparent 96%)
+    ),
     var(--color-panel);
   color: var(--color-muted);
 }

@@ -31,9 +31,7 @@ function normalizeRelease(release) {
 
 function getNextPageUrl(response) {
   const link = response.headers.get("link");
-  const nextLink = link
-    ?.split(",")
-    .find((value) => value.includes('rel="next"'));
+  const nextLink = link?.split(",").find((value) => value.includes('rel="next"'));
 
   return nextLink?.match(/<([^>]+)>/)?.[1] ?? null;
 }
@@ -81,9 +79,7 @@ async function writePayload(payload) {
 
 try {
   const releases = await fetchReleases();
-  await writePayload(
-    createPayload({ fetchedAt: new Date().toISOString(), releases }),
-  );
+  await writePayload(createPayload({ fetchedAt: new Date().toISOString(), releases }));
   console.log(`Wrote ${releases.length} releases to ${OUTPUT_PATH}`);
 } catch (error) {
   await writePayload(createPayload());

@@ -38,11 +38,11 @@ code --install-extension keroway.timeline-dsl
 
 ### Available snippets
 
-| Prefix | Expands to |
-| --- | --- |
+| Prefix     | Expands to                                                                          |
+| ---------- | ----------------------------------------------------------------------------------- |
 | `timeline` | Template for a `timeline` block (includes `title`, `unit`, `range`, and `calendar`) |
-| `lane` | Template for a `lane` definition (includes `kind` and `order`) |
-| `span` | Template for a `span` event (with start and end dates) |
+| `lane`     | Template for a `lane` definition (includes `kind` and `order`)                      |
+| `span`     | Template for a `span` event (with start and end dates)                              |
 
 Snippets are active in files with the `.tdsl` extension.
 
@@ -52,16 +52,16 @@ The VS Code extension provides syntax highlighting and snippets. Interactive fea
 
 Since v1.11.0, you can start the Timeline DSL language server (LSP) with `tdsl lsp`. The server communicates over standard input/output (stdio), so any editor with an LSP client (VS Code, Neovim, Helix, Emacs, etc.) can connect to it and get interactive assistance while editing `.tdsl` files. It is independent of the VS Code extension (which only provides syntax highlighting and snippets).
 
-| Feature | Description | Version |
-| --- | --- | --- |
-| Diagnostics | Reports syntax and semantic errors in real time while editing | v1.11.0+ |
-| Completion | Completes DSL keywords | v1.12.0+ |
-| Hover | Shows hover information for lane IDs / QIDs | v1.12.0+ |
-| Goto Definition | Jumps from a lane reference to its lane declaration | v1.12.0+ |
-| References | Returns the declaration and all reference locations of a lane ID | v1.13.0+ |
-| Rename | Renames a lane ID across its declaration and all references | v1.13.0+ |
-| Code Action | Provides lint auto-fixes as quick fixes | v1.13.0+ |
-| Document Symbol | Returns hierarchical symbols (timeline > lane > items) | v1.13.0+ |
+| Feature         | Description                                                      | Version  |
+| --------------- | ---------------------------------------------------------------- | -------- |
+| Diagnostics     | Reports syntax and semantic errors in real time while editing    | v1.11.0+ |
+| Completion      | Completes DSL keywords                                           | v1.12.0+ |
+| Hover           | Shows hover information for lane IDs / QIDs                      | v1.12.0+ |
+| Goto Definition | Jumps from a lane reference to its lane declaration              | v1.12.0+ |
+| References      | Returns the declaration and all reference locations of a lane ID | v1.13.0+ |
+| Rename          | Renames a lane ID across its declaration and all references      | v1.13.0+ |
+| Code Action     | Provides lint auto-fixes as quick fixes                          | v1.13.0+ |
+| Document Symbol | Returns hierarchical symbols (timeline > lane > items)           | v1.13.0+ |
 
 The launch command takes no arguments.
 

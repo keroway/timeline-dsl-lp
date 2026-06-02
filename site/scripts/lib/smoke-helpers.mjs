@@ -51,7 +51,9 @@ export function normalizeBaseUrl(value) {
 export async function get(url) {
   const response = await fetch(url, { redirect: "manual" });
   if (response.status >= 300 && response.status < 400) {
-    throw new Error(`${url} redirected with ${response.status}; smoke expects a directly served asset/page.`);
+    throw new Error(
+      `${url} redirected with ${response.status}; smoke expects a directly served asset/page.`,
+    );
   }
   return response;
 }

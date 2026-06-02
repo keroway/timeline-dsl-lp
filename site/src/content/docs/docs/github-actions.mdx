@@ -14,7 +14,7 @@ name: Render Timeline
 
 on:
   push:
-    paths: ['**/*.tdsl']
+    paths: ["**/*.tdsl"]
 
 jobs:
   render:
@@ -36,21 +36,21 @@ jobs:
 
 ### インプット
 
-| インプット | 必須 | デフォルト | 説明 |
-| --- | --- | --- | --- |
-| `file` | ✅ | — | レンダリングする `.tdsl` ファイルのパス |
-| `format` | — | `svg` | 出力フォーマット: `svg` または `html` |
-| `output` | — | `<basename>.<format>` | 出力ファイルパス |
-| `offline` | — | `false` | オフラインモード（Wikidata フェッチをスキップ） |
-| `interactive` | — | `false` | インタラクティブ HTML 出力（`format: html` 時のみ） |
-| `theme` | — | （CLI デフォルト） | テーマ: `default` / `dark` / `print` / `pastel` |
-| `scale` | — | （CLI デフォルト） | 水平軸のピクセル/年レート |
-| `version` | — | `latest` | 使用する tdsl バージョン（例: `v1.6.0`） |
+| インプット    | 必須 | デフォルト            | 説明                                                |
+| ------------- | ---- | --------------------- | --------------------------------------------------- |
+| `file`        | ✅   | —                     | レンダリングする `.tdsl` ファイルのパス             |
+| `format`      | —    | `svg`                 | 出力フォーマット: `svg` または `html`               |
+| `output`      | —    | `<basename>.<format>` | 出力ファイルパス                                    |
+| `offline`     | —    | `false`               | オフラインモード（Wikidata フェッチをスキップ）     |
+| `interactive` | —    | `false`               | インタラクティブ HTML 出力（`format: html` 時のみ） |
+| `theme`       | —    | （CLI デフォルト）    | テーマ: `default` / `dark` / `print` / `pastel`     |
+| `scale`       | —    | （CLI デフォルト）    | 水平軸のピクセル/年レート                           |
+| `version`     | —    | `latest`              | 使用する tdsl バージョン（例: `v1.6.0`）            |
 
 ### アウトプット
 
-| アウトプット | 説明 |
-| --- | --- |
+| アウトプット  | 説明                             |
+| ------------- | -------------------------------- |
 | `output_path` | 生成された出力ファイルの絶対パス |
 
 ### PR で変更された .tdsl を SVG プレビューとしてアーティファクト化する例
@@ -60,7 +60,7 @@ name: TDSL Preview
 
 on:
   pull_request:
-    paths: ['**/*.tdsl']
+    paths: ["**/*.tdsl"]
 
 jobs:
   preview:
@@ -74,12 +74,12 @@ jobs:
         with:
           file: examples/china_dynasties.tdsl
           format: svg
-          offline: 'true'
+          offline: "true"
 
       - uses: actions/upload-artifact@v4
         with:
           name: tdsl-preview
-          path: '*.svg'
+          path: "*.svg"
 ```
 
 ## tdsl CLI を直接インストールして使う

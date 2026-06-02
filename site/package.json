@@ -52,7 +52,7 @@
     "typescript": "6.0.3"
   },
   "simple-git-hooks": {
-    "pre-commit": "cd site && pnpm exec lint-staged && if git diff --cached --name-only | grep -q 'site/src/'; then cd site && pnpm astro check; fi"
+    "pre-commit": "cd site && pnpm exec lint-staged && if git diff --cached --name-only | grep -q 'site/src/'; then pnpm astro check; fi"
   },
   "lint-staged": {
     "src/**/*.{astro,ts,mjs,mdx,js}": [

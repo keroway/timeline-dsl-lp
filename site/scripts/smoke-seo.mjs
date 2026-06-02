@@ -42,20 +42,70 @@ async function smokeSeo(rootUrl) {
   console.log(`hreflang: 3 tags confirmed on ${hreflangTargets.length} pages. ✓`);
 
   const jsonLdTargets = [
-    { path: "/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'] },
-    { path: "/en/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'] },
+    {
+      path: "/",
+      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'],
+    },
+    {
+      path: "/en/",
+      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'],
+    },
     { path: "/en/playground/", required: ['"@type":"Organization"', '"@type":"WebPage"'] },
     { path: "/en/gallery/", required: ['"@type":"Organization"', '"@type":"WebPage"'] },
-    { path: "/showcase/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"', '"@type":"CollectionPage"'] },
-    { path: "/en/showcase/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"', '"@type":"CollectionPage"'] },
-    { path: "/showcase/oda-nobunaga/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'] },
-    { path: "/en/showcase/oda-nobunaga/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'] },
-    { path: "/showcase/natsume-soseki/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'] },
-    { path: "/en/showcase/natsume-soseki/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'] },
+    {
+      path: "/showcase/",
+      required: [
+        '"@type":"Organization"',
+        '"@type":"WebPage"',
+        '"@type":"BreadcrumbList"',
+        '"@type":"CollectionPage"',
+      ],
+    },
+    {
+      path: "/en/showcase/",
+      required: [
+        '"@type":"Organization"',
+        '"@type":"WebPage"',
+        '"@type":"BreadcrumbList"',
+        '"@type":"CollectionPage"',
+      ],
+    },
+    {
+      path: "/showcase/oda-nobunaga/",
+      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    },
+    {
+      path: "/en/showcase/oda-nobunaga/",
+      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    },
+    {
+      path: "/showcase/natsume-soseki/",
+      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    },
+    {
+      path: "/en/showcase/natsume-soseki/",
+      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    },
     { path: "/docs/", required: ['"@type":"Organization"', '"@type":"BreadcrumbList"'] },
     { path: "/en/docs/", required: ['"@type":"Organization"', '"@type":"BreadcrumbList"'] },
-    { path: "/changelog/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"CollectionPage"', '"@type":"Article"'] },
-    { path: "/en/changelog/", required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"CollectionPage"', '"@type":"Article"'] },
+    {
+      path: "/changelog/",
+      required: [
+        '"@type":"Organization"',
+        '"@type":"WebPage"',
+        '"@type":"CollectionPage"',
+        '"@type":"Article"',
+      ],
+    },
+    {
+      path: "/en/changelog/",
+      required: [
+        '"@type":"Organization"',
+        '"@type":"WebPage"',
+        '"@type":"CollectionPage"',
+        '"@type":"Article"',
+      ],
+    },
   ];
   for (const { path, required } of jsonLdTargets) {
     const res = await get(`${rootUrl}${path}`);
@@ -73,6 +123,10 @@ async function smokeSeo(rootUrl) {
   const robotsBody = await robotsRes.text();
   assertIncludes(robotsBody, "User-agent: *", "robots.txt must list User-agent: *");
   assertIncludes(robotsBody, "Sitemap:", "robots.txt must include a Sitemap line");
-  assertIncludes(robotsBody, "sitemap-index.xml", "robots.txt Sitemap must point to sitemap-index.xml");
+  assertIncludes(
+    robotsBody,
+    "sitemap-index.xml",
+    "robots.txt Sitemap must point to sitemap-index.xml",
+  );
   console.log("robots.txt: served with User-agent / Sitemap entries. ✓");
 }

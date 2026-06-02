@@ -2,7 +2,11 @@
   border-top: 1px solid var(--color-line);
   border-bottom: 1px solid var(--color-line);
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--color-accent), transparent 92%), color-mix(in srgb, var(--color-plum), transparent 94%)),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-accent), transparent 92%),
+      color-mix(in srgb, var(--color-plum), transparent 94%)
+    ),
     var(--color-panel);
 }
 
