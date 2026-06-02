@@ -1,6 +1,6 @@
 ---
 import { Code } from "astro:components";
-import { getT, type Locale } from "../../i18n/index";
+import { getT, type Locale, type DictionaryKeys } from "../../i18n/index";
 import tdslGrammar from "../../lib/tdsl.tmLanguage.json" with { type: "json" };
 
 interface Props {
@@ -22,12 +22,16 @@ const tdslCodeThemes = { light: "github-light", dark: "github-dark" } as const;
 const playgroundBase = locale === "ja" ? "" : "/en";
 ---
 
-<article class="gallery-card" data-gallery-id={sample.id}>
+<article class="gallery-card" data-gallery-id={sample.id} data-tags={sample.tags.join(" ")}>
   <div class="gallery-card-header">
     <h3>{sample.title}</h3>
     <p class="gallery-card-desc">{sample.description}</p>
     <div class="gallery-tags" aria-label={t("gallery.tags.aria_label")}>
-      {sample.tags.map((tag) => <span class="gallery-tag">{tag}</span>)}
+      {
+        sample.tags.map((tag) => (
+          <span class="gallery-tag">{t(`gallery.tag.${tag}` as DictionaryKeys)}</span>
+        ))
+      }
     </div>
   </div>
 
