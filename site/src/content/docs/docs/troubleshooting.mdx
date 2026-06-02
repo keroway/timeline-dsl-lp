@@ -71,3 +71,27 @@ tdsl render sample.tdsl \
 ```
 
 独自CSSを追加する場合は `--custom-css` を使います。
+
+## Playground で WASM が読み込めない
+
+[Playground](/docs/playground/) はブラウザ内で WASM を実行します。「Loading…」のまま動かない、または描画されない場合は、まずブラウザの開発者ツールの Console / Network タブを開きます。
+
+- WASM ファイルのリクエストが `200` で返り、レスポンスの `Content-Type` が `application/wasm` になっているか確認します。`application/octet-stream` などで配信されているとブラウザが streaming compile に失敗します。
+- 社内プロキシや広告ブロッカーが `.wasm` のリクエストを遮断していないか確認します。
+- Console に出ているエラーメッセージ（`CompileError` / `LinkError` など）をそのまま確認し、ネットワーク要因か実行時要因かを切り分けます。
+
+## Playground の表示が古い・反映されない
+
+デプロイ直後に古い結果が表示される場合は、キャッシュが原因です。
+
+- ハードリロード（macOS: `Cmd+Shift+R` / Windows: `Ctrl+Shift+R`）でブラウザキャッシュを無視して再取得します。
+- それでも直らない場合は、開発者ツールの Application タブから当該サイトの Cache Storage / Service Worker をクリアします。
+- 新しい DSL 構文を試していて parse エラーになる場合は、Playground が読み込む WASM が古い可能性があります。最新のデプロイが反映されているかを確認してください。
+
+## 非対応ブラウザ
+
+Playground は [WebAssembly](https://developer.mozilla.org/ja/docs/WebAssembly) を必須とします。モダンな Chrome / Edge / Firefox / Safari では動作しますが、WebAssembly を無効化した環境や、極端に古いブラウザでは動きません。
+
+- ブラウザを最新版に更新するか、別のモダンブラウザで開き直します。
+- ブラウザ拡張で WebAssembly を無効化している場合は解除します。
+- 手元で確実に動かしたい場合は、ブラウザに依存しない [CLI](/docs/installation/)（`tdsl render`）の利用を検討してください。
