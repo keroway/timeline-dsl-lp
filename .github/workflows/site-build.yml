@@ -40,6 +40,8 @@ jobs:
         run: pnpm lint
       - name: format:check
         run: pnpm format:check
+      - name: test:unit
+        run: pnpm test:unit
       - run: pnpm build
 
       - name: Install Playwright Chromium (for a11y smoke)

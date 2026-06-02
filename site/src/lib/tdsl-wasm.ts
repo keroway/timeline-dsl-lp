@@ -125,7 +125,7 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
   }
 }
 
-function parseDiagnostics(raw: string): TdslDiagnostic[] {
+export function parseDiagnostics(raw: string): TdslDiagnostic[] {
   try {
     const parsed = JSON.parse(raw) as unknown;
     if (!Array.isArray(parsed)) {
@@ -138,7 +138,7 @@ function parseDiagnostics(raw: string): TdslDiagnostic[] {
   }
 }
 
-function isDiagnostic(value: unknown): value is TdslDiagnostic {
+export function isDiagnostic(value: unknown): value is TdslDiagnostic {
   if (!value || typeof value !== "object") {
     return false;
   }
@@ -152,7 +152,7 @@ function isDiagnostic(value: unknown): value is TdslDiagnostic {
   );
 }
 
-function withWikidataImportWarning(
+export function withWikidataImportWarning(
   source: string,
   diagnostics: TdslDiagnostic[],
 ): TdslDiagnostic[] {
@@ -169,7 +169,7 @@ function withWikidataImportWarning(
   ];
 }
 
-function toDiagnostic(
+export function toDiagnostic(
   message: string,
   severityOrCause: TdslDiagnosticSeverity | unknown = "error",
 ): TdslDiagnostic {
