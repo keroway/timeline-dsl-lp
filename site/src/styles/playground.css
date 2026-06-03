@@ -347,7 +347,8 @@
 
 .pan-zoom-stage svg {
   display: block;
-  background: #ffffff;
+  /* lane band 外のはみ出し領域。lane band（--color-bg）と揃えテーマ連動させる */
+  background: var(--color-bg);
   box-shadow: 0 8px 24px color-mix(in srgb, var(--color-ink), transparent 90%);
 }
 
