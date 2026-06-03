@@ -62,6 +62,7 @@ Since v1.11.0, you can start the Timeline DSL language server (LSP) with `tdsl l
 | Rename          | Renames a lane ID across its declaration and all references      | v1.13.0+ |
 | Code Action     | Provides lint auto-fixes as quick fixes                          | v1.13.0+ |
 | Document Symbol | Returns hierarchical symbols (timeline > lane > items)           | v1.13.0+ |
+| Formatting      | Formats the whole document to the canonical style                | v1.14.0+ |
 
 The launch command takes no arguments.
 
@@ -109,6 +110,7 @@ VS Code has no dedicated `.tdsl` LSP client, so register it from a generic LSP c
 - **References**: place the cursor on a lane declaration or reference to list all references of that lane ID (`lane` declaration, the `lane` field of `span` / `event` / `event_range`, and the `lane` property of `map`).
 - **Rename**: renaming on a lane ID replaces the declaration and all references at once. Rename is rejected on anything other than a lane ID (keywords, string literals).
 - **Document Symbol**: returns an outline in the hierarchy `timeline` > `lane` > items (`span` / `event` / `event_range`).
+- **Formatting**: formats the whole document to the canonical style via your editor's format command (v1.14.0+). It uses the same formatting engine as the CLI `tdsl fmt`. Applying formatting loses comments (`//` and `/* */`).
 
 All features run on static analysis of the source text and need no network I/O (offline).
 
