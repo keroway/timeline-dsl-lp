@@ -1,8 +1,8 @@
 {
-  "name": "tdsl-wasm",
+  "name": "@keroway/tdsl-wasm",
   "type": "module",
   "description": "WebAssembly bindings for the Timeline DSL compiler (static compile + SVG/HTML render)",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -25,5 +25,11 @@
     "dsl",
     "svg",
     "visualization"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/keroway/timeline-dsl/issues"
+  }
 }
