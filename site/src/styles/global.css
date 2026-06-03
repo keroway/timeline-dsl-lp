@@ -182,6 +182,48 @@
   }
 }
 
+/* Timeline preview SVG（WASM 出力 .tdsl-root）の着色。
+   WASM (crates/tdsl-render/src/svg.rs) が出力する SVG は class のみで fill/stroke を
+   持たないため、ここで一括着色する。未指定だと rect は黒 fill / line は stroke:none に
+   なり、lane band が黒塗り・軸線が不可視になる（本家 webui の App.css 相当を移植）。
+   色は既存テーマトークンに連動させ light=白系 / dark=暗色系で表示する。
+   Playground / Gallery / TimelineEmbed の全 preview で共通。 */
+.tdsl-root .tdsl-lane-band-even {
+  fill: var(--color-bg);
+}
+.tdsl-root .tdsl-lane-band-odd {
+  fill: var(--color-panel);
+}
+.tdsl-root .tdsl-axis-baseline {
+  stroke: var(--color-muted);
+}
+.tdsl-root .tdsl-event-stem {
+  stroke: var(--color-muted);
+}
+.tdsl-root .tdsl-axis-tick,
+.tdsl-root .tdsl-axis-month-tick,
+.tdsl-root .tdsl-axis-day-tick,
+.tdsl-root .tdsl-grid-line,
+.tdsl-root .tdsl-group-separator {
+  stroke: var(--color-line);
+}
+.tdsl-root .tdsl-axis-text,
+.tdsl-root .tdsl-axis-day-text {
+  fill: var(--color-muted);
+}
+.tdsl-root .tdsl-lane-label,
+.tdsl-root .tdsl-group-label {
+  fill: var(--color-ink);
+}
+/* span / event の本体はデータ駆動（lane パレット）で fill 済み。ラベルは有色バー上の
+   固定前景なので白固定トークン（--color-on-lane）を使う。ヒット領域は透明。 */
+.tdsl-root .tdsl-item-label {
+  fill: var(--color-on-lane);
+}
+.tdsl-root .tdsl-event-hit {
+  fill: transparent;
+}
+
 * {
   box-sizing: border-box;
 }
