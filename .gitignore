@@ -18,4 +18,5 @@ screenshot-*.png
 panzoom-*.png
 playground-*.png
 site/test-results/
+site/.lighthouseci/
 .serena/

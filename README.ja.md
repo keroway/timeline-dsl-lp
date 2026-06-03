@@ -45,6 +45,29 @@ Event policy:
 
 Cloudflare の設定画面で Deploy command が必須になっている場合や、非本番ブランチのデプロイコマンドが表示されている場合は、Pages ではなく Workers Builds の設定です。このサイトは Workers ではなく Pages project として、Cloudflare dashboard の Pages から GitHub repository を import します。
 
+## Quality gates (Lighthouse CI)
+
+`Site build` ワークフローは smoke の後に、起動済み preview server を相手に Lighthouse CI (`@lhci/cli`) を実行します。performance / accessibility / SEO / best-practices スコアの劣化を CI で検知します。ローカルでは preview を立ててから実行します:
+
+```sh
+cd site
+pnpm preview &          # または pnpm dev
+pnpm lhci               # 別 origin を対象にする場合は LHCI_BASE_URL を渡す
+```
+
+監査対象 (ja / en 両系統からアーキタイプを 1 ページずつ抽出): `/`、`/en/`、`/docs/`、`/playground/`、`/gallery/`。各ページを 3 回計測し中央値で assertion します。設定: `site/lighthouserc.cjs`。
+
+baseline 閾値と根拠:
+
+| カテゴリ | レベル | 最低スコア | 根拠 |
+| --- | --- | --- | --- |
+| Performance | `warn` | 0.80 | LCP/TBT は共有 CI ランナーの負荷でゆらぐ。まずは非ブロッキングの warn で開始し、安定を確認してから `error` へ引き上げる (段階導入)。 |
+| Accessibility | `error` | 0.90 | トークン駆動の静的サイトでは安定して取れる。axe-core の `smoke:a11y` を補完する。 |
+| Best practices | `error` | 0.90 | console エラー・安全でないリソース・非推奨 API の混入を検知する。 |
+| SEO | `error` | 0.90 | 発見性がサイトの生命線。metadata / hreflang / JSON-LD の劣化は CI で fail させる。 |
+
+docs サイトはデスクトップ閲覧が主なため desktop preset を使い、performance スコアを安定させています。閾値の引き上げや performance の `error` 昇格は `site/lighthouserc.cjs` の `assert.assertions` を編集します。
+
 ## WASM bundle
 
 Playground と runnable docs からは `site/src/lib/tdsl-wasm.ts` だけを経由して Timeline DSL WASM を呼び出します。現時点では本体 repo の npm package / release artifact がまだ固定されていないため、`wasm-pack --target web` の生成物を `site/public/wasm/` に vendoring します。
