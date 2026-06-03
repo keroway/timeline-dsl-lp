@@ -45,6 +45,29 @@ Event policy:
 
 If the Cloudflare settings UI requires a Deploy command or shows a deploy command for non-production branches, you are looking at Workers Builds, not Pages. This site is a Pages project — import the GitHub repository from Pages in the Cloudflare dashboard, not Workers.
 
+## Quality gates (Lighthouse CI)
+
+The `Site build` workflow runs Lighthouse CI (`@lhci/cli`) against the running preview server after the smoke tests, guarding against silent regressions in performance, accessibility, SEO, and best-practices scores. Run it locally with the preview server up:
+
+```sh
+cd site
+pnpm preview &          # or pnpm dev
+pnpm lhci               # set LHCI_BASE_URL to target a non-default origin
+```
+
+Audited pages (one per archetype, across both locales): `/`, `/en/`, `/docs/`, `/playground/`, `/gallery/`. Each is measured 3 times and the median is asserted. Config: `site/lighthouserc.cjs`.
+
+Baseline thresholds and their rationale:
+
+| Category | Level | Min score | Rationale |
+| --- | --- | --- | --- |
+| Performance | `warn` | 0.80 | LCP/TBT vary with shared CI runner load. Starts as a non-blocking warning; tighten to `error` once the signal proves stable (staged rollout). |
+| Accessibility | `error` | 0.90 | A static, token-driven site clears this reliably; complements the axe-core `smoke:a11y` audit. |
+| Best practices | `error` | 0.90 | Catches console errors, insecure resources, and deprecated APIs introduced by future changes. |
+| SEO | `error` | 0.90 | The site lives or dies by discoverability; metadata/hreflang/JSON-LD regressions must fail CI. |
+
+Desktop preset is used (the docs site is primarily read on desktop, and it keeps the performance score stable). To raise a threshold or promote performance to `error`, edit the `assert.assertions` block in `site/lighthouserc.cjs`.
+
 ## WASM bundle
 
 All calls to the Timeline DSL WASM from the Playground and runnable docs go through `site/src/lib/tdsl-wasm.ts` only. Because the npm package / release artifact from the main repository is not yet stable, the output of `wasm-pack --target web` is vendored in `site/public/wasm/`.

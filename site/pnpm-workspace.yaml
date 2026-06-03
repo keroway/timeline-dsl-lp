@@ -29,3 +29,11 @@ blockExoticSubdeps: true
 
 # provenance (公開方法の信頼レベル) が下がる更新を拒否する。
 trustPolicy: no-downgrade
+
+# trustPolicy の例外。ここに挙げた package@version だけ no-downgrade 判定を免除する。
+# 同一パッケージ名は 1 エントリにまとめ、複数版は `||` で並べる (別行に分けると先頭しか効かない)。
+# semver: lighthouse (@lhci/cli の依存, dev 専用) が古い 5.x / 6.x を間接利用する。
+#   いずれも 2023 年以前の公開で provenance attestation を持たないため downgrade 判定されるが、
+#   semver はエコシステム標準の versioning ライブラリで実害はない。本番バンドルには含まれない。
+trustPolicyExclude:
+  - "semver@5.7.2 || 6.3.1"
