@@ -19,17 +19,18 @@ tdsl build sample.tdsl --pretty --output sample.json
 tdsl render sample.tdsl --output sample.html
 ```
 
-| Command                    | Description                                     |
-| -------------------------- | ----------------------------------------------- |
-| `tdsl check <FILE>`        | Run a syntax and semantic check                 |
-| `tdsl lint <FILE>`         | Run a quality check                             |
-| `tdsl build <FILE>`        | Compile `.tdsl` to IR JSON                      |
-| `tdsl render <FILE>`       | Render to a standalone HTML file                |
-| `tdsl ast <FILE>`          | Output the AST for debugging                    |
-| `tdsl decompile <FILE>`    | Decompile JSON IR back to `.tdsl` (v1.1.0+)     |
-| `tdsl merge <FILES...>`    | Merge multiple `.tdsl` files into one (v1.2.0+) |
-| `tdsl completions <SHELL>` | Generate shell completion scripts (v1.9.0+)     |
-| `tdsl lsp`                 | Start the language server (LSP) (v1.11.0+)      |
+| Command                    | Description                                      |
+| -------------------------- | ------------------------------------------------ |
+| `tdsl check <FILE>`        | Run a syntax and semantic check                  |
+| `tdsl lint <FILE>`         | Run a quality check                              |
+| `tdsl build <FILE>`        | Compile `.tdsl` to IR JSON                       |
+| `tdsl render <FILE>`       | Render to a standalone HTML file                 |
+| `tdsl ast <FILE>`          | Output the AST for debugging                     |
+| `tdsl decompile <FILE>`    | Decompile JSON IR back to `.tdsl` (v1.1.0+)      |
+| `tdsl merge <FILES...>`    | Merge multiple `.tdsl` files into one (v1.2.0+)  |
+| `tdsl completions <SHELL>` | Generate shell completion scripts (v1.9.0+)      |
+| `tdsl lsp`                 | Start the language server (LSP) (v1.11.0+)       |
+| `tdsl fmt <FILE>`          | Format `.tdsl` to the canonical style (v1.14.0+) |
 
 `build` and `render` may perform network access when processing files that include Wikidata imports. Use `--offline` if you only want to process locally-defined items.
 
@@ -75,6 +76,12 @@ Pass `--orientation vertical` to draw the time axis top-to-bottom in a vertical 
 tdsl render sample.tdsl --orientation vertical --output sample.svg
 ```
 
+Pass `--grid` to draw grid lines in the background aligned to the tick marks. Choose the interval with `decade` / `year` / `month`, or `none` (default) to hide them (v1.14.0+). Both horizontal and vertical layouts are supported. Grid lines are drawn faintly and, as decorative elements, are hidden from assistive technologies. Since the default is `none`, existing output is unchanged.
+
+```sh
+tdsl render sample.tdsl --grid decade --output sample.svg
+```
+
 ### completions
 
 Generates shell completion scripts you can source. Supports bash / zsh / fish / pwsh / elvish (v1.9.0+).
@@ -101,6 +108,18 @@ tdsl lsp
 Code actions (quick fixes) auto-fix with the same output as `tdsl lint --fix`. Only fixable lint issues (`start_gt_end` / `invalid_tags` / `missing_id`) are covered, and applying a fix loses comments.
 
 `tdsl lsp` takes no arguments and speaks the LSP JSON-RPC protocol over standard input/output. See [Installation](/en/docs/installation/#language-server-lsp) for editor configuration (Neovim / Helix / VS Code), how each feature behaves, and the fixable / non-fixable lint details.
+
+### fmt
+
+Formats `.tdsl` to the canonical style (2-space indentation, one blank line between blocks) (v1.14.0+). By default it writes the formatted result to standard output. Use `--write` to overwrite the file in place, or `--check` to exit non-zero when there is a diff (for CI).
+
+```sh
+tdsl fmt sample.tdsl           # Write the formatted result to stdout
+tdsl fmt sample.tdsl --write   # Overwrite the file in place
+tdsl fmt sample.tdsl --check   # Fail when there is a diff (for CI)
+```
+
+It uses the same formatting engine as `tdsl lint --fix`, the LSP document formatting, and the WebUI Format button. Applying formatting loses comments (`//` and `/* */`).
 
 ## Starting from Wikidata
 
@@ -179,5 +198,8 @@ The cache is stored under the OS data directory (`data_dir` from the `dirs` crat
 | `--dpi <number>`                    | `render`                                | Rasterization DPI for PNG output (default 96; mutually exclusive with `--png-scale`; v1.11.0+) |
 | `--png-scale <multiplier>`          | `render`                                | Fixed pixel scale multiplier for PNG output (mutually exclusive with `--dpi`; v1.11.0+)        |
 | `--orientation horizontal,vertical` | `render`                                | Specify the timeline orientation (default `horizontal`; v1.13.0+)                              |
+| `--grid decade,year,month,none`     | `render`                                | Draw grid lines in the background (default `none`; v1.14.0+)                                   |
 | `--format text,json`                | `lint`                                  | Specify the output format for lint results                                                     |
 | `--fix`                             | `lint`                                  | Apply safe fixes to the file                                                                   |
+| `--write`                           | `fmt`                                   | Overwrite the file with the formatted result (v1.14.0+)                                        |
+| `--check`                           | `fmt`                                   | Exit non-zero when there is a diff (for CI; v1.14.0+)                                          |
