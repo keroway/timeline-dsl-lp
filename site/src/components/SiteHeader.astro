@@ -25,13 +25,17 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
       >
       <a href="/gallery/" aria-current={currentPath === "/gallery/" ? "page" : undefined}>Gallery</a
       >
-      {
-        locale === "ja" && (
-          <a href="/showcase/" aria-current={currentPath === "/showcase/" ? "page" : undefined}>
-            Showcase
-          </a>
-        )
-      }
+      <a
+        href={locale === "ja" ? "/showcase/" : "/en/showcase/"}
+        aria-current={currentPath === "/showcase/" ||
+        currentPath === "/en/showcase/" ||
+        currentPath.startsWith("/showcase/") ||
+        currentPath.startsWith("/en/showcase/")
+          ? "page"
+          : undefined}
+      >
+        Showcase
+      </a>
       <a href="/docs/">Docs</a>
       <a href="/changelog/" aria-current={currentPath === "/changelog/" ? "page" : undefined}
         >Changelog</a
