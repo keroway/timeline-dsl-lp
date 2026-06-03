@@ -29,6 +29,8 @@ async function smokeSeo(rootUrl) {
     "/en/showcase/oda-nobunaga/",
     "/showcase/natsume-soseki/",
     "/en/showcase/natsume-soseki/",
+    "/showcase/internet-history/",
+    "/en/showcase/internet-history/",
   ];
 
   for (const path of hreflangTargets) {
@@ -84,6 +86,14 @@ async function smokeSeo(rootUrl) {
     },
     {
       path: "/en/showcase/natsume-soseki/",
+      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    },
+    {
+      path: "/showcase/internet-history/",
+      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    },
+    {
+      path: "/en/showcase/internet-history/",
       required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
     },
     { path: "/docs/", required: ['"@type":"Organization"', '"@type":"BreadcrumbList"'] },

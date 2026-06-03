@@ -1,0 +1,247 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import TimelineEmbed from "../../../components/TimelineEmbed.astro";
+import { breadcrumbLd } from "../../../lib/seo-jsonld";
+
+const source = `timeline "History of the Internet (1969–2010)" {
+    title "History of the Internet";
+    unit year;
+    range 1969..2011;
+    calendar proleptic_gregorian;
+}
+
+lane "Technology" as tech { kind custom; order 10; }
+lane "Milestones" as milestone { kind custom; order 20; }
+lane "Adoption" as social { kind custom; order 30; }
+
+span tech 1969..1983 "ARPANET Era" {};
+event tech 1969 "ARPANET launched (UCLA–SRI connection)" {};
+event tech 1974 "TCP/IP protocol published" {};
+event tech 1983 "DNS defined; full TCP/IP migration" {};
+span tech 1991..2004 "Web Era" {};
+event tech 1991 "World Wide Web made public" {};
+event tech 1993 "Mosaic browser released" {};
+event tech 1998 "Google founded" {};
+
+event milestone 1972 "First e-mail exchange" {};
+event milestone 1983 "Internet transition complete" {};
+event milestone 1991 "First public web page published" {};
+event milestone 1995 "Java / JavaScript launched — dynamic web begins" {};
+event milestone 2001 "Wikipedia founded" {};
+event milestone 2004 "Facebook founded (Web 2.0 landmark)" {};
+
+event social 1990 "Commercial ISPs emerge in the US" {};
+event social 1994 "Commercial internet launches in Japan" {};
+event social 2000 "Global users exceed 400 million" {};
+event social 2007 "iPhone released — smartphone era begins" {};
+event social 2010 "Global users exceed 2 billion" {};
+`;
+
+const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const breadcrumb = breadcrumbLd(
+  [
+    { name: "Timeline DSL", url: "/en/" },
+    { name: "Showcase", url: "/en/showcase/" },
+    { name: "History of the Internet", url: "/en/showcase/internet-history/" },
+  ],
+  siteUrl,
+);
+---
+
+<BaseLayout
+  title="History of the Internet — Showcase | Timeline DSL"
+  description="A Timeline DSL timeline covering the history of the internet from ARPANET (1969) to 2 billion users (2010). Three lanes — Technology, Milestones, and Adoption — span 42 years."
+  pathname="/en/showcase/internet-history/"
+  locale="en"
+  extraJsonLd={[breadcrumb]}
+>
+  <main id="main-content" class="showcase-page">
+    <div class="showcase-inner">
+      <nav class="showcase-breadcrumb" aria-label="Breadcrumb">
+        <a href="/en/showcase/">Showcase</a>
+        <span aria-hidden="true"> / </span>
+        <span aria-current="page">History of the Internet</span>
+      </nav>
+
+      <header class="showcase-header">
+        <h1 class="showcase-title">History of the Internet</h1>
+        <p class="showcase-description">
+          A Timeline DSL timeline tracing roughly 40 years of internet history — from ARPANET's
+          first packet (1969) to 2 billion global users (2010). Three lanes — Technology,
+          Milestones, and Adoption — show how a research network became a global infrastructure.
+        </p>
+        <dl class="showcase-meta">
+          <div>
+            <dt>Period</dt>
+            <dd>1969 – 2010 (42 years)</dd>
+          </div>
+          <div>
+            <dt>Lanes</dt>
+            <dd>Technology / Milestones / Adoption</dd>
+          </div>
+          <div>
+            <dt>Events</dt>
+            <dd>15</dd>
+          </div>
+        </dl>
+      </header>
+
+      <TimelineEmbed
+        source={source}
+        caption="History of the Internet timeline. Click to open in the Playground and edit or customize the DSL."
+      />
+
+      <section class="showcase-notes">
+        <h2>Timeline DSL in action</h2>
+        <ul>
+          <li>
+            <code>span</code> marks broad eras (ARPANET Era, Web Era), while
+            <code>event</code> captures specific moments — both coexist on the same timeline.
+          </li>
+          <li>
+            Three <code>lane</code> declarations let you read parallel threads side by side: technology
+            advances, key turning points, and the spread to everyday users.
+          </li>
+          <li>
+            Timeline DSL isn't limited to biography — any subject with a chronological arc, from
+            technology history to project roadmaps, can be expressed the same way.
+          </li>
+        </ul>
+        <p>
+          See the <a href="/en/docs/">syntax reference</a> to build your own timeline in minutes.
+        </p>
+      </section>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .showcase-page {
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  .showcase-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .showcase-breadcrumb {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .showcase-breadcrumb a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .showcase-breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .showcase-header {
+    margin-bottom: 2rem;
+  }
+
+  .showcase-title {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    margin: 0 0 0.75rem;
+    line-height: 1.25;
+  }
+
+  .showcase-description {
+    font-size: 1.05rem;
+    color: var(--color-muted);
+    line-height: var(--line-height-base);
+    margin: 0 0 1.25rem;
+  }
+
+  .showcase-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    background: var(--color-panel);
+    border-radius: 6px;
+    border: 1px solid var(--color-line);
+    font-size: 0.875rem;
+  }
+
+  .showcase-meta div {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .showcase-meta dt {
+    color: var(--color-muted);
+    font-weight: 500;
+  }
+
+  .showcase-meta dt::after {
+    content: ":";
+  }
+
+  .showcase-meta dd {
+    margin: 0;
+    color: var(--color-ink);
+  }
+
+  .showcase-notes {
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    background: var(--color-panel);
+    border-radius: 8px;
+    border: 1px solid var(--color-line);
+  }
+
+  .showcase-notes h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: var(--color-ink);
+  }
+
+  .showcase-notes ul {
+    margin: 0 0 1rem;
+    padding-left: 1.5rem;
+    color: var(--color-muted);
+    line-height: var(--line-height-base);
+  }
+
+  .showcase-notes li {
+    margin-bottom: 0.5rem;
+  }
+
+  .showcase-notes li:last-child {
+    margin-bottom: 0;
+  }
+
+  .showcase-notes code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-bg);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+    border: 1px solid var(--color-line);
+  }
+
+  .showcase-notes p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+  }
+
+  .showcase-notes a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .showcase-notes a:hover {
+    text-decoration: underline;
+  }
+</style>
