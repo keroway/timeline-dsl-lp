@@ -1,0 +1,43 @@
+---
+import { getT, type Locale } from "../i18n/index";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+---
+
+<dialog class="site-search-dialog" id="site-search-dialog" aria-label={t("nav.search.aria_label")}>
+  <div class="site-search-inner" id="site-search-ui" data-not-built-msg={t("nav.search.not_built")}>
+  </div>
+</dialog>
+
+<style>
+  .site-search-dialog {
+    margin-top: 4rem;
+    margin-bottom: auto;
+    width: min(640px, calc(100vw - 2rem));
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    padding: 1rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    box-shadow: 0 20px 60px color-mix(in srgb, var(--color-ink), transparent 80%);
+  }
+
+  .site-search-dialog::backdrop {
+    background: color-mix(in srgb, var(--color-ink), transparent 65%);
+  }
+
+  .site-search-inner {
+    --pagefind-ui-primary: var(--color-accent);
+    --pagefind-ui-text: var(--color-ink);
+    --pagefind-ui-background: var(--color-bg);
+    --pagefind-ui-border: var(--color-line);
+    --pagefind-ui-tag: var(--color-panel);
+    --pagefind-ui-font: inherit;
+  }
+</style>
