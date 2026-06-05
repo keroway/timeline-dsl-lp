@@ -119,6 +119,36 @@ export function changelogLd(input: {
   };
 }
 
+export type FaqItem = {
+  question: string;
+  answer: string;
+};
+
+export function faqPageLd(input: {
+  siteUrl: URL;
+  pathname: string;
+  locale: Locale;
+  faqs: FaqItem[];
+}): JsonLdNode {
+  const lang = input.locale === "en" ? "en" : "ja";
+  const pageUrl = absolute(input.siteUrl, input.pathname);
+  return {
+    "@type": "FAQPage",
+    url: pageUrl,
+    mainEntityOfPage: pageUrl,
+    inLanguage: lang,
+    isPartOf: { "@id": ORGANIZATION_ID },
+    mainEntity: input.faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+}
+
 export function graphLd(nodes: JsonLdNode[]): string {
   return JSON.stringify({
     "@context": "https://schema.org",
