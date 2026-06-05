@@ -1,6 +1,21 @@
 ---
 title: FAQ
 description: Frequently asked questions about the Timeline DSL CLI.
+faqs:
+  - question: "What can Timeline DSL output?"
+    answer: "tdsl build outputs IR JSON, and tdsl render outputs standalone HTML. You can open the HTML in a browser to view the timeline."
+  - question: "What use cases is it good for?"
+    answer: "It suits timelines where you want the source (.tdsl text) to be the single source of truth and to manage diffs and reviews in Git. You can build histories, project timelines, biographies, or product release histories from hand-written data or from Wikidata / CSV."
+  - question: "Can I use it without Wikidata?"
+    answer: "Yes. Static .tdsl files written by hand using timeline, lane, span, event, and event_range can be validated, built, and rendered locally. For files that include Wikidata imports, adding --offline to build and render processes only the static items."
+  - question: "Which command should I start with?"
+    answer: "Use tdsl init when creating manually, or tdsl search and tdsl inspect when creating from Wikidata. If you just need to check an existing file, use tdsl check and tdsl lint."
+  - question: "Can I import from CSV?"
+    answer: "Yes, tdsl import-csv is available. The CSV must be UTF-8 and requires a header row of lane,type,start,end,time,label,tags,id."
+  - question: "What should I run in CI?"
+    answer: "The basics are tdsl check and tdsl lint. If you want to verify artifact generation as well, add tdsl build --pretty --output timeline.json. Use --offline if you want to avoid Wikidata fetching."
+  - question: "Can I choose an HTML theme?"
+    answer: "Use tdsl render --theme to specify default, dark, print, or pastel. Custom CSS can be added with --custom-css."
 ---
 
 ## What can Timeline DSL output?

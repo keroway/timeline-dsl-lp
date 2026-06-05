@@ -116,6 +116,24 @@ async function smokeSeo(rootUrl) {
         '"@type":"Article"',
       ],
     },
+    {
+      path: "/docs/faq/",
+      required: [
+        '"@type":"Organization"',
+        '"@type":"BreadcrumbList"',
+        '"@type":"FAQPage"',
+        '"@type":"Question"',
+      ],
+    },
+    {
+      path: "/en/docs/faq/",
+      required: [
+        '"@type":"Organization"',
+        '"@type":"BreadcrumbList"',
+        '"@type":"FAQPage"',
+        '"@type":"Question"',
+      ],
+    },
   ];
   for (const { path, required } of jsonLdTargets) {
     const res = await get(`${rootUrl}${path}`);
