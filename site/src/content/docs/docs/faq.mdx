@@ -1,6 +1,21 @@
 ---
 title: FAQ
 description: Timeline DSL CLI に関するよくある質問です。
+faqs:
+  - question: "Timeline DSL は何を出力できますか？"
+    answer: "tdsl build で IR JSON、tdsl render でスタンドアロン HTML を出力できます。HTML はブラウザで開いて年表を確認できます。"
+  - question: "どんな用途に向いていますか？"
+    answer: "ソース（.tdsl テキスト）を真実とし、差分やレビューを Git で管理したい年表に向いています。歴史・プロジェクト・人物史・プロダクトのリリース史などを、手書きまたは Wikidata / CSV 由来のデータから構築できます。"
+  - question: "Wikidata なしでも使えますか？"
+    answer: "使えます。timeline、lane、span、event、event_range を手で書く静的な .tdsl ファイルはローカルで検証・ビルド・描画できます。Wikidata import を含むファイルでも、build と render に --offline を付けると静的項目だけを処理します。"
+  - question: "どのコマンドから始めればよいですか？"
+    answer: "手で作る場合は tdsl init、Wikidata から作る場合は tdsl search と tdsl inspect から始めます。既存ファイルを確認するだけなら tdsl check と tdsl lint を使います。"
+  - question: "CSV から取り込めますか？"
+    answer: "tdsl import-csv が使えます。CSV は UTF-8 で、lane,type,start,end,time,label,tags,id のヘッダー行が必要です。"
+  - question: "CI では何を実行すべきですか？"
+    answer: "基本は tdsl check と tdsl lint です。成果物の生成まで確認する場合は tdsl build --pretty --output timeline.json を追加します。Wikidata 取得を避けたい場合は --offline を使います。"
+  - question: "HTML テーマは選べますか？"
+    answer: "tdsl render --theme で default、dark、print、pastel を指定できます。独自 CSS は --custom-css で追加できます。"
 ---
 
 ## Timeline DSL は何を出力できますか？

@@ -1,6 +1,12 @@
 ---
 import Default from "@astrojs/starlight/components/Head.astro";
-import { breadcrumbLd, graphLd, organizationLd, type BreadcrumbItem } from "../lib/seo-jsonld";
+import {
+  breadcrumbLd,
+  faqPageLd,
+  graphLd,
+  organizationLd,
+  type BreadcrumbItem,
+} from "../lib/seo-jsonld";
 
 const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
 const route = Astro.locals.starlightRoute;
@@ -24,7 +30,19 @@ if (route.id !== docsHomeId && currentPath !== docsHomeUrl) {
   breadcrumbItems.push({ name: pageTitle, url: currentPath });
 }
 
-const jsonLd = graphLd([organizationLd(siteUrl), breadcrumbLd(breadcrumbItems, siteUrl)]);
+const locale = isJa ? "ja" : "en";
+const faqId = isJa ? "docs/faq" : "en/docs/faq";
+const isFaqPage = route.id === faqId;
+const faqNodes =
+  isFaqPage && route.entry?.data.faqs
+    ? [faqPageLd({ siteUrl, pathname: currentPath, locale, faqs: route.entry.data.faqs })]
+    : [];
+
+const jsonLd = graphLd([
+  organizationLd(siteUrl),
+  breadcrumbLd(breadcrumbItems, siteUrl),
+  ...faqNodes,
+]);
 ---
 
 <Default />
