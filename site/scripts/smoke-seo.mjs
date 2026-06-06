@@ -146,6 +146,29 @@ async function smokeSeo(rootUrl) {
   }
   console.log(`JSON-LD: required @type tokens confirmed on ${jsonLdTargets.length} pages. ✓`);
 
+  // OG 画像メタの整合（DESIGN.md §9）: type は実体に追従、width/height は 1200x630 固定。
+  const ogImageTargets = ["/", "/en/", "/playground/", "/gallery/", "/changelog/"];
+  for (const path of ogImageTargets) {
+    const res = await get(`${rootUrl}${path}`);
+    assertStatus(res, path);
+    const html = await res.text();
+    assertIncludes(html, 'property="og:image"', `${path} must include og:image`);
+    assertIncludes(html, 'property="og:image:type"', `${path} must include og:image:type`);
+    assertIncludes(
+      html,
+      'property="og:image:width" content="1200"',
+      `${path} must include og:image:width=1200`,
+    );
+    assertIncludes(
+      html,
+      'property="og:image:height" content="630"',
+      `${path} must include og:image:height=630`,
+    );
+  }
+  console.log(
+    `og:image: type + 1200x630 dimensions confirmed on ${ogImageTargets.length} pages. ✓`,
+  );
+
   const robotsRes = await get(`${rootUrl}/robots.txt`);
   assertStatus(robotsRes, "/robots.txt");
   const robotsBody = await robotsRes.text();
