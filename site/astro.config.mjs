@@ -3,16 +3,24 @@ import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import tdslGrammar from "./src/lib/tdsl.tmLanguage.json" with { type: "json" };
 
+// dev / preview のリッスンポート。PORT env があればそれを使い (portless が割り当てる
+// エフェメラルポートに追従)、無ければ従来通り 4321。
+const devServerPort = process.env.PORT ? Number(process.env.PORT) : 4321;
+
 export default defineConfig({
   site: "https://timeline-dsl.pages.dev",
-  // dev / preview 両方に適用される。PORT env があればそれを使い (portless が割り当てる
-  // エフェメラルポートに追従)、無ければ従来通り 4321。host を 127.0.0.1 に固定して
+  // dev / preview 両方に適用される。host を 127.0.0.1 に固定して
   // preview が ::1 のみ bind する問題 (127.0.0.1 で ECONNREFUSED) も回避する。
   server: {
     host: "127.0.0.1",
-    port: process.env.PORT ? Number(process.env.PORT) : 4321,
+    port: devServerPort,
   },
   vite: {
+    // 同一 worktree から複数の dev/preview を同時起動すると、既定の cacheDir
+    // (node_modules/.vite) を共有してしまい、後発プロセスの dependency 再最適化が
+    // /public 配下の WASM (/wasm/tdsl_wasm.js) 解決と競合して WASM ロードが失敗する
+    // (#294)。ポートごとに cacheDir を分離してプロセス間の競合を断つ。
+    cacheDir: `node_modules/.vite-${devServerPort}`,
     build: {
       rollupOptions: {
         external: ["/pagefind/pagefind-ui.js"],
