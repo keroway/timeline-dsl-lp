@@ -2,6 +2,7 @@
 import { getT, type Locale } from "../i18n/index";
 import SiteA11yMenu from "./SiteA11yMenu.astro";
 import SiteSearch from "./SiteSearch.astro";
+import { TOP_NAV } from "../data/navigation";
 
 interface Props {
   currentPath?: string;
@@ -21,27 +22,16 @@ const t = getT(locale);
       <span>Timeline DSL</span>
     </a>
     <div class="nav-links">
-      <a href="/playground/" aria-current={currentPath === "/playground/" ? "page" : undefined}
-        >Playground</a
-      >
-      <a href="/gallery/" aria-current={currentPath === "/gallery/" ? "page" : undefined}>Gallery</a
-      >
-      <a
-        href={locale === "ja" ? "/showcase/" : "/en/showcase/"}
-        aria-current={currentPath === "/showcase/" ||
-        currentPath === "/en/showcase/" ||
-        currentPath.startsWith("/showcase/") ||
-        currentPath.startsWith("/en/showcase/")
-          ? "page"
-          : undefined}
-      >
-        Showcase
-      </a>
-      <a href="/docs/">Docs</a>
-      <a href="/changelog/" aria-current={currentPath === "/changelog/" ? "page" : undefined}
-        >Changelog</a
-      >
-      <a href="https://github.com/keroway/timeline-dsl">GitHub</a>
+      {
+        TOP_NAV.map((item) => (
+          <a
+            href={item.href(locale)}
+            aria-current={item.isActive(currentPath) ? "page" : undefined}
+          >
+            {t(item.labelKey)}
+          </a>
+        ))
+      }
       <button
         class="search-toggle"
         type="button"
