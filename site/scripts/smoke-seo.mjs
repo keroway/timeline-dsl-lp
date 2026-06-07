@@ -21,6 +21,7 @@ async function smokeSeo(rootUrl) {
     "/gallery/",
     "/en/gallery/",
     "/changelog/",
+    "/en/changelog/",
     "/docs/",
     "/en/docs/",
     "/showcase/",
@@ -147,7 +148,14 @@ async function smokeSeo(rootUrl) {
   console.log(`JSON-LD: required @type tokens confirmed on ${jsonLdTargets.length} pages. ✓`);
 
   // OG 画像メタの整合（DESIGN.md §9）: type は実体に追従、width/height は 1200x630 固定。
-  const ogImageTargets = ["/", "/en/", "/playground/", "/gallery/", "/changelog/"];
+  const ogImageTargets = [
+    "/",
+    "/en/",
+    "/playground/",
+    "/gallery/",
+    "/changelog/",
+    "/en/changelog/",
+  ];
   for (const path of ogImageTargets) {
     const res = await get(`${rootUrl}${path}`);
     assertStatus(res, path);
