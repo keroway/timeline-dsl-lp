@@ -17,6 +17,7 @@
     "smoke:i18n:browser": "node scripts/smoke-i18n.mjs --browser",
     "smoke:seo": "node scripts/smoke-seo.mjs",
     "smoke:a11y": "node scripts/smoke-a11y.mjs",
+    "bundle-size": "node scripts/bundle-size.mjs",
     "lhci": "lhci autorun --config=./lighthouserc.cjs",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",

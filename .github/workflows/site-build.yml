@@ -44,6 +44,9 @@ jobs:
         run: pnpm test:unit
       - run: pnpm build
 
+      - name: bundle-size
+        run: pnpm bundle-size
+
       - name: Install Playwright Chromium (for a11y smoke)
         run: pnpm exec playwright install --with-deps chromium
 
