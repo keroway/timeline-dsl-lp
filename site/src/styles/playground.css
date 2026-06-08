@@ -400,7 +400,7 @@
 }
 
 .playground-diagnostic.warning span {
-  color: #8a620e;
+  color: var(--color-status-warn);
 }
 
 .playground-diagnostic strong {
