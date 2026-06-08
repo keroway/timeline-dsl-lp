@@ -120,7 +120,7 @@
   .feature:hover,
   .usecase:hover,
   .workflow-step:hover {
-    border-color: rgba(13, 118, 111, 0.36);
+    border-color: color-mix(in srgb, var(--color-accent), transparent 64%);
     box-shadow: 0 16px 34px rgba(21, 32, 44, 0.12);
     transform: translateY(-3px);
   }
