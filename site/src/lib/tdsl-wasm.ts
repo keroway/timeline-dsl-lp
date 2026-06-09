@@ -45,13 +45,25 @@ export const TDSL_WASM_IMPORT_STRATEGY = {
     "wasm-pack build crates/tdsl-wasm --target web --out-dir apps/webui/src/wasm --no-opt",
 } as const;
 
-export const TDSL_WASM_FALLBACK_MESSAGE =
-  "ブラウザ版 Timeline DSL を読み込めませんでした。最新のブラウザで再読み込みするか、ローカルの `tdsl check` / `tdsl render` を使って確認してください。";
+export interface TdslWasmMessages {
+  fallback: string;
+  wikidataImportWarning: string;
+}
 
-export const TDSL_WASM_LIMITATIONS = [
-  "ブラウザ版 WASM は静的な .tdsl の検証と SVG/HTML レンダリングを対象にします。",
-  "Wikidata import の解決やネットワーク取得は WASM wrapper では扱いません。",
-] as const;
+// locale 依存の文言は呼び出し側 (PlaygroundPage.astro の getT) から注入する。
+// 注入前の早期参照には英語の安全側デフォルトを返す。
+const DEFAULT_TDSL_WASM_MESSAGES: TdslWasmMessages = {
+  fallback:
+    "The browser build of Timeline DSL could not be loaded. Reload in an up-to-date browser, or use the local `tdsl check` / `tdsl render` CLI.",
+  wikidataImportWarning:
+    "The browser WASM build does not resolve Wikidata imports. Only static items are validated and rendered.",
+};
+
+let tdslWasmMessages: TdslWasmMessages = DEFAULT_TDSL_WASM_MESSAGES;
+
+export function setTdslWasmMessages(messages: TdslWasmMessages): void {
+  tdslWasmMessages = messages;
+}
 
 const TDSL_WASM_JS_URL = "/wasm/tdsl_wasm.js";
 const TDSL_WASM_BINARY_URL = "/wasm/tdsl_wasm_bg.wasm";
@@ -101,7 +113,7 @@ export async function compileTdslToIr(source: string): Promise<string> {
 
 async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
   if (typeof window === "undefined" || typeof WebAssembly === "undefined") {
-    return { status: "unavailable", message: TDSL_WASM_FALLBACK_MESSAGE };
+    return { status: "unavailable", message: tdslWasmMessages.fallback };
   }
 
   try {
@@ -121,7 +133,7 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
       },
     };
   } catch (cause) {
-    return { status: "unavailable", message: TDSL_WASM_FALLBACK_MESSAGE, cause };
+    return { status: "unavailable", message: tdslWasmMessages.fallback, cause };
   }
 }
 
@@ -160,13 +172,7 @@ export function withWikidataImportWarning(
     return diagnostics;
   }
 
-  return [
-    ...diagnostics,
-    toDiagnostic(
-      "ブラウザ版 WASM は Wikidata import の解決に対応していません。静的項目だけを検証・描画します。",
-      "warning",
-    ),
-  ];
+  return [...diagnostics, toDiagnostic(tdslWasmMessages.wikidataImportWarning, "warning")];
 }
 
 export function toDiagnostic(
