@@ -204,6 +204,10 @@ export const en = {
   "playground.diagnostics.severity_error": "ERROR",
   "playground.diagnostics.severity_warn": "WARN",
   "playground.retry": "Retry",
+  "playground.wasm.fallback":
+    "Could not load the browser build of Timeline DSL. Reload in an up-to-date browser, or fall back to the local `tdsl check` / `tdsl render` CLI.",
+  "playground.wasm.wikidata_import_warning":
+    "The browser WASM build does not resolve Wikidata imports. Only static items are validated and rendered.",
   "playground.sample.minimal": "Hello Timeline — minimal single-event example",
   "playground.sample.range": "Three marker types — span / event / event_range",
   "playground.sample.lanes": "Multiple lanes — parallel events with hierarchy",

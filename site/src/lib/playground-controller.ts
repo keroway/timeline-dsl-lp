@@ -1,4 +1,4 @@
-import { checkTdslSource, renderTdslSvg, renderTdslHtml } from "./tdsl-wasm";
+import { checkTdslSource, renderTdslSvg, renderTdslHtml, setTdslWasmMessages } from "./tdsl-wasm";
 import { createPanZoom } from "./playground-pan-zoom";
 import { buildShareUrl, extractSourceFromLocation, MAX_SHARE_URL_LENGTH } from "./playground-share";
 import { createPlaygroundEditor } from "./playground-editor";
@@ -30,6 +30,8 @@ type PlaygroundMsgs = {
   shareTooLong: string;
   severityError: string;
   severityWarn: string;
+  wasmFallback: string;
+  wasmWikidataImportWarning: string;
 };
 
 // Playground の DOM 配線・WASM オーケストレーション・pan-zoom 連携を初期化する。
@@ -58,6 +60,11 @@ export function initPlayground(): void {
   const samples = JSON.parse(sampleDataElement?.textContent || "[]") as PlaygroundSample[];
   const i18nEl = document.getElementById("playground-i18n");
   const msgs = JSON.parse(i18nEl?.textContent || "{}") as PlaygroundMsgs;
+
+  setTdslWasmMessages({
+    fallback: msgs.wasmFallback,
+    wikidataImportWarning: msgs.wasmWikidataImportWarning,
+  });
 
   const panZoom =
     preview && panZoomStage

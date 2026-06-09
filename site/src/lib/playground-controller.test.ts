@@ -6,10 +6,13 @@ const checkTdslSource = vi.fn();
 const renderTdslSvg = vi.fn();
 const renderTdslHtml = vi.fn();
 
+const setTdslWasmMessages = vi.fn();
+
 vi.mock("./tdsl-wasm", () => ({
   checkTdslSource: (...args: unknown[]) => checkTdslSource(...args),
   renderTdslSvg: (...args: unknown[]) => renderTdslSvg(...args),
   renderTdslHtml: (...args: unknown[]) => renderTdslHtml(...args),
+  setTdslWasmMessages: (...args: unknown[]) => setTdslWasmMessages(...args),
 }));
 
 vi.mock("./playground-pan-zoom", () => ({
@@ -50,6 +53,8 @@ const MSGS = {
   shareTooLong: "too long {limit}",
   severityError: "エラー",
   severityWarn: "警告",
+  wasmFallback: "WASM フォールバック",
+  wasmWikidataImportWarning: "Wikidata import 警告",
 };
 
 function setupDom() {
@@ -78,6 +83,7 @@ beforeEach(() => {
   checkTdslSource.mockReset();
   renderTdslSvg.mockReset();
   renderTdslHtml.mockReset();
+  setTdslWasmMessages.mockReset();
 });
 
 afterEach(() => {
@@ -85,6 +91,19 @@ afterEach(() => {
 });
 
 describe("initPlayground runPlayground の状態分岐", () => {
+  it("起動時に setTdslWasmMessages へ i18n 化された WASM 文言を注入する", async () => {
+    setupDom();
+    checkTdslSource.mockResolvedValue([]);
+    renderTdslSvg.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+
+    initPlayground();
+
+    expect(setTdslWasmMessages).toHaveBeenCalledWith({
+      fallback: MSGS.wasmFallback,
+      wikidataImportWarning: MSGS.wasmWikidataImportWarning,
+    });
+  });
+
   it("診断なし＆描画成功なら ready 状態になる", async () => {
     const dom = setupDom();
     checkTdslSource.mockResolvedValue([]);
