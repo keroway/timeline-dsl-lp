@@ -152,7 +152,9 @@ async function smokeSeo(rootUrl) {
     "/",
     "/en/",
     "/playground/",
+    "/en/playground/",
     "/gallery/",
+    "/en/gallery/",
     "/changelog/",
     "/en/changelog/",
   ];
