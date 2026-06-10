@@ -10,8 +10,6 @@ export const en = {
   "nav.search.aria_label": "Search",
   "nav.search.not_built": "Search index not found. Run pnpm build to generate it.",
   "nav.lang_toggle.aria_label": "Switch language to Japanese",
-  "nav.lang_toggle.unavailable":
-    "This page is not available in English. Redirecting to the top page.",
   "footer.copyright": "© 2024 keroway",
   "footer.links": "Footer navigation",
   "a11y.skip_link": "Skip to main content",
