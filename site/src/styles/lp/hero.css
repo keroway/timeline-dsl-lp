@@ -201,7 +201,7 @@
   align-items: center;
   min-height: 3.2rem;
   margin: 0 var(--space-md);
-  border-top: 1px solid rgba(216, 221, 229, 0.85);
+  border-top: 1px solid color-mix(in srgb, var(--color-line), transparent 15%);
 }
 
 .lane-label {
@@ -215,7 +215,11 @@
   right: 0;
   left: 4.1rem;
   height: 1px;
-  background: linear-gradient(90deg, rgba(89, 101, 117, 0.22), transparent);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-muted), transparent 78%),
+    transparent
+  );
   content: "";
 }
 

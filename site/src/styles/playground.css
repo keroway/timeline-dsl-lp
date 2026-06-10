@@ -337,7 +337,7 @@
 
 .preview-retry-btn:hover {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 .preview-retry-btn:focus-visible {

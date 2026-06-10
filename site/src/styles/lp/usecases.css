@@ -80,7 +80,7 @@
   justify-content: space-between;
   min-height: 2rem;
   padding: 0 var(--space-sm);
-  border-bottom: 1px solid rgba(216, 221, 229, 0.86);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-line), transparent 14%);
   color: var(--color-muted);
   font-family: var(--font-mono);
   font-size: 0.68rem;
