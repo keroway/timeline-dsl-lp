@@ -53,8 +53,42 @@ async function smokeSeo(rootUrl) {
       path: "/en/",
       required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'],
     },
-    { path: "/en/playground/", required: ['"@type":"Organization"', '"@type":"WebPage"'] },
-    { path: "/en/gallery/", required: ['"@type":"Organization"', '"@type":"WebPage"'] },
+    {
+      path: "/playground/",
+      required: [
+        '"@type":"Organization"',
+        '"@type":"WebPage"',
+        '"@type":"ItemList"',
+        '"@type":"ListItem"',
+      ],
+    },
+    {
+      path: "/en/playground/",
+      required: [
+        '"@type":"Organization"',
+        '"@type":"WebPage"',
+        '"@type":"ItemList"',
+        '"@type":"ListItem"',
+      ],
+    },
+    {
+      path: "/gallery/",
+      required: [
+        '"@type":"Organization"',
+        '"@type":"WebPage"',
+        '"@type":"ItemList"',
+        '"@type":"ListItem"',
+      ],
+    },
+    {
+      path: "/en/gallery/",
+      required: [
+        '"@type":"Organization"',
+        '"@type":"WebPage"',
+        '"@type":"ItemList"',
+        '"@type":"ListItem"',
+      ],
+    },
     {
       path: "/showcase/",
       required: [
