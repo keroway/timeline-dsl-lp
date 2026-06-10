@@ -6,6 +6,7 @@ import {
   changelogLd,
   faqPageLd,
   graphLd,
+  itemListLd,
   organizationLd,
   softwareApplicationLd,
   webPageLd,
@@ -157,6 +158,51 @@ describe("changelogLd", () => {
     expect(parts[0].name).toBe("v1.0.0");
     expect(parts[0]).not.toHaveProperty("description");
     expect(parts[0].inLanguage).toBe("ja");
+  });
+});
+
+describe("itemListLd", () => {
+  it("ItemList / ListItem を position 連番付きで生成する", () => {
+    const ld = itemListLd({
+      siteUrl: SITE_URL,
+      pathname: "/gallery/",
+      locale: "ja",
+      name: "Gallery",
+      description: "サンプル集",
+      items: [
+        { name: "日本近現代史", description: "幕末から大正までの年表" },
+        { name: "開発ロードマップ" },
+      ],
+    });
+    expect(ld["@type"]).toBe("ItemList");
+    expect(ld.url).toBe("https://timeline-dsl.pages.dev/gallery/");
+    expect(ld.mainEntityOfPage).toBe(ld.url);
+    expect(ld.inLanguage).toBe("ja");
+    expect(ld.isPartOf).toEqual({ "@id": "#organization" });
+    const elements = ld.itemListElement as Array<Record<string, unknown>>;
+    expect(elements).toHaveLength(2);
+    expect(elements[0]).toEqual({
+      "@type": "ListItem",
+      position: 1,
+      name: "日本近現代史",
+      description: "幕末から大正までの年表",
+    });
+    // description 省略時はキー自体を出さない
+    expect(elements[1]).toEqual({ "@type": "ListItem", position: 2, name: "開発ロードマップ" });
+  });
+
+  it("en locale で inLanguage=en の URL に揃える", () => {
+    const ld = itemListLd({
+      siteUrl: SITE_URL,
+      pathname: "/en/playground/",
+      locale: "en",
+      name: "Playground",
+      description: "Try in the browser",
+      items: [{ name: "Minimal" }],
+    });
+    expect(ld.inLanguage).toBe("en");
+    expect(ld.url).toBe("https://timeline-dsl.pages.dev/en/playground/");
+    expect(ld.mainEntityOfPage).toBe("https://timeline-dsl.pages.dev/en/playground/");
   });
 });
 

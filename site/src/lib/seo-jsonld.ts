@@ -119,6 +119,38 @@ export function changelogLd(input: {
   };
 }
 
+export type ItemListEntry = {
+  name: string;
+  description?: string;
+};
+
+export function itemListLd(input: {
+  siteUrl: URL;
+  pathname: string;
+  locale: Locale;
+  name: string;
+  description: string;
+  items: ItemListEntry[];
+}): JsonLdNode {
+  const lang = input.locale === "en" ? "en" : "ja";
+  const pageUrl = absolute(input.siteUrl, input.pathname);
+  return {
+    "@type": "ItemList",
+    name: input.name,
+    description: input.description,
+    url: pageUrl,
+    mainEntityOfPage: pageUrl,
+    inLanguage: lang,
+    isPartOf: { "@id": ORGANIZATION_ID },
+    itemListElement: input.items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      ...(item.description ? { description: item.description } : {}),
+    })),
+  };
+}
+
 export type FaqItem = {
   question: string;
   answer: string;
