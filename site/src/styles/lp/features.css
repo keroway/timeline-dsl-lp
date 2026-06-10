@@ -60,7 +60,7 @@
   gap: var(--space-sm);
   min-height: 1.9rem;
   padding: 0 0.6rem;
-  border-bottom: 1px solid rgba(216, 221, 229, 0.85);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-line), transparent 15%);
   color: var(--color-muted);
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -163,7 +163,7 @@
   align-items: center;
   min-height: 2.25rem;
   margin: 0 0.62rem;
-  border-top: 1px solid rgba(216, 221, 229, 0.9);
+  border-top: 1px solid color-mix(in srgb, var(--color-line), transparent 10%);
 }
 
 .mini-lane-label {
@@ -177,7 +177,11 @@
   right: 0;
   left: 3.55rem;
   height: 1px;
-  background: linear-gradient(90deg, rgba(89, 101, 117, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-muted), transparent 80%),
+    transparent
+  );
   content: "";
 }
 

@@ -7,6 +7,10 @@
   --color-panel: #f6f8fb;
   --color-accent: #0d766f;
   --color-accent-strong: #095c56;
+  /* accent 背景（chip 選択 / retry・edit ボタン hover）に乗る前景。accent 値は
+     テーマごとに色相・明度が異なるため、白固定だと dark / HC で AA 未達や不可視になる。
+     light teal (#0d766f) 上では白で 5.47:1 (AA)。4 ブロックで個別定義する（DESIGN.md §2） */
+  --color-on-accent: #ffffff;
   --color-warm: #a74718;
   --color-gold: #d69a24;
   --color-plum: #7b4569;
@@ -87,6 +91,8 @@
   --color-panel: #ffffff;
   --color-accent: #0000ff;
   --color-accent-strong: #000080;
+  /* light HC accent は青 (#0000ff)。白前景で 8.59:1 (AAA) */
+  --color-on-accent: #ffffff;
   --color-warm: #800000;
   --color-gold: #806000;
   --color-plum: #600060;
@@ -131,6 +137,9 @@
     --color-panel: #1a2434;
     --color-accent: #1a9e96;
     --color-accent-strong: #22c4bb;
+    /* dark accent (#1a9e96) は明度が高く、白前景だと 3.29:1 で AA 未達。
+       濃色インクへ反転し 5.14:1 (AA) を確保する */
+    --color-on-accent: #06211e;
     /* dark base での warn 文字。暗背景 (#111920) 上で明 amber に上げ AA 以上 (10.55:1) */
     --color-status-warn: #e6c46e;
     /* dark base での error 文字。暗背景 (#111920) 上で明 red に上げ AA 以上 (7.74:1) */
@@ -152,6 +161,8 @@
     --color-panel: #000000;
     --color-accent: #00ffff;
     --color-accent-strong: #80ffff;
+    /* dark HC accent は cyan (#00ffff)。白前景は 1.25:1 で不可視のため黒へ反転し 16.7:1 (AAA) */
+    --color-on-accent: #000000;
     /* warn 文字は黒背景で AAA (14.57:1)。terminal-warn HC と意図的に同値 */
     --color-status-warn: #ffd24a;
     /* error 文字は黒背景で AAA (9.14:1)。terminal-error HC と同値で統一 */
