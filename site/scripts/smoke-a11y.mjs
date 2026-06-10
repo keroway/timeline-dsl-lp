@@ -21,12 +21,20 @@ const PAGES = [
   "/en/gallery/",
   "/showcase/",
   "/en/showcase/",
+  "/showcase/oda-nobunaga/",
+  "/en/showcase/oda-nobunaga/",
+  "/showcase/natsume-soseki/",
+  "/en/showcase/natsume-soseki/",
+  "/showcase/internet-history/",
+  "/en/showcase/internet-history/",
   "/changelog/",
   "/en/changelog/",
   "/docs/",
   "/en/docs/",
   "/docs/grammar/",
   "/en/docs/grammar/",
+  "/docs/faq/",
+  "/en/docs/faq/",
 ];
 
 // 既知の許容例外。理由を必ず添える。空配列なら例外なし。
