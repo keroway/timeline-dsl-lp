@@ -61,7 +61,7 @@
     },
     "top-keywords": {
       "name": "keyword.control.tdsl",
-      "match": "\\b(timeline|lane|event_range|event|span|import|map)\\b"
+      "match": "\\b(timeline|lane|event_range|event|span|import|map|expand)\\b"
     },
     "secondary-keywords": {
       "name": "keyword.other.tdsl",
@@ -84,6 +84,10 @@
         {
           "name": "keyword.operator.accessor.tdsl",
           "match": "@"
+        },
+        {
+          "name": "keyword.operator.match.tdsl",
+          "match": "\\b(contains|startswith)\\b"
         }
       ]
     },

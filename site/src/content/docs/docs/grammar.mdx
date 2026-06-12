@@ -228,6 +228,23 @@ map wd.items to span {
 
 `filter` に使える演算子は `==`、`!=`、`<`、`<=`、`>`、`>=`、`&&`、`||`、`!`、`null`、`claim()` です。複数の `filter` を並べると AND 条件として扱われます。
 
+### 文字列マッチング（`contains` / `startswith`）
+
+v1.16.0 以降、ラベルに対する文字列マッチング演算子 `contains` / `startswith` を使えます。`label@<lang> contains "..."` でラベルに部分文字列を含むエンティティを、`label@<lang> startswith "..."` でラベルが指定文字列で始まるエンティティを絞り込めます。
+
+```tdsl
+map wd.items to span {
+    lane dynasties;
+    start claim(P571).year;
+    end   claim(P576).year;
+    label label@ja ?? label@en;
+    filter label@ja contains "王朝";        // ラベルに「王朝」を含む
+    filter label@en startswith "Han";       // ラベルが "Han" で始まる
+}
+```
+
+`!` や `&&` / `||` と組み合わせられます（例: `filter !(label@ja contains "候補");`）。指定した言語のラベルが存在しないエンティティは `false`（除外）として扱われ、別言語へ silent fallback はしません。
+
 ## 月・日精度のタイムライン軸表示
 
 v1.7.0 以降、タイムライン軸は月・日単位の精度に対応しています。v1.9.0 では静的な `event` / `span` の `time` / `start` / `end` に **日付リテラル `YYYY-MM-DD` / `YYYY-MM`** を直接書けるようになりました。
@@ -261,6 +278,22 @@ map wd.items to span {
 ```
 
 既存の単項式（`start claim(P571).year`）と完全互換です。複数のプロパティから最初の有効値を取り出したいときに使います。
+
+## map の `expand` ディレクティブ
+
+v1.16.0 以降、`map` ブロック内に `expand claim(P)` を書くと、そのエンティティのプロパティ P の non-deprecated な Statement を**全件展開**し、Statement ごとに 1 アイテムを生成します。`expand` がない場合は従来どおり最初の Statement だけを参照します。
+
+```tdsl
+map wd.elizabeth_ii to span {
+    lane offices;
+    expand claim(P39);                          // 在任した役職（P39）をすべて展開
+    start claim(P39).qualifier(P580).year;       // 各 Statement の開始 qualifier
+    end   claim(P39).qualifier(P582).year ?? 9999;
+    label label@ja;
+}
+```
+
+P39 の Statement が複数あれば複数のスパンが生成されます。qualifier（P580 / P582）を持たない Statement は、`start` / `end` が解決できないためそのアイテムをスキップします。
 
 ## map の整数オフセット演算（`+` / `-`）
 
