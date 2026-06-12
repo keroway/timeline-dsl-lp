@@ -5,9 +5,29 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      # マイナー / パッチはまとめて 1 PR にしてノイズを抑える
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # major は意図しない破壊的変更を防ぐためブロックし、手動で追従する
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      actions:
+        update-types:
+          - minor
+          - patch
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
