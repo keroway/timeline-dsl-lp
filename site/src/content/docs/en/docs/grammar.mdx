@@ -228,6 +228,23 @@ map wd.items to span {
 
 Operators available in `filter`: `==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`, `!`, `null`, `claim()`. Multiple `filter` clauses are combined as AND conditions.
 
+### String Matching (`contains` / `startswith`)
+
+Since v1.16.0, you can use the string-matching operators `contains` / `startswith` against labels. Use `label@<lang> contains "..."` to keep entities whose label contains a substring, and `label@<lang> startswith "..."` to keep entities whose label starts with the given string.
+
+```tdsl
+map wd.items to span {
+    lane dynasties;
+    start claim(P571).year;
+    end   claim(P576).year;
+    label label@ja ?? label@en;
+    filter label@ja contains "王朝";        // label contains "王朝"
+    filter label@en startswith "Han";       // label starts with "Han"
+}
+```
+
+These combine with `!`, `&&`, and `||` (e.g. `filter !(label@ja contains "候補");`). Entities that lack a label in the specified language are treated as `false` (excluded); there is no silent fallback to another language.
+
 ## Month and Day Precision on the Timeline Axis
 
 Since v1.7.0, the timeline axis supports month and day precision. In v1.9.0, you can now write **date literals `YYYY-MM-DD` / `YYYY-MM`** directly in the `time` / `start` / `end` fields of static `event` / `span` entries.
@@ -261,6 +278,22 @@ map wd.items to span {
 ```
 
 Fully compatible with existing single-expression forms (e.g., `start claim(P571).year`). Use this when you want to extract the first valid value from multiple properties.
+
+## `expand` Directive in map
+
+Since v1.16.0, writing `expand claim(P)` inside a `map` block **expands every** non-deprecated Statement of the entity's property P, generating one item per Statement. Without `expand`, only the first Statement is referenced as before.
+
+```tdsl
+map wd.elizabeth_ii to span {
+    lane offices;
+    expand claim(P39);                          // expand every office held (P39)
+    start claim(P39).qualifier(P580).year;       // start qualifier of each Statement
+    end   claim(P39).qualifier(P582).year ?? 9999;
+    label label@ja;
+}
+```
+
+If P39 has multiple Statements, multiple spans are generated. A Statement without the qualifiers (P580 / P582) is skipped for that item, since `start` / `end` cannot be resolved.
 
 ## Integer Offset Operators (`+` / `-`) in map
 
