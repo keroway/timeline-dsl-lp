@@ -186,20 +186,23 @@ tdsl cache clear --dry-run # 削除対象を確認する（実際には削除し
 
 ## よく使うオプション
 
-| オプション                          | 対象                                    | 用途                                                                               |
-| ----------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------- |
-| `--pretty`                          | `build`                                 | JSONを読みやすく整形する                                                           |
-| `--output`, `-o`                    | `build`, `render`, `init`, `import-csv` | 出力先を指定する                                                                   |
-| `--offline`                         | `build`, `render`                       | Wikidata取得をスキップする                                                         |
-| `--no-cache`                        | `build`, `render`                       | Wikidataキャッシュを使わず再取得する                                               |
-| `--cache-ttl <秒>`                  | `build`, `render`                       | WikidataキャッシュのTTLを指定する                                                  |
-| `--wikidata-timeout <秒>`           | `build`, `render`, `search`, `inspect`  | WikidataへのHTTPタイムアウト秒数を指定する（v1.4.0〜）                             |
-| `--format html,svg,png,pdf`         | `render`                                | 出力形式を指定する（デフォルト `html`、`--format pdf` は v1.11.0〜）               |
-| `--dpi <数値>`                      | `render`                                | PNG ラスタライズ解像度を指定する（デフォルト 96、`--png-scale` と排他、v1.11.0〜） |
-| `--png-scale <倍率>`                | `render`                                | PNG 出力の倍率を指定する（`--dpi` と排他、v1.11.0〜）                              |
-| `--orientation horizontal,vertical` | `render`                                | タイムラインの向きを指定する（デフォルト `horizontal`、v1.13.0〜）                 |
-| `--grid decade,year,month,none`     | `render`                                | 背景にグリッド線を描画する（デフォルト `none`、v1.14.0〜）                         |
-| `--format text,json`                | `lint`                                  | lint結果の出力形式を指定する                                                       |
-| `--fix`                             | `lint`                                  | 安全な修正をファイルへ適用する                                                     |
-| `--write`                           | `fmt`                                   | 整形結果をファイルへ上書きする（v1.14.0〜）                                        |
-| `--check`                           | `fmt`                                   | 差分があれば非ゼロ終了する（CI 向け、v1.14.0〜）                                   |
+| オプション                          | 対象                                    | 用途                                                                                               |
+| ----------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `--pretty`                          | `build`                                 | JSONを読みやすく整形する                                                                           |
+| `--output`, `-o`                    | `build`, `render`, `init`, `import-csv` | 出力先を指定する                                                                                   |
+| `--offline`                         | `build`, `render`                       | Wikidata取得をスキップする                                                                         |
+| `--no-cache`                        | `build`, `render`                       | Wikidataキャッシュを使わず再取得する                                                               |
+| `--cache-ttl <秒>`                  | `build`, `render`                       | WikidataキャッシュのTTLを指定する                                                                  |
+| `--wikidata-timeout <秒>`           | `build`, `render`, `search`, `inspect`  | WikidataへのHTTPタイムアウト秒数を指定する（v1.4.0〜）                                             |
+| `--format html,svg,png,pdf`         | `render`                                | 出力形式を指定する（デフォルト `html`、`--format pdf` は v1.11.0〜）                               |
+| `--dpi <数値>`                      | `render`                                | PNG ラスタライズ解像度を指定する（デフォルト 96、`--png-scale` と排他、v1.11.0〜）                 |
+| `--png-scale <倍率>`                | `render`                                | PNG 出力の倍率を指定する（`--dpi` と排他、v1.11.0〜）                                              |
+| `--orientation horizontal,vertical` | `render`                                | タイムラインの向きを指定する（デフォルト `horizontal`、v1.13.0〜）                                 |
+| `--grid decade,year,month,none`     | `render`                                | 背景にグリッド線を描画する（デフォルト `none`、v1.14.0〜）                                         |
+| `--format text,json`                | `lint`                                  | lint結果の出力形式を指定する                                                                       |
+| `--fix`                             | `lint`                                  | 安全な修正をファイルへ適用する                                                                     |
+| `--write`                           | `fmt`                                   | 整形結果をファイルへ上書きする（v1.14.0〜）                                                        |
+| `--check`                           | `fmt`                                   | 差分があれば非ゼロ終了する（CI 向け、v1.14.0〜）                                                   |
+| `--watch`                           | `render`                                | 入力ファイルを監視して変更時に自動で再レンダリングする（html / svg のみ、v1.16.0〜）               |
+| `--show-table`                      | `render`                                | SVG の後ろに時系列順の内容一覧表を追加する（HTML 形式のみ、v1.16.0〜）                             |
+| `--json-schema`                     | `build`                                 | TimelineIr の JSON Schema を標準出力（または `--output`）へ書き出す（入力ファイル不要、v1.16.0〜） |

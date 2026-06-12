@@ -186,20 +186,23 @@ The cache is stored under the OS data directory (`data_dir` from the `dirs` crat
 
 ## Common Options
 
-| Option                              | Applies To                              | Description                                                                                    |
-| ----------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `--pretty`                          | `build`                                 | Pretty-print the JSON output                                                                   |
-| `--output`, `-o`                    | `build`, `render`, `init`, `import-csv` | Specify the output path                                                                        |
-| `--offline`                         | `build`, `render`                       | Skip Wikidata fetching                                                                         |
-| `--no-cache`                        | `build`, `render`                       | Re-fetch from Wikidata without using the cache                                                 |
-| `--cache-ttl <seconds>`             | `build`, `render`                       | Specify the TTL for the Wikidata cache                                                         |
-| `--wikidata-timeout <seconds>`      | `build`, `render`, `search`, `inspect`  | Set the HTTP timeout for Wikidata requests (v1.4.0+)                                           |
-| `--format html,svg,png,pdf`         | `render`                                | Specify the output format (default `html`; `--format pdf` from v1.11.0+)                       |
-| `--dpi <number>`                    | `render`                                | Rasterization DPI for PNG output (default 96; mutually exclusive with `--png-scale`; v1.11.0+) |
-| `--png-scale <multiplier>`          | `render`                                | Fixed pixel scale multiplier for PNG output (mutually exclusive with `--dpi`; v1.11.0+)        |
-| `--orientation horizontal,vertical` | `render`                                | Specify the timeline orientation (default `horizontal`; v1.13.0+)                              |
-| `--grid decade,year,month,none`     | `render`                                | Draw grid lines in the background (default `none`; v1.14.0+)                                   |
-| `--format text,json`                | `lint`                                  | Specify the output format for lint results                                                     |
-| `--fix`                             | `lint`                                  | Apply safe fixes to the file                                                                   |
-| `--write`                           | `fmt`                                   | Overwrite the file with the formatted result (v1.14.0+)                                        |
-| `--check`                           | `fmt`                                   | Exit non-zero when there is a diff (for CI; v1.14.0+)                                          |
+| Option                              | Applies To                              | Description                                                                                       |
+| ----------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `--pretty`                          | `build`                                 | Pretty-print the JSON output                                                                      |
+| `--output`, `-o`                    | `build`, `render`, `init`, `import-csv` | Specify the output path                                                                           |
+| `--offline`                         | `build`, `render`                       | Skip Wikidata fetching                                                                            |
+| `--no-cache`                        | `build`, `render`                       | Re-fetch from Wikidata without using the cache                                                    |
+| `--cache-ttl <seconds>`             | `build`, `render`                       | Specify the TTL for the Wikidata cache                                                            |
+| `--wikidata-timeout <seconds>`      | `build`, `render`, `search`, `inspect`  | Set the HTTP timeout for Wikidata requests (v1.4.0+)                                              |
+| `--format html,svg,png,pdf`         | `render`                                | Specify the output format (default `html`; `--format pdf` from v1.11.0+)                          |
+| `--dpi <number>`                    | `render`                                | Rasterization DPI for PNG output (default 96; mutually exclusive with `--png-scale`; v1.11.0+)    |
+| `--png-scale <multiplier>`          | `render`                                | Fixed pixel scale multiplier for PNG output (mutually exclusive with `--dpi`; v1.11.0+)           |
+| `--orientation horizontal,vertical` | `render`                                | Specify the timeline orientation (default `horizontal`; v1.13.0+)                                 |
+| `--grid decade,year,month,none`     | `render`                                | Draw grid lines in the background (default `none`; v1.14.0+)                                      |
+| `--format text,json`                | `lint`                                  | Specify the output format for lint results                                                        |
+| `--fix`                             | `lint`                                  | Apply safe fixes to the file                                                                      |
+| `--write`                           | `fmt`                                   | Overwrite the file with the formatted result (v1.14.0+)                                           |
+| `--check`                           | `fmt`                                   | Exit non-zero when there is a diff (for CI; v1.14.0+)                                             |
+| `--watch`                           | `render`                                | Watch the input file and re-render automatically on change (html / svg only; v1.16.0+)            |
+| `--show-table`                      | `render`                                | Append a chronological item listing table after the SVG (HTML format only; v1.16.0+)              |
+| `--json-schema`                     | `build`                                 | Write the JSON Schema for TimelineIr to stdout (or `--output`); no input file required (v1.16.0+) |
