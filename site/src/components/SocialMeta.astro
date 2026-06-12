@@ -7,13 +7,7 @@ type Props = {
   locale?: string;
 };
 
-const {
-  title,
-  description,
-  pathname,
-  imagePath = "/og/timeline-dsl.svg",
-  locale = "ja",
-} = Astro.props;
+const { title, description, pathname, imagePath = "/og/default.png", locale = "ja" } = Astro.props;
 
 const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
 const pageUrl = new URL(pathname, siteUrl).toString();
