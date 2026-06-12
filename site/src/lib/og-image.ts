@@ -38,17 +38,17 @@ const LANE_HEX: Record<LaneColor, string> = {
 
 /**
  * OG 画像のページ種別定義。キーが `/og/<key>.png` のルートになる。
- * `default` は SocialMeta の既定 imagePath（種別を渡さないページの fallback）。
+ * `default` は SocialMeta の既定 imagePath（種別を渡さないページの fallback）で、
+ * LP と完全同一の見た目になるので `lp` の alias として同じオブジェクトを共有する。
  */
+const LP_CARD: OgCardSpec = {
+  subtitle: "Describe and validate timelines as text.",
+  accent: "warm",
+};
+
 export const OG_CARDS = {
-  default: {
-    subtitle: "Describe and validate timelines as text.",
-    accent: "warm",
-  },
-  lp: {
-    subtitle: "Describe and validate timelines as text.",
-    accent: "warm",
-  },
+  default: LP_CARD,
+  lp: LP_CARD,
   playground: {
     eyebrow: "Playground",
     subtitle: "Write and run .tdsl right in your browser.",
