@@ -2,6 +2,7 @@
 import { Code } from "astro:components";
 import { getT, type Locale } from "../../i18n/index";
 import releasesData from "../../data/releases.generated.json";
+import { formatDate } from "../../lib/site";
 import tdslGrammar from "../../lib/tdsl.tmLanguage.json" with { type: "json" };
 
 interface Props {
@@ -27,19 +28,7 @@ const latestLabel = latest?.tagName || "未取得";
 const latestName = latest?.name || latest?.tagName || "リリース情報は準備中です";
 const shouldShowLatestName = latestName !== latestLabel;
 
-const dateLocale = locale === "ja" ? "ja-JP" : "en-US";
-const formatDate = (value: string | null | undefined) => {
-  if (!value) return null;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return null;
-  return new Intl.DateTimeFormat(dateLocale, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(date);
-};
-
-const latestPublishedAt = formatDate(latest?.publishedAt);
+const latestPublishedAt = formatDate(latest?.publishedAt, locale);
 const heroDslExample = t("lp.hero.dsl_example");
 import "../../styles/lp/hero.css";
 ---

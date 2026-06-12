@@ -3,6 +3,7 @@ import SocialMeta from "../components/SocialMeta.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import { graphLd, organizationLd, webPageLd } from "../lib/seo-jsonld";
+import { getSiteUrl } from "../lib/site";
 import { getT, type Locale } from "../i18n";
 import "../styles/global.css";
 
@@ -30,7 +31,7 @@ const {
   extraJsonLd = [],
 } = Astro.props;
 
-const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const siteUrl = getSiteUrl(Astro);
 // pathname が "/en/" で始まる場合はプレフィックスを取り除く
 const rootPath = pathname.startsWith("/en/") ? pathname.slice(3) : pathname;
 const jaUrl = new URL(rootPath, siteUrl).toString();
