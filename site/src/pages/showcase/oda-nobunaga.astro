@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import TimelineEmbed from "../../components/TimelineEmbed.astro";
 import { breadcrumbLd } from "../../lib/seo-jsonld";
+import { getSiteUrl } from "../../lib/site";
 
 const source = `timeline "織田信長の生涯 (1534–1582)" {
     title "織田信長の生涯";
@@ -32,7 +33,7 @@ event politics 1576 "安土城築城開始" {};
 event politics 1580 "惣無事令" {};
 `;
 
-const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const siteUrl = getSiteUrl(Astro);
 const breadcrumb = breadcrumbLd(
   [
     { name: "Timeline DSL", url: "/" },

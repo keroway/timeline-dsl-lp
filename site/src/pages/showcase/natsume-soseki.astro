@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import TimelineEmbed from "../../components/TimelineEmbed.astro";
 import { breadcrumbLd } from "../../lib/seo-jsonld";
+import { getSiteUrl } from "../../lib/site";
 
 const source = `timeline "夏目漱石の生涯 (1867–1916)" {
     title "夏目漱石の生涯";
@@ -38,7 +39,7 @@ event works 1915 "「道草」" {};
 event works 1916 "「明暗」（絶筆・未完）" {};
 `;
 
-const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const siteUrl = getSiteUrl(Astro);
 const breadcrumb = breadcrumbLd(
   [
     { name: "Timeline DSL", url: "/" },

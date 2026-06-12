@@ -6,6 +6,7 @@ import rehypeSanitize from "rehype-sanitize";
 import releasesData from "../data/releases.generated.json";
 import { getT, type Locale } from "../i18n/index";
 import { changelogLd } from "../lib/seo-jsonld";
+import { getSiteUrl, formatDate } from "../lib/site";
 
 interface Props {
   locale: Locale;
@@ -27,28 +28,16 @@ const latest = releasesData.latest as Release | null;
 
 const pathname = locale === "ja" ? "/changelog/" : "/en/changelog/";
 
-const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const siteUrl = getSiteUrl(Astro);
 const changelogJsonLd = changelogLd({ siteUrl, pathname, locale, releases });
 
-const dateLocale = locale === "ja" ? "ja-JP" : "en-US";
 const markdownProcessor = await createMarkdownProcessor({
   gfm: true,
   rehypePlugins: [rehypeSanitize],
   syntaxHighlight: false,
 });
 
-const formatDate = (value: string | null | undefined) => {
-  if (!value) return null;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return null;
-  return new Intl.DateTimeFormat(dateLocale, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(date);
-};
-
-const fetchedAt = formatDate(releasesData.fetchedAt) || t("changelog.fetched_at.unknown");
+const fetchedAt = formatDate(releasesData.fetchedAt, locale) || t("changelog.fetched_at.unknown");
 const renderedReleases = await Promise.all(
   releases.map(async (release) => ({
     ...release,
@@ -98,7 +87,7 @@ const renderedReleases = await Promise.all(
                     <h3>{release.name || release.tagName}</h3>
                   </div>
                   <time datetime={release.publishedAt}>
-                    {formatDate(release.publishedAt) || t("changelog.release.date_unknown")}
+                    {formatDate(release.publishedAt, locale) || t("changelog.release.date_unknown")}
                   </time>
                 </div>
                 {release.body ? (
