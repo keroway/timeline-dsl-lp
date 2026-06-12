@@ -20,6 +20,15 @@
      白が最大コントラストのため override しない。注意: gold lane 上の白は light 2.47:1 /
      HC 5.85:1 で AA/AAA 未達だが、これは lane 背景（--color-gold）側の既存課題で後続 issue 扱い */
   --color-on-lane: #ffffff;
+  /* lane セマンティクスの named theme tokens（DESIGN.md §8 中期案 (a)）。本体 WASM が
+     SVG <style> に同名トークンを吐くようになった時点で即追従できるよう、LP 側で先行公開する。
+     既存 lane palette（--color-warm/gold/plum/sky）をプロキシするだけで、新色は追加しない。
+     プロキシ先の --color-* が light / dark / high-contrast の 4 ブロックで再定義済みのため、
+     この :root の 1 定義で全テーマに自動追従する（var() は use 時に各テーマ値へ解決される）。 */
+  --tdsl-lane-warm: var(--color-warm);
+  --tdsl-lane-gold: var(--color-gold);
+  --tdsl-lane-plum: var(--color-plum);
+  --tdsl-lane-sky: var(--color-sky);
   /* playground の warn ステータス文字。gold は light 値が白背景でテキスト不適（約2:1）のため
      専用トークン化する。warn サーフェス（--color-bg）はテーマ依存なので 4 ブロックで定義する */
   --color-status-warn: #845d0c;
