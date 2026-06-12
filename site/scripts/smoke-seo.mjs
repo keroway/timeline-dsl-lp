@@ -181,23 +181,31 @@ async function smokeSeo(rootUrl) {
   }
   console.log(`JSON-LD: required @type tokens confirmed on ${jsonLdTargets.length} pages. ✓`);
 
-  // OG 画像メタの整合（DESIGN.md §9）: type は実体に追従、width/height は 1200x630 固定。
+  // OG 画像メタの整合（DESIGN.md §9）: ページ種別ごとに専用 PNG を参照し（#308/#309）、
+  // type は実体（PNG）に追従、width/height は 1200x630 固定。ja/en は同一種別で同じ画像。
   const ogImageTargets = [
-    "/",
-    "/en/",
-    "/playground/",
-    "/en/playground/",
-    "/gallery/",
-    "/en/gallery/",
-    "/changelog/",
-    "/en/changelog/",
+    { path: "/", image: "/og/lp.png" },
+    { path: "/en/", image: "/og/lp.png" },
+    { path: "/playground/", image: "/og/playground.png" },
+    { path: "/en/playground/", image: "/og/playground.png" },
+    { path: "/gallery/", image: "/og/gallery.png" },
+    { path: "/en/gallery/", image: "/og/gallery.png" },
+    { path: "/changelog/", image: "/og/changelog.png" },
+    { path: "/en/changelog/", image: "/og/changelog.png" },
   ];
-  for (const path of ogImageTargets) {
+  for (const { path, image } of ogImageTargets) {
     const res = await get(`${rootUrl}${path}`);
     assertStatus(res, path);
     const html = await res.text();
+    // og:image の content は Astro.site（本番 origin）で出力されるため、preview origin に
+    // 依存しないようパス部分の一致で検証する（origin 結合を避ける）。
     assertIncludes(html, 'property="og:image"', `${path} must include og:image`);
-    assertIncludes(html, 'property="og:image:type"', `${path} must include og:image:type`);
+    assertIncludes(html, `${image}"`, `${path} og:image must reference ${image}`);
+    assertIncludes(
+      html,
+      'property="og:image:type" content="image/png"',
+      `${path} must declare og:image:type=image/png`,
+    );
     assertIncludes(
       html,
       'property="og:image:width" content="1200"',
@@ -208,9 +216,16 @@ async function smokeSeo(rootUrl) {
       'property="og:image:height" content="630"',
       `${path} must include og:image:height=630`,
     );
+    // 参照先 PNG が実際に 200 / image/png で配信されることも確認する。
+    const imageRes = await get(`${rootUrl}${image}`);
+    assertStatus(imageRes, image);
+    const contentType = imageRes.headers.get("content-type") ?? "";
+    if (!contentType.includes("image/png")) {
+      throw new Error(`${image} must be served as image/png (got "${contentType}")`);
+    }
   }
   console.log(
-    `og:image: type + 1200x630 dimensions confirmed on ${ogImageTargets.length} pages. ✓`,
+    `og:image: per-page PNG + type + 1200x630 dimensions confirmed on ${ogImageTargets.length} pages. ✓`,
   );
 
   const robotsRes = await get(`${rootUrl}/robots.txt`);
