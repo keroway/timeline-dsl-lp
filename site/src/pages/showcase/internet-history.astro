@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import TimelineEmbed from "../../components/TimelineEmbed.astro";
 import { breadcrumbLd } from "../../lib/seo-jsonld";
+import { getSiteUrl } from "../../lib/site";
 
 const source = `timeline "インターネットの発展史 (1969–2010)" {
     title "インターネットの発展史";
@@ -37,7 +38,7 @@ event social 2007 "iPhone 発売・スマートフォン時代開始" {};
 event social 2010 "全世界 20 億ユーザー突破" {};
 `;
 
-const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const siteUrl = getSiteUrl(Astro);
 const breadcrumb = breadcrumbLd(
   [
     { name: "Timeline DSL", url: "/" },
