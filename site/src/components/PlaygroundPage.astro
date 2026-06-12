@@ -6,6 +6,7 @@ import PlaygroundPreview from "./playground/PlaygroundPreview.astro";
 import PlaygroundDiagnostics from "./playground/PlaygroundDiagnostics.astro";
 import { getT, type Locale } from "../i18n/index";
 import { itemListLd } from "../lib/seo-jsonld";
+import { getSiteUrl } from "../lib/site";
 import { getPlaygroundSamples } from "../data/playground-samples";
 
 interface Props {
@@ -42,7 +43,7 @@ const msgs = {
   wasmWikidataImportWarning: t("playground.wasm.wikidata_import_warning"),
 };
 
-const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const siteUrl = getSiteUrl(Astro);
 const sampleList = itemListLd({
   siteUrl,
   pathname,

@@ -4,6 +4,7 @@ import releasesData from "../data/releases.generated.json";
 import gallerySamples from "../data/gallery-samples.json";
 import { getT, type Locale } from "../i18n/index";
 import { itemListLd } from "../lib/seo-jsonld";
+import { getSiteUrl } from "../lib/site";
 import GalleryGrid from "./gallery/GalleryGrid.astro";
 
 interface Props {
@@ -32,7 +33,7 @@ const msgs = {
   resultCount: t("gallery.filter.result_count"),
 };
 
-const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const siteUrl = getSiteUrl(Astro);
 const sampleList = itemListLd({
   siteUrl,
   pathname,

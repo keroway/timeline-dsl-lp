@@ -7,8 +7,9 @@ import {
   organizationLd,
   type BreadcrumbItem,
 } from "../lib/seo-jsonld";
+import { getSiteUrl } from "../lib/site";
 
-const siteUrl = Astro.site ?? new URL("https://timeline-dsl.pages.dev");
+const siteUrl = getSiteUrl(Astro);
 const route = Astro.locals.starlightRoute;
 const isJa = route.lang === "ja";
 const docsHomeId = "docs";
