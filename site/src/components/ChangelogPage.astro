@@ -62,6 +62,7 @@ const renderedReleases = await Promise.all(
   description={t("changelog.page.description")}
   pathname={pathname}
   locale={locale}
+  ogImagePath="/og/changelog.png"
   version={latest?.tagName || releases[0]?.tagName}
   extraJsonLd={[changelogJsonLd]}
 >
