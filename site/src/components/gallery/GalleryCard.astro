@@ -1,7 +1,7 @@
 ---
 import { Code } from "astro:components";
 import { getT, type Locale, type DictionaryKeys } from "../../i18n/index";
-import tdslGrammar from "../../lib/tdsl.tmLanguage.json" with { type: "json" };
+import { tdslLang, tdslCodeThemes } from "../../lib/tdsl-shiki";
 
 interface Props {
   sample: {
@@ -17,8 +17,6 @@ interface Props {
 const { sample, locale } = Astro.props;
 const t = getT(locale);
 
-const tdslLang = tdslGrammar as any;
-const tdslCodeThemes = { light: "github-light", dark: "github-dark" } as const;
 const playgroundBase = locale === "ja" ? "" : "/en";
 ---
 
