@@ -62,6 +62,12 @@
   "simple-git-hooks": {
     "pre-commit": "cd site && pnpm exec lint-staged && if git diff --cached --name-only | grep -q 'site/src/'; then pnpm astro check; fi"
   },
+  "pnpm": {
+    "overrides": {
+      "esbuild": ">=0.28.1",
+      "tmp": ">=0.2.6"
+    }
+  },
   "lint-staged": {
     "src/**/*.{astro,ts,mjs,mdx,js}": [
       "prettier --write"
