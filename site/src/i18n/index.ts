@@ -7,6 +7,8 @@ export { ja, en };
 const LOCALES = ["ja", "en"] as const;
 export type Locale = (typeof LOCALES)[number];
 
+export const DEFAULT_LOCALE: Locale = "ja";
+
 const dictionaries: Record<Locale, Dictionary> = { ja, en };
 
 export function isLocale(value: unknown): value is Locale {
@@ -15,7 +17,15 @@ export function isLocale(value: unknown): value is Locale {
 
 export function getLocaleFromUrl(url: URL): Locale {
   const [, first] = url.pathname.split("/");
-  return isLocale(first) ? first : "ja";
+  return isLocale(first) ? first : DEFAULT_LOCALE;
+}
+
+export function resolveLocale(astro: { currentLocale?: string | undefined }): Locale {
+  return isLocale(astro.currentLocale) ? astro.currentLocale : DEFAULT_LOCALE;
+}
+
+export function resolveLocaleFromLocation(loc: { href: string } = window.location): Locale {
+  return getLocaleFromUrl(new URL(loc.href));
 }
 
 export function localizedPath(path: string, locale: Locale): string {
