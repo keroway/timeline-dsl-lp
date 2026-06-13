@@ -3,7 +3,7 @@ import { Code } from "astro:components";
 import { getT, type Locale } from "../../i18n/index";
 import releasesData from "../../data/releases.generated.json";
 import { formatDate } from "../../lib/site";
-import tdslGrammar from "../../lib/tdsl.tmLanguage.json" with { type: "json" };
+import { tdslLang, tdslCodeThemes } from "../../lib/tdsl-shiki";
 
 interface Props {
   locale: Locale;
@@ -11,9 +11,6 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = getT(locale);
-
-const tdslLang = tdslGrammar as any;
-const tdslCodeThemes = { light: "github-light", dark: "github-dark" } as const;
 
 type Release = {
   tagName: string;
