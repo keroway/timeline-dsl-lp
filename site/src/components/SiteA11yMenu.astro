@@ -176,12 +176,12 @@ const targetLocaleLabel = locale === "ja" ? "EN" : "JP";
 </style>
 
 <script>
-  import { getLocaleFromUrl, getT } from "../i18n/index";
+  import { resolveLocaleFromLocation, getT } from "../i18n/index";
   import type { A11yTextSize } from "../lib/a11y-settings";
   import { initA11yMenu } from "../lib/a11y-settings";
   import { initLangToggle } from "../lib/i18n-toggle";
 
-  const locale = getLocaleFromUrl(new URL(window.location.href));
+  const locale = resolveLocaleFromLocation();
   const t = getT(locale);
 
   const TEXT_SIZE_KEYS: Record<A11yTextSize, Parameters<typeof t>[0]> = {
