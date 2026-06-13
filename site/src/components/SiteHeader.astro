@@ -1,5 +1,5 @@
 ---
-import { getT, type Locale } from "../i18n/index";
+import { getT, resolveLocale } from "../i18n/index";
 import SiteA11yMenu from "./SiteA11yMenu.astro";
 import SiteSearch from "./SiteSearch.astro";
 import { TOP_NAV } from "../data/navigation";
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const { currentPath = "" } = Astro.props;
-const locale = (Astro.currentLocale ?? "ja") as Locale;
+const locale = resolveLocale(Astro);
 const t = getT(locale);
 ---
 
