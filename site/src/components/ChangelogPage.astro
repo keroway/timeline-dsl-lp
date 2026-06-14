@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/changelog.css";
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import rehypeSanitize from "rehype-sanitize";
-import releasesData from "../data/releases.generated.json";
+import { latest, releases, fetchedAt as rawFetchedAt, repository } from "../data/releases";
 import { getT, type Locale } from "../i18n/index";
 import { changelogLd } from "../lib/seo-jsonld";
 import { getSiteUrl, formatDate } from "../lib/site";
@@ -14,17 +14,6 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = getT(locale);
-
-type Release = {
-  tagName: string;
-  name: string;
-  publishedAt: string;
-  url: string;
-  body: string;
-};
-
-const releases = releasesData.releases as Release[];
-const latest = releasesData.latest as Release | null;
 
 const pathname = locale === "ja" ? "/changelog/" : "/en/changelog/";
 
@@ -37,7 +26,7 @@ const markdownProcessor = await createMarkdownProcessor({
   syntaxHighlight: false,
 });
 
-const fetchedAt = formatDate(releasesData.fetchedAt, locale) || t("changelog.fetched_at.unknown");
+const fetchedAt = formatDate(rawFetchedAt, locale) || t("changelog.fetched_at.unknown");
 const renderedReleases = await Promise.all(
   releases.map(async (release) => ({
     ...release,
@@ -63,7 +52,7 @@ const renderedReleases = await Promise.all(
         <p class="lead">
           {
             releases.length > 0
-              ? t("changelog.lead.has_data").replace("{repository}", releasesData.repository)
+              ? t("changelog.lead.has_data").replace("{repository}", repository)
               : t("changelog.lead.no_data")
           }
         </p>

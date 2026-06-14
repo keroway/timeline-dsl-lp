@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import releasesData from "../data/releases.generated.json";
+import { latest } from "../data/releases";
 import gallerySamples from "../data/gallery-samples.json";
 import { getT, type Locale } from "../i18n/index";
 import { itemListLd } from "../lib/seo-jsonld";
@@ -13,9 +13,6 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = getT(locale);
-
-type Release = { tagName: string };
-const latest = releasesData.latest as Release | null;
 
 const pathname = locale === "ja" ? "/gallery/" : "/en/gallery/";
 
