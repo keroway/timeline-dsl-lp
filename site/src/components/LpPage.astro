@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import releasesData from "../data/releases.generated.json";
+import { latest } from "../data/releases";
 import { getT, type Locale } from "../i18n/index";
 import { softwareApplicationLd } from "../lib/seo-jsonld";
 import { getSiteUrl } from "../lib/site";
@@ -18,15 +18,6 @@ interface Props {
 const { locale } = Astro.props;
 const t = getT(locale);
 
-type Release = {
-  tagName: string;
-  name: string;
-  publishedAt: string;
-  url: string;
-  body: string;
-};
-
-const latest = releasesData.latest as Release | null;
 const pageTitle = t("lp.page.title");
 const pageDescription = t("lp.page.description");
 const pathname = locale === "ja" ? "/" : "/en/";
