@@ -50,6 +50,9 @@ export const ja = {
   "lp.hero.timeline.dynasty": "灰都王朝",
   "lp.hero.timeline.war": "継承戦争",
   "lp.hero.timeline.pilgrim": "巡礼王",
+  "lp.hero.eyebrow": "ブラウザ起点の年表オーサリング",
+  "lp.hero.latest_label_fallback": "未取得",
+  "lp.hero.latest_name_fallback": "リリース情報は準備中です",
   "lp.features.heading": "年表作成を、再現できる作業にする",
   "lp.features.lead":
     "Timeline DSL は、手作業の図版編集ではなく、レビュー可能な入力ファイルとCLI出力を中心にした年表作成を目指します。",
@@ -118,7 +121,7 @@ export const ja = {
     "Timeline DSL のサンプル年表一覧。各サンプルを Playground で編集・カスタマイズできます。",
   "gallery.eyebrow": "サンプル集",
   "gallery.lead":
-    "Timeline DSL のサンプル年表一覧です。各カードの「Edit this example」から Playground で編集・カスタマイズできます。",
+    "Timeline DSL のサンプル年表一覧です。各カードから Playground で編集・カスタマイズできます。",
   "gallery.section.heading": "サンプル年表",
   "gallery.section.count": "{count} 種類のサンプルを掲載しています。",
   "gallery.tags.aria_label": "タグ",
@@ -138,6 +141,7 @@ export const ja = {
   "gallery.filter.aria_label": "タグでサンプルを絞り込む",
   "gallery.filter.all": "すべて",
   "gallery.filter.result_count": "{count} 件のサンプルを表示中",
+  "gallery.edit_btn": "この例を編集する",
   "showcase.index.page.title": "Showcase — Timeline DSL",
   "showcase.index.page.description":
     "Timeline DSL で構築した詳しい年表事例の一覧です。歴史人物・年表の構造例を実ページで確認できます。",
@@ -207,6 +211,8 @@ export const ja = {
   "playground.sample.range": "マーカー 3 種 — span / event / event_range の違い",
   "playground.sample.lanes": "複数 lane — 並列イベントを階層化する",
   "playground.sample.import": "Wikidata import（CLI 専用機能のデモ）",
+  "embed.play_link": "Playground で編集する",
+  "embed.preview_aria_label": "Timeline DSL で生成した年表",
 } as const;
 
 export type DictionaryKeys = keyof typeof ja;

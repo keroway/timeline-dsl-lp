@@ -11,8 +11,8 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = getT(locale);
-const latestLabel = latest?.tagName || "未取得";
-const latestName = latest?.name || latest?.tagName || "リリース情報は準備中です";
+const latestLabel = latest?.tagName || t("lp.hero.latest_label_fallback");
+const latestName = latest?.name || latest?.tagName || t("lp.hero.latest_name_fallback");
 const shouldShowLatestName = latestName !== latestLabel;
 
 const latestPublishedAt = formatDate(latest?.publishedAt, locale);
@@ -23,7 +23,7 @@ import "../../styles/lp/hero.css";
 <section class="hero">
   <div class="hero-inner">
     <div class="hero-copy">
-      <p class="eyebrow">Browser-first timeline authoring</p>
+      <p class="eyebrow">{t("lp.hero.eyebrow")}</p>
       <h1>Timeline DSL</h1>
       <p class="lead">
         {t("lp.hero.lead")}

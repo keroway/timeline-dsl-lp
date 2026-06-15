@@ -79,6 +79,13 @@ async function smokeHttpSurface(rootUrl) {
   assertIncludes(enHtml, 'lang="en"', "/en/ must have lang=en");
   assertIncludes(enHtml, "Timeline DSL", "/en/ must include brand name");
   assertIncludes(enHtml, "Author and validate timelines", "/en/ must include English page title");
+  // Regression guard: en LP に日本語フォールバック文言が漏れてはいけない。
+  assertExcludes(enHtml, "未取得", "/en/ must not leak Japanese fallback '未取得'");
+  assertExcludes(
+    enHtml,
+    "リリース情報は準備中です",
+    "/en/ must not leak Japanese fallback 'リリース情報は準備中です'",
+  );
 
   // Showcase pages (both locales)
   const jaShowcaseRes = await get(`${rootUrl}/showcase/`);
@@ -132,6 +139,28 @@ async function smokeHttpSurface(rootUrl) {
       `/en/gallery/ must not leak Japanese tag label "${jpTag}"`,
     );
   }
+  // Regression guard: en gallery に日本語ボタン文言が漏れてはいけない。
+  assertExcludes(
+    enGalleryHtml,
+    "この例を編集する",
+    "/en/gallery/ must not leak Japanese edit button text",
+  );
+  // ja gallery には日本語ボタン文言が出ること。
+  assertIncludes(
+    jaGalleryHtml,
+    "この例を編集する",
+    "/gallery/ must show Japanese edit button text",
+  );
+
+  // Showcase detail page: en ページに日本語 Playground リンク文言が漏れてはいけない。
+  const enShowcaseDetailRes = await get(`${rootUrl}/en/showcase/oda-nobunaga/`);
+  assertStatus(enShowcaseDetailRes, "/en/showcase/oda-nobunaga/");
+  const enShowcaseDetailHtml = await enShowcaseDetailRes.text();
+  assertExcludes(
+    enShowcaseDetailHtml,
+    "Playground で編集する",
+    "/en/showcase/oda-nobunaga/ must not leak Japanese Playground link text",
+  );
 
   console.log("HTTP smoke: / and /en/ both return 200 with correct lang attributes. ✓");
   console.log("HTTP smoke: /showcase/ and /en/showcase/ both return 200. ✓");
