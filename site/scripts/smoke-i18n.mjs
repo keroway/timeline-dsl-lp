@@ -146,7 +146,11 @@ async function smokeHttpSurface(rootUrl) {
     "/en/gallery/ must not leak Japanese edit button text",
   );
   // ja gallery には日本語ボタン文言が出ること。
-  assertIncludes(jaGalleryHtml, "この例を編集する", "/gallery/ must show Japanese edit button text");
+  assertIncludes(
+    jaGalleryHtml,
+    "この例を編集する",
+    "/gallery/ must show Japanese edit button text",
+  );
 
   // Showcase detail page: en ページに日本語 Playground リンク文言が漏れてはいけない。
   const enShowcaseDetailRes = await get(`${rootUrl}/en/showcase/oda-nobunaga/`);
