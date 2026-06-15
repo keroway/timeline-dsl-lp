@@ -1,6 +1,8 @@
 import { join } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
 
+import { LANE_HEX_LIGHT as LANE_HEX, type LaneColor } from "./lane-palette";
+
 /**
  * ページ種別ごとの OG 画像（1200×630 PNG）をビルド時に生成する。
  *
@@ -17,8 +19,6 @@ import { Resvg } from "@resvg/resvg-js";
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
 
-type LaneColor = "warm" | "gold" | "plum" | "sky";
-
 export interface OgCardSpec {
   /** ページ種別の eyebrow（大文字）。default は eyebrow 無し */
   eyebrow?: string;
@@ -27,14 +27,6 @@ export interface OgCardSpec {
   /** アクセントに使う lane 色 */
   accent: LaneColor;
 }
-
-/** lane パレット（global.css の light 値と一致させる） */
-const LANE_HEX: Record<LaneColor, string> = {
-  warm: "#a74718",
-  gold: "#d69a24",
-  plum: "#7b4569",
-  sky: "#2c6f9f",
-};
 
 /**
  * OG 画像のページ種別定義。キーが `/og/<key>.png` のルートになる。
