@@ -1,38 +1,15 @@
-import { checkTdslSource, renderTdslSvg, renderTdslHtml, setTdslWasmMessages } from "./tdsl-wasm";
+import {
+  checkTdslSource,
+  renderTdslSvg,
+  renderTdslHtml,
+  setTdslWasmMessages,
+  type TdslDiagnostic,
+} from "./tdsl-wasm";
 import { createPanZoom } from "./playground-pan-zoom";
 import { buildShareUrl, extractSourceFromLocation, MAX_SHARE_URL_LENGTH } from "./playground-share";
 import { createPlaygroundEditor } from "./playground-editor";
 import type { PlaygroundSample } from "../data/playground-samples";
-
-type PlaygroundDiagnostic = {
-  severity: "error" | "warning";
-  message: string;
-  line: number;
-  col: number;
-};
-
-type PlaygroundMsgs = {
-  statusInit: string;
-  statusChecking: string;
-  statusError: string;
-  statusWarn: string;
-  statusOk: string;
-  statusWasmFailed: string;
-  previewWaiting: string;
-  previewPlaceholder: string;
-  previewFixErrors: string;
-  previewRenderFailed: string;
-  diagnosticsWaiting: string;
-  diagnosticsEmpty: string;
-  retry: string;
-  shareCopySuccess: string;
-  shareCopyError: string;
-  shareTooLong: string;
-  severityError: string;
-  severityWarn: string;
-  wasmFallback: string;
-  wasmWikidataImportWarning: string;
-};
+import type { PlaygroundMsgs } from "./playground-messages";
 
 // Playground の DOM 配線・WASM オーケストレーション・pan-zoom 連携を初期化する。
 // PlaygroundPage.astro の <script> から一度だけ呼ぶ。
@@ -95,7 +72,7 @@ export function initPlayground(): void {
     setText(editorMeta, `${view.state.doc.lines} lines`);
   };
 
-  const renderDiagnostics = (items: PlaygroundDiagnostic[]) => {
+  const renderDiagnostics = (items: TdslDiagnostic[]) => {
     if (!diagnostics) return;
 
     const errorCount = items.filter((item) => item.severity === "error").length;
