@@ -8,6 +8,7 @@ import { getT, type Locale } from "../i18n/index";
 import { itemListLd } from "../lib/seo-jsonld";
 import { getSiteUrl } from "../lib/site";
 import { getPlaygroundSamples } from "../data/playground-samples";
+import { buildPlaygroundMsgs } from "../lib/playground-messages";
 
 interface Props {
   locale: Locale;
@@ -20,28 +21,7 @@ const pathname = locale === "ja" ? "/playground/" : "/en/playground/";
 
 const samples = getPlaygroundSamples(locale);
 
-const msgs = {
-  statusInit: t("playground.status.init"),
-  statusChecking: t("playground.status.checking"),
-  statusError: t("playground.status.error"),
-  statusWarn: t("playground.status.warn"),
-  statusOk: t("playground.status.ok"),
-  statusWasmFailed: t("playground.status.wasm_failed"),
-  previewWaiting: t("playground.preview.waiting"),
-  previewPlaceholder: t("playground.preview.placeholder"),
-  previewFixErrors: t("playground.preview.fix_errors"),
-  previewRenderFailed: t("playground.preview.render_failed"),
-  diagnosticsWaiting: t("playground.diagnostics.waiting"),
-  diagnosticsEmpty: t("playground.diagnostics.empty"),
-  retry: t("playground.retry"),
-  shareCopySuccess: t("playground.share.copy_success"),
-  shareCopyError: t("playground.share.copy_error"),
-  shareTooLong: t("playground.share.too_long"),
-  severityError: t("playground.diagnostics.severity_error"),
-  severityWarn: t("playground.diagnostics.severity_warn"),
-  wasmFallback: t("playground.wasm.fallback"),
-  wasmWikidataImportWarning: t("playground.wasm.wikidata_import_warning"),
-};
+const msgs = buildPlaygroundMsgs(t);
 
 const siteUrl = getSiteUrl(Astro);
 const sampleList = itemListLd({
