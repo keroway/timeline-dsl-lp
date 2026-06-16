@@ -110,7 +110,8 @@
   --color-status-warn: #5c4500;
   /* error 文字は白背景で AAA (9.14:1)。warn(amber)/ready(青) と色相で区別 */
   --color-status-error: #960000;
-  /* Terminal は HC でも意図的に dark を維持。near-black (#000) 上で全色 AAA (7:1+) */
+  /* Terminal は HC でも意図的に dark を維持。near-black (#000) 上で全色 AAA (7:1+)。
+     light/dark HC で同値のため、ここに 1 度だけ定義し dark HC からはカスケードで適用する。 */
   --color-terminal-bg: #000000;
   --color-terminal-ink: #ffffff;
   --color-terminal-border: #ffffff;
@@ -183,22 +184,8 @@
     --color-gold: #8f6410;
     --color-plum: #8a4f76;
     --color-sky: #2f78ac;
-    /* Terminal HC: dark ページと黒背景を共有するが、light HC と同値で統一する */
-    --color-terminal-bg: #000000;
-    --color-terminal-ink: #ffffff;
-    --color-terminal-border: #ffffff;
-    --color-terminal-shadow: transparent;
-    --color-terminal-bar-border: rgba(255, 255, 255, 0.6);
-    --color-terminal-dot: #d8e0e8;
-    --color-terminal-dot-warm: #ff8a75;
-    --color-terminal-dot-gold: #ffd24a;
-    --color-terminal-dot-green: #5fe08a;
-    --color-terminal-prompt: #5ff0e0;
-    --color-terminal-output: #d8e0e8;
-    --color-terminal-diag-muted: #d8e0e8;
-    --color-terminal-ok: #7dffa0;
-    --color-terminal-warn: #ffd24a;
-    --color-terminal-error: #ff8a75;
+    /* Terminal HC は light HC と同値のため、上の :root[data-a11y-contrast="high"] が
+       メディアクエリ非依存でカスケード適用される。ここでの再列挙は不要。 */
   }
 }
 
