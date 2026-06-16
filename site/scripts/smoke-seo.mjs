@@ -6,6 +6,11 @@ import {
   normalizeBaseUrl,
   parseArgs,
 } from "./lib/smoke-helpers.mjs";
+import {
+  HREFLANG_PATHS,
+  JSONLD_TARGETS,
+  OG_IMAGE_TARGETS,
+} from "./lib/site-routes.mjs";
 
 const args = parseArgs(process.argv.slice(2));
 const baseUrl = normalizeBaseUrl(args.baseUrl ?? process.env.SEO_BASE_URL ?? DEFAULT_BASE_URL);
@@ -13,28 +18,7 @@ const baseUrl = normalizeBaseUrl(args.baseUrl ?? process.env.SEO_BASE_URL ?? DEF
 await smokeSeo(baseUrl);
 
 async function smokeSeo(rootUrl) {
-  const hreflangTargets = [
-    "/",
-    "/en/",
-    "/playground/",
-    "/en/playground/",
-    "/gallery/",
-    "/en/gallery/",
-    "/changelog/",
-    "/en/changelog/",
-    "/docs/",
-    "/en/docs/",
-    "/showcase/",
-    "/en/showcase/",
-    "/showcase/oda-nobunaga/",
-    "/en/showcase/oda-nobunaga/",
-    "/showcase/natsume-soseki/",
-    "/en/showcase/natsume-soseki/",
-    "/showcase/internet-history/",
-    "/en/showcase/internet-history/",
-  ];
-
-  for (const path of hreflangTargets) {
+  for (const path of HREFLANG_PATHS) {
     const res = await get(`${rootUrl}${path}`);
     assertStatus(res, path);
     const html = await res.text();
@@ -42,135 +26,9 @@ async function smokeSeo(rootUrl) {
     assertIncludes(html, 'hreflang="en"', `${path} must include hreflang=en`);
     assertIncludes(html, 'hreflang="x-default"', `${path} must include hreflang=x-default`);
   }
-  console.log(`hreflang: 3 tags confirmed on ${hreflangTargets.length} pages. ✓`);
+  console.log(`hreflang: 3 tags confirmed on ${HREFLANG_PATHS.length} pages. ✓`);
 
-  const jsonLdTargets = [
-    {
-      path: "/",
-      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'],
-    },
-    {
-      path: "/en/",
-      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'],
-    },
-    {
-      path: "/playground/",
-      required: [
-        '"@type":"Organization"',
-        '"@type":"WebPage"',
-        '"@type":"ItemList"',
-        '"@type":"ListItem"',
-      ],
-    },
-    {
-      path: "/en/playground/",
-      required: [
-        '"@type":"Organization"',
-        '"@type":"WebPage"',
-        '"@type":"ItemList"',
-        '"@type":"ListItem"',
-      ],
-    },
-    {
-      path: "/gallery/",
-      required: [
-        '"@type":"Organization"',
-        '"@type":"WebPage"',
-        '"@type":"ItemList"',
-        '"@type":"ListItem"',
-      ],
-    },
-    {
-      path: "/en/gallery/",
-      required: [
-        '"@type":"Organization"',
-        '"@type":"WebPage"',
-        '"@type":"ItemList"',
-        '"@type":"ListItem"',
-      ],
-    },
-    {
-      path: "/showcase/",
-      required: [
-        '"@type":"Organization"',
-        '"@type":"WebPage"',
-        '"@type":"BreadcrumbList"',
-        '"@type":"CollectionPage"',
-      ],
-    },
-    {
-      path: "/en/showcase/",
-      required: [
-        '"@type":"Organization"',
-        '"@type":"WebPage"',
-        '"@type":"BreadcrumbList"',
-        '"@type":"CollectionPage"',
-      ],
-    },
-    {
-      path: "/showcase/oda-nobunaga/",
-      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
-    },
-    {
-      path: "/en/showcase/oda-nobunaga/",
-      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
-    },
-    {
-      path: "/showcase/natsume-soseki/",
-      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
-    },
-    {
-      path: "/en/showcase/natsume-soseki/",
-      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
-    },
-    {
-      path: "/showcase/internet-history/",
-      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
-    },
-    {
-      path: "/en/showcase/internet-history/",
-      required: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
-    },
-    { path: "/docs/", required: ['"@type":"Organization"', '"@type":"BreadcrumbList"'] },
-    { path: "/en/docs/", required: ['"@type":"Organization"', '"@type":"BreadcrumbList"'] },
-    {
-      path: "/changelog/",
-      required: [
-        '"@type":"Organization"',
-        '"@type":"WebPage"',
-        '"@type":"CollectionPage"',
-        '"@type":"Article"',
-      ],
-    },
-    {
-      path: "/en/changelog/",
-      required: [
-        '"@type":"Organization"',
-        '"@type":"WebPage"',
-        '"@type":"CollectionPage"',
-        '"@type":"Article"',
-      ],
-    },
-    {
-      path: "/docs/faq/",
-      required: [
-        '"@type":"Organization"',
-        '"@type":"BreadcrumbList"',
-        '"@type":"FAQPage"',
-        '"@type":"Question"',
-      ],
-    },
-    {
-      path: "/en/docs/faq/",
-      required: [
-        '"@type":"Organization"',
-        '"@type":"BreadcrumbList"',
-        '"@type":"FAQPage"',
-        '"@type":"Question"',
-      ],
-    },
-  ];
-  for (const { path, required } of jsonLdTargets) {
+  for (const { path, required } of JSONLD_TARGETS) {
     const res = await get(`${rootUrl}${path}`);
     assertStatus(res, path);
     const html = await res.text();
@@ -179,21 +37,11 @@ async function smokeSeo(rootUrl) {
       assertIncludes(compact, needle, `${path} must include JSON-LD ${needle}`);
     }
   }
-  console.log(`JSON-LD: required @type tokens confirmed on ${jsonLdTargets.length} pages. ✓`);
+  console.log(`JSON-LD: required @type tokens confirmed on ${JSONLD_TARGETS.length} pages. ✓`);
 
   // OG 画像メタの整合（DESIGN.md §9）: ページ種別ごとに専用 PNG を参照し（#308/#309）、
   // type は実体（PNG）に追従、width/height は 1200x630 固定。ja/en は同一種別で同じ画像。
-  const ogImageTargets = [
-    { path: "/", image: "/og/lp.png" },
-    { path: "/en/", image: "/og/lp.png" },
-    { path: "/playground/", image: "/og/playground.png" },
-    { path: "/en/playground/", image: "/og/playground.png" },
-    { path: "/gallery/", image: "/og/gallery.png" },
-    { path: "/en/gallery/", image: "/og/gallery.png" },
-    { path: "/changelog/", image: "/og/changelog.png" },
-    { path: "/en/changelog/", image: "/og/changelog.png" },
-  ];
-  for (const { path, image } of ogImageTargets) {
+  for (const { path, image } of OG_IMAGE_TARGETS) {
     const res = await get(`${rootUrl}${path}`);
     assertStatus(res, path);
     const html = await res.text();
@@ -225,7 +73,7 @@ async function smokeSeo(rootUrl) {
     }
   }
   console.log(
-    `og:image: per-page PNG + type + 1200x630 dimensions confirmed on ${ogImageTargets.length} pages. ✓`,
+    `og:image: per-page PNG + type + 1200x630 dimensions confirmed on ${OG_IMAGE_TARGETS.length} pages. ✓`,
   );
 
   const robotsRes = await get(`${rootUrl}/robots.txt`);

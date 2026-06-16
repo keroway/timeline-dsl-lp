@@ -7,35 +7,10 @@
 //   A11Y_BASE_URL=http://127.0.0.1:4321 pnpm smoke:a11y
 //   pnpm smoke:a11y -- --base-url https://example.localhost
 import { DEFAULT_BASE_URL, normalizeBaseUrl, parseArgs } from "./lib/smoke-helpers.mjs";
+import { A11Y_PAGES } from "./lib/site-routes.mjs";
 
 // WCAG 2.0/2.1 の A / AA を対象タグとする (axe-core のルールタグ)。
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
-
-// 巡回対象。ja / en のペアで主要動線を網羅する。
-const PAGES = [
-  "/",
-  "/en/",
-  "/playground/",
-  "/en/playground/",
-  "/gallery/",
-  "/en/gallery/",
-  "/showcase/",
-  "/en/showcase/",
-  "/showcase/oda-nobunaga/",
-  "/en/showcase/oda-nobunaga/",
-  "/showcase/natsume-soseki/",
-  "/en/showcase/natsume-soseki/",
-  "/showcase/internet-history/",
-  "/en/showcase/internet-history/",
-  "/changelog/",
-  "/en/changelog/",
-  "/docs/",
-  "/en/docs/",
-  "/docs/grammar/",
-  "/en/docs/grammar/",
-  "/docs/faq/",
-  "/en/docs/faq/",
-];
 
 // 既知の許容例外。理由を必ず添える。空配列なら例外なし。
 // 形式: { page: "/path/", ruleId: "color-contrast", reason: "..." }
@@ -54,7 +29,7 @@ async function smokeA11y(rootUrl) {
   const failures = [];
 
   try {
-    for (const path of PAGES) {
+    for (const path of A11Y_PAGES) {
       const context = await browser.newContext();
       const page = await context.newPage();
 
@@ -93,7 +68,7 @@ async function smokeA11y(rootUrl) {
   }
 
   console.log(
-    `\na11y smoke: all ${PAGES.length} pages pass WCAG 2.1 AA (axe-core ${WCAG_TAGS.join(", ")}). ✓`,
+    `\na11y smoke: all ${A11Y_PAGES.length} pages pass WCAG 2.1 AA (axe-core ${WCAG_TAGS.join(", ")}). ✓`,
   );
   if (ALLOWED_EXCEPTIONS.length) {
     console.log(`a11y smoke: ${ALLOWED_EXCEPTIONS.length} documented exception(s) suppressed.`);
