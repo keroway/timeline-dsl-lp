@@ -6,11 +6,7 @@ import {
   normalizeBaseUrl,
   parseArgs,
 } from "./lib/smoke-helpers.mjs";
-import {
-  HREFLANG_PATHS,
-  JSONLD_TARGETS,
-  OG_IMAGE_TARGETS,
-} from "./lib/site-routes.mjs";
+import { HREFLANG_PATHS, JSONLD_TARGETS, OG_IMAGE_TARGETS } from "./lib/site-routes.mjs";
 
 const args = parseArgs(process.argv.slice(2));
 const baseUrl = normalizeBaseUrl(args.baseUrl ?? process.env.SEO_BASE_URL ?? DEFAULT_BASE_URL);
