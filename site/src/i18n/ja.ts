@@ -216,4 +216,7 @@ export const ja = {
 } as const;
 
 export type DictionaryKeys = keyof typeof ja;
-export type Dictionary = Record<DictionaryKeys, string>;
+export type Dictionary = { [K in DictionaryKeys]: string };
+export type ExactDictionary<T extends Dictionary> = T & {
+  [K in Exclude<keyof T, DictionaryKeys>]: never;
+};

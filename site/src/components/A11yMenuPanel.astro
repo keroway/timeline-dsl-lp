@@ -181,7 +181,7 @@ const t = getT(locale);
 </style>
 
 <script>
-  import { resolveLocaleFromLocation, getT } from "../i18n/index";
+  import { resolveLocaleFromLocation, getT, interpolate } from "../i18n/index";
   import type { A11yTextSize } from "../lib/a11y-settings";
   import { initA11yMenu } from "../lib/a11y-settings";
   import { initLangToggle } from "../lib/i18n-toggle";
@@ -211,7 +211,7 @@ const t = getT(locale);
       highContrast: { on: t("a11y.live.high_contrast_on"), off: t("a11y.live.high_contrast_off") },
       textSpacing: { on: t("a11y.live.text_spacing_on"), off: t("a11y.live.text_spacing_off") },
       textSize: (size: A11yTextSize) =>
-        t("a11y.live.text_size").replace("{size}", t(TEXT_SIZE_KEYS[size])),
+        interpolate(t("a11y.live.text_size"), { size: t(TEXT_SIZE_KEYS[size]) }),
     },
   });
   initLangToggle({ buttonSelector: langSelector, currentLocale: locale });

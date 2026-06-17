@@ -4,7 +4,7 @@ import "../styles/changelog.css";
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
 import rehypeSanitize from "rehype-sanitize";
 import { latest, releases, fetchedAt as rawFetchedAt, repository } from "../data/releases";
-import { getT, type Locale } from "../i18n/index";
+import { getT, interpolate, type Locale } from "../i18n/index";
 import { changelogLd } from "../lib/seo-jsonld";
 import { getSiteUrl, formatDate } from "../lib/site";
 
@@ -52,11 +52,11 @@ const renderedReleases = await Promise.all(
         <p class="lead">
           {
             releases.length > 0
-              ? t("changelog.lead.has_data").replace("{repository}", repository)
+              ? interpolate(t("changelog.lead.has_data"), { repository })
               : t("changelog.lead.no_data")
           }
         </p>
-        <p class="release-meta">{t("changelog.last_fetched").replace("{date}", fetchedAt)}</p>
+        <p class="release-meta">{interpolate(t("changelog.last_fetched"), { date: fetchedAt })}</p>
       </div>
     </section>
 

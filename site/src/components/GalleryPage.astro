@@ -83,6 +83,7 @@ const sampleList = itemListLd({
 
 <script>
   import { renderTdslSvg } from "../lib/tdsl-wasm";
+  import { interpolate } from "../i18n/index";
 
   type SampleData = { id: string; source: string };
   type GalleryMsgs = { errorSummary: string; retry: string; resultCount: string };
@@ -186,7 +187,7 @@ const sampleList = itemListLd({
       if (statusEl) {
         statusEl.hidden = !filtering;
         statusEl.textContent = filtering
-          ? msgs.resultCount.replace("{count}", String(visible))
+          ? interpolate(msgs.resultCount, { count: String(visible) })
           : "";
       }
     };

@@ -1,6 +1,6 @@
 ---
 import { Code } from "astro:components";
-import { getT, type Locale, type DictionaryKeys } from "../../i18n/index";
+import { getT, interpolate, type Locale, type DictionaryKeys } from "../../i18n/index";
 import { tdslLang, tdslCodeThemes } from "../../lib/tdsl-shiki";
 
 interface Props {
@@ -51,7 +51,7 @@ const playgroundBase = locale === "ja" ? "" : "/en";
         class="gallery-preview"
         data-gallery-preview={sample.id}
         role="img"
-        aria-label={t("gallery.preview.aria_label").replace("{title}", sample.title)}
+        aria-label={interpolate(t("gallery.preview.aria_label"), { title: sample.title })}
       >
         <div class="gallery-preview-placeholder" aria-hidden="true">
           <span class="gallery-loading-dot"></span>

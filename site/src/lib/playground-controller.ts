@@ -10,6 +10,7 @@ import { buildShareUrl, extractSourceFromLocation, MAX_SHARE_URL_LENGTH } from "
 import { createPlaygroundEditor } from "./playground-editor";
 import type { PlaygroundSample } from "../data/playground-samples";
 import type { PlaygroundMsgs } from "./playground-messages";
+import { interpolate } from "../i18n/index";
 
 // Playground の DOM 配線・WASM オーケストレーション・pan-zoom 連携を初期化する。
 // PlaygroundPage.astro の <script> から一度だけ呼ぶ。
@@ -264,7 +265,7 @@ export function initPlayground(): void {
         pathname: window.location.pathname,
       });
       if (!result.ok) {
-        announceShare(msgs.shareTooLong.replace("{limit}", String(MAX_SHARE_URL_LENGTH)));
+        announceShare(interpolate(msgs.shareTooLong, { limit: String(MAX_SHARE_URL_LENGTH) }));
         return;
       }
       await navigator.clipboard.writeText(result.url);
