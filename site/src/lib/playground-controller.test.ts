@@ -62,8 +62,8 @@ const MSGS = {
   shareTooLong: "too long {limit}",
   severityError: "エラー",
   severityWarn: "警告",
+  severityInfo: "情報",
   wasmFallback: "WASM フォールバック",
-  wasmWikidataImportWarning: "Wikidata import 警告",
 };
 
 function setupDom() {
@@ -109,7 +109,6 @@ describe("initPlayground runPlayground の状態分岐", () => {
 
     expect(setTdslWasmMessages).toHaveBeenCalledWith({
       fallback: MSGS.wasmFallback,
-      wikidataImportWarning: MSGS.wasmWikidataImportWarning,
     });
   });
 
@@ -124,7 +123,7 @@ describe("initPlayground runPlayground の状態分岐", () => {
       expect(dom.root.getAttribute("data-playground-state")).toBe("ready");
     });
     expect(dom.status.textContent).toBe(MSGS.statusOk);
-    expect(dom.diagnosticsMeta.textContent).toBe("0 errors / 0 warnings");
+    expect(dom.diagnosticsMeta.textContent).toBe("0 errors / 0 warnings / 0 info");
     expect(renderTdslSvg).toHaveBeenCalledWith("event x", 0);
   });
 
@@ -174,11 +173,12 @@ describe("buildDiagnosticsFragment", () => {
     diagnosticsEmpty: "問題なし",
     severityError: "エラー",
     severityWarn: "警告",
+    severityInfo: "情報",
   };
 
-  it("items が空のとき diagnostics-empty な p を返し metaText は 0/0", () => {
+  it("items が空のとき diagnostics-empty な p を返し metaText は 0/0/0", () => {
     const { metaText, node } = buildDiagnosticsFragment([], msgs);
-    expect(metaText).toBe("0 errors / 0 warnings");
+    expect(metaText).toBe("0 errors / 0 warnings / 0 info");
     const p = node as HTMLParagraphElement;
     expect(p.tagName).toBe("P");
     expect(p.className).toBe("diagnostics-empty");
@@ -192,7 +192,7 @@ describe("buildDiagnosticsFragment", () => {
       { severity: "error" as const, message: "e2", line: 3, col: 3 },
     ];
     const { metaText, node } = buildDiagnosticsFragment(items, msgs);
-    expect(metaText).toBe("2 errors / 1 warnings");
+    expect(metaText).toBe("2 errors / 1 warnings / 0 info");
     const ol = node as HTMLOListElement;
     expect(ol.tagName).toBe("OL");
     expect(ol.children).toHaveLength(3);

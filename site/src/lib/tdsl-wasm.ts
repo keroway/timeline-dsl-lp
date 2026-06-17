@@ -1,4 +1,4 @@
-export type TdslDiagnosticSeverity = "error" | "warning";
+export type TdslDiagnosticSeverity = "error" | "warning" | "info";
 
 export interface TdslDiagnostic {
   severity: TdslDiagnosticSeverity;
@@ -45,7 +45,6 @@ export const TDSL_WASM_IMPORT_STRATEGY = {
 
 export interface TdslWasmMessages {
   fallback: string;
-  wikidataImportWarning: string;
 }
 
 // locale 依存の文言は呼び出し側 (PlaygroundPage.astro の getT) から注入する。
@@ -53,8 +52,6 @@ export interface TdslWasmMessages {
 const DEFAULT_TDSL_WASM_MESSAGES: TdslWasmMessages = {
   fallback:
     "The browser build of Timeline DSL could not be loaded. Reload in an up-to-date browser, or use the local `tdsl check` / `tdsl render` CLI.",
-  wikidataImportWarning:
-    "The browser WASM build does not resolve Wikidata imports. Only static items are validated and rendered.",
 };
 
 let tdslWasmMessages: TdslWasmMessages = DEFAULT_TDSL_WASM_MESSAGES;
@@ -79,7 +76,7 @@ export async function checkTdslSource(source: string): Promise<TdslDiagnostic[]>
     return [toDiagnostic(loaded.message)];
   }
 
-  return withWikidataImportWarning(source, loaded.api.checkSource(source));
+  return loaded.api.checkSource(source);
 }
 
 export async function renderTdslSvg(source: string, scale?: number): Promise<string> {
@@ -155,22 +152,11 @@ export function isDiagnostic(value: unknown): value is TdslDiagnostic {
 
   const item = value as Record<string, unknown>;
   return (
-    (item.severity === "error" || item.severity === "warning") &&
+    (item.severity === "error" || item.severity === "warning" || item.severity === "info") &&
     typeof item.message === "string" &&
     typeof item.line === "number" &&
     typeof item.col === "number"
   );
-}
-
-export function withWikidataImportWarning(
-  source: string,
-  diagnostics: TdslDiagnostic[],
-): TdslDiagnostic[] {
-  if (!/(^|\n)\s*import\s+/.test(source)) {
-    return diagnostics;
-  }
-
-  return [...diagnostics, toDiagnostic(tdslWasmMessages.wikidataImportWarning, "warning")];
 }
 
 export function toDiagnostic(

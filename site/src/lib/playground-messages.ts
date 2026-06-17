@@ -25,8 +25,8 @@ export function buildPlaygroundMsgs(t: ReturnType<typeof getT>) {
     shareTooLong: t("playground.share.too_long"),
     severityError: t("playground.diagnostics.severity_error"),
     severityWarn: t("playground.diagnostics.severity_warn"),
+    severityInfo: t("playground.diagnostics.severity_info"),
     wasmFallback: t("playground.wasm.fallback"),
-    wasmWikidataImportWarning: t("playground.wasm.wikidata_import_warning"),
   };
 }
 
