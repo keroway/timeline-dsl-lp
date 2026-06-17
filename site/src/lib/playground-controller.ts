@@ -30,11 +30,15 @@ export function setSvgContent(target: HTMLElement, svgString: string): void {
 
 export function buildDiagnosticsFragment(
   items: TdslDiagnostic[],
-  msgs: Pick<PlaygroundMsgs, "diagnosticsEmpty" | "severityError" | "severityWarn">,
+  msgs: Pick<
+    PlaygroundMsgs,
+    "diagnosticsEmpty" | "severityError" | "severityWarn" | "severityInfo"
+  >,
 ): { metaText: string; node: Node } {
   const errorCount = items.filter((item) => item.severity === "error").length;
   const warningCount = items.filter((item) => item.severity === "warning").length;
-  const metaText = `${errorCount} errors / ${warningCount} warnings`;
+  const infoCount = items.filter((item) => item.severity === "info").length;
+  const metaText = `${errorCount} errors / ${warningCount} warnings / ${infoCount} info`;
 
   if (items.length === 0) {
     const empty = document.createElement("p");
@@ -50,7 +54,12 @@ export function buildDiagnosticsFragment(
     entry.className = `playground-diagnostic ${item.severity}`;
 
     const severity = document.createElement("span");
-    severity.textContent = item.severity === "error" ? msgs.severityError : msgs.severityWarn;
+    severity.textContent =
+      item.severity === "error"
+        ? msgs.severityError
+        : item.severity === "warning"
+          ? msgs.severityWarn
+          : msgs.severityInfo;
 
     const location = document.createElement("strong");
     location.textContent = item.line > 0 ? `${item.line}:${item.col}` : "global";
@@ -248,7 +257,6 @@ export function initPlayground(): void {
 
   setTdslWasmMessages({
     fallback: msgs.wasmFallback,
-    wikidataImportWarning: msgs.wasmWikidataImportWarning,
   });
 
   const panZoom =

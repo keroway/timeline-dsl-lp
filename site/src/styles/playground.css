@@ -390,6 +390,10 @@
   border-left-color: var(--color-gold);
 }
 
+.playground-diagnostic.info {
+  border-left-color: var(--color-sky);
+}
+
 .playground-diagnostic span {
   color: var(--color-ink);
   font-weight: 760;
@@ -401,6 +405,10 @@
 
 .playground-diagnostic.warning span {
   color: var(--color-status-warn);
+}
+
+.playground-diagnostic.info span {
+  color: var(--color-sky);
 }
 
 .playground-diagnostic strong {

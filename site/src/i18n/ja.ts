@@ -202,11 +202,10 @@ export const ja = {
   "playground.diagnostics.empty": "診断結果なし",
   "playground.diagnostics.severity_error": "エラー",
   "playground.diagnostics.severity_warn": "警告",
+  "playground.diagnostics.severity_info": "情報",
   "playground.retry": "再試行",
   "playground.wasm.fallback":
     "ブラウザ版 Timeline DSL を読み込めませんでした。最新のブラウザで再読み込みするか、ローカルの `tdsl check` / `tdsl render` を使って確認してください。",
-  "playground.wasm.wikidata_import_warning":
-    "ブラウザ版 WASM は Wikidata import の解決に対応していません。静的項目だけを検証・描画します。",
   "playground.sample.minimal": "Hello Timeline — 1 event だけの最小例",
   "playground.sample.range": "マーカー 3 種 — span / event / event_range の違い",
   "playground.sample.lanes": "複数 lane — 並列イベントを階層化する",

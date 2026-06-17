@@ -4,23 +4,22 @@ import {
   parseDiagnostics,
   setTdslWasmMessages,
   toDiagnostic,
-  withWikidataImportWarning,
   type TdslDiagnostic,
 } from "./tdsl-wasm";
 
 const sampleError: TdslDiagnostic = { severity: "error", message: "boom", line: 3, col: 5 };
 
 const MOCK_FALLBACK = "MOCK fallback";
-const MOCK_WIKIDATA_WARNING = "MOCK wikidata warning";
 
 describe("isDiagnostic", () => {
-  it("error / warning の妥当なオブジェクトを受理する", () => {
+  it("error / warning / info の妥当なオブジェクトを受理する", () => {
     expect(isDiagnostic(sampleError)).toBe(true);
     expect(isDiagnostic({ severity: "warning", message: "m", line: 0, col: 0 })).toBe(true);
+    expect(isDiagnostic({ severity: "info", message: "m", line: 1, col: 1 })).toBe(true);
   });
 
   it("severity 不正・フィールド欠落・非オブジェクトを拒否する", () => {
-    expect(isDiagnostic({ severity: "info", message: "m", line: 1, col: 1 })).toBe(false);
+    expect(isDiagnostic({ severity: "bogus", message: "m", line: 1, col: 1 })).toBe(false);
     expect(isDiagnostic({ severity: "error", message: "m", line: 1 })).toBe(false);
     expect(isDiagnostic({ severity: "error", message: 1, line: 1, col: 1 })).toBe(false);
     expect(isDiagnostic(null)).toBe(false);
@@ -31,6 +30,11 @@ describe("isDiagnostic", () => {
 describe("parseDiagnostics", () => {
   it("妥当な diagnostic 配列をそのまま返す", () => {
     expect(parseDiagnostics(JSON.stringify([sampleError]))).toEqual([sampleError]);
+  });
+
+  it("info diagnostic を通過させる", () => {
+    const info: TdslDiagnostic = { severity: "info", message: "import block", line: 1, col: 1 };
+    expect(parseDiagnostics(JSON.stringify([sampleError, info]))).toEqual([sampleError, info]);
   });
 
   it("不正なエントリを除外する", () => {
@@ -64,27 +68,6 @@ describe("toDiagnostic", () => {
   });
 });
 
-describe("withWikidataImportWarning", () => {
-  beforeEach(() => {
-    setTdslWasmMessages({
-      fallback: MOCK_FALLBACK,
-      wikidataImportWarning: MOCK_WIKIDATA_WARNING,
-    });
-  });
-
-  it("import を含むソースには注入された警告メッセージを diagnostic として追記する", () => {
-    const result = withWikidataImportWarning("import wikidata\nevent x", []);
-    expect(result).toHaveLength(1);
-    expect(result[0].severity).toBe("warning");
-    expect(result[0].message).toBe(MOCK_WIKIDATA_WARNING);
-  });
-
-  it("import を含まないソースは配列をそのまま返す", () => {
-    const diagnostics = [sampleError];
-    expect(withWikidataImportWarning("event x", diagnostics)).toBe(diagnostics);
-  });
-});
-
 describe("WASM が利用できない環境でのラッパー分岐", () => {
   beforeEach(() => {
     vi.resetModules();
@@ -101,7 +84,6 @@ describe("WASM が利用できない環境でのラッパー分岐", () => {
     const wasm = await import("./tdsl-wasm");
     wasm.setTdslWasmMessages({
       fallback: MOCK_FALLBACK,
-      wikidataImportWarning: MOCK_WIKIDATA_WARNING,
     });
     const result = await wasm.checkTdslSource("event x");
     expect(result).toEqual([{ severity: "error", message: MOCK_FALLBACK, line: 0, col: 0 }]);
@@ -111,10 +93,13 @@ describe("WASM が利用できない環境でのラッパー分岐", () => {
     const wasm = await import("./tdsl-wasm");
     wasm.setTdslWasmMessages({
       fallback: MOCK_FALLBACK,
-      wikidataImportWarning: MOCK_WIKIDATA_WARNING,
     });
     await expect(wasm.renderTdslSvg("event x")).rejects.toThrow(MOCK_FALLBACK);
     await expect(wasm.renderTdslHtml("event x")).rejects.toThrow(MOCK_FALLBACK);
     await expect(wasm.compileTdslToIr("event x")).rejects.toThrow(MOCK_FALLBACK);
   });
 });
+
+// setTdslWasmMessages は fallback のみ受け付けることを型レベルで確認
+const _typeCheck: Parameters<typeof setTdslWasmMessages>[0] = { fallback: "x" };
+void _typeCheck;
