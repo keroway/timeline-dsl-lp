@@ -2,27 +2,28 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
+import type { SyncInitInput } from "../../public/wasm/tdsl_wasm";
+
 type WasmModule = {
-  initSync: (opts: { module: BufferSource }) => unknown;
+  initSync: (opts: { module: SyncInitInput }) => unknown;
   render_svg_from_source: (source: string, scale: number) => string;
 };
 
-let renderFn: WasmModule["render_svg_from_source"] | null = null;
+let cachedModule: WasmModule | null = null;
 
-async function ensureInit(): Promise<void> {
-  if (renderFn !== null) return;
+async function ensureInit(): Promise<WasmModule> {
+  if (cachedModule !== null) return cachedModule;
 
   const root = process.cwd();
   const binaryPath = join(root, "public", "wasm", "tdsl_wasm_bg.wasm");
   const jsUrl = pathToFileURL(join(root, "public", "wasm", "tdsl_wasm.js")).href;
 
   const wasmBytes = await readFile(binaryPath);
-  // public/ vendored WASM JS: dynamic import + @vite-ignore to skip Vite bundling
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const mod = (await import(/* @vite-ignore */ jsUrl)) as WasmModule;
   mod.initSync({ module: wasmBytes });
 
-  renderFn = mod.render_svg_from_source;
+  cachedModule = mod;
+  return mod;
 }
 
 /**
@@ -30,7 +31,6 @@ async function ensureInit(): Promise<void> {
  * @param scale pixels-per-year; 0 = auto-calculate from range
  */
 export async function renderSvgFromSource(source: string, scale = 0): Promise<string> {
-  await ensureInit();
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return renderFn!(source, scale);
+  const mod = await ensureInit();
+  return mod.render_svg_from_source(source, scale);
 }

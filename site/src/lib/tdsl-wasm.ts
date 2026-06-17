@@ -18,16 +18,14 @@ export type TdslWasmLoadResult =
   | { status: "ready"; api: TdslWasmApi }
   | { status: "unavailable"; message: string; cause?: unknown };
 
+import type { InitInput } from "../../public/wasm/tdsl_wasm";
+
 interface RawTdslWasmModule {
   default: (
     moduleOrPath?:
-      | { module_or_path: string | URL | Request | Response | BufferSource | WebAssembly.Module }
-      | string
-      | URL
-      | Request
-      | Response
-      | BufferSource
-      | WebAssembly.Module,
+      | { module_or_path: InitInput | Promise<InitInput> }
+      | InitInput
+      | Promise<InitInput>,
   ) => Promise<unknown>;
   compile_to_ir(source: string): string;
   render_svg_from_source(source: string, scale: number): string;
