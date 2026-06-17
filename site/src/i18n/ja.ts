@@ -213,6 +213,13 @@ export const ja = {
   "playground.sample.import": "Wikidata import（CLI 専用機能のデモ）",
   "embed.play_link": "Playground で編集する",
   "embed.preview_aria_label": "Timeline DSL で生成した年表",
+  "og.lp.subtitle": "Describe and validate timelines as text.",
+  "og.playground.eyebrow": "Playground",
+  "og.playground.subtitle": "Write and run .tdsl right in your browser.",
+  "og.gallery.eyebrow": "Gallery",
+  "og.gallery.subtitle": "Browse example timelines built with Timeline DSL.",
+  "og.changelog.eyebrow": "Changelog",
+  "og.changelog.subtitle": "Release notes and version history.",
 } as const;
 
 export type DictionaryKeys = keyof typeof ja;

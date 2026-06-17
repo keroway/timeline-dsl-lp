@@ -1,6 +1,7 @@
 import { join } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
 
+import { en } from "../i18n/en";
 import { LANE_HEX_LIGHT as LANE_HEX, type LaneColor } from "./lane-palette";
 
 /**
@@ -34,7 +35,7 @@ export interface OgCardSpec {
  * LP と完全同一の見た目になるので `lp` の alias として同じオブジェクトを共有する。
  */
 const LP_CARD: OgCardSpec = {
-  subtitle: "Describe and validate timelines as text.",
+  subtitle: en["og.lp.subtitle"],
   accent: "warm",
 };
 
@@ -42,18 +43,18 @@ export const OG_CARDS = {
   default: LP_CARD,
   lp: LP_CARD,
   playground: {
-    eyebrow: "Playground",
-    subtitle: "Write and run .tdsl right in your browser.",
+    eyebrow: en["og.playground.eyebrow"],
+    subtitle: en["og.playground.subtitle"],
     accent: "sky",
   },
   gallery: {
-    eyebrow: "Gallery",
-    subtitle: "Browse example timelines built with Timeline DSL.",
+    eyebrow: en["og.gallery.eyebrow"],
+    subtitle: en["og.gallery.subtitle"],
     accent: "plum",
   },
   changelog: {
-    eyebrow: "Changelog",
-    subtitle: "Release notes and version history.",
+    eyebrow: en["og.changelog.eyebrow"],
+    subtitle: en["og.changelog.subtitle"],
     accent: "gold",
   },
 } satisfies Record<string, OgCardSpec>;
