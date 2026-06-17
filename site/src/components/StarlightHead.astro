@@ -8,6 +8,7 @@ import {
   type BreadcrumbItem,
 } from "../lib/seo-jsonld";
 import { getSiteUrl } from "../lib/site";
+import { getT } from "../i18n/index";
 
 const siteUrl = getSiteUrl(Astro);
 const route = Astro.locals.starlightRoute;
@@ -16,7 +17,7 @@ const docsHomeId = "docs";
 
 const homeUrl = isJa ? "/" : "/en/";
 const docsHomeUrl = isJa ? "/docs/" : "/en/docs/";
-const docsHomeLabel = isJa ? "ドキュメント" : "Docs";
+const docsHomeLabel = getT(isJa ? "ja" : "en")("docs.breadcrumb.docs");
 const siteLabel = "Timeline DSL";
 
 const pageTitle = route.entry?.data.title ?? siteLabel;
