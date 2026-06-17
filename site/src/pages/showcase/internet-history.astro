@@ -1,8 +1,9 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import TimelineEmbed from "../../components/TimelineEmbed.astro";
-import { breadcrumbLd } from "../../lib/seo-jsonld";
-import { getSiteUrl } from "../../lib/site";
+import ShowcasePage from "../../components/ShowcasePage.astro";
+import { getT } from "../../i18n/index";
+
+const locale = "ja" as const;
+const t = getT(locale);
 
 const source = `timeline "インターネットの発展史 (1969–2010)" {
     title "インターネットの発展史";
@@ -37,208 +38,41 @@ event social 2000 "全世界 4 億ユーザー突破" {};
 event social 2007 "iPhone 発売・スマートフォン時代開始" {};
 event social 2010 "全世界 20 億ユーザー突破" {};
 `;
-
-const siteUrl = getSiteUrl(Astro);
-const breadcrumb = breadcrumbLd(
-  [
-    { name: "Timeline DSL", url: "/" },
-    { name: "Showcase", url: "/showcase/" },
-    { name: "インターネットの発展史", url: "/showcase/internet-history/" },
-  ],
-  siteUrl,
-);
 ---
 
-<BaseLayout
+<ShowcasePage
+  locale={locale}
+  h1="インターネットの発展史"
   title="インターネットの発展史 — Showcase | Timeline DSL"
   description="Timeline DSL で記述したインターネットの発展史。技術基盤・転換点・社会普及の 3 レーンで 1969 年から 2010 年を俯瞰する年表。"
   pathname="/showcase/internet-history/"
-  locale="ja"
-  extraJsonLd={[breadcrumb]}
+  source={source}
+  caption="インターネットの発展史年表。Playground でクリックして DSL を編集・カスタマイズできます。"
+  breadcrumbs={[
+    { name: "Timeline DSL", url: "/" },
+    { name: "Showcase", url: "/showcase/" },
+    { name: "インターネットの発展史", url: "/showcase/internet-history/" },
+  ]}
+  meta={[
+    { label: t("showcase.card.period"), value: "1969 〜 2010 年（42 年間）" },
+    { label: t("showcase.card.lanes"), value: "技術基盤 / 転換点 / 普及" },
+    { label: t("showcase.card.events"), value: "15" },
+  ]}
+  notesHeading="Timeline DSL の使い所"
 >
-  <main id="main-content" class="showcase-page">
-    <div class="showcase-inner">
-      <nav class="showcase-breadcrumb" aria-label="パンくずリスト">
-        <a href="/showcase/">Showcase</a>
-        <span aria-hidden="true"> / </span>
-        <span aria-current="page">インターネットの発展史</span>
-      </nav>
-
-      <header class="showcase-header">
-        <h1 class="showcase-title">インターネットの発展史</h1>
-        <p class="showcase-description">
-          ARPANET の稼働（1969）から全世界 20 億ユーザー突破（2010）までの約 40 年を Timeline DSL
-          で表現した年表です。技術基盤・転換点・社会普及の 3
-          レーンで、インターネットの進化を俯瞰します。
-        </p>
-        <dl class="showcase-meta">
-          <div>
-            <dt>期間</dt>
-            <dd>1969 〜 2010 年（42 年間）</dd>
-          </div>
-          <div>
-            <dt>レーン</dt>
-            <dd>技術基盤 / 転換点 / 普及</dd>
-          </div>
-          <div>
-            <dt>イベント数</dt>
-            <dd>15</dd>
-          </div>
-        </dl>
-      </header>
-
-      <TimelineEmbed
-        source={source}
-        caption="インターネットの発展史年表。Playground でクリックして DSL を編集・カスタマイズできます。"
-      />
-
-      <section class="showcase-notes">
-        <h2>Timeline DSL の使い所</h2>
-        <ul>
-          <li>
-            <code>span</code> で時代区分（ARPANET 期・Web 普及期）を表現し、 その中に <code
-              >event</code
-            > を配置することで「大きな流れ」と「個別の出来事」を同時に示しています。
-          </li>
-          <li>
-            3 つの <code>lane</code>
-            に分けることで、技術・出来事・社会という異なる視点の変化を並列して俯瞰できます。
-          </li>
-          <li>
-            人物の伝記だけでなく、技術の歴史や業界の沿革など、あらゆる「時系列の物語」を表現できます。
-          </li>
-        </ul>
-        <p>
-          <a href="/docs/">文法リファレンス</a> を見れば、 自分のテーマに合わせた年表を数分で作成できます。
-        </p>
-      </section>
-    </div>
-  </main>
-</BaseLayout>
-
-<style>
-  .showcase-page {
-    padding: 3rem 1.5rem 5rem;
-  }
-
-  .showcase-inner {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .showcase-breadcrumb {
-    font-size: 0.875rem;
-    color: var(--color-muted);
-    margin-bottom: 1.5rem;
-  }
-
-  .showcase-breadcrumb a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.2em;
-  }
-
-  .showcase-header {
-    margin-bottom: 2rem;
-  }
-
-  .showcase-title {
-    font-size: 2rem;
-    font-weight: 700;
-    font-family: var(--font-display);
-    color: var(--color-ink);
-    margin: 0 0 0.75rem;
-    line-height: 1.25;
-  }
-
-  .showcase-description {
-    font-size: 1.05rem;
-    color: var(--color-muted);
-    line-height: var(--line-height-base);
-    margin: 0 0 1.25rem;
-  }
-
-  .showcase-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-    margin: 0;
-    padding: 1rem 1.25rem;
-    background: var(--color-panel);
-    border-radius: 6px;
-    border: 1px solid var(--color-line);
-    font-size: 0.875rem;
-  }
-
-  .showcase-meta div {
-    display: flex;
-    gap: 0.4rem;
-  }
-
-  .showcase-meta dt {
-    color: var(--color-muted);
-    font-weight: 500;
-  }
-
-  .showcase-meta dt::after {
-    content: ":";
-  }
-
-  .showcase-meta dd {
-    margin: 0;
-    color: var(--color-ink);
-  }
-
-  .showcase-notes {
-    margin-top: 2.5rem;
-    padding: 1.5rem;
-    background: var(--color-panel);
-    border-radius: 8px;
-    border: 1px solid var(--color-line);
-  }
-
-  .showcase-notes h2 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 1rem;
-    color: var(--color-ink);
-  }
-
-  .showcase-notes ul {
-    margin: 0 0 1rem;
-    padding-left: 1.5rem;
-    color: var(--color-muted);
-    line-height: var(--line-height-base);
-  }
-
-  .showcase-notes li {
-    margin-bottom: 0.5rem;
-  }
-
-  .showcase-notes li:last-child {
-    margin-bottom: 0;
-  }
-
-  .showcase-notes code {
-    font-family: var(--font-mono);
-    font-size: 0.85em;
-    background: var(--color-bg);
-    padding: 0.1em 0.3em;
-    border-radius: 3px;
-    border: 1px solid var(--color-line);
-  }
-
-  .showcase-notes p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--color-muted);
-  }
-
-  .showcase-notes a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.2em;
-  }
-</style>
+  <ul>
+    <li>
+      <code>span</code> で時代区分（ARPANET 期・Web 普及期）を表現し、 その中に <code>event</code> を配置することで「大きな流れ」と「個別の出来事」を同時に示しています。
+    </li>
+    <li>
+      3 つの <code>lane</code>
+      に分けることで、技術・出来事・社会という異なる視点の変化を並列して俯瞰できます。
+    </li>
+    <li>
+      人物の伝記だけでなく、技術の歴史や業界の沿革など、あらゆる「時系列の物語」を表現できます。
+    </li>
+  </ul>
+  <p>
+    <a href="/docs/">文法リファレンス</a> を見れば、 自分のテーマに合わせた年表を数分で作成できます。
+  </p>
+</ShowcasePage>
