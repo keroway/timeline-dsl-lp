@@ -1,8 +1,9 @@
 ---
-import BaseLayout from "../../../layouts/BaseLayout.astro";
-import TimelineEmbed from "../../../components/TimelineEmbed.astro";
-import { breadcrumbLd } from "../../../lib/seo-jsonld";
-import { getSiteUrl } from "../../../lib/site";
+import ShowcasePage from "../../../components/ShowcasePage.astro";
+import { getT } from "../../../i18n/index";
+
+const locale = "en" as const;
+const t = getT(locale);
 
 const source = `timeline "The Life of Natsume Soseki (1867–1916)" {
     title "The Life of Natsume Soseki";
@@ -38,208 +39,43 @@ event works 1914 "'Kokoro'" {};
 event works 1915 "'Grass on the Wayside'" {};
 event works 1916 "'Light and Darkness' (unfinished, final work)" {};
 `;
-
-const siteUrl = getSiteUrl(Astro);
-const breadcrumb = breadcrumbLd(
-  [
-    { name: "Timeline DSL", url: "/en/" },
-    { name: "Showcase", url: "/en/showcase/" },
-    { name: "The Life of Natsume Soseki", url: "/en/showcase/natsume-soseki/" },
-  ],
-  siteUrl,
-);
 ---
 
-<BaseLayout
+<ShowcasePage
+  locale={locale}
+  h1="The Life of Natsume Soseki"
   title="The Life of Natsume Soseki — Showcase | Timeline DSL"
   description="A Timeline DSL timeline covering the life and literary works of Natsume Soseki (1867–1916), active from the Meiji to Taisho era. Three lanes — Life, Career & Teaching, and Works — trace 49 years of milestones."
   pathname="/en/showcase/natsume-soseki/"
-  locale="en"
-  extraJsonLd={[breadcrumb]}
+  source={source}
+  caption="Timeline of Natsume Soseki's life. Click to open in the Playground and edit or customize the DSL."
+  breadcrumbs={[
+    { name: "Timeline DSL", url: "/en/" },
+    { name: "Showcase", url: "/en/showcase/" },
+    { name: "The Life of Natsume Soseki", url: "/en/showcase/natsume-soseki/" },
+  ]}
+  meta={[
+    { label: t("showcase.card.period"), value: "1867 – 1916 (49 years)" },
+    { label: t("showcase.card.lanes"), value: "Life / Career & Teaching / Works" },
+    { label: t("showcase.card.events"), value: "20" },
+  ]}
+  notesHeading="Timeline DSL in action"
 >
-  <main id="main-content" class="showcase-page">
-    <div class="showcase-inner">
-      <nav class="showcase-breadcrumb" aria-label="Breadcrumb">
-        <a href="/en/showcase/">Showcase</a>
-        <span aria-hidden="true"> / </span>
-        <span aria-current="page">The Life of Natsume Soseki</span>
-      </nav>
-
-      <header class="showcase-header">
-        <h1 class="showcase-title">The Life of Natsume Soseki</h1>
-        <p class="showcase-description">
-          A Timeline DSL timeline covering the life and literary works of Natsume Soseki
-          (1867–1916), active from the Meiji to Taisho era. Three lanes — Life, Career &amp;
-          Teaching, and Works — trace 49 years of milestones and major publications.
-        </p>
-        <dl class="showcase-meta">
-          <div>
-            <dt>Period</dt>
-            <dd>1867 – 1916 (49 years)</dd>
-          </div>
-          <div>
-            <dt>Lanes</dt>
-            <dd>Life / Career &amp; Teaching / Works</dd>
-          </div>
-          <div>
-            <dt>Events</dt>
-            <dd>20</dd>
-          </div>
-        </dl>
-      </header>
-
-      <TimelineEmbed
-        source={source}
-        caption="Timeline of Natsume Soseki's life. Click to open in the Playground and edit or customize the DSL."
-      />
-
-      <section class="showcase-notes">
-        <h2>Timeline DSL in action</h2>
-        <ul>
-          <li>
-            <code>span</code> covers both his entire lifetime (1867–1916) and the London study period
-            (1900–1903), showing how short- and long-running periods can coexist in one timeline.
-          </li>
-          <li>
-            Three <code>lane</code> declarations let you correlate career turning points with publication
-            dates at a glance (e.g., major novels cluster after joining the Asahi Shimbun).
-          </li>
-          <li>
-            <code>unit year</code> + <code>calendar proleptic_gregorian</code> unifies mixed Japanese-era
-            and Western-year sources into a clean Western calendar display.
-          </li>
-        </ul>
-        <p>
-          See the <a href="/en/docs/">syntax reference</a> to build your own timeline in minutes.
-        </p>
-      </section>
-    </div>
-  </main>
-</BaseLayout>
-
-<style>
-  .showcase-page {
-    padding: 3rem 1.5rem 5rem;
-  }
-
-  .showcase-inner {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .showcase-breadcrumb {
-    font-size: 0.875rem;
-    color: var(--color-muted);
-    margin-bottom: 1.5rem;
-  }
-
-  .showcase-breadcrumb a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.2em;
-  }
-
-  .showcase-header {
-    margin-bottom: 2rem;
-  }
-
-  .showcase-title {
-    font-size: 2rem;
-    font-weight: 700;
-    font-family: var(--font-display);
-    color: var(--color-ink);
-    margin: 0 0 0.75rem;
-    line-height: 1.25;
-  }
-
-  .showcase-description {
-    font-size: 1.05rem;
-    color: var(--color-muted);
-    line-height: var(--line-height-base);
-    margin: 0 0 1.25rem;
-  }
-
-  .showcase-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-    margin: 0;
-    padding: 1rem 1.25rem;
-    background: var(--color-panel);
-    border-radius: 6px;
-    border: 1px solid var(--color-line);
-    font-size: 0.875rem;
-  }
-
-  .showcase-meta div {
-    display: flex;
-    gap: 0.4rem;
-  }
-
-  .showcase-meta dt {
-    color: var(--color-muted);
-    font-weight: 500;
-  }
-
-  .showcase-meta dt::after {
-    content: ":";
-  }
-
-  .showcase-meta dd {
-    margin: 0;
-    color: var(--color-ink);
-  }
-
-  .showcase-notes {
-    margin-top: 2.5rem;
-    padding: 1.5rem;
-    background: var(--color-panel);
-    border-radius: 8px;
-    border: 1px solid var(--color-line);
-  }
-
-  .showcase-notes h2 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 1rem;
-    color: var(--color-ink);
-  }
-
-  .showcase-notes ul {
-    margin: 0 0 1rem;
-    padding-left: 1.5rem;
-    color: var(--color-muted);
-    line-height: var(--line-height-base);
-  }
-
-  .showcase-notes li {
-    margin-bottom: 0.5rem;
-  }
-
-  .showcase-notes li:last-child {
-    margin-bottom: 0;
-  }
-
-  .showcase-notes code {
-    font-family: var(--font-mono);
-    font-size: 0.85em;
-    background: var(--color-bg);
-    padding: 0.1em 0.3em;
-    border-radius: 3px;
-    border: 1px solid var(--color-line);
-  }
-
-  .showcase-notes p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--color-muted);
-  }
-
-  .showcase-notes a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.2em;
-  }
-</style>
+  <ul>
+    <li>
+      <code>span</code> covers both his entire lifetime (1867–1916) and the London study period (1900–1903),
+      showing how short- and long-running periods can coexist in one timeline.
+    </li>
+    <li>
+      Three <code>lane</code> declarations let you correlate career turning points with publication dates
+      at a glance (e.g., major novels cluster after joining the Asahi Shimbun).
+    </li>
+    <li>
+      <code>unit year</code> + <code>calendar proleptic_gregorian</code> unifies mixed Japanese-era and
+      Western-year sources into a clean Western calendar display.
+    </li>
+  </ul>
+  <p>
+    See the <a href="/en/docs/">syntax reference</a> to build your own timeline in minutes.
+  </p>
+</ShowcasePage>
