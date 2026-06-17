@@ -1,0 +1,218 @@
+---
+import { getT, type Locale } from "../i18n/index";
+
+interface Props {
+  menuId: string;
+  locale: Locale;
+  langToggleSelector: string;
+}
+
+const { menuId, locale, langToggleSelector } = Astro.props;
+const t = getT(locale);
+---
+
+<button
+  class="a11y-toggle"
+  type="button"
+  aria-haspopup="menu"
+  aria-expanded="false"
+  aria-controls={menuId}
+  aria-label={t("a11y.menu.toggle_aria_label")}
+  data-menu-id={menuId}
+  data-lang-selector={langToggleSelector}
+>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="10"></circle>
+    <line x1="12" y1="8" x2="12" y2="16"></line>
+    <line x1="8" y1="12" x2="16" y2="12"></line>
+  </svg>
+</button>
+
+<div id={menuId} class="a11y-menu" hidden>
+  <div class="a11y-menu-inner">
+    <div class="a11y-section">
+      <h3>{t("a11y.section.visual")}</h3>
+      <div class="a11y-field">
+        <label>
+          <input type="checkbox" data-a11y-reduced-motion />
+          {t("a11y.field.reduced_motion")}
+        </label>
+      </div>
+      <div class="a11y-field">
+        <label>
+          <input type="checkbox" data-a11y-high-contrast />
+          {t("a11y.field.high_contrast")}
+        </label>
+      </div>
+    </div>
+    <div class="a11y-section">
+      <h3>{t("a11y.section.readability")}</h3>
+      <div class="a11y-field">
+        <label>
+          <input type="checkbox" data-a11y-text-spacing-input />
+          {t("a11y.field.text_spacing")}
+        </label>
+      </div>
+      <div class="a11y-field">
+        <select data-a11y-text-size>
+          <option value="normal">{t("a11y.text_size.normal")}</option>
+          <option value="large">{t("a11y.text_size.large")}</option>
+          <option value="extra-large">{t("a11y.text_size.extra_large")}</option>
+          <option value="xx-large">{t("a11y.text_size.xx_large")}</option>
+        </select>
+      </div>
+    </div>
+    <div class="sr-only" aria-live="polite" data-a11y-live></div>
+  </div>
+</div>
+
+<style>
+  .a11y-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid var(--a11y-line, var(--color-line));
+    border-radius: 6px;
+    background: var(--a11y-toggle-bg, var(--color-bg));
+    color: var(--a11y-muted, var(--color-muted));
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .a11y-toggle:hover {
+    color: var(--a11y-text, var(--color-ink));
+    background: var(--a11y-panel, var(--color-panel));
+    border-color: var(--a11y-text, var(--color-ink));
+  }
+
+  .a11y-toggle[aria-expanded="true"] {
+    background: var(--a11y-panel, var(--color-panel));
+    color: var(--a11y-accent-strong, var(--color-accent-strong));
+    border-color: var(--a11y-accent, var(--color-accent));
+  }
+
+  .a11y-menu {
+    position: absolute;
+    top: var(--a11y-menu-top, 100%);
+    right: 0;
+    width: min(320px, 90vw);
+    max-height: calc(100vh - 5rem);
+    overflow-y: auto;
+    background: var(--a11y-bg, var(--color-bg));
+    border: 1px solid var(--a11y-line, var(--color-line));
+    border-top: var(--a11y-menu-border-top, none);
+    border-radius: var(--a11y-menu-radius, 0);
+    box-shadow: var(
+      --a11y-shadow,
+      0 10px 30px color-mix(in srgb, var(--color-ink), transparent 90%)
+    );
+    z-index: var(--a11y-menu-z, 100);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .a11y-menu:not([hidden]) {
+    display: block;
+  }
+
+  .a11y-menu-inner {
+    padding: 1.25rem;
+  }
+
+  .a11y-section + .a11y-section {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--a11y-line, var(--color-line));
+  }
+
+  .a11y-section h3 {
+    margin: 0 0 0.75rem;
+    font-size: 0.85rem;
+    color: var(--a11y-muted, var(--color-muted));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .a11y-field {
+    margin: 0.5rem 0;
+  }
+
+  .a11y-field label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    color: var(--a11y-text, inherit);
+  }
+
+  .a11y-field select {
+    width: 100%;
+    height: 2.25rem;
+    padding: 0 0.5rem;
+    border: 1px solid var(--a11y-line, var(--color-line));
+    border-radius: 4px;
+    background: var(--a11y-bg, var(--color-bg));
+    color: var(--a11y-text, var(--color-ink));
+  }
+</style>
+
+<script>
+  import { resolveLocaleFromLocation, getT } from "../i18n/index";
+  import type { A11yTextSize } from "../lib/a11y-settings";
+  import { initA11yMenu } from "../lib/a11y-settings";
+  import { initLangToggle } from "../lib/i18n-toggle";
+
+  const locale = resolveLocaleFromLocation();
+  const t = getT(locale);
+
+  const TEXT_SIZE_KEYS: Record<A11yTextSize, Parameters<typeof t>[0]> = {
+    normal: "a11y.text_size.normal",
+    large: "a11y.text_size.large",
+    "extra-large": "a11y.text_size.extra_large",
+    "xx-large": "a11y.text_size.xx_large",
+  };
+
+  const toggle = document.querySelector<HTMLButtonElement>(".a11y-toggle");
+  const menuId = toggle?.dataset.menuId ?? "a11y-menu";
+  const langSelector = toggle?.dataset.langSelector ?? ".lang-toggle";
+
+  initA11yMenu({
+    toggleSelector: ".a11y-toggle",
+    menuId,
+    messages: {
+      reducedMotion: {
+        on: t("a11y.live.reduced_motion_on"),
+        off: t("a11y.live.reduced_motion_off"),
+      },
+      highContrast: { on: t("a11y.live.high_contrast_on"), off: t("a11y.live.high_contrast_off") },
+      textSpacing: { on: t("a11y.live.text_spacing_on"), off: t("a11y.live.text_spacing_off") },
+      textSize: (size: A11yTextSize) =>
+        t("a11y.live.text_size").replace("{size}", t(TEXT_SIZE_KEYS[size])),
+    },
+  });
+  initLangToggle({ buttonSelector: langSelector, currentLocale: locale });
+</script>
