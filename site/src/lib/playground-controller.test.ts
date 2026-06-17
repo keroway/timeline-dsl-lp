@@ -32,7 +32,16 @@ vi.mock("./playground-editor", () => ({
   }),
 }));
 
-import { initPlayground } from "./playground-controller";
+import {
+  initPlayground,
+  buildDiagnosticsFragment,
+  createRunLoop,
+  wireDownloads,
+  wireShare,
+  wireFileOpen,
+  wireTooltip,
+  wireScale,
+} from "./playground-controller";
 
 const MSGS = {
   statusInit: "init",
@@ -157,5 +166,197 @@ describe("initPlayground runPlayground の状態分岐", () => {
       expect(dom.status.textContent).toBe(MSGS.statusWasmFailed);
     });
     expect(dom.root.getAttribute("data-playground-state")).toBe("error");
+  });
+});
+
+describe("buildDiagnosticsFragment", () => {
+  const msgs = {
+    diagnosticsEmpty: "問題なし",
+    severityError: "エラー",
+    severityWarn: "警告",
+  };
+
+  it("items が空のとき diagnostics-empty な p を返し metaText は 0/0", () => {
+    const { metaText, node } = buildDiagnosticsFragment([], msgs);
+    expect(metaText).toBe("0 errors / 0 warnings");
+    const p = node as HTMLParagraphElement;
+    expect(p.tagName).toBe("P");
+    expect(p.className).toBe("diagnostics-empty");
+    expect(p.textContent).toBe(msgs.diagnosticsEmpty);
+  });
+
+  it("error と warning が混在するとき ol で返し metaText に正しい件数が入る", () => {
+    const items = [
+      { severity: "error" as const, message: "e1", line: 1, col: 1 },
+      { severity: "warning" as const, message: "w1", line: 2, col: 2 },
+      { severity: "error" as const, message: "e2", line: 3, col: 3 },
+    ];
+    const { metaText, node } = buildDiagnosticsFragment(items, msgs);
+    expect(metaText).toBe("2 errors / 1 warnings");
+    const ol = node as HTMLOListElement;
+    expect(ol.tagName).toBe("OL");
+    expect(ol.children).toHaveLength(3);
+  });
+
+  it("line が 0 のとき location テキストは 'global' になる", () => {
+    const items = [{ severity: "error" as const, message: "global err", line: 0, col: 0 }];
+    const { node } = buildDiagnosticsFragment(items, msgs);
+    const ol = node as HTMLOListElement;
+    const strong = ol.querySelector("strong");
+    expect(strong?.textContent).toBe("global");
+  });
+});
+
+describe("createRunLoop", () => {
+  it("queueRun を呼ぶと debounceMs 後に run が実行される", async () => {
+    vi.useFakeTimers();
+    const run = vi.fn();
+    const { queueRun } = createRunLoop({ debounceMs: 100, run });
+
+    queueRun();
+    expect(run).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(100);
+    expect(run).toHaveBeenCalledOnce();
+
+    vi.useRealTimers();
+  });
+
+  it("連続して queueRun を呼ぶと最後の 1 回だけ run が実行される", async () => {
+    vi.useFakeTimers();
+    const run = vi.fn();
+    const { queueRun } = createRunLoop({ debounceMs: 100, run });
+
+    queueRun();
+    queueRun();
+    queueRun();
+    vi.advanceTimersByTime(100);
+    expect(run).toHaveBeenCalledOnce();
+
+    vi.useRealTimers();
+  });
+});
+
+describe("wireDownloads", () => {
+  it("tdslBtn クリックで getSource の内容が downloadText に渡される", () => {
+    const tdslBtn = document.createElement("button");
+    const svgBtn = document.createElement("button");
+    const htmlBtn = document.createElement("button");
+    const getSource = vi.fn().mockReturnValue("source content");
+    const getLastSvg = vi.fn().mockReturnValue("");
+    const getLastSource = vi.fn().mockReturnValue("");
+
+    const createObjectURL = vi.fn().mockReturnValue("blob:mock");
+    const revokeObjectURL = vi.fn();
+    Object.defineProperty(window, "URL", {
+      value: { createObjectURL, revokeObjectURL },
+      writable: true,
+    });
+
+    wireDownloads({ tdslBtn, svgBtn, htmlBtn, getSource, getLastSvg, getLastSource });
+    tdslBtn.click();
+
+    expect(getSource).toHaveBeenCalled();
+    expect(createObjectURL).toHaveBeenCalled();
+  });
+
+  it("svgBtn クリックで getLastSvg が空のとき downloadText は呼ばれない", () => {
+    const tdslBtn = document.createElement("button");
+    const svgBtn = document.createElement("button");
+    const htmlBtn = document.createElement("button");
+    const getSource = vi.fn().mockReturnValue("");
+    const getLastSvg = vi.fn().mockReturnValue("");
+    const getLastSource = vi.fn().mockReturnValue("");
+
+    const createObjectURL = vi.fn().mockReturnValue("blob:mock");
+    const revokeObjectURL = vi.fn();
+    Object.defineProperty(window, "URL", {
+      value: { createObjectURL, revokeObjectURL },
+      writable: true,
+    });
+
+    wireDownloads({ tdslBtn, svgBtn, htmlBtn, getSource, getLastSvg, getLastSource });
+    svgBtn.click();
+
+    expect(createObjectURL).not.toHaveBeenCalled();
+  });
+});
+
+describe("wireShare", () => {
+  it("copyLinkButton クリックで buildShareUrl が呼ばれる", async () => {
+    const { buildShareUrl: mockBuildShareUrl } = await import("./playground-share");
+    const bsu = mockBuildShareUrl as ReturnType<typeof vi.fn>;
+    bsu.mockResolvedValue({ ok: true, url: "https://example.com/share" });
+
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+      writable: true,
+    });
+
+    const copyLinkButton = document.createElement("button");
+    const shareLive = document.createElement("div");
+    const msgs = {
+      shareTooLong: "too long {limit}",
+      shareCopySuccess: "copied",
+      shareCopyError: "copy error",
+    };
+    const getSource = vi.fn().mockReturnValue("source");
+
+    wireShare({ copyLinkButton, shareLive, msgs, getSource });
+    copyLinkButton.click();
+
+    await vi.waitFor(() => {
+      expect(bsu).toHaveBeenCalled();
+    });
+  });
+});
+
+describe("wireFileOpen", () => {
+  it("openFileButton クリックで openFileInput の click が呼ばれる", () => {
+    const openFileButton = document.createElement("button");
+    const openFileInput = document.createElement("input");
+    openFileInput.type = "file";
+    const inputClick = vi.spyOn(openFileInput, "click");
+    const onApplySource = vi.fn();
+
+    wireFileOpen({ openFileButton, openFileInput, sampleSelect: null, onApplySource });
+    openFileButton.click();
+
+    expect(inputClick).toHaveBeenCalled();
+  });
+});
+
+describe("wireTooltip", () => {
+  it("preview が null でもエラーにならない", () => {
+    expect(() => wireTooltip({ preview: null, tooltipEl: null })).not.toThrow();
+  });
+
+  it("pointerleave で tooltipEl の data-visible が削除される", () => {
+    const preview = document.createElement("div");
+    const tooltipEl = document.createElement("div");
+    tooltipEl.setAttribute("data-visible", "true");
+    tooltipEl.setAttribute("aria-hidden", "false");
+
+    wireTooltip({ preview, tooltipEl });
+    preview.dispatchEvent(new PointerEvent("pointerleave"));
+
+    expect(tooltipEl.hasAttribute("data-visible")).toBe(false);
+    expect(tooltipEl.getAttribute("aria-hidden")).toBe("true");
+  });
+});
+
+describe("wireScale", () => {
+  it("scaleSelect の change で onRun が呼ばれる", () => {
+    const scaleSelect = document.createElement("select");
+    const onRun = vi.fn();
+
+    wireScale({ scaleSelect, onRun });
+    scaleSelect.dispatchEvent(new Event("change"));
+
+    expect(onRun).toHaveBeenCalledOnce();
+  });
+
+  it("scaleSelect が null でもエラーにならない", () => {
+    const onRun = vi.fn();
+    expect(() => wireScale({ scaleSelect: null, onRun })).not.toThrow();
   });
 });
