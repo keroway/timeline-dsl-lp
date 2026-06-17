@@ -161,6 +161,17 @@ async function smokeHttpSurface(rootUrl) {
     "Playground で編集する",
     "/en/showcase/oda-nobunaga/ must not leak Japanese Playground link text",
   );
+  // TimelineEmbed の可視文言（<summary> / エラー文言）が /en/ に漏れてはいけない。#403
+  assertExcludes(
+    enShowcaseDetailHtml,
+    "DSL ソースを見る",
+    "/en/showcase/oda-nobunaga/ must not leak Japanese TimelineEmbed view-source label",
+  );
+  assertExcludes(
+    enShowcaseDetailHtml,
+    "年表の生成に失敗しました",
+    "/en/showcase/oda-nobunaga/ must not leak Japanese TimelineEmbed render-error label",
+  );
 
   console.log("HTTP smoke: / and /en/ both return 200 with correct lang attributes. ✓");
   console.log("HTTP smoke: /showcase/ and /en/showcase/ both return 200. ✓");

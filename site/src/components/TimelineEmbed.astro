@@ -1,6 +1,6 @@
 ---
 import { renderSvgFromSource } from "../lib/tdsl-wasm-node.mts";
-import { resolveLocale, getT } from "../i18n/index";
+import { resolveLocale, getT, interpolate } from "../i18n/index";
 
 interface Props {
   source: string;
@@ -41,7 +41,7 @@ const playgroundUrl = `${playgroundBase}/playground/?source=${encodeURIComponent
   {
     renderError && (
       <div class="timeline-error" role="alert">
-        <p>年表の生成に失敗しました: {renderError}</p>
+        <p>{interpolate(t("embed.render_error"), { error: renderError })}</p>
       </div>
     )
   }
@@ -68,7 +68,7 @@ const playgroundUrl = `${playgroundBase}/playground/?source=${encodeURIComponent
   </div>
 
   <details class="timeline-source">
-    <summary>DSL ソースを見る</summary>
+    <summary>{t("embed.view_source")}</summary>
     <pre class="timeline-source-code"><code>{source}</code></pre>
   </details>
 </figure>
