@@ -322,6 +322,7 @@ export function initPlayground(): void {
         return;
       }
 
+      const hasWarnings = result.some((item: TdslDiagnostic) => item.severity === "warning");
       const renderScale = parseFloat(scaleSelect?.value ?? "0");
       const svg = await renderTdslSvg(source, renderScale);
       if (runId !== latestRunId) return;
@@ -333,10 +334,7 @@ export function initPlayground(): void {
       downloadSvgButton?.removeAttribute("disabled");
       downloadHtmlButton?.removeAttribute("disabled");
       setText(previewMeta, "updated");
-      setStatus(
-        result.length > 0 ? msgs.statusWarn : msgs.statusOk,
-        result.length > 0 ? "warn" : "ready",
-      );
+      setStatus(hasWarnings ? msgs.statusWarn : msgs.statusOk, hasWarnings ? "warn" : "ready");
     } catch (error) {
       if (runId !== latestRunId) return;
 
