@@ -15,9 +15,12 @@ export default [
   },
   ...eslintPluginAstro.configs["flat/recommended"],
   {
-    files: ["**/*.ts", "**/*.mjs", "**/*.js"],
+    files: ["**/*.ts", "**/*.mts", "**/*.mjs", "**/*.js"],
     languageOptions: {
       parser: tsParser,
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "error",
     },
   },
   eslintConfigPrettier,
