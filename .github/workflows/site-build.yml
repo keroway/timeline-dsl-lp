@@ -5,11 +5,13 @@ on:
     paths:
       - "site/**"
       - ".github/**"
+      - "DESIGN.md"
   push:
     branches: [main]
     paths:
       - "site/**"
       - ".github/**"
+      - "DESIGN.md"
   workflow_dispatch:
 
 jobs:
