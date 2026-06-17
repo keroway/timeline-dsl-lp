@@ -1,5 +1,5 @@
 ---
-import { getT, type Locale, type DictionaryKeys } from "../../i18n/index";
+import { getT, interpolate, type Locale, type DictionaryKeys } from "../../i18n/index";
 import GalleryCard from "./GalleryCard.astro";
 
 interface Props {
@@ -28,7 +28,7 @@ for (const sample of samples) {
 <section class="section gallery-section" aria-labelledby="gallery-heading">
   <div class="section-header">
     <h2 id="gallery-heading">{t("gallery.section.heading")}</h2>
-    <p>{t("gallery.section.count").replace("{count}", String(samples.length))}</p>
+    <p>{interpolate(t("gallery.section.count"), { count: String(samples.length) })}</p>
   </div>
 
   {/* filter bar は JS で hidden を外して有効化する。no-JS では非表示のまま全カードが見える */}

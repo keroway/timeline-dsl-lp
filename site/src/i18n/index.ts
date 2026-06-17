@@ -1,7 +1,7 @@
-import { ja, type Dictionary, type DictionaryKeys } from "./ja";
+import { ja, type Dictionary, type DictionaryKeys, type ExactDictionary } from "./ja";
 import { en } from "./en";
 
-export type { Dictionary, DictionaryKeys };
+export type { Dictionary, DictionaryKeys, ExactDictionary };
 export { ja, en };
 
 const LOCALES = ["ja", "en"] as const;
@@ -37,4 +37,8 @@ export function localizedPath(path: string, locale: Locale): string {
 export function getT(locale: Locale): (key: DictionaryKeys) => string {
   const dict = dictionaries[locale];
   return (key) => dict[key];
+}
+
+export function interpolate(template: string, vars: Record<string, string>): string {
+  return Object.entries(vars).reduce((s, [k, v]) => s.replace(`{${k}}`, v), template);
 }
