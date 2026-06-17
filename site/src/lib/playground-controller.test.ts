@@ -154,6 +154,20 @@ describe("initPlayground runPlayground の状態分岐", () => {
     expect(renderTdslSvg).not.toHaveBeenCalled();
   });
 
+  it("info-only 診断（error も warning も無い）なら ready 状態になり描画は実行する", async () => {
+    const dom = setupDom();
+    checkTdslSource.mockResolvedValue([{ severity: "info", message: "i", line: 1, col: 1 }]);
+    renderTdslSvg.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+
+    initPlayground();
+
+    await vi.waitFor(() => {
+      expect(dom.root.getAttribute("data-playground-state")).toBe("ready");
+    });
+    expect(dom.status.textContent).toBe(MSGS.statusOk);
+    expect(renderTdslSvg).toHaveBeenCalledOnce();
+  });
+
   it("描画が throw したら WASM 失敗ステータスの error 状態になる", async () => {
     const dom = setupDom();
     checkTdslSource.mockResolvedValue([]);
