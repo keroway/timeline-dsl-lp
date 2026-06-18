@@ -1,10 +1,14 @@
 ---
+import { getT, resolveLocale } from "../i18n/index";
+
 interface Props {
   currentPath?: string;
   version?: string | null;
 }
 
 const { currentPath = "", version = null } = Astro.props;
+const locale = resolveLocale(Astro);
+const t = getT(locale);
 const repositoryUrl = "https://github.com/keroway/timeline-dsl";
 const licenseUrl = `${repositoryUrl}/blob/main/LICENSE`;
 const versionLabel = version || "Releases";
@@ -25,7 +29,7 @@ const versionUrl = version
       <span class="footer-copyright">&copy; 2024 keroway</span>
     </div>
 
-    <nav class="footer-nav" aria-label="Footer navigation">
+    <nav class="footer-nav" aria-label={t("footer.links")}>
       <a href="/playground/" aria-current={currentPath === "/playground/" ? "page" : undefined}>
         Playground
       </a>
@@ -35,7 +39,7 @@ const versionUrl = version
       </a>
     </nav>
 
-    <div class="footer-meta" aria-label="Project links">
+    <div class="footer-meta" aria-label={t("footer.project_links")}>
       <a class="footer-github-link" href={repositoryUrl} rel="noreferrer">
         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
           <path

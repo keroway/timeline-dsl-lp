@@ -9,7 +9,10 @@ const { locale } = Astro.props;
 const t = getT(locale);
 ---
 
-<aside class="playground-panel diagnostics-workbench" aria-label="Diagnostics">
+<aside
+  class="playground-panel diagnostics-workbench"
+  aria-label={t("playground.diagnostics.aria_label")}
+>
   <div class="playground-panel-bar">
     <span>{t("playground.diagnostics.panel")}</span>
     <span data-diagnostics-meta>0</span>

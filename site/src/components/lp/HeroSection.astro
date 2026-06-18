@@ -39,7 +39,7 @@ import "../../styles/lp/hero.css";
           {t("cta.view_github")}
         </a>
       </div>
-      <div class="release-summary" aria-label="Latest release">
+      <div class="release-summary" aria-label={t("lp.hero.latest_release_aria")}>
         <span class="release-label">Latest</span>
         <strong>{latestLabel}</strong>
         {shouldShowLatestName && <span>{latestName}</span>}
@@ -47,7 +47,7 @@ import "../../styles/lp/hero.css";
         {latest?.url && <a href={latest.url}>{t("cta.release_notes")}</a>}
       </div>
     </div>
-    <div class="hero-visual" aria-label="Timeline DSL workflow preview">
+    <div class="hero-visual" aria-label={t("lp.hero.workflow_preview_aria")}>
       <div class="editor-panel">
         <div class="panel-bar">
           <span>world-history.tdsl</span>

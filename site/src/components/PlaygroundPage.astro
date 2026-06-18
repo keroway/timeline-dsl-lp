@@ -62,7 +62,7 @@ const sampleList = itemListLd({
       </div>
     </section>
 
-    <section class="playground-toolbar" aria-label="Playground controls">
+    <section class="playground-toolbar" aria-label={t("playground.toolbar.aria_label")}>
       <label class="sample-picker">
         <span>{t("playground.toolbar.sample_label")}</span>
         <select data-sample-select>
@@ -120,7 +120,7 @@ const sampleList = itemListLd({
       </div>
     </section>
 
-    <section class="playground-workspace" aria-label="Timeline DSL editor and preview">
+    <section class="playground-workspace" aria-label={t("playground.workspace.aria_label")}>
       <PlaygroundEditor />
       <PlaygroundPreview locale={locale} />
       <PlaygroundDiagnostics locale={locale} />
