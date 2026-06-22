@@ -1,15 +1,36 @@
 {
   "repository": "keroway/timeline-dsl",
   "source": "github-releases",
-  "fetchedAt": "2026-06-10T09:50:34.536Z",
+  "fetchedAt": "2026-06-22T01:22:13.310Z",
   "latest": {
-    "tagName": "v1.17.0",
-    "name": "v1.17.0",
-    "publishedAt": "2026-06-10T03:18:13Z",
-    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.17.0",
-    "body": "## What's Changed\n* feat(render): SVG 年表でイベント内容を常時表示するモードを追加する by @keroway in https://github.com/keroway/timeline-dsl/pull/411\n* feat(render): PDF 出力に用紙サイズ・マージン・メタデータを追加する (#368) by @keroway in https://github.com/keroway/timeline-dsl/pull/412\n* feat(lsp): LSP 補完をカーソル位置のブロックコンテキストに応じて絞り込む (#367) by @keroway in https://github.com/keroway/timeline-dsl/pull/413\n* chore(dist): crates.io 公開に向けてコアクレートのメタデータを整備する by @keroway in https://github.com/keroway/timeline-dsl/pull/414\n* chore(deps): pdf-writer を svg2pdf に追従させ単独更新を抑止する by @keroway in https://github.com/keroway/timeline-dsl/pull/416\n* feat(lsp): LSP completion をコンテキスト依存補完に切り替える by @keroway in https://github.com/keroway/timeline-dsl/pull/422\n* feat(wasm): WebUI の import/map ブロック未解決時に Info 診断を表示する (#418) by @keroway in https://github.com/keroway/timeline-dsl/pull/423\n* docs: 2026-06 プロジェクト全体レビュー報告書を追加 by @keroway in https://github.com/keroway/timeline-dsl/pull/436\n* feat(dist): crates.io への cargo publish をリリースフローに組み込む by @keroway in https://github.com/keroway/timeline-dsl/pull/437\n* test(e2e): v1.13〜v1.16 の新 CLI オプションのスモークテストを追加する by @keroway in https://github.com/keroway/timeline-dsl/pull/438\n* docs: README 両言語に --watch / --grid / --orientation と group 構文を追記する by @keroway in https://github.com/keroway/timeline-dsl/pull/439\n* docs: dsl-spec.md の EBNF を v1.13〜v1.16 の文法に同期する by @keroway in https://github.com/keroway/timeline-dsl/pull/440\n* feat(webui): エクスポートメニューに JSON IR 保存を追加する by @keroway in https://github.com/keroway/timeline-dsl/pull/441\n* docs: dsl-spec.en.md を日本語版と同期する by @keroway in https://github.com/keroway/timeline-dsl/pull/442\n* docs(examples): group・expand・qualifier の使用例ファイルを追加する by @keroway in https://github.com/keroway/timeline-dsl/pull/443\n* chore: release v1.17.0 by @keroway in https://github.com/keroway/timeline-dsl/pull/444\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.16.0...v1.17.0"
+    "tagName": "v1.20.0",
+    "name": "v1.20.0",
+    "publishedAt": "2026-06-21T15:53:09Z",
+    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.20.0",
+    "body": "## What's Changed\n* feat(svg): SVG 出力の lane 色を --tdsl-lane-* CSS variables 化する by @keroway in https://github.com/keroway/timeline-dsl/pull/486\n* chore(deps): bump undici from 7.27.2 to 7.28.0 in /apps/webui by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/487\n* chore: ignore .pi/ and vscode out-test/ build artifacts by @keroway in https://github.com/keroway/timeline-dsl/pull/488\n* docs: clarify decompile cannot restore comments (#474) by @keroway in https://github.com/keroway/timeline-dsl/pull/489\n* feat: preserve DSL comments in AST and formatter (#362, #472, #473, #474) by @keroway in https://github.com/keroway/timeline-dsl/pull/490\n* chore: remove stray blank line in svg.rs tests by @keroway in https://github.com/keroway/timeline-dsl/pull/491\n* chore: release v1.20.0 by @keroway in https://github.com/keroway/timeline-dsl/pull/492\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.19.0...v1.20.0"
   },
   "releases": [
+    {
+      "tagName": "v1.20.0",
+      "name": "v1.20.0",
+      "publishedAt": "2026-06-21T15:53:09Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.20.0",
+      "body": "## What's Changed\n* feat(svg): SVG 出力の lane 色を --tdsl-lane-* CSS variables 化する by @keroway in https://github.com/keroway/timeline-dsl/pull/486\n* chore(deps): bump undici from 7.27.2 to 7.28.0 in /apps/webui by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/487\n* chore: ignore .pi/ and vscode out-test/ build artifacts by @keroway in https://github.com/keroway/timeline-dsl/pull/488\n* docs: clarify decompile cannot restore comments (#474) by @keroway in https://github.com/keroway/timeline-dsl/pull/489\n* feat: preserve DSL comments in AST and formatter (#362, #472, #473, #474) by @keroway in https://github.com/keroway/timeline-dsl/pull/490\n* chore: remove stray blank line in svg.rs tests by @keroway in https://github.com/keroway/timeline-dsl/pull/491\n* chore: release v1.20.0 by @keroway in https://github.com/keroway/timeline-dsl/pull/492\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.19.0...v1.20.0"
+    },
+    {
+      "tagName": "v1.19.0",
+      "name": "v1.19.0",
+      "publishedAt": "2026-06-17T01:21:01Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.19.0",
+      "body": "## What's Changed\n* chore(deps): bump insta from 1.47.2 to 1.48.0 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/481\n* feat(vscode): tdsl バイナリ解決と LanguageClient 接続を実装する by @keroway in https://github.com/keroway/timeline-dsl/pull/482\n* docs(vscode): README の LSP 機能説明を実装に合わせて正確化する by @keroway in https://github.com/keroway/timeline-dsl/pull/483\n* chore: release v1.19.0 by @keroway in https://github.com/keroway/timeline-dsl/pull/484\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.18.0...v1.19.0"
+    },
+    {
+      "tagName": "v1.18.0",
+      "name": "v1.18.0",
+      "publishedAt": "2026-06-16T16:10:55Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.18.0",
+      "body": "## What's Changed\n* ci(security): gitleaks secret scan を導入する by @keroway in https://github.com/keroway/timeline-dsl/pull/468\n* feat(vscode): TypeScript ビルド基盤と拡張足場を追加する (#469) by @keroway in https://github.com/keroway/timeline-dsl/pull/475\n* chore(deps-dev): bump esbuild from 0.24.2 to 0.28.1 in /editors/vscode by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/476\n* chore(deps-dev): bump vite from 8.0.10 to 8.0.16 in /apps/webui by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/477\n* chore: release v1.18.0 by @keroway in https://github.com/keroway/timeline-dsl/pull/478\n* chore(vscode): TS ビルド対応の publish ワークフローと .vscodeignore を更新する by @keroway in https://github.com/keroway/timeline-dsl/pull/480\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.17.0...v1.18.0"
+    },
     {
       "tagName": "v1.17.0",
       "name": "v1.17.0",
