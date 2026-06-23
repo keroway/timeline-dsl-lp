@@ -1,0 +1,141 @@
+---
+/**
+ * Starlight `components.Search` override for Docs pages.
+ *
+ * Renders a search button + Pagefind dialog that matches the LP's SiteSearch.astro
+ * behaviour, giving Docs the same UX (⌘K / Ctrl+K shortcut, modal dialog) as the
+ * LP / Playground / Changelog pages that use SiteHeader.astro directly. (#299)
+ *
+ * CSS uses Starlight's `--sl-color-*` variables (matching DocsA11yMenu.astro) so
+ * the button and dialog adapt correctly to all Starlight colour modes.
+ */
+import { getT, resolveLocale } from "../i18n/index";
+
+const locale = resolveLocale(Astro);
+const t = getT(locale);
+---
+
+<button
+  class="docs-search-btn"
+  type="button"
+  aria-label={t("nav.search.aria_label")}
+  id="docs-search-btn"
+>
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="11" cy="11" r="8"></circle>
+    <path d="m21 21-4.35-4.35"></path>
+  </svg>
+</button>
+
+<dialog class="docs-search-dialog" id="docs-search-dialog" aria-label={t("nav.search.aria_label")}>
+  <div class="docs-search-ui" id="docs-search-ui" data-not-built-msg={t("nav.search.not_built")}>
+  </div>
+</dialog>
+
+<style>
+  /* Search toggle button — mirrors SiteHeader.astro's .search-toggle using sl vars */
+  .docs-search-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--sl-color-gray-2);
+    cursor: pointer;
+    transition:
+      color 0.2s,
+      background 0.2s,
+      border-color 0.2s;
+  }
+
+  .docs-search-btn:hover {
+    color: var(--sl-color-white);
+    background: var(--sl-color-gray-6);
+    border-color: var(--sl-color-gray-4);
+  }
+
+  /* Dialog — mirrors SiteSearch.astro using sl vars */
+  .docs-search-dialog {
+    margin-top: 4rem;
+    margin-bottom: auto;
+    width: min(640px, calc(100vw - 2rem));
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    padding: 1rem;
+    background: var(--sl-color-bg);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 8px;
+    box-shadow: var(--sl-shadow-lg);
+  }
+
+  .docs-search-dialog::backdrop {
+    /* --sl-color-black is not always defined; fall back to #000 */
+    background: color-mix(in srgb, var(--sl-color-black, #000), transparent 65%);
+  }
+
+  /* Pagefind UI token overrides */
+  .docs-search-ui {
+    --pagefind-ui-primary: var(--sl-color-text-accent);
+    --pagefind-ui-text: var(--sl-color-text);
+    --pagefind-ui-background: var(--sl-color-bg);
+    --pagefind-ui-border: var(--sl-color-gray-5);
+    --pagefind-ui-tag: var(--sl-color-gray-6);
+    --pagefind-ui-font: inherit;
+  }
+</style>
+
+<script>
+  const searchBtn = document.getElementById("docs-search-btn") as HTMLButtonElement | null;
+  const searchDialog = document.getElementById("docs-search-dialog") as HTMLDialogElement | null;
+  const searchUi = document.getElementById("docs-search-ui") as HTMLElement | null;
+  let searchInitialized = false;
+
+  async function openSearch(): Promise<void> {
+    if (!searchDialog || !searchUi) return;
+    if (!searchInitialized) {
+      searchInitialized = true;
+      try {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "/pagefind/pagefind-ui.css";
+        document.head.appendChild(link);
+        // @ts-expect-error pagefind-ui.js is generated at build time and not resolvable at type-check time
+        const { PagefindUI } = await import("/pagefind/pagefind-ui.js");
+        new PagefindUI({ element: searchUi, showSubResults: true, resetStyles: false });
+      } catch {
+        searchUi.textContent = searchUi.dataset.notBuiltMsg ?? "";
+      }
+    }
+    searchDialog.showModal();
+    (searchUi.querySelector("input") as HTMLInputElement | null)?.focus();
+  }
+
+  searchBtn?.addEventListener("click", openSearch);
+
+  // Close on backdrop click
+  searchDialog?.addEventListener("click", (e: MouseEvent) => {
+    if (e.target === searchDialog) searchDialog.close();
+  });
+
+  // ⌘K / Ctrl+K — matches the LP SiteHeader shortcut
+  document.addEventListener("keydown", (e: KeyboardEvent) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
+      openSearch();
+    }
+  });
+</script>
