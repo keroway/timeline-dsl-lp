@@ -20,11 +20,12 @@
      白が最大コントラストのため override しない。注意: gold lane 上の白は light 2.47:1 /
      HC 5.85:1 で AA/AAA 未達だが、これは lane 背景（--color-gold）側の既存課題で後続 issue 扱い */
   --color-on-lane: #ffffff;
-  /* lane セマンティクスの named theme tokens（DESIGN.md §8 中期案 (a)）。本体 WASM が
-     SVG <style> に同名トークンを吐くようになった時点で即追従できるよう、LP 側で先行公開する。
-     既存 lane palette（--color-warm/gold/plum/sky）をプロキシするだけで、新色は追加しない。
+  /* lane セマンティクスの named theme tokens（DESIGN.md §8）。既存 lane palette
+     （--color-warm/gold/plum/sky）をプロキシするだけで、新色は追加しない。
      プロキシ先の --color-* が light / dark / high-contrast の 4 ブロックで再定義済みのため、
-     この :root の 1 定義で全テーマに自動追従する（var() は use 時に各テーマ値へ解決される）。 */
+     この :root の 1 定義で全テーマに自動追従する（var() は use 時に各テーマ値へ解決される）。
+     本体 WASM v1.20.0 は SVG <style> に index ベースの --tdsl-lane-0..7 を吐くため（semantic
+     名ではない）、index→semantic のブリッジは下の .tdsl-root ブロックで行う。 */
   --tdsl-lane-warm: var(--color-warm);
   --tdsl-lane-gold: var(--color-gold);
   --tdsl-lane-plum: var(--color-plum);
@@ -189,10 +190,31 @@
   }
 }
 
-/* Timeline preview SVG（WASM 出力 .tdsl-root）の着色。
-   WASM (crates/tdsl-render/src/svg.rs) が出力する SVG は class のみで fill/stroke を
-   持たないため、ここで一括着色する。未指定だと rect は黒 fill / line は stroke:none に
-   なり、lane band が黒塗り・軸線が不可視になる（本家 webui の App.css 相当を移植）。
+/* span / event 着色の index→semantic ブリッジ（DESIGN.md §8 / #303）。
+   本体 WASM v1.20.0 は span/event を style="fill:var(--tdsl-lane-N, #fallback)" （N=lane 出現順
+   0..7）で着色し、同時に SVG 内の <style> で :root にデフォルト hex を定義する。
+   その :root デフォルトを LP テーマで上書きするため、dot/span の最近祖先である
+   .tdsl-root に index トークンを再定義する（:root 同士の競合では WASM の inline <style> が
+   後勝ちするため :root では効かず、より近い .tdsl-root の継承で確実に上書きする）。
+   LP パレット（warm/gold/plum/sky）を 8 スロットにサイクル適用。プロキシ先の
+   --tdsl-lane-* → --color-* が light/dark/HC に追従するため、テーマ追従は自動。
+   WCAG: マッピング先は検証済み LP パレット（lane-palette.test.ts / DESIGN §2）。gold lane 上の
+   白ラベルは §2 記載の既知・後続扱い例外を踏襲。 */
+.tdsl-root {
+  --tdsl-lane-0: var(--tdsl-lane-warm);
+  --tdsl-lane-1: var(--tdsl-lane-gold);
+  --tdsl-lane-2: var(--tdsl-lane-plum);
+  --tdsl-lane-3: var(--tdsl-lane-sky);
+  --tdsl-lane-4: var(--tdsl-lane-warm);
+  --tdsl-lane-5: var(--tdsl-lane-gold);
+  --tdsl-lane-6: var(--tdsl-lane-plum);
+  --tdsl-lane-7: var(--tdsl-lane-sky);
+}
+
+/* Timeline preview SVG（WASM 出力 .tdsl-root）の軸・バンド・ラベルの着色。
+   WASM (crates/tdsl-render/src/svg.rs) が出力する SVG のうち band/軸/ラベルは class のみで
+   fill/stroke を持たないため、ここで一括着色する。未指定だと rect は黒 fill / line は
+   stroke:none になり、lane band が黒塗り・軸線が不可視になる（本家 webui の App.css 相当）。
    色は既存テーマトークンに連動させ light=白系 / dark=暗色系で表示する。
    Playground / Gallery / TimelineEmbed の全 preview で共通。 */
 .tdsl-root .tdsl-lane-band-even {
