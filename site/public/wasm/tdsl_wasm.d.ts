@@ -2,6 +2,38 @@
 /* eslint-disable */
 
 /**
+ * Rendering options exposed to JavaScript.
+ *
+ * Create with `new JsRenderOptions()` — all fields default to the same values
+ * as `RenderOptions::default()`.  String fields (`orientation`, `grid`, `theme`)
+ * accept the lowercase variant names defined below.
+ *
+ * | Field | Accepted values | Default |
+ * |-------|----------------|---------|
+ * | `orientation` | `"horizontal"`, `"vertical"` | `"horizontal"` |
+ * | `grid` | `"none"`, `"decade"`, `"year"`, `"month"` | `"none"` |
+ * | `theme` | `"default"`, `"dark"`, `"print"`, `"pastel"` | `"default"` |
+ * | `show_table` | `true`, `false` | `false` |
+ * | `show_event_labels` | `true`, `false` | `false` |
+ */
+export class JsRenderOptions {
+    free(): void;
+    [Symbol.dispose](): void;
+    constructor();
+    /**
+     * When true, labels are rendered next to Event/EventRange items.
+     */
+    show_event_labels: boolean;
+    /**
+     * `"horizontal"` (default) or `"vertical"`
+     */
+    show_table: boolean;
+    grid: string;
+    orientation: string;
+    theme: string;
+}
+
+/**
  * Check TDSL source and return diagnostics as JSON.
  *
  * Returns a JSON array of diagnostic objects: `[{severity, message, line, col}]`.
@@ -37,6 +69,32 @@ export function compile_to_ir(source: string): string;
 export function format_source(source: string): string;
 
 /**
+ * Apply `tdsl lint --fix` to TDSL source and return the rewritten source.
+ *
+ * - When at least one fixable issue is applied, the rewritten source is returned.
+ * - When the input has no fixable issues, the original source is returned unchanged
+ *   (callers can compare lengths / equality to detect a no-op).
+ * - On parse failure, returns `Err(parse_error_message)`.
+ *
+ * Comments are not preserved because `tdsl-parser` skips them at the PEG layer,
+ * matching the behavior of `format_source` and the `tdsl lint --fix` CLI.
+ */
+export function lint_fix_source(source: string): string;
+
+/**
+ * Run lint rules on TDSL source and return issues as JSON.
+ *
+ * Returns a JSON array of `{code, severity, line, message, fixable}` objects.
+ * `severity` is `"error"` or `"warning"` (lint does not emit `"info"`).
+ * `line` is **1-based** and matches `check_source`'s line numbering.
+ * `fixable` is `true` when `lint_fix_source` can automatically resolve the issue.
+ *
+ * On parse error, the array contains a single entry with `code: "parse_error"`
+ * so callers can still surface the failure through the same path as lint issues.
+ */
+export function lint_source(source: string): string;
+
+/**
  * Initialize the panic hook for better error messages in the browser console.
  */
 export function main(): void;
@@ -48,6 +106,12 @@ export function main(): void;
 export function render_html_from_source(source: string): string;
 
 /**
+ * Render standalone HTML from TDSL source with explicit render options.
+ * Returns Ok(html_string) or Err(error_message).
+ */
+export function render_html_from_source_with_options(source: string, opts: JsRenderOptions): string;
+
+/**
  * Render SVG from TDSL source (static items only).
  * `scale` controls pixels-per-year. Pass `0.0` (or negative) to auto-calculate
  * from the IR's `meta.range` (clamped to `0.5..=50.0`).
@@ -57,15 +121,39 @@ export function render_html_from_source(source: string): string;
  */
 export function render_svg_from_source(source: string, scale: number): string;
 
+/**
+ * Render SVG from TDSL source with explicit render options.
+ *
+ * `scale` controls pixels-per-year. Pass `0.0` (or negative) to auto-calculate.
+ * Returns Ok(svg_string) or Err(error_message).
+ */
+export function render_svg_from_source_with_options(source: string, scale: number, opts: JsRenderOptions): string;
+
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
+    readonly __wbg_get_jsrenderoptions_show_event_labels: (a: number) => number;
+    readonly __wbg_get_jsrenderoptions_show_table: (a: number) => number;
+    readonly __wbg_jsrenderoptions_free: (a: number, b: number) => void;
+    readonly __wbg_set_jsrenderoptions_show_event_labels: (a: number, b: number) => void;
+    readonly __wbg_set_jsrenderoptions_show_table: (a: number, b: number) => void;
     readonly check_source: (a: number, b: number, c: number) => void;
     readonly compile_to_ir: (a: number, b: number, c: number) => void;
     readonly format_source: (a: number, b: number, c: number) => void;
+    readonly jsrenderoptions_grid: (a: number, b: number) => void;
+    readonly jsrenderoptions_new: () => number;
+    readonly jsrenderoptions_orientation: (a: number, b: number) => void;
+    readonly jsrenderoptions_set_grid: (a: number, b: number, c: number) => void;
+    readonly jsrenderoptions_set_orientation: (a: number, b: number, c: number) => void;
+    readonly jsrenderoptions_set_theme: (a: number, b: number, c: number) => void;
+    readonly jsrenderoptions_theme: (a: number, b: number) => void;
+    readonly lint_fix_source: (a: number, b: number, c: number) => void;
+    readonly lint_source: (a: number, b: number, c: number) => void;
     readonly render_html_from_source: (a: number, b: number, c: number) => void;
+    readonly render_html_from_source_with_options: (a: number, b: number, c: number, d: number) => void;
     readonly render_svg_from_source: (a: number, b: number, c: number, d: number) => void;
+    readonly render_svg_from_source_with_options: (a: number, b: number, c: number, d: number, e: number) => void;
     readonly main: () => void;
     readonly __wbindgen_export: (a: number, b: number, c: number) => void;
     readonly __wbindgen_export2: (a: number, b: number) => number;
