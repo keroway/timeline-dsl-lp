@@ -1,14 +1,16 @@
 ---
-import { renderSvgFromSource } from "../lib/tdsl-wasm-node.mts";
+import { renderSvgFromSource, renderSvgFromSourceWithOptions } from "../lib/tdsl-wasm-node.mts";
 import { resolveLocale, getT, interpolate } from "../i18n/index";
 
 interface Props {
   source: string;
   caption?: string;
   scale?: number;
+  /** Background grid density (v1.20.0+). @default "none" */
+  grid?: "none" | "decade" | "year" | "month";
 }
 
-const { source, caption, scale } = Astro.props;
+const { source, caption, scale, grid } = Astro.props;
 
 const locale = resolveLocale(Astro);
 const t = getT(locale);
@@ -16,7 +18,10 @@ const t = getT(locale);
 let svg = "";
 let renderError = "";
 try {
-  svg = await renderSvgFromSource(source, scale ?? 0);
+  svg =
+    grid && grid !== "none"
+      ? await renderSvgFromSourceWithOptions(source, scale ?? 0, { grid })
+      : await renderSvgFromSource(source, scale ?? 0);
 } catch (e) {
   renderError = e instanceof Error ? e.message : String(e);
 }
