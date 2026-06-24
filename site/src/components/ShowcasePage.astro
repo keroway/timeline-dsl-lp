@@ -23,6 +23,8 @@ interface Props {
   pathname: string;
   source: string;
   caption: string;
+  /** Background grid density to pass to TimelineEmbed. @default "none" */
+  grid?: "none" | "decade" | "year" | "month";
   breadcrumbs: BreadcrumbItem[];
   meta: MetaItem[];
   notesHeading: string;
@@ -36,6 +38,7 @@ const {
   pathname,
   source,
   caption,
+  grid,
   breadcrumbs,
   meta,
   notesHeading,
@@ -84,7 +87,7 @@ const breadcrumb = breadcrumbLd(breadcrumbs, siteUrl);
         </dl>
       </header>
 
-      <TimelineEmbed source={source} caption={caption} />
+      <TimelineEmbed source={source} caption={caption} grid={grid} />
 
       <section class="showcase-notes">
         <h2>{notesHeading}</h2>
