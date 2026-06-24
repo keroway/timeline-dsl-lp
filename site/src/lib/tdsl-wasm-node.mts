@@ -13,7 +13,11 @@ export interface SvgRenderOptions {
 type WasmModule = {
   initSync: (opts: { module: SyncInitInput }) => unknown;
   render_svg_from_source: (source: string, scale: number) => string;
-  render_svg_from_source_with_options: (source: string, scale: number, opts: WasmRenderOptions) => string;
+  render_svg_from_source_with_options: (
+    source: string,
+    scale: number,
+    opts: WasmRenderOptions,
+  ) => string;
   JsRenderOptions: new () => WasmRenderOptions;
 };
 
