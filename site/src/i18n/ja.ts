@@ -67,7 +67,7 @@ export const ja = {
   "lp.feature.validate.title": "壊れた年表をすぐ検出",
   "lp.feature.validate.body":
     "Playgroundで構文やlane参照を確認し、ローカルやCIでは `tdsl check` と `tdsl lint` で品質を担保できます。",
-  "lp.feature.render.title": "汎用的な HTML / SVG への出力",
+  "lp.feature.render.title": "HTML / SVG / PNG / PDF への出力",
   "lp.feature.render.body":
     "ドキュメントサイトや GitHub Pages 等に容易に組み込める、静的な成果物を生成できます。",
   "lp.feature.render.lane1.label": "政治",
@@ -86,7 +86,7 @@ export const ja = {
     "ダウンロードした `.tdsl` を `tdsl check` と `tdsl lint` に通し、参照ミスや重複を公開前に見つけます。",
   "lp.workflow.step3.title": "CI による品質管理と自動ビルド",
   "lp.workflow.step3.body":
-    "GitHub Actionsで検証を続け、教材、社内資料、ドキュメントサイトへ置けるHTML / SVGへ描画します。",
+    "GitHub Actionsで検証を続け、教材、社内資料、ドキュメントサイトへ置けるHTML / SVG / PNG / PDFへ描画します。",
   "lp.usecases.heading": "専門ツールとして、使い道は広く",
   "lp.usecases.lead":
     "一般向けの年表メーカーではなく、更新し続ける年表をテキストとして扱いたい人に向いています。",
@@ -119,7 +119,7 @@ export const ja = {
   "lp.usecase.research.bar3": "追記",
   "lp.install.heading": "CLI によるローカル・CI への統合",
   "lp.install.lead":
-    "Playground で構成を検証できたら、Homebrew で CLI を導入し、ローカルでの保守や CI による自動ビルド環境を構築できます。詳しいセットアップはQuick Startで確認できます。",
+    "Playground で構成を検証できたら、Homebrew やインストールスクリプトで CLI を導入し、ローカルでの保守や CI による自動ビルド環境を構築できます。詳しいセットアップはQuick Startで確認できます。",
   "gallery.page.title": "Gallery — Timeline DSL",
   "gallery.page.description":
     "Timeline DSL のサンプル年表一覧。各サンプルを Playground で編集・カスタマイズできます。",

@@ -69,7 +69,7 @@ export const en = {
   "lp.feature.validate.title": "Catch broken timelines immediately",
   "lp.feature.validate.body":
     "Check syntax and lane references in the Playground, then use `tdsl check` and `tdsl lint` locally or in CI to ensure quality.",
-  "lp.feature.render.title": "Output to generic HTML / SVG",
+  "lp.feature.render.title": "Output to HTML / SVG / PNG / PDF",
   "lp.feature.render.body":
     "Generate static artifacts that are easy to embed in documentation sites, GitHub Pages, and more.",
   "lp.feature.render.lane1.label": "Politics",
@@ -88,7 +88,7 @@ export const en = {
     "Pass the downloaded `.tdsl` through `tdsl check` and `tdsl lint` to catch reference errors and duplicates before publishing.",
   "lp.workflow.step3.title": "CI quality gate and auto-build",
   "lp.workflow.step3.body":
-    "Keep validation running in GitHub Actions and render to HTML / SVG for curricula, internal docs, and documentation sites.",
+    "Keep validation running in GitHub Actions and render to HTML / SVG / PNG / PDF for curricula, internal docs, and documentation sites.",
   "lp.usecases.heading": "A specialist tool — broad in application",
   "lp.usecases.lead":
     "Not a general-purpose timeline maker, but ideal for anyone who wants to manage a continuously updated timeline as text.",
@@ -122,7 +122,7 @@ export const en = {
   "lp.usecase.research.bar3": "Annotations",
   "lp.install.heading": "Integrate CLI into local and CI workflows",
   "lp.install.lead":
-    "Once you've validated your structure in the Playground, install the CLI via Homebrew to set up local maintenance and automated CI builds. See Quick Start for detailed setup.",
+    "Once you've validated your structure in the Playground, install the CLI via Homebrew or the install script to set up local maintenance and automated CI builds. See Quick Start for detailed setup.",
   "gallery.page.title": "Gallery — Timeline DSL",
   "gallery.page.description":
     "Sample timelines for Timeline DSL. Edit and customize each sample in the Playground.",

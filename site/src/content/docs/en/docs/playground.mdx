@@ -44,7 +44,7 @@ Click the "Download" button in the toolbar to download the current editor conten
 
 Click the "Format" button in the toolbar or press `Ctrl/Cmd+Shift+F` to reformat the editor content (v1.10.0+). The formatter re-emits the AST, producing a canonical form with 2-space indentation and one blank line between blocks. Because the change is applied as a CodeMirror transaction, Undo/Redo behave as expected.
 
-If parsing fails, only an error toast is shown and the editor is left unchanged. Comments are not preserved by the AST round-trip, so they are removed by formatting (a warning is shown when the source contains comments).
+If parsing fails, only an error toast is shown and the editor is left unchanged. Comments are preserved like `tdsl fmt`, although comments inside blocks may be relocated to canonical positions.
 
 ### Adjusting the editor/preview split
 

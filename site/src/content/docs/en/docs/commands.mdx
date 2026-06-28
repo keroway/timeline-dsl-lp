@@ -99,13 +99,13 @@ tdsl completions fish > ~/.config/fish/completions/tdsl.fish
 
 ### lsp
 
-Starts the Timeline DSL language server (LSP) over stdio (v1.11.0+). Once connected from your editor's LSP client, you get real-time diagnostics, completion, hover, goto-definition, references, rename, code actions, and document symbols while editing `.tdsl` files.
+Starts the Timeline DSL language server (LSP) over stdio (v1.11.0+). Once connected from your editor's LSP client, you get real-time diagnostics, context-aware completion, hover, goto-definition, references, rename, code actions, document symbols, and formatting while editing `.tdsl` files. The VS Code extension connects automatically from v1.19.0 onwards.
 
 ```sh
 tdsl lsp
 ```
 
-Code actions (quick fixes) auto-fix with the same output as `tdsl lint --fix`. Only fixable lint issues (`start_gt_end` / `invalid_tags` / `missing_id`) are covered, and applying a fix loses comments.
+Code actions (quick fixes) auto-fix with the same output as `tdsl lint --fix`. Only fixable lint issues (`start_gt_end` / `invalid_tags` / `missing_id`) are covered. Comments are preserved where possible, although comments inside blocks may be relocated to canonical positions.
 
 `tdsl lsp` takes no arguments and speaks the LSP JSON-RPC protocol over standard input/output. See [Installation](/en/docs/installation/#language-server-lsp) for editor configuration (Neovim / Helix / VS Code), how each feature behaves, and the fixable / non-fixable lint details.
 
@@ -119,7 +119,7 @@ tdsl fmt sample.tdsl --write   # Overwrite the file in place
 tdsl fmt sample.tdsl --check   # Fail when there is a diff (for CI)
 ```
 
-It uses the same formatting engine as `tdsl lint --fix`, the LSP document formatting, and the WebUI Format button. Applying formatting loses comments (`//` and `/* */`).
+It uses the same formatting engine as `tdsl lint --fix`, the LSP document formatting, and the WebUI Format button. Comments (`//` and `/* */`) are preserved, although comments inside blocks may be relocated to canonical positions.
 
 ## Starting from Wikidata
 
@@ -199,6 +199,8 @@ The cache is stored under the OS data directory (`data_dir` from the `dirs` crat
 | `--png-scale <multiplier>`          | `render`                                | Fixed pixel scale multiplier for PNG output (mutually exclusive with `--dpi`; v1.11.0+)           |
 | `--orientation horizontal,vertical` | `render`                                | Specify the timeline orientation (default `horizontal`; v1.13.0+)                                 |
 | `--grid decade,year,month,none`     | `render`                                | Draw grid lines in the background (default `none`; v1.14.0+)                                      |
+| `--show-event-labels`               | `render`                                | Always draw labels for `event` / `event_range` items (v1.17.0+)                                   |
+| `--lane-height <px>`                | `render`                                | Set lane height and vertical density (default 60; v1.21.0+)                                       |
 | `--format text,json`                | `lint`                                  | Specify the output format for lint results                                                        |
 | `--fix`                             | `lint`                                  | Apply safe fixes to the file                                                                      |
 | `--write`                           | `fmt`                                   | Overwrite the file with the formatted result (v1.14.0+)                                           |

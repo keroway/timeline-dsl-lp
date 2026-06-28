@@ -14,6 +14,11 @@
  * | `theme` | `"default"`, `"dark"`, `"print"`, `"pastel"` | `"default"` |
  * | `show_table` | `true`, `false` | `false` |
  * | `show_event_labels` | `true`, `false` | `false` |
+ * | `lane_height` | px per lane; `0` = renderer default (60) | `0` |
+ *
+ * `lane_height` controls vertical density: the SVG height, each lane band, the
+ * bar thickness and intra-lane padding all follow it. Leave it at `0` (the
+ * default) to keep the historical appearance.
  */
 export class JsRenderOptions {
     __destroy_into_raw() {
@@ -25,6 +30,15 @@ export class JsRenderOptions {
     free() {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_jsrenderoptions_free(ptr, 0);
+    }
+    /**
+     * Height of each lane in pixels. `0` (default) uses the renderer default (60).
+     * Larger values increase vertical density (taller bands and thicker bars).
+     * @returns {number}
+     */
+    get lane_height() {
+        const ret = wasm.__wbg_get_jsrenderoptions_lane_height(this.__wbg_ptr);
+        return ret;
     }
     /**
      * When true, labels are rendered next to Event/EventRange items.
@@ -128,6 +142,14 @@ export class JsRenderOptions {
             wasm.__wbindgen_add_to_stack_pointer(16);
             wasm.__wbindgen_export(deferred1_0, deferred1_1, 1);
         }
+    }
+    /**
+     * Height of each lane in pixels. `0` (default) uses the renderer default (60).
+     * Larger values increase vertical density (taller bands and thicker bars).
+     * @param {number} arg0
+     */
+    set lane_height(arg0) {
+        wasm.__wbg_set_jsrenderoptions_lane_height(this.__wbg_ptr, arg0);
     }
     /**
      * When true, labels are rendered next to Event/EventRange items.
@@ -481,10 +503,10 @@ export function render_svg_from_source_with_options(source, scale, opts) {
 function __wbg_get_imports() {
     const import0 = {
         __proto__: null,
-        __wbg___wbindgen_throw_ea4887a5f8f9a9db: (arg0, arg1) => {
+        __wbg___wbindgen_throw_ea4887a5f8f9a9db: function(arg0, arg1) {
             throw new Error(getStringFromWasm0(arg0, arg1));
         },
-        __wbg_error_a6fa202b58aa1cd3: (arg0, arg1) => {
+        __wbg_error_a6fa202b58aa1cd3: function(arg0, arg1) {
             let deferred0_0;
             let deferred0_1;
             try {
@@ -495,23 +517,23 @@ function __wbg_get_imports() {
                 wasm.__wbindgen_export(deferred0_0, deferred0_1, 1);
             }
         },
-        __wbg_new_227d7c05414eb861: () => {
+        __wbg_new_227d7c05414eb861: function() {
             const ret = new Error();
             return addHeapObject(ret);
         },
-        __wbg_stack_3b0d974bbf31e44f: (arg0, arg1) => {
+        __wbg_stack_3b0d974bbf31e44f: function(arg0, arg1) {
             const ret = getObject(arg1).stack;
             const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_export2, wasm.__wbindgen_export3);
             const len1 = WASM_VECTOR_LEN;
             getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
             getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
         },
-        __wbindgen_cast_0000000000000001: (arg0, arg1) => {
+        __wbindgen_cast_0000000000000001: function(arg0, arg1) {
             // Cast intrinsic for `Ref(String) -> Externref`.
             const ret = getStringFromWasm0(arg0, arg1);
             return addHeapObject(ret);
         },
-        __wbindgen_object_drop_ref: (arg0) => {
+        __wbindgen_object_drop_ref: function(arg0) {
             takeObject(arg0);
         },
     };
@@ -568,7 +590,7 @@ function getUint8ArrayMemory0() {
 
 function getObject(idx) { return heap[idx]; }
 
-const heap = new Array(1024).fill(undefined);
+let heap = new Array(1024).fill(undefined);
 heap.push(undefined, null, true, false);
 
 let heap_next = heap.length;
@@ -633,7 +655,7 @@ function decodeText(ptr, len) {
 const cachedTextEncoder = new TextEncoder();
 
 if (!('encodeInto' in cachedTextEncoder)) {
-    cachedTextEncoder.encodeInto = (arg, view) => {
+    cachedTextEncoder.encodeInto = function (arg, view) {
         const buf = cachedTextEncoder.encode(arg);
         view.set(buf);
         return {
