@@ -1,0 +1,36 @@
+diff --git a/lib/handler/unwrap-handler.js b/lib/handler/unwrap-handler.js
+index 2949faea0fe9d0994d161512cffd3c25fee1261b..e23b9666cf71fab4424b08b8fa7942abe815e86f 100644
+--- a/lib/handler/unwrap-handler.js
++++ b/lib/handler/unwrap-handler.js
+@@ -13,9 +13,6 @@ class UnwrapController {
+ 
+   [kResume] = null
+ 
+-  rawHeaders = null
+-  rawTrailers = null
+-
+   constructor (abort) {
+     this.#abort = abort
+   }
+@@ -75,13 +72,11 @@ module.exports = class UnwrapHandler {
+   }
+ 
+   onUpgrade (statusCode, rawHeaders, socket) {
+-    this.#controller.rawHeaders = rawHeaders
+     this.#handler.onRequestUpgrade?.(this.#controller, statusCode, parseHeaders(rawHeaders), socket)
+   }
+ 
+   onHeaders (statusCode, rawHeaders, resume, statusMessage) {
+     this.#controller[kResume] = resume
+-    this.#controller.rawHeaders = rawHeaders
+     this.#handler.onResponseStart?.(this.#controller, statusCode, parseHeaders(rawHeaders), statusMessage)
+     return !this.#controller.paused
+   }
+@@ -92,7 +87,6 @@ module.exports = class UnwrapHandler {
+   }
+ 
+   onComplete (rawTrailers) {
+-    this.#controller.rawTrailers = rawTrailers
+     this.#handler.onResponseEnd?.(this.#controller, parseHeaders(rawTrailers))
+   }
+ 

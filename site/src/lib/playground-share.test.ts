@@ -38,20 +38,22 @@ describe("buildShareUrl", () => {
   it("短いソースは ok=true で src クエリ付き URL を返す", async () => {
     const result = await buildShareUrl({
       source: "event x",
-      origin: "https://timeline-dsl.pages.dev",
+      origin: "https://timeline-dsl-lp.pages.dev",
       pathname: "/playground/",
     });
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.url.startsWith("https://timeline-dsl.pages.dev/playground/?src=")).toBe(true);
+      expect(result.url.startsWith("https://timeline-dsl-lp.pages.dev/playground/?src=")).toBe(
+        true,
+      );
     }
   });
 
   it("URL 長が上限を超えると ok=false / too_long を返す", async () => {
     const result = await buildShareUrl({
       source: highEntropy(20000),
-      origin: "https://timeline-dsl.pages.dev",
+      origin: "https://timeline-dsl-lp.pages.dev",
       pathname: "/playground/",
     });
 
