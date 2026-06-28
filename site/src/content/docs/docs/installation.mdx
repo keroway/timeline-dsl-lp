@@ -46,11 +46,11 @@ code --install-extension keroway.timeline-dsl
 
 スニペットはファイル拡張子が `.tdsl` のファイルで有効です。
 
-VS Code 拡張は構文ハイライトとスニペットを提供します。診断・補完・ホバー・定義ジャンプといった対話的な機能は、次の言語サーバ（LSP）が担当します。
+VS Code 拡張は構文ハイライトとスニペットに加え、`tdsl` CLI が見つかる環境では組み込み LSP クライアントとして `tdsl lsp` を自動起動します。診断・補完・ホバー・定義ジャンプなどの対話的な機能は、次の言語サーバ（LSP）が担当します。
 
 ## 言語サーバ (LSP)
 
-v1.11.0 以降、`tdsl lsp` で Timeline DSL の言語サーバ（LSP）を起動できます。LSP は標準入出力（stdio）で通信するため、LSP クライアントを持つエディタ（VS Code・Neovim・Helix・Emacs など）から接続して、`.tdsl` 編集中に対話的な支援を受けられます。VS Code 拡張（構文ハイライト + スニペット）とは独立した仕組みです。
+v1.11.0 以降、`tdsl lsp` で Timeline DSL の言語サーバ（LSP）を起動できます。LSP は標準入出力（stdio）で通信するため、LSP クライアントを持つエディタ（VS Code・Neovim・Helix・Emacs など）から接続して、`.tdsl` 編集中に対話的な支援を受けられます。VS Code 拡張は v1.19.0 以降で `tdsl lsp` を自動起動する LSP クライアントを内蔵しています。
 
 | 機能                                    | 内容                                           | バージョン |
 | --------------------------------------- | ---------------------------------------------- | ---------- |
@@ -102,7 +102,7 @@ file-types = ["tdsl"]
 language-servers = ["tdsl-lsp"]
 ```
 
-VS Code には `.tdsl` 専用の LSP クライアントは無いため、汎用 LSP クライアント拡張から「言語 ID `tdsl` / コマンド `tdsl lsp` / stdio」として登録します。構文ハイライトとスニペットを提供する VS Code 拡張とは独立して動くため、両方を同時に有効化できます。
+VS Code では [Timeline DSL 拡張](https://marketplace.visualstudio.com/items?itemName=keroway.timeline-dsl) が `tdsl` バイナリを PATH から解決し、`tdsl lsp` を自動起動します。必要に応じて拡張設定 `timelineDsl.serverPath` に `tdsl` の絶対パスを指定できます。Neovim / Helix などでは上記のように手動登録します。
 
 ### 各機能の使い方
 
@@ -110,7 +110,7 @@ VS Code には `.tdsl` 専用の LSP クライアントは無いため、汎用 
 - **参照検索（References）**: lane の宣言または参照箇所にカーソルを置くと、その lane ID の全参照（`lane` 宣言・`span` / `event` / `event_range` の `lane` 指定・`map` の `lane` プロパティ）が一覧されます。
 - **リネーム（Rename）**: lane ID 上でリネームすると宣言と全参照が一括置換されます。lane ID 以外（キーワードや文字列リテラル）の上ではリネームできません。
 - **ドキュメントシンボル（Document Symbol）**: `timeline` > `lane` > 項目（`span` / `event` / `event_range`）の階層でアウトラインを返します。
-- **ドキュメント整形（Formatting）**: エディタの整形コマンドで全文を正準スタイルに整形します（v1.14.0〜）。CLI の `tdsl fmt` と同一の整形エンジンを使います。整形を適用するとコメント（`//`・`/* */`）は失われます。
+- **ドキュメント整形（Formatting）**: エディタの整形コマンドで全文を正準スタイルに整形します（v1.14.0〜）。CLI の `tdsl fmt` と同一の整形エンジンを使います。コメントは `tdsl fmt` と同様に保持されますが、ブロック内コメントは正準位置へ移動する場合があります。
 
 すべての機能はソーステキストの静的解析で動き、ネットワーク I/O は不要（offline）です。
 
@@ -123,6 +123,6 @@ VS Code には `.tdsl` 専用の LSP クライアントは無いため、汎用 
 | fixable     | `start_gt_end` / `invalid_tags` / `missing_id`  | quick fix「自動修正可能な lint をすべて修正」を提示 |
 | non-fixable | `unknown_lane` / `duplicate_id` / `empty_label` | quick fix は出ない（手で修正する）                  |
 
-fixable な issue が 1 件も無い場合、quick fix は表示されません。適用すると `tdsl lint --fix` と**同一の emitter** でドキュメント全文が整形・置換されるため、ソース中の**コメントは失われます**（全文再 emit 方式のため）。出力は `tdsl lint --fix` と一致します。
+fixable な issue が 1 件も無い場合、quick fix は表示されません。適用すると `tdsl lint --fix` と**同一の emitter** でドキュメント全文が整形・置換されます。コメントは可能な限り保持されますが、ブロック内コメントは正準位置へ移動する場合があります。出力は `tdsl lint --fix` と一致します。
 
 `tdsl lsp` の概要は [Commands](/docs/commands/#lsp) も参照してください。

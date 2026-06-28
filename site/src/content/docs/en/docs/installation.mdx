@@ -46,11 +46,11 @@ code --install-extension keroway.timeline-dsl
 
 Snippets are active in files with the `.tdsl` extension.
 
-The VS Code extension provides syntax highlighting and snippets. Interactive features such as diagnostics, completion, hover, and goto-definition are handled by the language server (LSP) described below.
+The VS Code extension provides syntax highlighting and snippets, and when the `tdsl` CLI is available it also starts `tdsl lsp` as a built-in LSP client. Interactive features such as diagnostics, completion, hover, and goto-definition are handled by the language server (LSP) described below.
 
 ## Language Server (LSP)
 
-Since v1.11.0, you can start the Timeline DSL language server (LSP) with `tdsl lsp`. The server communicates over standard input/output (stdio), so any editor with an LSP client (VS Code, Neovim, Helix, Emacs, etc.) can connect to it and get interactive assistance while editing `.tdsl` files. It is independent of the VS Code extension (which only provides syntax highlighting and snippets).
+Since v1.11.0, you can start the Timeline DSL language server (LSP) with `tdsl lsp`. The server communicates over standard input/output (stdio), so any editor with an LSP client (VS Code, Neovim, Helix, Emacs, etc.) can connect to it and get interactive assistance while editing `.tdsl` files. Since v1.19.0, the VS Code extension includes an LSP client that starts `tdsl lsp` automatically.
 
 | Feature         | Description                                                      | Version  |
 | --------------- | ---------------------------------------------------------------- | -------- |
@@ -102,7 +102,7 @@ file-types = ["tdsl"]
 language-servers = ["tdsl-lsp"]
 ```
 
-VS Code has no dedicated `.tdsl` LSP client, so register it from a generic LSP client extension as "language ID `tdsl` / command `tdsl lsp` / stdio". It runs independently of the VS Code extension that provides syntax highlighting and snippets, so you can enable both at once.
+In VS Code, the [Timeline DSL extension](https://marketplace.visualstudio.com/items?itemName=keroway.timeline-dsl) resolves the `tdsl` binary from PATH and starts `tdsl lsp` automatically. If needed, set the extension setting `timelineDsl.serverPath` to the absolute path of your `tdsl` binary. For Neovim / Helix and other editors, register the server manually as shown above.
 
 ### How each feature behaves
 
@@ -110,7 +110,7 @@ VS Code has no dedicated `.tdsl` LSP client, so register it from a generic LSP c
 - **References**: place the cursor on a lane declaration or reference to list all references of that lane ID (`lane` declaration, the `lane` field of `span` / `event` / `event_range`, and the `lane` property of `map`).
 - **Rename**: renaming on a lane ID replaces the declaration and all references at once. Rename is rejected on anything other than a lane ID (keywords, string literals).
 - **Document Symbol**: returns an outline in the hierarchy `timeline` > `lane` > items (`span` / `event` / `event_range`).
-- **Formatting**: formats the whole document to the canonical style via your editor's format command (v1.14.0+). It uses the same formatting engine as the CLI `tdsl fmt`. Applying formatting loses comments (`//` and `/* */`).
+- **Formatting**: formats the whole document to the canonical style via your editor's format command (v1.14.0+). It uses the same formatting engine as the CLI `tdsl fmt`. Comments are preserved like `tdsl fmt`, although comments inside blocks may be relocated to canonical positions.
 
 All features run on static analysis of the source text and need no network I/O (offline).
 
@@ -123,6 +123,6 @@ Code actions offer auto-fixes equivalent to `tdsl lint --fix` as quick fixes. So
 | fixable     | `start_gt_end` / `invalid_tags` / `missing_id`  | Offers the quick fix "fix all auto-fixable lint issues" |
 | non-fixable | `unknown_lane` / `duplicate_id` / `empty_label` | No quick fix (fix it by hand)                           |
 
-When there are no fixable issues, no quick fix is shown. Applying it reformats and replaces the entire document with the **same emitter** as `tdsl lint --fix`, so **comments in the source are lost** (it re-emits the whole document). The output matches `tdsl lint --fix`.
+When there are no fixable issues, no quick fix is shown. Applying it reformats and replaces the entire document with the **same emitter** as `tdsl lint --fix`. Comments are preserved where possible, although comments inside blocks may be relocated to canonical positions. The output matches `tdsl lint --fix`.
 
 See also [Commands](/en/docs/commands/#lsp) for an overview of `tdsl lsp`.

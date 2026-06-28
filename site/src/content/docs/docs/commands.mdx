@@ -99,13 +99,13 @@ tdsl completions fish > ~/.config/fish/completions/tdsl.fish
 
 ### lsp
 
-Timeline DSL の言語サーバ（LSP）を stdio 経由で起動します（v1.11.0〜）。エディタの LSP クライアントから接続すると、`.tdsl` 編集中にリアルタイム診断・補完・ホバー・定義ジャンプ・参照検索・リネーム・コードアクション・ドキュメントシンボルが利用できます。
+Timeline DSL の言語サーバ（LSP）を stdio 経由で起動します（v1.11.0〜）。エディタの LSP クライアントから接続すると、`.tdsl` 編集中にリアルタイム診断・コンテキスト依存補完・ホバー・定義ジャンプ・参照検索・リネーム・コードアクション・ドキュメントシンボル・フォーマットが利用できます。VS Code 拡張は v1.19.0 以降で自動接続に対応しています。
 
 ```sh
 tdsl lsp
 ```
 
-コードアクション（quick fix）は `tdsl lint --fix` と同一の出力で自動修正します。fixable な lint（`start_gt_end` / `invalid_tags` / `missing_id`）のみ対象で、適用するとコメントは失われます。
+コードアクション（quick fix）は `tdsl lint --fix` と同一の出力で自動修正します。fixable な lint（`start_gt_end` / `invalid_tags` / `missing_id`）のみ対象です。コメントは可能な限り保持されますが、ブロック内コメントは正準位置へ移動する場合があります。
 
 `tdsl lsp` は引数を取らず、標準入出力で LSP の JSON-RPC を話します。エディタ側の設定（Neovim / Helix / VS Code）や各機能の使い方、fixable / non-fixable lint の詳細は [インストール](/docs/installation/#言語サーバ-lsp) を参照してください。
 
@@ -119,7 +119,7 @@ tdsl fmt sample.tdsl --write   # ファイルを上書きする
 tdsl fmt sample.tdsl --check   # 差分があれば失敗する（CI 向け）
 ```
 
-`tdsl lint --fix`・LSP のドキュメント整形・WebUI の Format ボタンと同一の整形エンジンを使います。整形を適用するとコメント（`//`・`/* */`）は失われます。
+`tdsl lint --fix`・LSP のドキュメント整形・WebUI の Format ボタンと同一の整形エンジンを使います。コメント（`//`・`/* */`）は保持されますが、ブロック内コメントは正準位置へ移動する場合があります。
 
 ## Wikidata起点
 
@@ -199,6 +199,8 @@ tdsl cache clear --dry-run # 削除対象を確認する（実際には削除し
 | `--png-scale <倍率>`                | `render`                                | PNG 出力の倍率を指定する（`--dpi` と排他、v1.11.0〜）                                              |
 | `--orientation horizontal,vertical` | `render`                                | タイムラインの向きを指定する（デフォルト `horizontal`、v1.13.0〜）                                 |
 | `--grid decade,year,month,none`     | `render`                                | 背景にグリッド線を描画する（デフォルト `none`、v1.14.0〜）                                         |
+| `--show-event-labels`               | `render`                                | イベント / event_range のラベルを常時表示する（v1.17.0〜）                                         |
+| `--lane-height <px>`                | `render`                                | lane の高さと縦密度を指定する（デフォルト 60、v1.21.0〜）                                          |
 | `--format text,json`                | `lint`                                  | lint結果の出力形式を指定する                                                                       |
 | `--fix`                             | `lint`                                  | 安全な修正をファイルへ適用する                                                                     |
 | `--write`                           | `fmt`                                   | 整形結果をファイルへ上書きする（v1.14.0〜）                                                        |
