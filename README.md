@@ -2,14 +2,14 @@
 
 [日本語 README →](./README.ja.md)
 
-LP / documentation site for [Timeline DSL](https://timeline-dsl.pages.dev).
+LP / documentation site for [Timeline DSL](https://timeline-dsl-lp.pages.dev).
 
 ## Site
 
 - Framework: Astro + Starlight
 - Package manager: pnpm 10.33.3
 - Node.js: 24
-- Site URL: https://timeline-dsl.pages.dev
+- Site URL: https://timeline-dsl-lp.pages.dev
 
 ```sh
 cd site
@@ -39,7 +39,7 @@ Workflows:
 Event policy:
 
 - `pull_request`: Runs GitHub Actions `Site build` and Cloudflare Pages Preview deployment. During review, verify `/` and `/docs/` on the Cloudflare Pages Preview URL.
-- `push` to `main`: Cloudflare Pages deploys to https://timeline-dsl.pages.dev as the production branch.
+- `push` to `main`: Cloudflare Pages deploys to https://timeline-dsl-lp.pages.dev as the production branch.
 - `release.published`: Not used as a direct deploy trigger via the Cloudflare Pages GitHub integration. Releases are published after a `main` merge once the production deployment succeeds.
 - `workflow_dispatch`: Limited to manually re-running GitHub Actions CI. To re-run a deployment, use the Retry deployment button in the Cloudflare Pages dashboard.
 

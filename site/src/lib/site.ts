@@ -4,7 +4,7 @@ import type { Locale } from "../i18n/index";
  * 本番 origin。dev/preview では `Astro.site` が undefined になるためのフォールバック。
  * `astro.config.mjs` の `site` と一致させること。
  */
-export const PRODUCTION_ORIGIN = "https://timeline-dsl.pages.dev";
+export const PRODUCTION_ORIGIN = "https://timeline-dsl-lp.pages.dev";
 
 /**
  * `Astro.site`（本番ビルド時に解決）か、無ければ本番 origin を返す。

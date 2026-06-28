@@ -8,7 +8,7 @@ import tdslGrammar from "./src/lib/tdsl.tmLanguage.json" with { type: "json" };
 const devServerPort = process.env.PORT ? Number(process.env.PORT) : 4321;
 
 export default defineConfig({
-  site: "https://timeline-dsl.pages.dev",
+  site: "https://timeline-dsl-lp.pages.dev",
   // dev / preview 両方に適用される。host を 127.0.0.1 に固定して
   // preview が ::1 のみ bind する問題 (127.0.0.1 で ECONNREFUSED) も回避する。
   server: {

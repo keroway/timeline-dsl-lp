@@ -13,7 +13,7 @@ import {
   type ChangelogRelease,
 } from "./seo-jsonld";
 
-const SITE_URL = new URL("https://timeline-dsl.pages.dev/");
+const SITE_URL = new URL("https://timeline-dsl-lp.pages.dev/");
 
 describe("organizationLd", () => {
   it("Organization スキーマの必須フィールドを生成する", () => {
@@ -22,8 +22,8 @@ describe("organizationLd", () => {
     expect(ld["@id"]).toBe("#organization");
     expect(ld.name).toBe("Timeline DSL");
     // url は末尾スラッシュを落とす
-    expect(ld.url).toBe("https://timeline-dsl.pages.dev");
-    expect(ld.logo).toBe("https://timeline-dsl.pages.dev/icon.svg");
+    expect(ld.url).toBe("https://timeline-dsl-lp.pages.dev");
+    expect(ld.logo).toBe("https://timeline-dsl-lp.pages.dev/icon.svg");
     expect(ld.sameAs).toEqual(["https://github.com/keroway/timeline-dsl"]);
   });
 });
@@ -38,7 +38,7 @@ describe("webPageLd", () => {
       locale: "ja",
     });
     expect(ld["@type"]).toBe("WebPage");
-    expect(ld.url).toBe("https://timeline-dsl.pages.dev/playground/");
+    expect(ld.url).toBe("https://timeline-dsl-lp.pages.dev/playground/");
     expect(ld.name).toBe("Playground");
     expect(ld.description).toBe("ブラウザで試す");
     expect(ld.inLanguage).toBe("ja");
@@ -54,7 +54,7 @@ describe("webPageLd", () => {
       locale: "en",
     });
     expect(ld.inLanguage).toBe("en");
-    expect(ld.url).toBe("https://timeline-dsl.pages.dev/en/playground/");
+    expect(ld.url).toBe("https://timeline-dsl-lp.pages.dev/en/playground/");
   });
 });
 
@@ -64,7 +64,7 @@ describe("softwareApplicationLd", () => {
     const en = softwareApplicationLd(SITE_URL, "en");
     expect(ja["@type"]).toBe("SoftwareApplication");
     expect(ja.applicationCategory).toBe("DeveloperApplication");
-    expect(ja.url).toBe("https://timeline-dsl.pages.dev");
+    expect(ja.url).toBe("https://timeline-dsl-lp.pages.dev");
     expect(ja.offers).toEqual({
       "@type": "Offer",
       price: "0",
@@ -93,11 +93,11 @@ describe("breadcrumbLd", () => {
       "@type": "ListItem",
       position: 1,
       name: "Home",
-      item: "https://timeline-dsl.pages.dev/",
+      item: "https://timeline-dsl-lp.pages.dev/",
     });
     expect(items[1]).toMatchObject({
       position: 2,
-      item: "https://timeline-dsl.pages.dev/docs/",
+      item: "https://timeline-dsl-lp.pages.dev/docs/",
     });
   });
 });
@@ -121,7 +121,7 @@ describe("changelogLd", () => {
       releases,
     });
     expect(ld["@type"]).toBe("CollectionPage");
-    expect(ld.url).toBe("https://timeline-dsl.pages.dev/en/changelog/");
+    expect(ld.url).toBe("https://timeline-dsl-lp.pages.dev/en/changelog/");
     expect(ld.mainEntityOfPage).toBe(ld.url);
     expect(ld.inLanguage).toBe("en");
     const parts = ld.hasPart as Array<Record<string, unknown>>;
@@ -175,7 +175,7 @@ describe("itemListLd", () => {
       ],
     });
     expect(ld["@type"]).toBe("ItemList");
-    expect(ld.url).toBe("https://timeline-dsl.pages.dev/gallery/");
+    expect(ld.url).toBe("https://timeline-dsl-lp.pages.dev/gallery/");
     expect(ld.mainEntityOfPage).toBe(ld.url);
     expect(ld.inLanguage).toBe("ja");
     expect(ld.isPartOf).toEqual({ "@id": "#organization" });
@@ -201,8 +201,8 @@ describe("itemListLd", () => {
       items: [{ name: "Minimal" }],
     });
     expect(ld.inLanguage).toBe("en");
-    expect(ld.url).toBe("https://timeline-dsl.pages.dev/en/playground/");
-    expect(ld.mainEntityOfPage).toBe("https://timeline-dsl.pages.dev/en/playground/");
+    expect(ld.url).toBe("https://timeline-dsl-lp.pages.dev/en/playground/");
+    expect(ld.mainEntityOfPage).toBe("https://timeline-dsl-lp.pages.dev/en/playground/");
   });
 });
 
@@ -215,7 +215,7 @@ describe("faqPageLd", () => {
       faqs: [{ question: "Q1?", answer: "A1." }],
     });
     expect(ld["@type"]).toBe("FAQPage");
-    expect(ld.url).toBe("https://timeline-dsl.pages.dev/docs/faq/");
+    expect(ld.url).toBe("https://timeline-dsl-lp.pages.dev/docs/faq/");
     expect(ld.mainEntityOfPage).toBe(ld.url);
     expect(ld.inLanguage).toBe("ja");
     const entities = ld.mainEntity as Array<Record<string, unknown>>;

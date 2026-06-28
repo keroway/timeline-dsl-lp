@@ -10,7 +10,7 @@ Timeline DSL の LP / ドキュメントサイトです。
 - Package manager: pnpm 10.33.3（`cd site` 後に実行）
 - Node.js: 24
 - Deploy: Cloudflare Pages（GitHub integration 経由、push 自動デプロイ）
-- Site URL: https://timeline-dsl.pages.dev
+- Site URL: https://timeline-dsl-lp.pages.dev
 
 ## Commands
 
