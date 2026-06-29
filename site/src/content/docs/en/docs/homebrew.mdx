@@ -32,27 +32,23 @@ The default install location is `~/.local/bin/tdsl`. If `~/.local/bin` is not in
 export PATH="${HOME}/.local/bin:${PATH}"
 ```
 
-## Windows (Manual Binary Installation)
+## One-Line Install (Windows)
 
-Homebrew is not available on Windows. Download the binary manually from the GitHub Releases page.
+In PowerShell, you can use the install script to download a pre-built binary.
 
-1. Open [GitHub Releases](https://github.com/keroway/timeline-dsl/releases/latest).
-2. Download `tdsl-windows-x86_64.zip` from the Assets section.
-3. Extract the ZIP and place `tdsl.exe` in a folder of your choice (e.g. `C:\Users\<YourName>\bin`).
-4. Add that folder to your `PATH`.
+```powershell
+irm https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.ps1 | iex
+```
 
-   **PowerShell (user scope):**
+For a manual install, open [GitHub Releases](https://github.com/keroway/timeline-dsl/releases/latest), download `tdsl-windows-x86_64.zip` from Assets, extract `tdsl.exe`, and place it in a folder on your `PATH`.
 
-   ```powershell
-   $dir = "$env:USERPROFILE\bin"
-   [System.Environment]::SetEnvironmentVariable("Path", "$([System.Environment]::GetEnvironmentVariable('Path','User'));$dir", "User")
-   ```
+## Install via cargo-binstall
 
-5. Open a new terminal and verify the installation.
+If you have [cargo-binstall](https://github.com/cargo-bins/cargo-binstall), you can install the pre-built binary quickly.
 
-   ```powershell
-   tdsl --help
-   ```
+```sh
+cargo binstall tdsl-cli
+```
 
 ## Install via cargo
 
