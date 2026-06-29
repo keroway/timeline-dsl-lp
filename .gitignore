@@ -11,6 +11,8 @@ dist/
 !.claude/rules/
 !.claude/agents/
 .playwright-mcp/
+# pi coding agent local state (mesh config, etc.)
+.pi/
 
 # Generated verification artifacts
 output/

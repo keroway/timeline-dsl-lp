@@ -1,20 +1,53 @@
-# timeline-dsl-lp
+# Timeline DSL Landing & Docs
 
 [日本語 README →](./README.ja.md)
 
-LP / documentation site for [Timeline DSL](https://timeline-dsl-lp.pages.dev).
+[![Astro](https://img.shields.io/badge/Astro-6.4.6-BC52EE?logo=astro&logoColor=white)](https://astro.build/)
+[![Starlight](https://img.shields.io/badge/Starlight-0.39.2-5A45FF)](https://starlight.astro.build/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-10.33.3-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
+[![Node.js](https://img.shields.io/badge/Node.js-24-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Cloudflare Pages](https://img.shields.io/badge/Cloudflare%20Pages-deployed-F38020?logo=cloudflare&logoColor=white)](https://pages.cloudflare.com/)
+[![Vitest](https://img.shields.io/badge/Vitest-4.1-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Lighthouse CI](https://img.shields.io/badge/Lighthouse%20CI-enabled-F44B21?logo=lighthouse&logoColor=white)](https://github.com/GoogleChrome/lighthouse-ci)
 
-## Site
+LP / documentation site for the public [Timeline DSL](https://github.com/keroway/timeline-dsl) project. Timeline DSL is a Rust-based DSL compiler for defining timelines as text, importing Wikidata-backed data, and rendering the result as HTML / SVG / PNG / PDF.
 
-- Framework: Astro + Starlight
-- Package manager: pnpm 10.33.3
-- Node.js: 24
-- Site URL: https://timeline-dsl-lp.pages.dev
+- Site: <https://timeline-dsl-lp.pages.dev>
+- Main repository: <https://github.com/keroway/timeline-dsl>
+- Playground / WebUI: <https://keroway.github.io/timeline-dsl/>
+- Latest tracked release in this site: `v1.22.0` (`site/public/wasm/package.json`, generated changelog)
+
+## Tech stack
+
+| Area | Stack | Notes |
+| --- | --- | --- |
+| Site framework | Astro 6 + Starlight 0.39 | Static LP, docs, changelog, gallery, showcase, and playground routes. |
+| Language/runtime | TypeScript 6, Node.js 24, pnpm 10 | All commands run under `site/`. |
+| Styling | Astro components + CSS tokens | Global design tokens live in `site/src/styles/global.css`; avoid ad-hoc colors. |
+| Playground | Vendored `@keroway/tdsl-wasm` 1.22.0 | Browser validation and SVG rendering go through `site/src/lib/tdsl-wasm.ts`. |
+| Search | Pagefind generated at build time | Used by the site-wide search dialog. |
+| Quality | `astro check`, Vitest, ESLint, Prettier, axe-core, Playwright, Lighthouse CI | `pnpm build` is the minimum CI gate; extra smoke scripts cover SEO/i18n/a11y/playground. |
+| Hosting | Cloudflare Pages | GitHub integration builds from `site/` and publishes `dist/`. |
+
+## Local development
 
 ```sh
 cd site
 pnpm install --frozen-lockfile
-pnpm build
+pnpm dev
+```
+
+Common commands:
+
+```sh
+pnpm fetch:releases             # Fetch keroway/timeline-dsl GitHub Releases into site/src/data/
+pnpm smoke:wasm                 # Smoke-test the vendored WASM bridge
+pnpm smoke:playground           # HTTP smoke test for Playground
+pnpm smoke:a11y                 # axe-core audit for key pages (requires Chromium)
+pnpm lint
+pnpm format:check
+pnpm build                      # smoke:wasm → astro check → astro build
 pnpm preview
 ```
 
@@ -39,7 +72,7 @@ Workflows:
 Event policy:
 
 - `pull_request`: Runs GitHub Actions `Site build` and Cloudflare Pages Preview deployment. During review, verify `/` and `/docs/` on the Cloudflare Pages Preview URL.
-- `push` to `main`: Cloudflare Pages deploys to https://timeline-dsl-lp.pages.dev as the production branch.
+- `push` to `main`: Cloudflare Pages deploys to <https://timeline-dsl-lp.pages.dev> as the production branch.
 - `release.published`: Not used as a direct deploy trigger via the Cloudflare Pages GitHub integration. Releases are published after a `main` merge once the production deployment succeeds.
 - `workflow_dispatch`: Limited to manually re-running GitHub Actions CI. To re-run a deployment, use the Retry deployment button in the Cloudflare Pages dashboard.
 
@@ -70,6 +103,6 @@ Desktop preset is used (the docs site is primarily read on desktop, and it keeps
 
 ## WASM bundle
 
-All calls to the Timeline DSL WASM from the Playground and runnable docs go through `site/src/lib/tdsl-wasm.ts` only. Because the npm package / release artifact from the main repository is not yet stable, the output of `wasm-pack --target web` is vendored in `site/public/wasm/`.
+All calls to the Timeline DSL WASM from the Playground and runnable docs go through `site/src/lib/tdsl-wasm.ts` only. The generated `@keroway/tdsl-wasm` browser package is vendored in `site/public/wasm/` so the LP can build independently of the main repository release pipeline.
 
-To update: build `crates/tdsl-wasm` in the main repo with `wasm-pack build`, then sync `apps/webui/src/wasm/tdsl_wasm.{js,d.ts}`, `tdsl_wasm_bg.wasm`, and `package.json` into `site/public/wasm/`. `pnpm build` runs `check_source` and `render_svg_from_source` smoke tests before the main build.
+To update: build `crates/tdsl-wasm` in the main repo with `wasm-pack build --target web`, then sync `tdsl_wasm.{js,d.ts}`, `tdsl_wasm_bg.wasm`, and `package.json` into `site/public/wasm/`. `pnpm build` runs `check_source` and `render_svg_from_source` smoke tests before the main build.

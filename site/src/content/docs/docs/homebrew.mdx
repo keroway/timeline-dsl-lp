@@ -32,27 +32,23 @@ curl -sSfL https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.s
 export PATH="${HOME}/.local/bin:${PATH}"
 ```
 
-## Windows（バイナリ手動インストール）
+## Windows（ワンラインインストール）
 
-Windows では Homebrew が使えないため、GitHub リリースページからバイナリを手動で取得します。
+PowerShell では、リリース済みバイナリを取得するインストールスクリプトを使えます。
 
-1. [GitHub Releases](https://github.com/keroway/timeline-dsl/releases/latest) を開きます。
-2. Assets から `tdsl-windows-x86_64.zip` をダウンロードします。
-3. ZIP を展開し、`tdsl.exe` を任意のフォルダ（例: `C:\Users\<ユーザー名>\bin`）に配置します。
-4. そのフォルダを `PATH` に追加します。
+```powershell
+irm https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.ps1 | iex
+```
 
-   **PowerShell（ユーザースコープ）:**
+手動で取得する場合は、[GitHub Releases](https://github.com/keroway/timeline-dsl/releases/latest) の Assets から `tdsl-windows-x86_64.zip` をダウンロードし、展開した `tdsl.exe` を `PATH` の通ったフォルダに配置します。
 
-   ```powershell
-   $dir = "$env:USERPROFILE\bin"
-   [System.Environment]::SetEnvironmentVariable("Path", "$([System.Environment]::GetEnvironmentVariable('Path','User'));$dir", "User")
-   ```
+## cargo-binstall でインストール
 
-5. 新しいターミナルを開いて動作確認します。
+[cargo-binstall](https://github.com/cargo-bins/cargo-binstall) がある場合は、ビルド済みバイナリを高速に導入できます。
 
-   ```powershell
-   tdsl --help
-   ```
+```sh
+cargo binstall tdsl-cli
+```
 
 ## cargoでインストール
 
