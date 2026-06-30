@@ -109,18 +109,36 @@ async function smokeHttpSurface(rootUrl) {
     "data-tags=",
     "/gallery/ cards must expose data-tags for filtering",
   );
-  assertIncludes(
-    jaGalleryHtml,
+  // ja タグラベル全件確認（gallery-samples.json に存在するすべてのキーを検証）
+  for (const jaTag of [
+    "歴史",
+    "年表",
     "プロジェクト管理",
-    "/gallery/ must show localized (ja) tag labels",
-  );
+    "ロードマップ",
+    "創作",
+    "世界観",
+    "OSS",
+    "伝記",
+  ]) {
+    assertIncludes(jaGalleryHtml, jaTag, `/gallery/ must show localized (ja) tag label "${jaTag}"`);
+  }
 
   const enGalleryRes = await get(`${rootUrl}/en/gallery/`);
   assertStatus(enGalleryRes, "/en/gallery/");
   assertContentType(enGalleryRes, "/en/gallery/", ["text/html"]);
   const enGalleryHtml = await enGalleryRes.text();
   assertIncludes(enGalleryHtml, "data-filter-tag=", "/en/gallery/ must render tag filter chips");
-  for (const enTag of ["History", "Project management", "Worldbuilding", "Biography"]) {
+  // en タグラベル全件確認（gallery-samples.json に存在するすべてのキーを検証）
+  for (const enTag of [
+    "History",
+    "Chronology",
+    "Project management",
+    "Roadmap",
+    "Creative",
+    "Worldbuilding",
+    "OSS",
+    "Biography",
+  ]) {
     assertIncludes(
       enGalleryHtml,
       enTag,
@@ -132,6 +150,10 @@ async function smokeHttpSurface(rootUrl) {
   // 「タグラベル固有の語」だけをネガティブ検査対象にする。
   // 将来サンプル追加でこれらの語が title/description/source に混入すると誤検知するので、
   // その際は検査語を見直すこと。
+  // Regression guard: en ページにタグラベルの日本語が漏れてはいけない。
+  // 注意: gallery-samples.json の title / description に出現する語は誤検知になるため対象外。
+  //   除外する語：「歴史」(title/desc内)、「年表」(title/desc内)、「ロードマップ」(title/desc内)、「創作」(title/desc内)、「OSS」(同形)。
+  //   将来サンプル追加で語がtitle/description/sourceに混入する場合は検査語を見直すこと。
   for (const jpTag of ["プロジェクト管理", "世界観", "伝記"]) {
     assertExcludes(
       enGalleryHtml,
