@@ -110,12 +110,17 @@ async function smokeHttpSurface(rootUrl) {
     "/gallery/ cards must expose data-tags for filtering",
   );
   // ja タグラベル全件確認（gallery-samples.json に存在するすべてのキーを検証）
-  for (const jaTag of ["歴史", "年表", "プロジェクト管理", "ロードマップ", "創作", "世界観", "OSS", "伝記"]) {
-    assertIncludes(
-      jaGalleryHtml,
-      jaTag,
-      `/gallery/ must show localized (ja) tag label "${jaTag}"`,
-    );
+  for (const jaTag of [
+    "歴史",
+    "年表",
+    "プロジェクト管理",
+    "ロードマップ",
+    "創作",
+    "世界観",
+    "OSS",
+    "伝記",
+  ]) {
+    assertIncludes(jaGalleryHtml, jaTag, `/gallery/ must show localized (ja) tag label "${jaTag}"`);
   }
 
   const enGalleryRes = await get(`${rootUrl}/en/gallery/`);
@@ -124,7 +129,16 @@ async function smokeHttpSurface(rootUrl) {
   const enGalleryHtml = await enGalleryRes.text();
   assertIncludes(enGalleryHtml, "data-filter-tag=", "/en/gallery/ must render tag filter chips");
   // en タグラベル全件確認（gallery-samples.json に存在するすべてのキーを検証）
-  for (const enTag of ["History", "Chronology", "Project management", "Roadmap", "Creative", "Worldbuilding", "OSS", "Biography"]) {
+  for (const enTag of [
+    "History",
+    "Chronology",
+    "Project management",
+    "Roadmap",
+    "Creative",
+    "Worldbuilding",
+    "OSS",
+    "Biography",
+  ]) {
     assertIncludes(
       enGalleryHtml,
       enTag,
