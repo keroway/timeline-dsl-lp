@@ -176,12 +176,91 @@ const _CATALOG = [
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
-  // Docs grammar（hreflang/JSON-LD チェック対象外、a11y のみ）
-  { path: "/docs/grammar/", a11y: true },
-  { path: "/en/docs/grammar/", a11y: true },
-  // Docs FAQ（hreflang チェック対象外、JSON-LD と a11y の対象）
+  // Docs ページの共通 JSON-LD（全ページ BreadcrumbList + Organizationを pnpm build 後の dist で実測済み）
+  // grammar / faq は個別事情があるため御刺当山順に定義。
+  //
+  // Docs: quick-start
+  {
+    path: "/docs/quick-start/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/quick-start/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  // Docs: installation
+  {
+    path: "/docs/installation/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/installation/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  // Docs: homebrew
+  {
+    path: "/docs/homebrew/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/homebrew/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  // Docs: commands
+  {
+    path: "/docs/commands/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/commands/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  // Docs: configuration
+  {
+    path: "/docs/configuration/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/configuration/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  // Docs: grammar（hreflang 確認を追加）
+  {
+    path: "/docs/grammar/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/grammar/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  // Docs: faq（FAQPage / Question は引き継ぎ）
   {
     path: "/docs/faq/",
+    hreflang: true,
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"BreadcrumbList"',
@@ -192,12 +271,78 @@ const _CATALOG = [
   },
   {
     path: "/en/docs/faq/",
+    hreflang: true,
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"BreadcrumbList"',
       '"@type":"FAQPage"',
       '"@type":"Question"',
     ],
+    a11y: true,
+  },
+  // Docs: deployment
+  {
+    path: "/docs/deployment/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/deployment/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  // Docs: github-actions
+  {
+    path: "/docs/github-actions/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/github-actions/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  // Docs: playground
+  {
+    path: "/docs/playground/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/playground/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  // Docs: contributing
+  {
+    path: "/docs/contributing/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/contributing/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  // Docs: troubleshooting
+  {
+    path: "/docs/troubleshooting/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/troubleshooting/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
 ];
