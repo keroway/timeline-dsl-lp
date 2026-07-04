@@ -140,6 +140,28 @@ event work 2027 "New system goes live" {};
 
 It looks similar to `span` in that it has a duration, but semantically it means "an event with a duration." Use `span` for eras or membership periods, and `event_range` for work, incidents, or wars — the distinction makes the timeline easier to read.
 
+## Ongoing periods (`now`)
+
+The `end` of a `span` or `event_range` can use the `now` keyword from v1.23.0 onwards. This lets you express a period that is "still ongoing" — such as the current era — without inventing a fictional end year.
+
+```tdsl
+timeline "Reign Period" {
+    title "Reign Period";
+    unit year;
+    range 2019..2030;
+    calendar proleptic_gregorian;
+}
+
+lane "Era" as era { kind custom; order 10; }
+span era 2019..now "Reiwa" { tags ["era"]; id "span:reiwa"; };
+```
+
+`now` is only valid in the `end` position of `span` / `event_range`. The IR gains an `end_open` flag, which is non-breaking for existing JSON consumers. `tdsl fmt` and `tdsl decompile` round-trip `now` as-is.
+
+:::caution
+As of this writing, validating a `.tdsl` file containing `now` in the browser Playground crashes the WASM module (`SystemTime::now()` is not implemented for the `wasm32` target). The CLI (`tdsl check` / `tdsl build` / `tdsl render`) is unaffected. Until this is fixed upstream, verify `now` usage with the CLI rather than the Playground.
+:::
+
 ## tags, id, and metadata
 
 `event`, `span`, and `event_range` all accept common metadata inside `{ ... }`.
@@ -263,6 +285,24 @@ event events 1914-07 "Outbreak of World War I" {};
 ```
 
 Date literals are placed at their exact positions on the timeline axis. When you specify month precision (`YYYY-MM`), it is treated as the first day of that month. Wikidata claim values that carry month or day precision are placed at their exact positions in the same way.
+
+### Hour and minute precision (`unit hour` / `unit minute`)
+
+Setting `unit hour;` or `unit minute;` draws a sub-day time axis finer than day precision. Write `start` / `end` / `time` as **`YYYY-MM-DDTHH:MM`** date-time literals. From v1.23.0 onwards, axis ticks thin out automatically based on density (1h/3h/6h/12h for hour units, 1min/5min/15min/30min for minute units), with `HH:MM` / `MM-DD HH:MM` labels.
+
+```tdsl
+timeline "Apollo 11 Landing Day" {
+    title "Apollo 11 — Landing Day (UTC)";
+    unit hour;
+    range 1969-07-20T00:00..1969-07-21T06:00;
+    calendar proleptic_gregorian;
+}
+
+lane "Mission" as mission { kind custom; order 10; }
+event mission 1969-07-20T20:17 "Moon Landing" { tags ["highlight"]; id "event:landing"; };
+```
+
+[Open in Playground](</playground/?source=timeline+%22%E3%82%A2%E3%83%9D%E3%83%AD11%E5%8F%B7+%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%E6%97%A5%22+%7B%0A++++title+%22Apollo+11+%E2%80%94+Landing+Day+(UTC)%22%3B%0A++++unit+hour%3B%0A++++range+1969-07-20T00%3A00..1969-07-21T06%3A00%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9F%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%22+as+mission+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+mission+1969-07-20T20%3A17+%22%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%22+%7B+tags+%5B%22highlight%22%5D%3B+id+%22event%3Alanding%22%3B+%7D%3B>)
 
 ## `??` (Fallback) Operator in map
 

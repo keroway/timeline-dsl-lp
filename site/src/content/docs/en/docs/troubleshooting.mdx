@@ -72,6 +72,26 @@ tdsl render sample.tdsl \
 
 Use `--custom-css` to add custom CSS.
 
+## Warnings for items outside `timeline.range`
+
+From v1.23.0 onwards, `tdsl check` / `tdsl build` / the LSP emit a warning when an `event` / `span` / `event_range` falls outside `timeline.range` (previously this was a silent drop/clip by the renderer, with no diagnostic).
+
+- `Event "{id}" at {time} is outside timeline.range and will not be rendered`
+- `{Span|EventRange} "{id}" is entirely outside timeline.range and will not be rendered`
+- `{Span|EventRange} "{id}" is partially outside timeline.range and will be clipped`
+
+If you are intentionally narrowing the displayed range, these can be ignored. Otherwise, expand `timeline.range` or fix the item's dates.
+
+## Errors/warnings for unknown `unit` / `kind`
+
+From v1.23.0 onwards, specifying an unknown value for `timeline.unit` (anything other than `year` / `month` / `day` / `hour` / `minute`) is an error (previously it silently fell back to `year`). An unknown `lane` `kind` produces a warning instead, since `kind` is meant for free-form classification.
+
+```sh
+tdsl check sample.tdsl
+```
+
+Fix `unit` to one of `year` / `month` / `day` / `hour` / `minute`. Use `kind custom;` if you want to make a custom classification explicit.
+
 ## The Playground fails to load WASM
 
 The [Playground](/en/docs/playground/) runs WASM in the browser. If it stays on "Loading…" or nothing renders, first open the Console / Network tab in your browser's developer tools.

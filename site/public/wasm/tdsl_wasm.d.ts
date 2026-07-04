@@ -14,6 +14,7 @@
  * | `grid` | `"none"`, `"decade"`, `"year"`, `"month"` | `"none"` |
  * | `theme` | `"default"`, `"dark"`, `"print"`, `"pastel"` | `"default"` |
  * | `show_table` | `true`, `false` | `false` |
+ * | `show_legend` | `true`, `false` | `false` |
  * | `show_event_labels` | `true`, `false` | `false` |
  * | `lane_height` | px per lane; `0` = renderer default (60) | `0` |
  *
@@ -35,7 +36,11 @@ export class JsRenderOptions {
      */
     show_event_labels: boolean;
     /**
-     * `"horizontal"` (default) or `"vertical"`
+     * When true, render a static legend panel showing lane and tag colors.
+     */
+    show_legend: boolean;
+    /**
+     * When true, append an item listing table.
      */
     show_table: boolean;
     grid: string;
@@ -145,10 +150,12 @@ export interface InitOutput {
     readonly memory: WebAssembly.Memory;
     readonly __wbg_get_jsrenderoptions_lane_height: (a: number) => number;
     readonly __wbg_get_jsrenderoptions_show_event_labels: (a: number) => number;
+    readonly __wbg_get_jsrenderoptions_show_legend: (a: number) => number;
     readonly __wbg_get_jsrenderoptions_show_table: (a: number) => number;
     readonly __wbg_jsrenderoptions_free: (a: number, b: number) => void;
     readonly __wbg_set_jsrenderoptions_lane_height: (a: number, b: number) => void;
     readonly __wbg_set_jsrenderoptions_show_event_labels: (a: number, b: number) => void;
+    readonly __wbg_set_jsrenderoptions_show_legend: (a: number, b: number) => void;
     readonly __wbg_set_jsrenderoptions_show_table: (a: number, b: number) => void;
     readonly check_source: (a: number, b: number, c: number) => void;
     readonly compile_to_ir: (a: number, b: number, c: number) => void;
