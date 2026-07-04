@@ -156,9 +156,11 @@ lane "Era" as era { kind custom; order 10; }
 span era 2019..now "Reiwa" { tags ["era"]; id "span:reiwa"; };
 ```
 
-[Open in Playground](/playground/?source=timeline+%22%E5%9C%A8%E4%BD%8D%E6%9C%9F%E9%96%93%22+%7B%0A++++title+%22%E5%9C%A8%E4%BD%8D%E6%9C%9F%E9%96%93%22%3B%0A++++unit+year%3B%0A++++range+2019..2030%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E5%85%83%E5%8F%B7%22+as+era+%7B+kind+custom%3B+order+10%3B+%7D%0Aspan+era+2019..now+%22%E4%BB%A4%E5%92%8C%22+%7B+tags+%5B%22era%22%5D%3B+id+%22span%3Areiwa%22%3B+%7D%3B)
-
 `now` is only valid in the `end` position of `span` / `event_range`. The IR gains an `end_open` flag, which is non-breaking for existing JSON consumers. `tdsl fmt` and `tdsl decompile` round-trip `now` as-is.
+
+:::caution
+As of this writing, validating a `.tdsl` file containing `now` in the browser Playground crashes the WASM module (`SystemTime::now()` is not implemented for the `wasm32` target). The CLI (`tdsl check` / `tdsl build` / `tdsl render`) is unaffected. Until this is fixed upstream, verify `now` usage with the CLI rather than the Playground.
+:::
 
 ## tags, id, and metadata
 

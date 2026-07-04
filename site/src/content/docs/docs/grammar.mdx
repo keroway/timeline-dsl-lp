@@ -156,9 +156,11 @@ lane "元号" as era { kind custom; order 10; }
 span era 2019..now "令和" { tags ["era"]; id "span:reiwa"; };
 ```
 
-[Playgroundで開く](/playground/?source=timeline+%22%E5%9C%A8%E4%BD%8D%E6%9C%9F%E9%96%93%22+%7B%0A++++title+%22%E5%9C%A8%E4%BD%8D%E6%9C%9F%E9%96%93%22%3B%0A++++unit+year%3B%0A++++range+2019..2030%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E5%85%83%E5%8F%B7%22+as+era+%7B+kind+custom%3B+order+10%3B+%7D%0Aspan+era+2019..now+%22%E4%BB%A4%E5%92%8C%22+%7B+tags+%5B%22era%22%5D%3B+id+%22span%3Areiwa%22%3B+%7D%3B)
-
 `now` は `span` / `event_range` の `end` 位置専用です。IR には `end_open` フラグが追加されますが、既存の JSON コンシューマーには非破壊です。`tdsl fmt` / `tdsl decompile` は `now` をそのままラウンドトリップします。
+
+:::caution
+現時点で `now` を含む `.tdsl` をブラウザ版 Playground で検証すると、WASM 内部でクラッシュします（wasm32 ターゲットで `SystemTime::now()` が未実装のため）。CLI（`tdsl check` / `tdsl build` / `tdsl render`）では問題ありません。上流の修正を待つ間は、Playground では `now` を使わず CLI で確認してください。
+:::
 
 ## tags、id、metadata
 
