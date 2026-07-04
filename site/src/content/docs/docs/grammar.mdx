@@ -140,6 +140,26 @@ event work 2027 "新体制で運用開始" {};
 
 見た目は期間を持つ点で `span` に近いですが、意味は「期間を持つ出来事」です。時代区分や所属期間は `span`、作業・事件・戦争は `event_range` に寄せると読み分けやすくなります。
 
+## 継続中の期間（`now`）
+
+`span` / `event_range` の `end` には、v1.23.0 以降 `now` キーワードを書けます。元号や在任期間のように「まだ終わっていない」期間を、架空の終了年をでっち上げずに表現できます。
+
+```tdsl
+timeline "在位期間" {
+    title "在位期間";
+    unit year;
+    range 2019..2030;
+    calendar proleptic_gregorian;
+}
+
+lane "元号" as era { kind custom; order 10; }
+span era 2019..now "令和" { tags ["era"]; id "span:reiwa"; };
+```
+
+[Playgroundで開く](/playground/?source=timeline+%22%E5%9C%A8%E4%BD%8D%E6%9C%9F%E9%96%93%22+%7B%0A++++title+%22%E5%9C%A8%E4%BD%8D%E6%9C%9F%E9%96%93%22%3B%0A++++unit+year%3B%0A++++range+2019..2030%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E5%85%83%E5%8F%B7%22+as+era+%7B+kind+custom%3B+order+10%3B+%7D%0Aspan+era+2019..now+%22%E4%BB%A4%E5%92%8C%22+%7B+tags+%5B%22era%22%5D%3B+id+%22span%3Areiwa%22%3B+%7D%3B)
+
+`now` は `span` / `event_range` の `end` 位置専用です。IR には `end_open` フラグが追加されますが、既存の JSON コンシューマーには非破壊です。`tdsl fmt` / `tdsl decompile` は `now` をそのままラウンドトリップします。
+
 ## tags、id、metadata
 
 `event`、`span`、`event_range` の `{ ... }` には共通のメタデータを書けます。
@@ -263,6 +283,24 @@ event events 1914-07 "第一次世界大戦勃発" {};
 ```
 
 日付リテラルを使うとタイムライン軸上で正確な位置に配置されます。月単位（`YYYY-MM`）を指定した場合は月の先頭日として扱われます。Wikidata クレーム由来の値が月・日精度を持つ場合も同様に正確な位置に配置されます。
+
+### 時・分精度（`unit hour` / `unit minute`）
+
+`unit hour;` / `unit minute;` を指定すると、日単位よりさらに細かい時刻軸として描画できます。`start` / `end` / `time` には **`YYYY-MM-DDTHH:MM`** 形式の日時リテラルを書きます。v1.23.0 以降、軸目盛りは密度に応じて自動間引きされ（時単位は 1h/3h/6h/12h、分単位は 1min/5min/15min/30min）、`HH:MM` / `MM-DD HH:MM` ラベルが付きます。
+
+```tdsl
+timeline "アポロ11号 月面着陸日" {
+    title "Apollo 11 — Landing Day (UTC)";
+    unit hour;
+    range 1969-07-20T00:00..1969-07-21T06:00;
+    calendar proleptic_gregorian;
+}
+
+lane "ミッション" as mission { kind custom; order 10; }
+event mission 1969-07-20T20:17 "月面着陸" { tags ["highlight"]; id "event:landing"; };
+```
+
+[Playgroundで開く](</playground/?source=timeline+%22%E3%82%A2%E3%83%9D%E3%83%AD11%E5%8F%B7+%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%E6%97%A5%22+%7B%0A++++title+%22Apollo+11+%E2%80%94+Landing+Day+(UTC)%22%3B%0A++++unit+hour%3B%0A++++range+1969-07-20T00%3A00..1969-07-21T06%3A00%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9F%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%22+as+mission+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+mission+1969-07-20T20%3A17+%22%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%22+%7B+tags+%5B%22highlight%22%5D%3B+id+%22event%3Alanding%22%3B+%7D%3B>)
 
 ## map の `??`（フォールバック）演算子
 

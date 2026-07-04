@@ -13,6 +13,7 @@
  * | `grid` | `"none"`, `"decade"`, `"year"`, `"month"` | `"none"` |
  * | `theme` | `"default"`, `"dark"`, `"print"`, `"pastel"` | `"default"` |
  * | `show_table` | `true`, `false` | `false` |
+ * | `show_legend` | `true`, `false` | `false` |
  * | `show_event_labels` | `true`, `false` | `false` |
  * | `lane_height` | px per lane; `0` = renderer default (60) | `0` |
  *
@@ -49,7 +50,15 @@ export class JsRenderOptions {
         return ret !== 0;
     }
     /**
-     * `"horizontal"` (default) or `"vertical"`
+     * When true, render a static legend panel showing lane and tag colors.
+     * @returns {boolean}
+     */
+    get show_legend() {
+        const ret = wasm.__wbg_get_jsrenderoptions_show_legend(this.__wbg_ptr);
+        return ret !== 0;
+    }
+    /**
+     * When true, append an item listing table.
      * @returns {boolean}
      */
     get show_table() {
@@ -159,7 +168,14 @@ export class JsRenderOptions {
         wasm.__wbg_set_jsrenderoptions_show_event_labels(this.__wbg_ptr, arg0);
     }
     /**
-     * `"horizontal"` (default) or `"vertical"`
+     * When true, render a static legend panel showing lane and tag colors.
+     * @param {boolean} arg0
+     */
+    set show_legend(arg0) {
+        wasm.__wbg_set_jsrenderoptions_show_legend(this.__wbg_ptr, arg0);
+    }
+    /**
+     * When true, append an item listing table.
      * @param {boolean} arg0
      */
     set show_table(arg0) {

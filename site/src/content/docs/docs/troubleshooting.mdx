@@ -72,6 +72,26 @@ tdsl render sample.tdsl \
 
 独自CSSを追加する場合は `--custom-css` を使います。
 
+## `timeline.range` 外のアイテムで警告が出る
+
+v1.23.0 以降、`event` / `span` / `event_range` が `timeline.range` の外にある場合、`tdsl check` / `tdsl build` / LSP が警告を出すようになりました（従来は無診断でRendererが黙ってドロップ/クリップしていました）。
+
+- `Event "{id}" at {time} is outside timeline.range and will not be rendered`
+- `{Span|EventRange} "{id}" is entirely outside timeline.range and will not be rendered`
+- `{Span|EventRange} "{id}" is partially outside timeline.range and will be clipped`
+
+意図的に表示範囲を絞っている場合は無視して構いません。タイプミスであれば `timeline.range` またはアイテムの日付を見直してください。
+
+## 未知の `unit` / `kind` でエラー・警告が出る
+
+v1.23.0 以降、`timeline.unit` に未知の値（`year` / `month` / `day` / `hour` / `minute` 以外）を指定するとエラーになります（従来は無診断で `year` にフォールバックしていました）。`lane` の `kind` に未知の値を指定した場合は警告（W204）になりますが、`kind` は自由分類のためビルドは継続します。
+
+```sh
+tdsl check sample.tdsl
+```
+
+`unit` のタイプミスは `year` / `month` / `day` / `hour` / `minute` のいずれかに修正してください。`kind` は独自分類であることを明示したい場合 `kind custom;` を使います。
+
 ## Playground で WASM が読み込めない
 
 [Playground](/docs/playground/) はブラウザ内で WASM を実行します。「Loading…」のまま動かない、または描画されない場合は、まずブラウザの開発者ツールの Console / Network タブを開きます。
