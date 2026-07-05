@@ -7,9 +7,20 @@ export interface TdslDiagnostic {
   col: number;
 }
 
+/** Render options wrapping WASM's JsRenderOptions class (subset used by the LP). */
+export interface TdslSvgRenderOptions {
+  /** When true, always draw labels next to Event/EventRange items (v1.17.0〜). @default false */
+  showEventLabels?: boolean;
+}
+
 export interface TdslWasmApi {
   compileToIr(source: string): string;
   renderSvgFromSource(source: string, scale?: number): string;
+  renderSvgFromSourceWithOptions(
+    source: string,
+    scale: number | undefined,
+    options: TdslSvgRenderOptions,
+  ): string;
   renderHtmlFromSource(source: string): string;
   checkSource(source: string): TdslDiagnostic[];
 }
@@ -20,6 +31,11 @@ export type TdslWasmLoadResult =
 
 import type { InitInput } from "../../public/wasm/tdsl_wasm";
 
+interface RawJsRenderOptions {
+  show_event_labels: boolean;
+  free: () => void;
+}
+
 interface RawTdslWasmModule {
   default: (
     moduleOrPath?:
@@ -29,8 +45,14 @@ interface RawTdslWasmModule {
   ) => Promise<unknown>;
   compile_to_ir(source: string): string;
   render_svg_from_source(source: string, scale: number): string;
+  render_svg_from_source_with_options(
+    source: string,
+    scale: number,
+    opts: RawJsRenderOptions,
+  ): string;
   render_html_from_source(source: string): string;
   check_source(source: string): string;
+  JsRenderOptions: new () => RawJsRenderOptions;
 }
 
 const RENDER_SVG_AUTO_SCALE = 0;
@@ -88,6 +110,24 @@ export async function renderTdslSvg(source: string, scale?: number): Promise<str
   return loaded.api.renderSvgFromSource(source, scale);
 }
 
+/**
+ * Render SVG from TDSL source with explicit render options (e.g. "always show event labels",
+ * useful for print / listing views). Falls back to plain `renderTdslSvg` semantics when no
+ * option differs from the WASM default.
+ */
+export async function renderTdslSvgWithOptions(
+  source: string,
+  scale: number | undefined,
+  options: TdslSvgRenderOptions,
+): Promise<string> {
+  const loaded = await loadTdslWasm();
+  if (loaded.status !== "ready") {
+    throw new Error(loaded.message, { cause: loaded.cause });
+  }
+
+  return loaded.api.renderSvgFromSourceWithOptions(source, scale, options);
+}
+
 export async function renderTdslHtml(source: string): Promise<string> {
   const loaded = await loadTdslWasm();
   if (loaded.status !== "ready") {
@@ -121,6 +161,19 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
         compileToIr: rawModule.compile_to_ir,
         renderSvgFromSource: (source, scale) =>
           rawModule.render_svg_from_source(source, scale ?? RENDER_SVG_AUTO_SCALE),
+        renderSvgFromSourceWithOptions: (source, scale, options) => {
+          const opts = new rawModule.JsRenderOptions();
+          // NOTE: render_svg_from_source_with_options consumes `opts` internally
+          // (__destroy_into_raw); do not call opts.free() afterwards.
+          if (options.showEventLabels !== undefined) {
+            opts.show_event_labels = options.showEventLabels;
+          }
+          return rawModule.render_svg_from_source_with_options(
+            source,
+            scale ?? RENDER_SVG_AUTO_SCALE,
+            opts,
+          );
+        },
         renderHtmlFromSource: rawModule.render_html_from_source,
         checkSource(source) {
           return parseDiagnostics(rawModule.check_source(source));

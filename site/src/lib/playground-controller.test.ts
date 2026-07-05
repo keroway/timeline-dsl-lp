@@ -3,14 +3,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // WASM・CodeMirror・pan-zoom・共有 URL は collaborator として mock し、
 // initPlayground 本体の状態オーケストレーション分岐だけを検証する。
 const checkTdslSource = vi.fn();
-const renderTdslSvg = vi.fn();
+const renderTdslSvgWithOptions = vi.fn();
 const renderTdslHtml = vi.fn();
 
 const setTdslWasmMessages = vi.fn();
 
 vi.mock("./tdsl-wasm", () => ({
   checkTdslSource: (...args: unknown[]) => checkTdslSource(...args),
-  renderTdslSvg: (...args: unknown[]) => renderTdslSvg(...args),
+  renderTdslSvgWithOptions: (...args: unknown[]) => renderTdslSvgWithOptions(...args),
   renderTdslHtml: (...args: unknown[]) => renderTdslHtml(...args),
   setTdslWasmMessages: (...args: unknown[]) => setTdslWasmMessages(...args),
 }));
@@ -41,6 +41,7 @@ import {
   wireFileOpen,
   wireTooltip,
   wireScale,
+  wireShowEventLabels,
 } from "./playground-controller";
 
 const MSGS = {
@@ -90,7 +91,7 @@ function setupDom() {
 
 beforeEach(() => {
   checkTdslSource.mockReset();
-  renderTdslSvg.mockReset();
+  renderTdslSvgWithOptions.mockReset();
   renderTdslHtml.mockReset();
   setTdslWasmMessages.mockReset();
 });
@@ -103,7 +104,7 @@ describe("initPlayground runPlayground の状態分岐", () => {
   it("起動時に setTdslWasmMessages へ i18n 化された WASM 文言を注入する", async () => {
     setupDom();
     checkTdslSource.mockResolvedValue([]);
-    renderTdslSvg.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    renderTdslSvgWithOptions.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
 
     initPlayground();
 
@@ -115,7 +116,7 @@ describe("initPlayground runPlayground の状態分岐", () => {
   it("診断なし＆描画成功なら ready 状態になる", async () => {
     const dom = setupDom();
     checkTdslSource.mockResolvedValue([]);
-    renderTdslSvg.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    renderTdslSvgWithOptions.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
 
     initPlayground();
 
@@ -124,13 +125,13 @@ describe("initPlayground runPlayground の状態分岐", () => {
     });
     expect(dom.status.textContent).toBe(MSGS.statusOk);
     expect(dom.diagnosticsMeta.textContent).toBe("0 errors / 0 warnings / 0 info");
-    expect(renderTdslSvg).toHaveBeenCalledWith("event x", 0);
+    expect(renderTdslSvgWithOptions).toHaveBeenCalledWith("event x", 0, { showEventLabels: false });
   });
 
   it("warning のみなら warn 状態になり描画は実行する", async () => {
     const dom = setupDom();
     checkTdslSource.mockResolvedValue([{ severity: "warning", message: "w", line: 1, col: 1 }]);
-    renderTdslSvg.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    renderTdslSvgWithOptions.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
 
     initPlayground();
 
@@ -138,7 +139,7 @@ describe("initPlayground runPlayground の状態分岐", () => {
       expect(dom.root.getAttribute("data-playground-state")).toBe("warn");
     });
     expect(dom.status.textContent).toBe(MSGS.statusWarn);
-    expect(renderTdslSvg).toHaveBeenCalledOnce();
+    expect(renderTdslSvgWithOptions).toHaveBeenCalledOnce();
   });
 
   it("error があれば error 状態になり描画は実行しない", async () => {
@@ -151,13 +152,13 @@ describe("initPlayground runPlayground の状態分岐", () => {
       expect(dom.root.getAttribute("data-playground-state")).toBe("error");
     });
     expect(dom.status.textContent).toBe(MSGS.statusError);
-    expect(renderTdslSvg).not.toHaveBeenCalled();
+    expect(renderTdslSvgWithOptions).not.toHaveBeenCalled();
   });
 
   it("info-only 診断（error も warning も無い）なら ready 状態になり描画は実行する", async () => {
     const dom = setupDom();
     checkTdslSource.mockResolvedValue([{ severity: "info", message: "i", line: 1, col: 1 }]);
-    renderTdslSvg.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    renderTdslSvgWithOptions.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
 
     initPlayground();
 
@@ -165,13 +166,13 @@ describe("initPlayground runPlayground の状態分岐", () => {
       expect(dom.root.getAttribute("data-playground-state")).toBe("ready");
     });
     expect(dom.status.textContent).toBe(MSGS.statusOk);
-    expect(renderTdslSvg).toHaveBeenCalledOnce();
+    expect(renderTdslSvgWithOptions).toHaveBeenCalledOnce();
   });
 
   it("描画が throw したら WASM 失敗ステータスの error 状態になる", async () => {
     const dom = setupDom();
     checkTdslSource.mockResolvedValue([]);
-    renderTdslSvg.mockRejectedValue(new Error("render boom"));
+    renderTdslSvgWithOptions.mockRejectedValue(new Error("render boom"));
 
     initPlayground();
 
@@ -372,5 +373,54 @@ describe("wireScale", () => {
   it("scaleSelect が null でもエラーにならない", () => {
     const onRun = vi.fn();
     expect(() => wireScale({ scaleSelect: null, onRun })).not.toThrow();
+  });
+});
+
+describe("wireShowEventLabels", () => {
+  afterEach(() => {
+    window.localStorage.clear();
+  });
+
+  it("初回は localStorage に保存値がなければ false にする", () => {
+    const toggle = document.createElement("input");
+    toggle.type = "checkbox";
+    const onRun = vi.fn();
+
+    const { getShowEventLabels } = wireShowEventLabels({ toggle, onRun });
+
+    expect(toggle.checked).toBe(false);
+    expect(getShowEventLabels()).toBe(false);
+  });
+
+  it("localStorage に true が保存されていれば初期値を checked にする", () => {
+    window.localStorage.setItem("tdsl-playground-show-event-labels", "true");
+    const toggle = document.createElement("input");
+    toggle.type = "checkbox";
+    const onRun = vi.fn();
+
+    const { getShowEventLabels } = wireShowEventLabels({ toggle, onRun });
+
+    expect(toggle.checked).toBe(true);
+    expect(getShowEventLabels()).toBe(true);
+  });
+
+  it("change で onRun を呼び、選択を localStorage に永続化する", () => {
+    const toggle = document.createElement("input");
+    toggle.type = "checkbox";
+    const onRun = vi.fn();
+
+    const { getShowEventLabels } = wireShowEventLabels({ toggle, onRun });
+    toggle.checked = true;
+    toggle.dispatchEvent(new Event("change"));
+
+    expect(onRun).toHaveBeenCalledOnce();
+    expect(getShowEventLabels()).toBe(true);
+    expect(window.localStorage.getItem("tdsl-playground-show-event-labels")).toBe("true");
+  });
+
+  it("toggle が null でもエラーにならず false を返す", () => {
+    const onRun = vi.fn();
+    const { getShowEventLabels } = wireShowEventLabels({ toggle: null, onRun });
+    expect(getShowEventLabels()).toBe(false);
   });
 });

@@ -146,6 +146,7 @@ export const ja = {
   "gallery.filter.all": "すべて",
   "gallery.filter.result_count": "{count} 件のサンプルを表示中",
   "gallery.edit_btn": "この例を編集する",
+  "gallery.toolbar.show_event_labels": "ラベルを常時表示(一覧・印刷向け)",
   "showcase.index.page.title": "Showcase — Timeline DSL",
   "showcase.index.page.description":
     "Timeline DSL で構築した詳しい年表事例の一覧です。歴史人物・年表の構造例を実ページで確認できます。",
@@ -192,6 +193,7 @@ export const ja = {
   "playground.toolbar.sample_label": "サンプル",
   "playground.toolbar.scale_label": "表示倍率",
   "playground.scale.auto": "自動",
+  "playground.toolbar.show_event_labels": "ラベルを常時表示(一覧・印刷向け)",
   "playground.toolbar.open_file": "ファイルを開く",
   "playground.toolbar.save_tdsl": ".tdsl を保存",
   "playground.toolbar.save_svg": ".svg を保存",

@@ -82,7 +82,7 @@ const sampleList = itemListLd({
 </BaseLayout>
 
 <script>
-  import { renderTdslSvg } from "../lib/tdsl-wasm";
+  import { renderTdslSvgWithOptions } from "../lib/tdsl-wasm";
   import { interpolate } from "../i18n/index";
 
   type SampleData = { id: string; source: string };
@@ -93,12 +93,27 @@ const sampleList = itemListLd({
   const i18nEl = document.getElementById("gallery-i18n");
   const msgs = JSON.parse(i18nEl?.textContent || "{}") as GalleryMsgs;
 
+  const showEventLabelsToggle = document.querySelector<HTMLInputElement>(
+    "[data-gallery-show-event-labels-toggle]",
+  );
+  const GALLERY_SHOW_EVENT_LABELS_KEY = "tdsl-gallery-show-event-labels";
+  try {
+    if (showEventLabelsToggle) {
+      showEventLabelsToggle.checked =
+        window.localStorage.getItem(GALLERY_SHOW_EVENT_LABELS_KEY) === "true";
+    }
+  } catch {
+    // localStorage 無効環境ではデフォルト（オフ）のまま継続する。
+  }
+
   const renderSample = async (sample: SampleData) => {
     const el = document.querySelector<HTMLElement>(`[data-gallery-preview="${sample.id}"]`);
     if (!el) return;
     try {
       // SVG は自社 WASM ライブラリが生成する信頼済みコンテンツ（playground.astro と同パターン）
-      const svg = await renderTdslSvg(sample.source);
+      const svg = await renderTdslSvgWithOptions(sample.source, undefined, {
+        showEventLabels: showEventLabelsToggle?.checked ?? false,
+      });
       el.innerHTML = svg;
       el.classList.add("has-svg");
     } catch (error) {
@@ -162,6 +177,22 @@ const sampleList = itemListLd({
       await renderSample(sample);
     }
   }
+
+  // ラベル常時表示トグル: 切り替え時に描画済みのカードだけ再描画する（未描画カードは IntersectionObserver が抜けた際に現在のトグル状態で描画される）。
+  showEventLabelsToggle?.addEventListener("change", () => {
+    try {
+      window.localStorage.setItem(
+        GALLERY_SHOW_EVENT_LABELS_KEY,
+        String(showEventLabelsToggle.checked),
+      );
+    } catch {
+      // 保存に失敗しても再描画自体は継続する。
+    }
+    for (const sample of samplesData) {
+      const el = document.querySelector(`[data-gallery-preview="${sample.id}"]`);
+      if (el?.classList.contains("has-svg")) renderSample(sample);
+    }
+  });
 
   // タグ filter: 初期 hidden の filter bar を有効化し、選択タグ（OR）でカードを絞り込む。
   // hidden 属性での show/hide なので、未描画カードを再表示すると IntersectionObserver の
