@@ -1,6 +1,11 @@
 import { readFile } from "node:fs/promises";
 
-import init, { check_source, render_svg_from_source } from "../public/wasm/tdsl_wasm.js";
+import init, {
+  check_source,
+  render_svg_from_source,
+  render_svg_from_source_with_options,
+  JsRenderOptions,
+} from "../public/wasm/tdsl_wasm.js";
 import { initSync } from "../public/wasm/tdsl_wasm.js";
 
 const sample = `timeline "Sample" {
@@ -82,4 +87,19 @@ if (!nowSvg.includes("<svg") || !nowSvg.includes("Reiwa")) {
   throw new Error("render_svg_from_source did not render the now-keyword sample.");
 }
 
-console.log("WASM smoke passed: check_source, render_svg_from_source, group block, now keyword");
+// show_event_labels オプション (v1.17.0〜, Playground/Gallery の「ラベルを常時表示」トグルが使用):
+// 有効化するとホバー不要でラベルテキストが追加描画されることを確認する。
+const svgLabelsOff = render_svg_from_source(sample, 0);
+const labelOptions = new JsRenderOptions();
+labelOptions.show_event_labels = true;
+const svgLabelsOn = render_svg_from_source_with_options(sample, 0, labelOptions);
+const countOccurrences = (haystack, needle) => haystack.split(needle).length - 1;
+if (countOccurrences(svgLabelsOn, "Kickoff") <= countOccurrences(svgLabelsOff, "Kickoff")) {
+  throw new Error(
+    "render_svg_from_source_with_options({ show_event_labels: true }) did not add an always-on label.",
+  );
+}
+
+console.log(
+  "WASM smoke passed: check_source, render_svg_from_source, group block, now keyword, show_event_labels option",
+);

@@ -139,13 +139,55 @@ async function smokeBrowserFlow(rootUrl) {
     await smokeVisibleWasmFailure(rootUrl, browser);
     await smokeA11yMenu(rootUrl, browser);
     await smokeLocaleToggle(rootUrl, browser);
+    await smokeShowEventLabelsToggle(rootUrl, browser);
   } finally {
     await browser.close();
   }
 
   console.log(
-    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, and locale toggle.",
+    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, and show-event-labels toggle.",
   );
+}
+
+async function smokeShowEventLabelsToggle(rootUrl, browser) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await page.goto(`${rootUrl}${PLAYGROUND_PATH}`, { waitUntil: "networkidle" });
+  const editor = page.locator('[data-smoke="playground-editor"]').first();
+  await fillEditor(editor, VALID_SAMPLE);
+
+  const preview = page.locator('[data-smoke="playground-preview"]').first();
+  await preview.locator("svg").first().waitFor({ state: "visible" });
+
+  const countOccurrences = async () =>
+    page.evaluate(
+      () =>
+        (
+          document
+            .querySelector('[data-smoke="playground-preview"] svg')
+            ?.textContent.match(/Kickoff/g) ?? []
+        ).length,
+    );
+
+  const beforeCount = await countOccurrences();
+
+  const toggle = page.locator("[data-show-event-labels-toggle]").first();
+  await toggle.check();
+  await page.waitForFunction(
+    (before) => {
+      const count = (
+        document
+          .querySelector('[data-smoke="playground-preview"] svg')
+          ?.textContent.match(/Kickoff/g) ?? []
+      ).length;
+      return count > before;
+    },
+    beforeCount,
+    { timeout: 5000 },
+  );
+
+  await context.close();
 }
 
 async function smokeA11yMenu(rootUrl, browser) {

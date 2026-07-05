@@ -149,6 +149,7 @@ export const en = {
   "gallery.filter.all": "All",
   "gallery.filter.result_count": "Showing {count} samples",
   "gallery.edit_btn": "Edit this example",
+  "gallery.toolbar.show_event_labels": "Always show labels (print/listing)",
   "showcase.index.page.title": "Showcase — Timeline DSL",
   "showcase.index.page.description":
     "A collection of in-depth timeline examples built with Timeline DSL. Explore how historical figures' lives are structured into multi-lane timelines.",
@@ -195,6 +196,7 @@ export const en = {
   "playground.toolbar.sample_label": "Sample",
   "playground.toolbar.scale_label": "Scale",
   "playground.scale.auto": "Auto",
+  "playground.toolbar.show_event_labels": "Always show labels (print/listing)",
   "playground.toolbar.open_file": "Open file",
   "playground.toolbar.save_tdsl": "Save .tdsl",
   "playground.toolbar.save_svg": "Save .svg",

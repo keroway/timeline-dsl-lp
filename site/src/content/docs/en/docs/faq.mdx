@@ -16,6 +16,8 @@ faqs:
     answer: "The basics are tdsl check and tdsl lint. If you want to verify artifact generation as well, add tdsl build --pretty --output timeline.json. Use --offline if you want to avoid Wikidata fetching."
   - question: "Can I choose an HTML theme?"
     answer: "Use tdsl render --theme to specify default, dark, print, or pastel. Custom CSS can be added with --custom-css."
+  - question: "Can I always show every label, for printing or listing?"
+    answer: 'Yes. Use the CLI''s tdsl render --show-event-labels, or the Playground toolbar''s "Always show labels (print/listing)" toggle, to draw labels for every Event / EventRange without hovering (v1.17.0+). The Gallery sample list has the same toggle for print/listing previews.'
 ---
 
 ## What can Timeline DSL output?
@@ -56,3 +58,7 @@ The basics are `tdsl check` and `tdsl lint`. If you want to verify artifact gene
 ## Can I choose an HTML theme?
 
 Use `tdsl render --theme` to specify `default`, `dark`, `print`, or `pastel`. Custom CSS can be added with `--custom-css`.
+
+## Can I always show every label, for printing or listing?
+
+Yes. Use the CLI's `tdsl render --show-event-labels`, or the [Playground](/en/docs/playground/) toolbar's "Always show labels (print/listing)" toggle, to draw labels for every Event / EventRange without hovering (v1.17.0+). The [Gallery](/en/gallery/) sample list has the same toggle for print/listing previews.

@@ -52,6 +52,11 @@ for (const sample of samples) {
   </div>
   <p class="gallery-filter-status" data-filter-status aria-live="polite" hidden></p>
 
+  <label class="gallery-labels-toggle">
+    <input type="checkbox" data-gallery-show-event-labels-toggle />
+    <span>{t("gallery.toolbar.show_event_labels")}</span>
+  </label>
+
   <div class="gallery-grid">
     {samples.map((sample) => <GalleryCard sample={sample} locale={locale} />)}
   </div>
@@ -119,6 +124,24 @@ for (const sample of samples) {
     margin: 0 0 1rem;
     font-size: 0.85rem;
     color: var(--color-muted);
+  }
+
+  .gallery-labels-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0 0 1.5rem;
+    color: var(--color-muted);
+    font-size: 0.85rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .gallery-labels-toggle input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--color-accent);
+    cursor: pointer;
   }
 
   @media (prefers-reduced-motion: reduce) {

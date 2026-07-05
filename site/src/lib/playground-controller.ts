@@ -1,6 +1,6 @@
 import {
   checkTdslSource,
-  renderTdslSvg,
+  renderTdslSvgWithOptions,
   renderTdslHtml,
   setTdslWasmMessages,
   type TdslDiagnostic,
@@ -230,6 +230,34 @@ export function wireScale(opts: {
   opts.scaleSelect?.addEventListener("change", opts.onRun);
 }
 
+const SHOW_EVENT_LABELS_STORAGE_KEY = "tdsl-playground-show-event-labels";
+
+/** Wires the "show event labels" toggle, restoring the last choice from localStorage. */
+export function wireShowEventLabels(opts: { toggle: HTMLInputElement | null; onRun: () => void }): {
+  getShowEventLabels: () => boolean;
+} {
+  const { toggle } = opts;
+
+  let stored: string | null = null;
+  try {
+    stored = window.localStorage.getItem(SHOW_EVENT_LABELS_STORAGE_KEY);
+  } catch {
+    // localStorage 無効環境（プライベートモード等）ではデフォルト値のまま続行する。
+  }
+  if (toggle) toggle.checked = stored === "true";
+
+  toggle?.addEventListener("change", () => {
+    try {
+      window.localStorage.setItem(SHOW_EVENT_LABELS_STORAGE_KEY, String(toggle.checked));
+    } catch {
+      // 保存に失敗しても描画自体は継続する。
+    }
+    opts.onRun();
+  });
+
+  return { getShowEventLabels: () => toggle?.checked ?? false };
+}
+
 export function initPlayground(): void {
   const root = document.querySelector<HTMLElement>("[data-playground-root]");
   const editorHost = document.querySelector<HTMLElement>("[data-editor-host]");
@@ -250,6 +278,9 @@ export function initPlayground(): void {
   const copyLinkButton = document.querySelector<HTMLButtonElement>("[data-copy-link]");
   const shareLive = document.querySelector<HTMLElement>("[data-share-live]");
   const scaleSelect = document.querySelector<HTMLSelectElement>("[data-scale-select]");
+  const showEventLabelsToggle = document.querySelector<HTMLInputElement>(
+    "[data-show-event-labels-toggle]",
+  );
   const sampleDataElement = document.getElementById("playground-samples");
   const samples = JSON.parse(sampleDataElement?.textContent || "[]") as PlaygroundSample[];
   const i18nEl = document.getElementById("playground-i18n");
@@ -324,7 +355,9 @@ export function initPlayground(): void {
 
       const hasWarnings = result.some((item: TdslDiagnostic) => item.severity === "warning");
       const renderScale = parseFloat(scaleSelect?.value ?? "0");
-      const svg = await renderTdslSvg(source, renderScale);
+      const svg = await renderTdslSvgWithOptions(source, renderScale, {
+        showEventLabels: showEventLabels.getShowEventLabels(),
+      });
       if (runId !== latestRunId) return;
 
       lastSvg = svg;
@@ -417,6 +450,11 @@ export function initPlayground(): void {
 
   wireScale({
     scaleSelect,
+    onRun: queueRun,
+  });
+
+  const showEventLabels = wireShowEventLabels({
+    toggle: showEventLabelsToggle,
     onRun: queueRun,
   });
 }

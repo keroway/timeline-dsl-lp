@@ -16,6 +16,8 @@ faqs:
     answer: "基本は tdsl check と tdsl lint です。成果物の生成まで確認する場合は tdsl build --pretty --output timeline.json を追加します。Wikidata 取得を避けたい場合は --offline を使います。"
   - question: "HTML テーマは選べますか？"
     answer: "tdsl render --theme で default、dark、print、pastel を指定できます。独自 CSS は --custom-css で追加できます。"
+  - question: "印刷・一覧用にすべてのラベルを常時表示できますか？"
+    answer: "できます。CLI の tdsl render --show-event-labels、または Playground ツールバーの「ラベルを常時表示（一覧・印刷向け）」トグルで、Event / EventRange のラベルをホバー不要で常時描画できます（v1.17.0〜）。Gallery のサンプル一覧も同じトグルで印刷・一覧向けの表示を確認できます。"
 ---
 
 ## Timeline DSL は何を出力できますか？
@@ -56,3 +58,7 @@ tdsl import-csv items.csv --append manual.tdsl
 ## HTMLテーマは選べますか？
 
 `tdsl render --theme` で `default`、`dark`、`print`、`pastel` を指定できます。独自CSSは `--custom-css` で追加できます。
+
+## 印刷・一覧用にすべてのラベルを常時表示できますか？
+
+できます。CLIの `tdsl render --show-event-labels`、または [Playground](/docs/playground/) ツールバーの「ラベルを常時表示（一覧・印刷向け）」トグルで、Event / EventRange のラベルをホバー不要で常時描画できます（v1.17.0〜）。[Gallery](/gallery/) のサンプル一覧も同じトグルで印刷・一覧向けの表示を確認できます。
