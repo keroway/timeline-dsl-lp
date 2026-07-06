@@ -200,6 +200,48 @@ async function smokeHttpSurface(rootUrl) {
   console.log(
     "HTTP smoke: /gallery/ and /en/gallery/ expose tag filter UI with localized labels. ✓",
   );
+
+  // Regression guard (#426): en ページの header nav / footer リンクは /en/ 配下
+  // （外部リンクを除く）を指さなければならない。
+  assertLocaleScopedLinks(enHtml, "/en/");
+  console.log("HTTP smoke: /en/ header nav and footer links stay within /en/. ✓");
+}
+
+// header <nav class="nav"> と footer <footer class="site-footer"> 内の href を抽出し、
+// 外部リンク（http(s)://）を除いた内部リンクがすべて指定 prefix 配下であることを検証する。
+function assertLocaleScopedLinks(html, expectedPrefix) {
+  const navMatch = html.match(/<nav class="nav[^"]*"[\s\S]*?<\/nav>/);
+  const footerMatch = html.match(/<footer class="site-footer[^"]*"[\s\S]*?<\/footer>/);
+  const brandMatch = html.match(/<a class="brand[^"]*"[^>]*href="([^"]*)"/);
+
+  if (!navMatch) throw new Error('assertLocaleScopedLinks: <nav class="nav"> block not found');
+  if (!footerMatch)
+    throw new Error('assertLocaleScopedLinks: <footer class="site-footer"> block not found');
+  if (!brandMatch) throw new Error("assertLocaleScopedLinks: brand link (a.brand) not found");
+
+  if (!brandMatch[1].startsWith(expectedPrefix)) {
+    throw new Error(
+      `assertLocaleScopedLinks: brand link "${brandMatch[1]}" does not start with "${expectedPrefix}"`,
+    );
+  }
+
+  for (const [label, block] of [
+    ["header nav", navMatch[0]],
+    ["footer", footerMatch[0]],
+  ]) {
+    const hrefs = [...block.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+    if (hrefs.length === 0) {
+      throw new Error(`assertLocaleScopedLinks: no href found in ${label} block`);
+    }
+    for (const href of hrefs) {
+      if (href.startsWith("http://") || href.startsWith("https://")) continue;
+      if (!href.startsWith(expectedPrefix)) {
+        throw new Error(
+          `assertLocaleScopedLinks: ${label} link "${href}" does not start with "${expectedPrefix}"`,
+        );
+      }
+    }
+  }
 }
 
 // helper の汎用アサーションにないネガティブ検査（このスクリプト固有）。
