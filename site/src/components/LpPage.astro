@@ -11,6 +11,7 @@ import WorkflowSection from "./lp/WorkflowSection.astro";
 import UsecasesSection from "./lp/UsecasesSection.astro";
 import WhySection from "./lp/WhySection.astro";
 import InstallSection from "./lp/InstallSection.astro";
+import ClosingCtaSection from "./lp/ClosingCtaSection.astro";
 
 interface Props {
   locale: Locale;
@@ -43,6 +44,7 @@ const homeJsonLd = [softwareApplicationLd(siteUrl, locale)];
     <UsecasesSection locale={locale} />
     <WhySection locale={locale} />
     <InstallSection locale={locale} />
+    <ClosingCtaSection locale={locale} />
   </main>
 
   <Fragment slot="body-end">

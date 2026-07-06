@@ -49,7 +49,6 @@ export const en = {
   "cta.try_playground": "Open Playground",
   "cta.view_docs": "Read the docs",
   "cta.view_gallery": "View Gallery",
-  "cta.view_github": "View on GitHub",
   "cta.release_notes": "Release notes",
   "cta.install_copy_aria_label": "Copy install command",
   "cta.copy_success": "Copied",
@@ -177,6 +176,9 @@ export const en = {
   "lp.why.compare.generic_dsl.diff": "Git diffs on text",
   "lp.why.compare.generic_dsl.output": "Diagram (timeline-specific features limited)",
   "lp.why.faq_link": "See frequently asked questions in the FAQ →",
+  "lp.closing.heading": "Write your first timeline in 30 seconds",
+  "lp.closing.lead":
+    "No install required — try it right now in the Playground. Setup steps and grammar details are in the docs.",
   "lp.install.heading": "Integrate CLI into local and CI workflows",
   "lp.install.lead":
     "Once you've validated your structure in the Playground, install the CLI via Homebrew or the install script to set up local maintenance and automated CI builds. See Quick Start for detailed setup.",
