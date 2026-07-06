@@ -70,6 +70,12 @@ export const ja = {
   "lp.hero.latest_name_fallback": "リリース情報は準備中です",
   "lp.hero.latest_release_aria": "最新リリース",
   "lp.hero.workflow_preview_aria": "Timeline DSL ワークフローのプレビュー",
+  "lp.hero.trust_bar_aria": "プロジェクトの信頼シグナル",
+  "lp.hero.trust.stars_label": "GitHub スター",
+  "lp.hero.trust.stars_fallback": "GitHub で見る",
+  "lp.hero.trust.contributors_label": "コントリビューター",
+  "lp.hero.trust.license_label": "ライセンス",
+  "lp.hero.trust.vscode_label": "VS Code 拡張",
   "lp.features.heading": "年表作成を、再現できる作業にする",
   "lp.features.lead":
     "Timeline DSL は、手作業の図版編集ではなく、レビュー可能な入力ファイルとCLI出力を中心にした年表作成を目指します。",

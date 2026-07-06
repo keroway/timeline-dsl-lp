@@ -2,6 +2,7 @@
 import { Code } from "astro:components";
 import { getT, type Locale } from "../../i18n/index";
 import { latest } from "../../data/releases";
+import { stargazersCount, licenseSpdxId, contributorsCount } from "../../data/repo-stats";
 import { formatDate } from "../../lib/site";
 import { tdslLang, tdslCodeThemes } from "../../lib/tdsl-shiki";
 
@@ -17,6 +18,12 @@ const shouldShowLatestName = latestName !== latestLabel;
 
 const latestPublishedAt = formatDate(latest?.publishedAt, locale);
 const heroDslExample = t("lp.hero.dsl_example");
+const starsFormatted =
+  typeof stargazersCount === "number"
+    ? new Intl.NumberFormat(locale === "ja" ? "ja-JP" : "en-US").format(stargazersCount)
+    : null;
+const vscodeMarketplaceUrl =
+  "https://marketplace.visualstudio.com/items?itemName=keroway.timeline-dsl";
 import "../../styles/lp/hero.css";
 ---
 
@@ -46,6 +53,36 @@ import "../../styles/lp/hero.css";
         {latestPublishedAt && <time datetime={latest?.publishedAt}>{latestPublishedAt}</time>}
         {latest?.url && <a href={latest.url}>{t("cta.release_notes")}</a>}
       </div>
+      <ul class="trust-bar" aria-label={t("lp.hero.trust_bar_aria")}>
+        <li class="trust-item">
+          <a href="https://github.com/keroway/timeline-dsl">
+            <span class="trust-label">{t("lp.hero.trust.stars_label")}</span>
+            <strong>{starsFormatted ?? t("lp.hero.trust.stars_fallback")}</strong>
+          </a>
+        </li>
+        {
+          licenseSpdxId && (
+            <li class="trust-item">
+              <span class="trust-label">{t("lp.hero.trust.license_label")}</span>
+              <strong>{licenseSpdxId}</strong>
+            </li>
+          )
+        }
+        {
+          typeof contributorsCount === "number" && contributorsCount > 0 && (
+            <li class="trust-item">
+              <span class="trust-label">{t("lp.hero.trust.contributors_label")}</span>
+              <strong>{contributorsCount}</strong>
+            </li>
+          )
+        }
+        <li class="trust-item">
+          <a href={vscodeMarketplaceUrl}>
+            <span class="trust-label">{t("lp.hero.trust.vscode_label")}</span>
+            <strong>VS Code</strong>
+          </a>
+        </li>
+      </ul>
     </div>
     <div class="hero-visual" aria-label={t("lp.hero.workflow_preview_aria")}>
       <div class="editor-panel">
