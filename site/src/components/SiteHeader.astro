@@ -32,32 +32,98 @@ const t = getT(locale);
           </a>
         ))
       }
-      <button
-        class="search-toggle"
-        type="button"
-        aria-label={t("nav.search.aria_label")}
-        id="site-search-btn"
-      >
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
+      <div class="nav-utilities" id="nav-utilities-slot">
+        <button
+          class="search-toggle"
+          type="button"
+          aria-label={t("nav.search.aria_label")}
+          id="site-search-btn"
         >
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.35-4.35"></path>
-        </svg>
-        <span class="search-toggle-hint" id="site-search-hint" aria-hidden="true"></span>
-      </button>
-      <SiteA11yMenu locale={locale} />
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <span class="search-toggle-hint" id="site-search-hint" aria-hidden="true"></span>
+        </button>
+        <SiteA11yMenu locale={locale} />
+      </div>
     </div>
+    <button
+      class="mobile-menu-toggle"
+      type="button"
+      aria-haspopup="dialog"
+      aria-expanded="false"
+      aria-controls="mobile-nav-dialog"
+      aria-label={t("nav.menu.open_aria_label")}
+      id="mobile-menu-btn"
+    >
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
   </nav>
 </header>
+
+<dialog class="mobile-nav-dialog" id="mobile-nav-dialog" aria-label={t("nav.menu.open_aria_label")}>
+  <div class="mobile-nav-inner">
+    <button
+      class="mobile-nav-close"
+      type="button"
+      aria-label={t("nav.menu.close_aria_label")}
+      id="mobile-nav-close-btn"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="mobile-nav-links">
+      {
+        TOP_NAV.map((item) => (
+          <a
+            href={item.href(locale)}
+            aria-current={item.isActive(currentPath) ? "page" : undefined}
+          >
+            {t(item.labelKey)}
+          </a>
+        ))
+      }
+    </div>
+    <div class="mobile-nav-utilities" id="mobile-nav-utilities-slot"></div>
+  </div>
+</dialog>
 
 <SiteSearch locale={locale} />
 
@@ -148,4 +214,49 @@ const t = getT(locale);
       openSearch();
     }
   });
+
+  // Mobile nav: hamburger button opens a native <dialog> disclosure panel.
+  // <dialog>.showModal() gives us focus trapping and top-layer stacking for free;
+  // we only need to wire aria-expanded, Escape/backdrop close, and moving the
+  // shared search/a11y utilities into the panel so there is a single instance in the DOM.
+  const menuBtn = document.getElementById("mobile-menu-btn") as HTMLButtonElement | null;
+  const closeBtn = document.getElementById("mobile-nav-close-btn") as HTMLButtonElement | null;
+  const mobileDialog = document.getElementById("mobile-nav-dialog") as HTMLDialogElement | null;
+  const utilitiesSlot = document.getElementById("nav-utilities-slot") as HTMLElement | null;
+  const mobileUtilitiesSlot = document.getElementById(
+    "mobile-nav-utilities-slot",
+  ) as HTMLElement | null;
+  const desktopUtilitiesParent = utilitiesSlot?.parentElement ?? null;
+  const desktopUtilitiesNextSibling = utilitiesSlot?.nextElementSibling ?? null;
+
+  function openMobileNav(): void {
+    if (!mobileDialog) return;
+    if (utilitiesSlot && mobileUtilitiesSlot) {
+      mobileUtilitiesSlot.appendChild(utilitiesSlot);
+    }
+    menuBtn?.setAttribute("aria-expanded", "true");
+    mobileDialog.showModal();
+  }
+
+  function closeMobileNav(): void {
+    if (!mobileDialog) return;
+    mobileDialog.close();
+  }
+
+  mobileDialog?.addEventListener("close", () => {
+    menuBtn?.setAttribute("aria-expanded", "false");
+    // Return the shared search/a11y utilities to the desktop nav so they remain
+    // available once the viewport grows back past the mobile breakpoint.
+    if (utilitiesSlot && desktopUtilitiesParent) {
+      desktopUtilitiesParent.insertBefore(utilitiesSlot, desktopUtilitiesNextSibling);
+    }
+    menuBtn?.focus();
+  });
+
+  mobileDialog?.addEventListener("click", (e: MouseEvent) => {
+    if (e.target === mobileDialog) closeMobileNav();
+  });
+
+  menuBtn?.addEventListener("click", openMobileNav);
+  closeBtn?.addEventListener("click", closeMobileNav);
 </script>
