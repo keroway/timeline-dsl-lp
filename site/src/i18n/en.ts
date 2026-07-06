@@ -230,6 +230,10 @@ export const en = {
   "showcase.card.events": "Events",
   "showcase.card.view": "View details",
   "lp.usecase.see_showcase": "See full examples in the Showcase →",
+  "lp.examples.heading": "See real output",
+  "lp.examples.lead":
+    "The `.tdsl` source side by side with the SVG it produces — every example below is rendered by the actual WASM engine.",
+  "lp.examples.view_all": "Browse all samples in the Gallery →",
   "changelog.page.title": "Changelog | Timeline DSL",
   "changelog.page.description": "Changelog generated from Timeline DSL GitHub Releases.",
   "changelog.eyebrow": "GitHub Releases",

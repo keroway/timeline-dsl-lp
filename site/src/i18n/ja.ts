@@ -227,6 +227,10 @@ export const ja = {
   "showcase.card.events": "イベント数",
   "showcase.card.view": "詳しく見る",
   "lp.usecase.see_showcase": "より詳しい実例は Showcase で →",
+  "lp.examples.heading": "実際の出力を見てみる",
+  "lp.examples.lead":
+    "`.tdsl` ソースと、そこから生成した実際の SVG を並べて見せます。ここでの出力はすべて本体の WASM レンダリングです。",
+  "lp.examples.view_all": "すべてのサンプルを見る（Gallery）→",
   "changelog.page.title": "Changelog | Timeline DSL",
   "changelog.page.description": "Timeline DSL の GitHub Releases から生成した changelog です。",
   "changelog.eyebrow": "GitHub Releases",
