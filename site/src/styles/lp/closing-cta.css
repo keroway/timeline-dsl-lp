@@ -1,0 +1,22 @@
+.closing-cta {
+  text-align: center;
+}
+
+.closing-cta-header {
+  margin: 0 auto;
+}
+
+.closing-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: var(--space-xl);
+}
+
+@media (max-width: 480px) {
+  .closing-cta-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

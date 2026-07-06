@@ -47,7 +47,6 @@ export const ja = {
   "cta.try_playground": "Playground を開く",
   "cta.view_docs": "ドキュメントを読む",
   "cta.view_gallery": "Gallery を見る",
-  "cta.view_github": "GitHubを見る",
   "cta.release_notes": "リリースノート",
   "cta.install_copy_aria_label": "インストールコマンドをコピー",
   "cta.copy_success": "コピーしました",
@@ -175,6 +174,9 @@ export const ja = {
   "lp.why.compare.generic_dsl.output": "図（年表専用機能は限定的）",
   "lp.why.faq_link": "よくある質問は FAQ で →",
   "lp.install.heading": "CLI によるローカル・CI への統合",
+  "lp.closing.heading": "30秒で最初の年表を書いてみる",
+  "lp.closing.lead":
+    "Playground はインストール不要、ブラウザで今すぐ試せます。導入手順や文法の詳細はドキュメントにまとまっています。",
   "lp.install.lead":
     "Playground で構成を検証できたら、Homebrew やインストールスクリプトで CLI を導入し、ローカルでの保守や CI による自動ビルド環境を構築できます。詳しいセットアップはQuick Startで確認できます。",
   "gallery.page.title": "Gallery — Timeline DSL",

@@ -1,0 +1,28 @@
+---
+import { getT, type Locale } from "../../i18n/index";
+import "../../styles/lp/closing-cta.css";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+---
+
+<section class="section closing-cta" aria-labelledby="closing-cta-heading">
+  <div class="section-header closing-cta-header">
+    <h2 id="closing-cta-heading">{t("lp.closing.heading")}</h2>
+    <p>
+      {t("lp.closing.lead")}
+    </p>
+  </div>
+  <div class="closing-cta-actions">
+    <a class="button button-primary" href={locale === "ja" ? "/playground/" : "/en/playground/"}
+      >{t("cta.try_playground")}</a
+    >
+    <a class="button button-secondary" href={locale === "ja" ? "/docs/" : "/en/docs/"}
+      >{t("cta.view_docs")}</a
+    >
+  </div>
+</section>
