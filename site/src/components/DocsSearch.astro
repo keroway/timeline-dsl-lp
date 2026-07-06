@@ -35,6 +35,7 @@ const t = getT(locale);
     <circle cx="11" cy="11" r="8"></circle>
     <path d="m21 21-4.35-4.35"></path>
   </svg>
+  <span class="docs-search-hint" id="docs-search-hint" aria-hidden="true"></span>
 </button>
 
 <dialog class="docs-search-dialog" id="docs-search-dialog" aria-label={t("nav.search.aria_label")}>
@@ -45,6 +46,7 @@ const t = getT(locale);
 <style>
   /* Search toggle button — mirrors SiteHeader.astro's .search-toggle using sl vars */
   .docs-search-btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -66,6 +68,25 @@ const t = getT(locale);
     color: var(--sl-color-white);
     background: var(--sl-color-gray-6);
     border-color: var(--sl-color-gray-4);
+  }
+
+  .docs-search-hint {
+    position: absolute;
+    bottom: -0.4rem;
+    right: -0.4rem;
+    padding: 0.05rem 0.3rem;
+    font-size: 0.6rem;
+    line-height: 1.4;
+    font-family: var(--sl-font-system-mono, monospace);
+    color: var(--sl-color-gray-2);
+    background: var(--sl-color-bg);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .docs-search-hint:empty {
+    display: none;
   }
 
   /* Dialog — mirrors SiteSearch.astro using sl vars */
@@ -99,10 +120,15 @@ const t = getT(locale);
 </style>
 
 <script>
+  import { getSearchShortcutHint, isSearchShortcut } from "../lib/search-shortcut";
+
   const searchBtn = document.getElementById("docs-search-btn") as HTMLButtonElement | null;
+  const searchHint = document.getElementById("docs-search-hint") as HTMLElement | null;
   const searchDialog = document.getElementById("docs-search-dialog") as HTMLDialogElement | null;
   const searchUi = document.getElementById("docs-search-ui") as HTMLElement | null;
   let searchInitialized = false;
+
+  if (searchHint) searchHint.textContent = getSearchShortcutHint();
 
   async function openSearch(): Promise<void> {
     if (!searchDialog || !searchUi) return;
@@ -133,7 +159,7 @@ const t = getT(locale);
 
   // ⌘K / Ctrl+K — matches the LP SiteHeader shortcut
   document.addEventListener("keydown", (e: KeyboardEvent) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+    if (isSearchShortcut(e)) {
       e.preventDefault();
       openSearch();
     }
