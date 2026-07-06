@@ -50,6 +50,28 @@ const jsonLdGraph = graphLd([
 <!doctype html>
 <html lang={Astro.currentLocale ?? locale}>
   <head>
+    {
+      /* テーマの FOUC 防止（#431）。Starlight の ThemeProvider と同じ localStorage キー
+        (`starlight-theme`) を初回描画前に同期的に読み、<html> の data-theme を初期化する。
+        失敗しても具合は悪いだけ（OS 設定にフォールバック）なので try/catch で黙す。 */
+    }
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem("starlight-theme");
+          const theme =
+            stored === "light" || stored === "dark"
+              ? stored
+              : matchMedia("(prefers-color-scheme: light)").matches
+                ? "light"
+                : "dark";
+          document.documentElement.dataset.theme = theme;
+        } catch {
+          /* localStorage 無効環境では data-theme 未設定のままにし、CSS の
+             @media (prefers-color-scheme: dark) フォールバックに任せる。 */
+        }
+      })();
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />

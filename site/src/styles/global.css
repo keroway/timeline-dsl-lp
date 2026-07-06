@@ -190,6 +190,82 @@
   }
 }
 
+/* 明示的テーマ切替（#431 / theme.ts）。:root[data-theme] は prefers-color-scheme に
+   依存せず、ユーザーが SiteHeader / DocsA11yMenu のテーマトグルで選んだ light/dark を
+   強制する。data-theme 未設定（JS 無効環境）では上の @media (prefers-color-scheme: dark)
+   が引き続きフォールバックとして働く。値は base / light HC / dark media / dark HC の
+   4 ブロックと同一（drift は theme-tokens.test.ts で検知）。属性セレクタにより
+   specificity が @media 内の :root より高いため、OS 設定より優先して確実に上書きする。 */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: #ffffff;
+  --color-ink: #17212b;
+  --color-muted: #596575;
+  --color-line: #d8dde5;
+  --color-panel: #f6f8fb;
+  --color-accent: #0d766f;
+  --color-accent-strong: #095c56;
+  --color-on-accent: #ffffff;
+  --color-warm: #a74718;
+  --color-gold: #d69a24;
+  --color-plum: #7b4569;
+  --color-sky: #2c6f9f;
+  --color-status-warn: #845d0c;
+  --color-status-error: #c62828;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #111920;
+  --color-ink: #e8f0f8;
+  --color-muted: #8fa3ba;
+  --color-line: #2a3544;
+  --color-panel: #1a2434;
+  --color-accent: #1a9e96;
+  --color-accent-strong: #22c4bb;
+  --color-on-accent: #06211e;
+  --color-warm: #b8501c;
+  --color-gold: #9a6a12;
+  --color-plum: #915581;
+  --color-sky: #2f7bb0;
+  --color-status-warn: #e6c46e;
+  --color-status-error: #ff8a78;
+}
+
+:root[data-theme="light"][data-a11y-contrast="high"] {
+  --color-bg: #ffffff;
+  --color-ink: #000000;
+  --color-muted: #333333;
+  --color-line: #000000;
+  --color-panel: #ffffff;
+  --color-accent: #0000ff;
+  --color-accent-strong: #000080;
+  --color-on-accent: #ffffff;
+  --color-warm: #800000;
+  --color-gold: #806000;
+  --color-plum: #600060;
+  --color-sky: #00557a;
+  --color-status-warn: #5c4500;
+  --color-status-error: #960000;
+}
+
+:root[data-theme="dark"][data-a11y-contrast="high"] {
+  --color-bg: #000000;
+  --color-ink: #ffffff;
+  --color-muted: #cccccc;
+  --color-line: #ffffff;
+  --color-panel: #000000;
+  --color-accent: #00ffff;
+  --color-accent-strong: #80ffff;
+  --color-on-accent: #000000;
+  --color-warm: #c0461a;
+  --color-gold: #8f6410;
+  --color-plum: #8a4f76;
+  --color-sky: #2f78ac;
+  --color-status-warn: #ffd24a;
+  --color-status-error: #ff8a75;
+}
+
 /* span / event 着色の index→semantic ブリッジ（DESIGN.md §8 / #303）。
    本体 WASM v1.20.0 は span/event を style="fill:var(--tdsl-lane-N, #fallback)" （N=lane 出現順
    0..7）で着色し、同時に SVG 内の <style> で :root にデフォルト hex を定義する。

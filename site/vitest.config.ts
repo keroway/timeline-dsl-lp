@@ -7,7 +7,7 @@ const componentTestConfig = getViteConfig({
   test: {
     name: "components",
     environment: "node",
-    include: ["src/components/**/*.test.ts"],
+    include: ["src/components/**/*.test.ts", "src/layouts/**/*.test.ts"],
   },
 });
 
@@ -18,7 +18,7 @@ const libTestConfig = defineConfig({
   test: {
     name: "lib",
     environment: "jsdom",
-    include: ["src/lib/**/*.test.ts", "src/data/**/*.test.ts"],
+    include: ["src/lib/**/*.test.ts", "src/data/**/*.test.ts", "src/i18n/**/*.test.ts"],
     globals: false,
   },
 });
