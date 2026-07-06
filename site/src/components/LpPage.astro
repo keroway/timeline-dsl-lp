@@ -9,6 +9,7 @@ import HeroSection from "./lp/HeroSection.astro";
 import FeaturesSection from "./lp/FeaturesSection.astro";
 import WorkflowSection from "./lp/WorkflowSection.astro";
 import UsecasesSection from "./lp/UsecasesSection.astro";
+import WhySection from "./lp/WhySection.astro";
 import InstallSection from "./lp/InstallSection.astro";
 
 interface Props {
@@ -40,6 +41,7 @@ const homeJsonLd = [softwareApplicationLd(siteUrl, locale)];
     <FeaturesSection locale={locale} />
     <WorkflowSection locale={locale} />
     <UsecasesSection locale={locale} />
+    <WhySection locale={locale} />
     <InstallSection locale={locale} />
   </main>
 
