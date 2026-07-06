@@ -1,4 +1,4 @@
-import type { DictionaryKeys, Locale } from "../i18n/index";
+import { localizedPath, type DictionaryKeys, type Locale } from "../i18n/index";
 
 export type NavItem = {
   labelKey: DictionaryKeys;
@@ -6,35 +6,38 @@ export type NavItem = {
   isActive: (path: string) => boolean;
 };
 
+function isActiveInBothLocales(path: string, base: string): boolean {
+  return path === localizedPath(base, "ja") || path === localizedPath(base, "en");
+}
+
 export const TOP_NAV: NavItem[] = [
   {
     labelKey: "nav.playground",
-    href: () => "/playground/",
-    isActive: (path) => path === "/playground/",
+    href: (locale) => localizedPath("/playground/", locale),
+    isActive: (path) => isActiveInBothLocales(path, "/playground/"),
   },
   {
     labelKey: "nav.gallery",
-    href: () => "/gallery/",
-    isActive: (path) => path === "/gallery/",
+    href: (locale) => localizedPath("/gallery/", locale),
+    isActive: (path) => isActiveInBothLocales(path, "/gallery/"),
   },
   {
     labelKey: "nav.showcase",
-    href: (locale) => (locale === "ja" ? "/showcase/" : "/en/showcase/"),
+    href: (locale) => localizedPath("/showcase/", locale),
     isActive: (path) =>
-      path === "/showcase/" ||
-      path === "/en/showcase/" ||
+      isActiveInBothLocales(path, "/showcase/") ||
       path.startsWith("/showcase/") ||
       path.startsWith("/en/showcase/"),
   },
   {
     labelKey: "nav.docs",
-    href: () => "/docs/",
+    href: (locale) => localizedPath("/docs/", locale),
     isActive: () => false,
   },
   {
     labelKey: "nav.changelog",
-    href: () => "/changelog/",
-    isActive: (path) => path === "/changelog/",
+    href: (locale) => localizedPath("/changelog/", locale),
+    isActive: (path) => isActiveInBothLocales(path, "/changelog/"),
   },
   {
     labelKey: "nav.github",

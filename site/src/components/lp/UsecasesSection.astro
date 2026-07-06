@@ -1,5 +1,5 @@
 ---
-import { getT, type Locale } from "../../i18n/index";
+import { getT, localizedPath, type Locale } from "../../i18n/index";
 import { getUseCases } from "../../data/lp-content";
 import "../../styles/lp/usecases.css";
 
@@ -47,11 +47,7 @@ const useCases = getUseCases(locale);
       ))
     }
   </div>
-  {
-    locale === "ja" && (
-      <p class="usecase-showcase-link">
-        <a href="/showcase/">{t("lp.usecase.see_showcase")}</a>
-      </p>
-    )
-  }
+  <p class="usecase-showcase-link">
+    <a href={localizedPath("/showcase/", locale)}>{t("lp.usecase.see_showcase")}</a>
+  </p>
 </section>
