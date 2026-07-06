@@ -59,13 +59,8 @@ export const en = {
   "lp.hero.lead":
     "Describe timelines as text and validate them instantly in the browser. Prototype in the Playground, then move to CLI or CI — history, fiction, curricula, and org histories in a Git-friendly format.",
   "lp.hero.dsl_example":
-    'timeline "Fictional World" {\n  range 980..1260;\n}\n\nlane "Realm" as realm;\nlane "Events" as incident;\n\nspan realm 990..1184 "Haito Dynasty";\nevent incident 1042 "Northern Campaign";\nevent_range incident 1130..1137 "Succession War";',
-  "lp.hero.timeline.kingdom": "Realm",
-  "lp.hero.timeline.incident": "Events",
-  "lp.hero.timeline.person": "People",
-  "lp.hero.timeline.dynasty": "Haito Dynasty",
-  "lp.hero.timeline.war": "Succession War",
-  "lp.hero.timeline.pilgrim": "Pilgrim King",
+    'timeline "Fictional World" {\n  range 980..1260;\n}\n\nlane "Realm" as realm { kind custom; order 10; }\nlane "Events" as incident { kind custom; order 20; }\n\nspan realm 990..1184 "Haito Dynasty" {};\nevent incident 1042 "Northern Campaign" {};\nevent_range incident 1130..1137 "Succession War" {};',
+  "lp.hero.preview_header": "Rendered timeline",
   "lp.hero.latest_release_aria": "Latest release",
   "lp.hero.workflow_preview_aria": "Timeline DSL workflow preview",
   "lp.hero.trust_bar_aria": "Project trust signals",
