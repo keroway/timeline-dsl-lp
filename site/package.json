@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "astro dev",
     "fetch:releases": "node scripts/fetch-github-releases.mjs",
+    "fetch:repo-stats": "node scripts/fetch-github-repo-stats.mjs",
     "smoke:wasm": "node scripts/smoke-tdsl-wasm.mjs",
     "smoke:playground": "node scripts/smoke-playground.mjs",
     "smoke:playground:browser": "node scripts/smoke-playground.mjs --browser",

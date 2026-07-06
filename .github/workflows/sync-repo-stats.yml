@@ -1,0 +1,64 @@
+name: Sync repo stats
+
+# 本体リポジトリ (keroway/timeline-dsl) の stars / license / contributors を週次で取得し、
+# repo-stats.generated.json に差分があれば更新 PR を自動作成する。
+on:
+  schedule:
+    - cron: "0 0 * * 1" # 月曜 09:00 JST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          check-latest: true
+
+      # fetch-github-repo-stats.mjs は node 組み込みモジュールのみ使うため pnpm install 不要
+      - name: Fetch repo stats
+        run: node site/scripts/fetch-github-repo-stats.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # fetchedAt は実行のたびに更新されるため、内容に差分がない場合は
+      # 変更を巻き戻して PR 作成をスキップする (idempotent)
+      - name: Revert timestamp-only changes
+        run: |
+          file=site/src/data/repo-stats.generated.json
+          if git diff --quiet -- "$file"; then
+            echo "No changes."
+            exit 0
+          fi
+          git show "HEAD:$file" | jq 'del(.fetchedAt)' > /tmp/repo-stats-old.json
+          jq 'del(.fetchedAt)' "$file" > /tmp/repo-stats-new.json
+          if cmp -s /tmp/repo-stats-old.json /tmp/repo-stats-new.json; then
+            echo "Only fetchedAt changed. Reverting."
+            git checkout -- "$file"
+          else
+            echo "Repo stats content changed."
+          fi
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: chore/sync-repo-stats
+          delete-branch: true
+          commit-message: "chore(data): repo-stats.generated.json を最新の stars/license/contributors に同期する"
+          title: "chore(data): repo-stats.generated.json を最新の stars/license/contributors に同期する"
+          body: |
+            `sync-repo-stats.yml` の週次実行による自動更新です。
+
+            - `node site/scripts/fetch-github-repo-stats.mjs` を実行し、本体リポジトリの stars / license / contributors 数を `site/src/data/repo-stats.generated.json` に反映しました。
+            - マージ前に ja / en の LP で数値が表示されることを Cloudflare Pages の preview デプロイで確認してください。
+
+            > [!NOTE]
+            > `GITHUB_TOKEN` で作成された PR では `pull_request` トリガーの CI (Site build) が自動起動しません。
+            > 必要に応じて PR 画面から workflow を手動実行するか、ブランチを push し直してください。
