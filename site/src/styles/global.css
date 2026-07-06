@@ -15,7 +15,7 @@
   --color-gold: #d69a24;
   --color-plum: #7b4569;
   --color-sky: #2c6f9f;
-  /* lane 色のバー（span-block / mini-span / usecase-bar）に乗る固定前景。lane 背景は
+  /* lane 色のバー（mini-span / usecase-bar / hero の WASM レンダリング SVG）に乗る固定前景。lane 背景は
      light / dark とも有色・暗色のため白が最適前景で、terminal 同様にテーマ非依存。HC でも
      白が最大コントラストのため override しない。注意: gold lane 上の白は light 2.47:1 /
      HC 5.85:1 で AA/AAA 未達だが、これは lane 背景（--color-gold）側の既存課題で後続 issue 扱い */

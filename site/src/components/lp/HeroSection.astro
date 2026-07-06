@@ -5,6 +5,7 @@ import { latest } from "../../data/releases";
 import { stargazersCount, licenseSpdxId, contributorsCount } from "../../data/repo-stats";
 import { formatDate } from "../../lib/site";
 import { tdslLang, tdslCodeThemes } from "../../lib/tdsl-shiki";
+import { renderSvgFromSource } from "../../lib/tdsl-wasm-node.mts";
 
 interface Props {
   locale: Locale;
@@ -18,6 +19,17 @@ const shouldShowLatestName = latestName !== latestLabel;
 
 const latestPublishedAt = formatDate(latest?.publishedAt, locale);
 const heroDslExample = t("lp.hero.dsl_example");
+// Hero の preview は editor パネルと同じ heroDslExample から本体 WASM でビルド時に
+// レンダリングする（#428）。DSL が壊れていればここで例外が飛び astro build が失敗するため、
+// editor サンプルと preview の乖離はビルドで検知される（DESIGN.md §1 Source as truth）。
+// hero の preview は `.timeline-preview` 全体が aria-hidden（装飾扱い、情報は editor パネルと
+// 右側のコピーで既に伝えている）。WASM 出力は Playground / Gallery 向けに
+// tabindex="0" でツールチップのフォーカスターゲットを持つが、aria-hidden 配下では
+// フォーカス可能要素が禁止される（axe: aria-hidden-focus）ため、この埋め込み先限定で除去する。
+const heroTimelineSvg = (await renderSvgFromSource(heroDslExample, 0)).replace(
+  / tabindex="0"/g,
+  "",
+);
 const starsFormatted =
   typeof stargazersCount === "number"
     ? new Intl.NumberFormat(locale === "ja" ? "ja-JP" : "en-US").format(stargazersCount)
@@ -97,29 +109,11 @@ import "../../styles/lp/hero.css";
       </div>
       <div class="timeline-preview" aria-hidden="true">
         <div class="preview-header">
-          <span>Rendered timeline</span>
+          <span>{t("lp.hero.preview_header")}</span>
           <span>980 - 1260</span>
         </div>
-        <div class="timeline-axis">
-          <span>980</span>
-          <span>1060</span>
-          <span>1140</span>
-          <span>1220</span>
-        </div>
-        <div class="lane-row">
-          <span class="lane-label">{t("lp.hero.timeline.kingdom")}</span>
-          <span class="span-block span-realm">{t("lp.hero.timeline.dynasty")}</span>
-        </div>
-        <div class="lane-row">
-          <span class="lane-label">{t("lp.hero.timeline.incident")}</span>
-          <span class="event-dot dot-one"></span>
-          <span class="span-block span-war">{t("lp.hero.timeline.war")}</span>
-        </div>
-        <div class="lane-row">
-          <span class="lane-label">{t("lp.hero.timeline.person")}</span>
-          <span class="span-block span-person">{t("lp.hero.timeline.pilgrim")}</span>
-          <span class="event-dot dot-two"></span>
-        </div>
+        {/* 本体 WASM が生成した信頼済み SVG（editor パネルと同一ソースから導出、#428） */}
+        <div class="timeline-svg-wrap" set:html={heroTimelineSvg} />
       </div>
       <div class="command-strip" aria-hidden="true">
         <span class="prompt">$</span>

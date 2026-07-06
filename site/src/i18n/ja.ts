@@ -57,13 +57,8 @@ export const ja = {
   "lp.hero.lead":
     "年表をテキストで記述し、ブラウザで即座に検証・プレビューできます。Playground で構成を検証してから CLI や CI へ移行でき、歴史、創作設定、教材、組織の沿革をGit管理しやすい形式で扱えます。",
   "lp.hero.dsl_example":
-    'timeline "架空世界年表" {\n  range 980..1260;\n}\n\nlane "王国" as realm;\nlane "事件" as incident;\n\nspan realm 990..1184 "灰都王朝";\nevent incident 1042 "北方遠征";\nevent_range incident 1130..1137 "継承戦争";',
-  "lp.hero.timeline.kingdom": "王国",
-  "lp.hero.timeline.incident": "事件",
-  "lp.hero.timeline.person": "人物",
-  "lp.hero.timeline.dynasty": "灰都王朝",
-  "lp.hero.timeline.war": "継承戦争",
-  "lp.hero.timeline.pilgrim": "巡礼王",
+    'timeline "架空世界年表" {\n  range 980..1260;\n}\n\nlane "王国" as realm { kind custom; order 10; }\nlane "事件" as incident { kind custom; order 20; }\n\nspan realm 990..1184 "灰都王朝" {};\nevent incident 1042 "北方遠征" {};\nevent_range incident 1130..1137 "継承戦争" {};',
+  "lp.hero.preview_header": "レンダリングされた年表",
   "lp.hero.eyebrow": "ブラウザ起点の年表オーサリング",
   "lp.hero.panel_bar.validated": "検証済み",
   "lp.hero.latest_release_label": "最新",
