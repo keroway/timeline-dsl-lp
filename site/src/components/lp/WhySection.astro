@@ -1,0 +1,103 @@
+---
+import { getT, type Locale } from "../../i18n/index";
+import "../../styles/lp/why.css";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+
+const points = [
+  { title: t("lp.why.point1.title"), body: t("lp.why.point1.body") },
+  { title: t("lp.why.point2.title"), body: t("lp.why.point2.body") },
+  { title: t("lp.why.point3.title"), body: t("lp.why.point3.body") },
+];
+
+const compareRows = [
+  {
+    key: "tdsl",
+    approach: t("lp.why.compare.tdsl.approach"),
+    validation: t("lp.why.compare.tdsl.validation"),
+    diff: t("lp.why.compare.tdsl.diff"),
+    output: t("lp.why.compare.tdsl.output"),
+    isHighlighted: true,
+  },
+  {
+    key: "handdrawn",
+    approach: t("lp.why.compare.handdrawn.approach"),
+    validation: t("lp.why.compare.handdrawn.validation"),
+    diff: t("lp.why.compare.handdrawn.diff"),
+    output: t("lp.why.compare.handdrawn.output"),
+    isHighlighted: false,
+  },
+  {
+    key: "spreadsheet",
+    approach: t("lp.why.compare.spreadsheet.approach"),
+    validation: t("lp.why.compare.spreadsheet.validation"),
+    diff: t("lp.why.compare.spreadsheet.diff"),
+    output: t("lp.why.compare.spreadsheet.output"),
+    isHighlighted: false,
+  },
+  {
+    key: "generic_dsl",
+    approach: t("lp.why.compare.generic_dsl.approach"),
+    validation: t("lp.why.compare.generic_dsl.validation"),
+    diff: t("lp.why.compare.generic_dsl.diff"),
+    output: t("lp.why.compare.generic_dsl.output"),
+    isHighlighted: false,
+  },
+];
+
+const faqHref = locale === "ja" ? "/docs/faq/" : "/en/docs/faq/";
+---
+
+<section class="section why-section" aria-labelledby="why-heading">
+  <div class="section-header">
+    <h2 id="why-heading">{t("lp.why.heading")}</h2>
+    <p>
+      {t("lp.why.lead")}
+    </p>
+  </div>
+  <div class="why-points">
+    {
+      points.map((point) => (
+        <article class="why-point">
+          <h3>{point.title}</h3>
+          <p>{point.body}</p>
+        </article>
+      ))
+    }
+  </div>
+  <div class="why-compare">
+    <h3 id="why-compare-heading">{t("lp.why.compare.heading")}</h3>
+    <div class="why-compare-scroll">
+      <table aria-labelledby="why-compare-heading">
+        <thead>
+          <tr>
+            <th scope="col">{t("lp.why.compare.col.approach")}</th>
+            <th scope="col">{t("lp.why.compare.col.validation")}</th>
+            <th scope="col">{t("lp.why.compare.col.diff")}</th>
+            <th scope="col">{t("lp.why.compare.col.output")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            compareRows.map((row) => (
+              <tr class={row.isHighlighted ? "is-highlighted" : undefined}>
+                <th scope="row">{row.approach}</th>
+                <td>{row.validation}</td>
+                <td>{row.diff}</td>
+                <td>{row.output}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="why-faq-link">
+    <a href={faqHref}>{t("lp.why.faq_link")}</a>
+  </p>
+</section>
