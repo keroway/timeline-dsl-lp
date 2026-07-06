@@ -40,7 +40,7 @@ import "../../styles/lp/hero.css";
         </a>
       </div>
       <div class="release-summary" aria-label={t("lp.hero.latest_release_aria")}>
-        <span class="release-label">Latest</span>
+        <span class="release-label">{t("lp.hero.latest_release_label")}</span>
         <strong>{latestLabel}</strong>
         {shouldShowLatestName && <span>{latestName}</span>}
         {latestPublishedAt && <time datetime={latest?.publishedAt}>{latestPublishedAt}</time>}
@@ -51,7 +51,7 @@ import "../../styles/lp/hero.css";
       <div class="editor-panel">
         <div class="panel-bar">
           <span>world-history.tdsl</span>
-          <span>validated</span>
+          <span>{t("lp.hero.panel_bar.validated")}</span>
         </div>
         <Code
           class="code-sample"

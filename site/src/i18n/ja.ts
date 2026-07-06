@@ -52,6 +52,8 @@ export const ja = {
   "lp.hero.timeline.war": "継承戦争",
   "lp.hero.timeline.pilgrim": "巡礼王",
   "lp.hero.eyebrow": "ブラウザ起点の年表オーサリング",
+  "lp.hero.panel_bar.validated": "検証済み",
+  "lp.hero.latest_release_label": "最新",
   "lp.hero.latest_label_fallback": "未取得",
   "lp.hero.latest_name_fallback": "リリース情報は準備中です",
   "lp.hero.latest_release_aria": "最新リリース",
@@ -74,6 +76,7 @@ export const ja = {
   "lp.feature.render.lane1.text": "制度改革",
   "lp.feature.render.lane2.label": "社会",
   "lp.feature.render.lane2.text": "産業化",
+  "lp.workflow.eyebrow": "ソースから成果物へ",
   "lp.workflow.heading": "書く、確かめる、見せるまでを同じ流れに置く",
   "lp.workflow.rail_aria": "Timeline DSL のワークフロー",
   "lp.workflow.lead":
