@@ -8,6 +8,8 @@ export const ja = {
   "nav.search.aria_label": "検索",
   "nav.search.not_built": "検索インデックスが見つかりません。pnpm build を実行してください。",
   "nav.lang_toggle.aria_label": "言語を英語に切り替える",
+  "nav.menu.open_aria_label": "メニューを開く",
+  "nav.menu.close_aria_label": "メニューを閉じる",
   "footer.copyright": "© {years} keroway",
   "footer.links": "フッターナビゲーション",
   "footer.project_links": "プロジェクトリンク",

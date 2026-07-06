@@ -20,6 +20,7 @@ const args = parseArgs(process.argv.slice(2), { booleanFlags: [] });
 const baseUrl = normalizeBaseUrl(args.baseUrl ?? process.env.A11Y_BASE_URL ?? DEFAULT_BASE_URL);
 
 await smokeA11y(baseUrl);
+await smokeMobileNav(baseUrl);
 
 async function smokeA11y(rootUrl) {
   const { chromium } = await importPlaywright();
@@ -72,6 +73,98 @@ async function smokeA11y(rootUrl) {
   );
   if (ALLOWED_EXCEPTIONS.length) {
     console.log(`a11y smoke: ${ALLOWED_EXCEPTIONS.length} documented exception(s) suppressed.`);
+  }
+}
+
+// #432: 375px モバイルビューポートでのハンバーガーメニュー (disclosure) 検査。
+// 横スクロールなしで全ナビ項目に到達でき、フォーカストラップ・Esc クローズ・
+// aria-expanded の同期が壊れていないことを回帰ガードする。
+async function smokeMobileNav(rootUrl) {
+  const { chromium } = await importPlaywright();
+  const browser = await chromium.launch();
+
+  try {
+    const context = await browser.newContext({ viewport: { width: 375, height: 812 } });
+    const page = await context.newPage();
+    await page.goto(`${rootUrl}/`, { waitUntil: "networkidle" });
+
+    const menuBtn = page.locator("#mobile-menu-btn");
+    const dialog = page.locator("#mobile-nav-dialog");
+    const navLinks = page.locator("#mobile-nav-dialog .mobile-nav-links a");
+
+    // 375px 幅で横スクロールなしに到達できる: ハンバーガーボタンが可視で、
+    // 旧横スクロールナビ (.nav-links) は非表示になっている。
+    if (!(await menuBtn.isVisible())) {
+      throw new Error("mobile nav: hamburger toggle should be visible at 375px viewport");
+    }
+    const navLinksDisplay = await page
+      .locator(".nav-links")
+      .first()
+      .evaluate((el) => getComputedStyle(el).display);
+    if (navLinksDisplay !== "none") {
+      throw new Error("mobile nav: desktop .nav-links should be hidden at 375px viewport");
+    }
+
+    // タッチターゲット 44x44px 相当の確保
+    const box = await menuBtn.boundingBox();
+    if (!box || box.width < 44 || box.height < 44) {
+      throw new Error(
+        `mobile nav: hamburger toggle should be at least 44x44px (got ${box?.width}x${box?.height})`,
+      );
+    }
+
+    // 初期状態: aria-expanded=false, dialog は閉じている
+    if ((await menuBtn.getAttribute("aria-expanded")) !== "false") {
+      throw new Error("mobile nav: hamburger toggle should start with aria-expanded=false");
+    }
+
+    // 開く → aria-expanded=true, dialog が開く, 全ナビ項目が到達可能
+    await menuBtn.click();
+    if ((await menuBtn.getAttribute("aria-expanded")) !== "true") {
+      throw new Error("mobile nav: hamburger toggle should have aria-expanded=true after click");
+    }
+    if (!(await dialog.isVisible())) {
+      throw new Error("mobile nav: dialog should be visible after hamburger click");
+    }
+    const navLinkCount = await navLinks.count();
+    if (navLinkCount === 0) {
+      throw new Error("mobile nav: dialog should contain reachable nav links");
+    }
+    for (let i = 0; i < navLinkCount; i += 1) {
+      if (!(await navLinks.nth(i).isVisible())) {
+        throw new Error(`mobile nav: nav link at index ${i} should be reachable without scrolling`);
+      }
+    }
+
+    // フォーカストラップ: ネイティブ <dialog>.showModal() は Tab を自動的に
+    // ダイアログ内に閉じ込める。ダイアログ外の要素へフォーカスが漏れないことを確認する。
+    const focusInsideDialog = await page.evaluate(() => {
+      const dialog = document.getElementById("mobile-nav-dialog");
+      return !!dialog && dialog.contains(document.activeElement);
+    });
+    if (!focusInsideDialog) {
+      throw new Error("mobile nav: focus should be trapped inside the dialog when open");
+    }
+
+    // Escape で閉じる → aria-expanded=false, フォーカスがトグルに戻る
+    await page.keyboard.press("Escape");
+    await dialog.waitFor({ state: "hidden" });
+    if ((await menuBtn.getAttribute("aria-expanded")) !== "false") {
+      throw new Error("mobile nav: Escape should close the dialog (aria-expanded=false)");
+    }
+    const toggleHasFocus = await page.evaluate(
+      () => document.activeElement === document.getElementById("mobile-menu-btn"),
+    );
+    if (!toggleHasFocus) {
+      throw new Error("mobile nav: focus should return to the hamburger toggle after Escape");
+    }
+
+    console.log(
+      "a11y smoke: mobile nav (375px) hamburger disclosure — focus trap / Escape close / aria-expanded all pass. ✓",
+    );
+    await context.close();
+  } finally {
+    await browser.close();
   }
 }
 
