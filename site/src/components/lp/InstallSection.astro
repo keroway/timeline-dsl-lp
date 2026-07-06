@@ -1,5 +1,6 @@
 ---
-import { getT, type Locale } from "../../i18n/index";
+import { getT, localizedPath, type Locale } from "../../i18n/index";
+import { INSTALL_CHANNELS } from "../../data/install-channels";
 import "../../styles/lp/install.css";
 
 interface Props {
@@ -18,52 +19,101 @@ const t = getT(locale);
         {t("lp.install.lead")}
       </p>
     </div>
-    <div class="command-copy">
-      <pre
-        class="command"><code id="install-command">brew tap keroway/tap
-brew install tdsl</code></pre>
-      <button
-        class="copy-button"
-        type="button"
-        data-copy-target="install-command"
-        data-copy-success-label={t("cta.copy_success")}
-        data-copy-error-label={t("cta.copy_error")}
-        aria-label={t("cta.install_copy_aria_label")}
+    <div class="install-tabs">
+      <div
+        class="install-tablist"
+        role="tablist"
+        aria-label={t("lp.install.tablist_aria")}
+        data-install-tablist
       >
-        <svg
-          class="copy-button__icon copy-button__icon--clipboard"
-          viewBox="0 0 24 24"
-          width="16"
-          height="16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <rect x="9" y="3" width="6" height="3" rx="1"></rect>
-          <path d="M9 4.5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-12a2 2 0 0 0-2-2h-2"
-          ></path>
-        </svg>
-        <svg
-          class="copy-button__icon copy-button__icon--check"
-          viewBox="0 0 24 24"
-          width="16"
-          height="16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <polyline points="5 12 10 17 19 8"></polyline>
-        </svg>
-      </button>
-      <span class="copy-status" aria-live="polite" aria-atomic="true"></span>
+        {
+          INSTALL_CHANNELS.map((channel, index) => (
+            <button
+              type="button"
+              class="install-tab"
+              role="tab"
+              id={`install-tab-${channel.id}`}
+              aria-selected={index === 0 ? "true" : "false"}
+              aria-controls={`install-panel-${channel.id}`}
+              tabindex={index === 0 ? 0 : -1}
+              data-install-tab
+            >
+              {t(channel.labelKey)}
+            </button>
+          ))
+        }
+      </div>
+      {
+        INSTALL_CHANNELS.map((channel) => {
+          const commandId = `install-command-${channel.id}`;
+          const commandText = channel.lines.join("\n");
+          return (
+            <div
+              id={`install-panel-${channel.id}`}
+              class="install-panel"
+              role="tabpanel"
+              aria-labelledby={`install-tab-${channel.id}`}
+              tabindex={0}
+            >
+              <p class="install-panel-os">{t(channel.osKey)}</p>
+              <div class="command-copy">
+                <pre class="command">
+                  <code id={commandId}>{commandText}</code>
+                </pre>
+                <button
+                  class="copy-button"
+                  type="button"
+                  data-copy-target={commandId}
+                  data-copy-success-label={t("cta.copy_success")}
+                  data-copy-error-label={t("cta.copy_error")}
+                  aria-label={t("cta.install_copy_aria_label")}
+                >
+                  <svg
+                    class="copy-button__icon copy-button__icon--clipboard"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <rect x="9" y="3" width="6" height="3" rx="1" />
+                    <path d="M9 4.5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-12a2 2 0 0 0-2-2h-2" />
+                  </svg>
+                  <svg
+                    class="copy-button__icon copy-button__icon--check"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <polyline points="5 12 10 17 19 8" />
+                  </svg>
+                </button>
+                <span class="copy-status" aria-live="polite" aria-atomic="true" />
+              </div>
+            </div>
+          );
+        })
+      }
+      <p class="install-other-methods">
+        <a href={localizedPath("/docs/homebrew/", locale)}>{t("lp.install.other_methods_link")}</a>
+      </p>
     </div>
   </div>
 </section>
+
+<script>
+  import { initInstallTabs } from "../../lib/install-tabs";
+  initInstallTabs();
+</script>

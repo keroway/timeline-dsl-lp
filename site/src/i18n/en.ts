@@ -181,7 +181,17 @@ export const en = {
     "No install required — try it right now in the Playground. Setup steps and grammar details are in the docs.",
   "lp.install.heading": "Integrate CLI into local and CI workflows",
   "lp.install.lead":
-    "Once you've validated your structure in the Playground, install the CLI via Homebrew or the install script to set up local maintenance and automated CI builds. See Quick Start for detailed setup.",
+    "Once you've validated your structure in the Playground, install the CLI for your platform to set up local maintenance and automated CI builds. See Quick Start for detailed setup.",
+  "lp.install.tablist_aria": "Choose an install method",
+  "lp.install.tab.homebrew": "Homebrew",
+  "lp.install.os.homebrew": "macOS / Linux",
+  "lp.install.tab.shell": "Shell",
+  "lp.install.os.shell": "macOS / Linux (one-line installer)",
+  "lp.install.tab.powershell": "PowerShell",
+  "lp.install.os.powershell": "Windows",
+  "lp.install.tab.cargo": "Cargo",
+  "lp.install.os.cargo": "Rust toolchain",
+  "lp.install.other_methods_link": "See other installation methods (cargo / manual binary, etc.) →",
   "gallery.page.title": "Gallery — Timeline DSL",
   "gallery.page.description":
     "Sample timelines for Timeline DSL. Edit and customize each sample in the Playground.",
