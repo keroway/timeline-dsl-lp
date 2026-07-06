@@ -176,7 +176,17 @@ export const ja = {
   "lp.why.faq_link": "よくある質問は FAQ で →",
   "lp.install.heading": "CLI によるローカル・CI への統合",
   "lp.install.lead":
-    "Playground で構成を検証できたら、Homebrew やインストールスクリプトで CLI を導入し、ローカルでの保守や CI による自動ビルド環境を構築できます。詳しいセットアップはQuick Startで確認できます。",
+    "Playground で構成を検証できたら、お使いの環境に合わせて CLI を導入し、ローカルでの保守や CI による自動ビルド環境を構築できます。詳しいセットアップはQuick Startで確認できます。",
+  "lp.install.tablist_aria": "インストール方法を選択",
+  "lp.install.tab.homebrew": "Homebrew",
+  "lp.install.os.homebrew": "macOS / Linux",
+  "lp.install.tab.shell": "Shell",
+  "lp.install.os.shell": "macOS / Linux（ワンラインインストール）",
+  "lp.install.tab.powershell": "PowerShell",
+  "lp.install.os.powershell": "Windows",
+  "lp.install.tab.cargo": "Cargo",
+  "lp.install.os.cargo": "Rust ツールチェイン",
+  "lp.install.other_methods_link": "その他の導入方法（cargo / バイナリ手動など）を見る →",
   "gallery.page.title": "Gallery — Timeline DSL",
   "gallery.page.description":
     "Timeline DSL のサンプル年表一覧。各サンプルを Playground で編集・カスタマイズできます。",
