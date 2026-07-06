@@ -56,6 +56,8 @@ export const en = {
   "lp.hero.latest_release_aria": "Latest release",
   "lp.hero.workflow_preview_aria": "Timeline DSL workflow preview",
   "lp.hero.eyebrow": "Browser-first timeline authoring",
+  "lp.hero.panel_bar.validated": "validated",
+  "lp.hero.latest_release_label": "Latest",
   "lp.hero.latest_label_fallback": "N/A",
   "lp.hero.latest_name_fallback": "Release info unavailable",
   "lp.features.heading": "Make timeline authoring a reproducible process",
@@ -76,6 +78,7 @@ export const en = {
   "lp.feature.render.lane1.text": "Reform",
   "lp.feature.render.lane2.label": "Society",
   "lp.feature.render.lane2.text": "Industrialization",
+  "lp.workflow.eyebrow": "From source to artifact",
   "lp.workflow.rail_aria": "Timeline DSL workflow",
   "lp.workflow.heading": "Source to artifact in one continuous flow",
   "lp.workflow.lead":

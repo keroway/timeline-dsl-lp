@@ -570,7 +570,32 @@ OGP 画像（`og:image` / `twitter:image`）は **PNG を採用** します。
 
 ---
 
-## 10. Files of record
+## 10. i18n bypass policy（#427）
+
+LP コンポーネントには、辞書（`site/src/i18n/{ja,en}.ts`）を経由せず英語のまま固定表示している文言がある。「意図的なブランド表記」と「辞書化漏れ」を区別するため、**bypass が許される対象をここに明示的に列挙する**。列挙外の可視・SR 露出テキストは辞書化が必須。
+
+### bypass 対象（英語固定でよいもの）
+
+次のいずれかに該当するものだけを bypass 対象とする。
+
+1. **CLI コマンド・出力文字列**: `tdsl check world-history.tdsl`、`0 errors`、`tdsl check source.tdsl` 等。実際の CLI 出力の再現であり翻訳すると実態と乖離する。
+2. **ファイル名**: `world-history.tdsl`、`source.tdsl`、`preview.html` 等。ファイル名は翻訳対象ではない。
+3. **Feature card の kicker**（`Author` / `Validate` / `Render`）: 3 枚のカードを識別する短いラベルで、DESIGN.md §5 Feature card が定義する固定構成の一部。
+4. **`aria-hidden="true"`（`inert` 併用含む）でスクリーンリーダーからも隠されている装飾テキスト**: Hero の `.timeline-preview`（`Rendered timeline` / `980 - 1260` / lane ラベルは除く。lane ラベルは辞書化済み）、`.command-strip`、Feature card の `.feature-figure`（診断メッセージ・コマンド文字列・目盛りを含む）等。可視でも SR でも到達できないため翻訳の実益がない。
+
+### bypass 対象外（辞書化が必須）
+
+次は上記のいずれにも該当せず、可視かつ／または SR 露出があるため辞書化した（本 issue #427 で対応）。
+
+- Workflow セクションの eyebrow（`site/src/components/lp/WorkflowSection.astro`） → `lp.workflow.eyebrow`
+- Hero の release-summary ラベル `Latest`（`site/src/components/lp/HeroSection.astro`） → `lp.hero.latest_release_label`
+- Hero editor panel の panel-bar 内 `validated`（`aria-hidden` 対象外、SR 露出） → `lp.hero.panel_bar.validated`
+
+新しく可視・SR 露出のハードコード文言を追加する場合は、上記 bypass 対象の 4 分類のいずれかに明確に該当するかを確認し、該当しなければ辞書キーを追加すること。
+
+---
+
+## 11. Files of record
 
 決定の根拠となるファイルは以下です。DESIGN.md と乖離が出た場合、まずはこちらが現行の真実です。発見次第どちらかを更新してください。
 
