@@ -1,0 +1,41 @@
+---
+import { getT, localizedPath, type Locale } from "../../i18n/index";
+import gallerySamples from "../../data/gallery-samples.json";
+import TimelineEmbed from "../TimelineEmbed.astro";
+import "../../styles/lp/examples.css";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getT(locale);
+
+// LP で見せる実出力の例。gallery-samples.json から用途の異なる 3 件を選び、ビルド時に
+// 静的 SVG として埋め込む（#433）。クライアント WASM 起動は LP に持ち込まない
+// （LCP / TBT を守る、#428 の TimelineEmbed / renderSvgFromSource と同じ経路）。
+const FEATURED_SAMPLE_IDS = ["fictional-world", "japanese-history", "release-cycle"];
+const allSamples = gallerySamples as { id: string; title: string; source: string }[];
+const samples = allSamples.filter((sample) => FEATURED_SAMPLE_IDS.includes(sample.id));
+---
+
+<section class="section examples-section" aria-labelledby="examples-heading">
+  <div class="section-header">
+    <h2 id="examples-heading">{t("lp.examples.heading")}</h2>
+    <p>
+      {t("lp.examples.lead")}
+    </p>
+  </div>
+  <div class="examples-grid">
+    {
+      samples.map((sample) => (
+        <div class="examples-card">
+          <TimelineEmbed source={sample.source} caption={sample.title} />
+        </div>
+      ))
+    }
+  </div>
+  <p class="examples-view-all">
+    <a href={localizedPath("/gallery/", locale)}>{t("lp.examples.view_all")}</a>
+  </p>
+</section>

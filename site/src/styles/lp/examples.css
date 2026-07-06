@@ -1,0 +1,24 @@
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--space-lg);
+}
+
+.examples-card :global(.timeline-embed) {
+  margin: 0;
+  height: 100%;
+}
+
+.examples-view-all {
+  margin: var(--space-lg) 0 0;
+  font-size: 0.95rem;
+}
+
+.examples-view-all a {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.examples-view-all a:hover {
+  text-decoration: underline;
+}
