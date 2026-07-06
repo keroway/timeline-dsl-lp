@@ -1,5 +1,5 @@
 ---
-import { getT, resolveLocale } from "../i18n/index";
+import { getT, resolveLocale, interpolate, localizedPath } from "../i18n/index";
 
 interface Props {
   currentPath?: string;
@@ -11,35 +11,71 @@ const locale = resolveLocale(Astro);
 const t = getT(locale);
 const repositoryUrl = "https://github.com/keroway/timeline-dsl";
 const licenseUrl = `${repositoryUrl}/blob/main/LICENSE`;
+const contributingUrl = `${repositoryUrl}/blob/main/CONTRIBUTING.md`;
 const versionLabel = version || "Releases";
 const versionUrl = version
   ? `${repositoryUrl}/releases/tag/${version}`
   : `${repositoryUrl}/releases`;
+
+const FOUNDING_YEAR = 2024;
+const currentYear = new Date().getFullYear();
+const years =
+  currentYear > FOUNDING_YEAR ? `${FOUNDING_YEAR}\u2013${currentYear}` : `${FOUNDING_YEAR}`;
+
+const path = (p: string) => localizedPath(p, locale);
+const isCurrent = (href: string) => (currentPath === href ? "page" : undefined);
+
+const productLinks = [
+  { href: path("/playground/"), label: t("nav.playground") },
+  { href: path("/gallery/"), label: t("footer.link.gallery") },
+  { href: path("/showcase/"), label: t("footer.link.showcase") },
+  { href: path("/changelog/"), label: t("nav.changelog") },
+];
+
+const docsLinks = [
+  { href: path("/docs/installation/"), label: t("footer.link.installation") },
+  { href: path("/docs/quick-start/"), label: t("footer.link.quick_start") },
+  { href: path("/docs/grammar/"), label: t("footer.link.grammar") },
+  { href: path("/docs/faq/"), label: t("footer.link.faq") },
+];
 ---
 
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-product">
-      <a class="footer-brand" href="/">
+      <a class="footer-brand" href={path("/")}>
         <span class="brand-mark footer-brand-mark" aria-hidden="true">
           <img src="/icon.svg" alt="" width="29" height="29" decoding="async" />
         </span>
         <span>Timeline DSL</span>
       </a>
-      <span class="footer-copyright">&copy; 2024 keroway</span>
+      <span class="footer-copyright">{interpolate(t("footer.copyright"), { years })}</span>
     </div>
 
-    <nav class="footer-nav" aria-label={t("footer.links")}>
-      <a href="/playground/" aria-current={currentPath === "/playground/" ? "page" : undefined}>
-        Playground
-      </a>
-      <a href="/docs/" aria-current={currentPath === "/docs/" ? "page" : undefined}>Docs</a>
-      <a href="/changelog/" aria-current={currentPath === "/changelog/" ? "page" : undefined}>
-        Changelog
-      </a>
+    <nav class="footer-nav" aria-label={t("footer.heading.product")}>
+      <h2 class="footer-nav-heading">{t("footer.heading.product")}</h2>
+      {
+        productLinks.map((link) => (
+          <a href={link.href} aria-current={isCurrent(link.href)}>
+            {link.label}
+          </a>
+        ))
+      }
     </nav>
 
-    <div class="footer-meta" aria-label={t("footer.project_links")}>
+    <nav class="footer-nav" aria-label={t("footer.heading.docs")}>
+      <h2 class="footer-nav-heading">{t("footer.heading.docs")}</h2>
+      {
+        docsLinks.map((link) => (
+          <a href={link.href} aria-current={isCurrent(link.href)}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="footer-meta" aria-label={t("footer.heading.project")}>
+      <h2 class="footer-nav-heading">{t("footer.heading.project")}</h2>
       <a class="footer-github-link" href={repositoryUrl} rel="noreferrer">
         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
           <path
@@ -49,8 +85,9 @@ const versionUrl = version
         </svg>
         <span>GitHub</span>
       </a>
-      <a href={licenseUrl} rel="noreferrer">License</a>
+      <a href={licenseUrl} rel="noreferrer">{t("footer.link.license")}</a>
       <a href={versionUrl} rel="noreferrer">{versionLabel}</a>
+      <a href={contributingUrl} rel="noreferrer">{t("footer.link.contributing")}</a>
     </div>
   </div>
 </footer>

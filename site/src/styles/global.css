@@ -505,12 +505,12 @@ h1 {
 
 .footer-inner {
   display: grid;
-  grid-template-columns: minmax(13rem, 1.1fr) minmax(10rem, 0.8fr) minmax(18rem, 1fr);
-  align-items: center;
-  gap: 1.25rem var(--space-xl);
+  grid-template-columns: minmax(13rem, 1.1fr) repeat(3, minmax(9rem, 0.8fr));
+  align-items: start;
+  gap: 1.5rem var(--space-xl);
   width: var(--layout-width);
   margin: 0 auto;
-  padding: 1.45rem 0;
+  padding: 2rem 0;
   font-size: 0.92rem;
 }
 
@@ -542,11 +542,20 @@ h1 {
   font-size: 0.86rem;
 }
 
+.footer-nav-heading {
+  margin: 0 0 0.2rem;
+  color: var(--color-ink);
+  font-size: 0.78rem;
+  font-weight: 720;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
 .footer-nav,
 .footer-meta {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-2xs);
 }
 
@@ -570,10 +579,6 @@ h1 {
   color: var(--color-ink);
 }
 
-.footer-meta {
-  justify-content: flex-end;
-}
-
 .footer-github-link svg {
   flex: 0 0 auto;
 }
@@ -593,10 +598,6 @@ h1 {
 
   .footer-inner {
     grid-template-columns: 1fr;
-  }
-
-  .footer-meta {
-    justify-content: flex-start;
   }
 
   h1 {
