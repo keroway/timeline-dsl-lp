@@ -23,10 +23,7 @@ export type ReleasesPayload = z.infer<typeof releasesPayloadSchema>;
 const parsed = releasesPayloadSchema.safeParse(rawReleasesData);
 
 if (!parsed.success) {
-  console.warn(
-    "[releases] releases.generated.json failed schema validation:",
-    parsed.error.issues,
-  );
+  console.warn("[releases] releases.generated.json failed schema validation:", parsed.error.issues);
 }
 
 const payload: ReleasesPayload = parsed.success

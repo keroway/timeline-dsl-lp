@@ -118,9 +118,27 @@ export function getUseCases(locale: Locale): UseCase[] {
       tone: "story",
       range: "980-1260",
       map: [
-        { year: "990", label: t("lp.usecase.story.bar1"), start: "8%", width: "62%", tone: "accent" },
-        { year: "1042", label: t("lp.usecase.story.bar2"), start: "31%", width: "18%", tone: "gold" },
-        { year: "1130", label: t("lp.usecase.story.bar3"), start: "58%", width: "30%", tone: "plum" },
+        {
+          year: "990",
+          label: t("lp.usecase.story.bar1"),
+          start: "8%",
+          width: "62%",
+          tone: "accent",
+        },
+        {
+          year: "1042",
+          label: t("lp.usecase.story.bar2"),
+          start: "31%",
+          width: "18%",
+          tone: "gold",
+        },
+        {
+          year: "1130",
+          label: t("lp.usecase.story.bar3"),
+          start: "58%",
+          width: "30%",
+          tone: "plum",
+        },
       ],
     },
     {
@@ -130,9 +148,27 @@ export function getUseCases(locale: Locale): UseCase[] {
       tone: "classroom",
       range: "1850-1912",
       map: [
-        { year: "1853", label: t("lp.usecase.classroom.bar1"), start: "6%", width: "20%", tone: "sky" },
-        { year: "1868", label: t("lp.usecase.classroom.bar2"), start: "27%", width: "36%", tone: "accent" },
-        { year: "1905", label: t("lp.usecase.classroom.bar3"), start: "66%", width: "22%", tone: "gold" },
+        {
+          year: "1853",
+          label: t("lp.usecase.classroom.bar1"),
+          start: "6%",
+          width: "20%",
+          tone: "sky",
+        },
+        {
+          year: "1868",
+          label: t("lp.usecase.classroom.bar2"),
+          start: "27%",
+          width: "36%",
+          tone: "accent",
+        },
+        {
+          year: "1905",
+          label: t("lp.usecase.classroom.bar3"),
+          start: "66%",
+          width: "22%",
+          tone: "gold",
+        },
       ],
     },
     {
@@ -142,9 +178,27 @@ export function getUseCases(locale: Locale): UseCase[] {
       tone: "company",
       range: "2016-2026",
       map: [
-        { year: "2016", label: t("lp.usecase.company.bar1"), start: "6%", width: "23%", tone: "warm" },
-        { year: "2020", label: t("lp.usecase.company.bar2"), start: "36%", width: "30%", tone: "accent" },
-        { year: "2024", label: t("lp.usecase.company.bar3"), start: "68%", width: "22%", tone: "plum" },
+        {
+          year: "2016",
+          label: t("lp.usecase.company.bar1"),
+          start: "6%",
+          width: "23%",
+          tone: "warm",
+        },
+        {
+          year: "2020",
+          label: t("lp.usecase.company.bar2"),
+          start: "36%",
+          width: "30%",
+          tone: "accent",
+        },
+        {
+          year: "2024",
+          label: t("lp.usecase.company.bar3"),
+          start: "68%",
+          width: "22%",
+          tone: "plum",
+        },
       ],
     },
     {
@@ -154,9 +208,27 @@ export function getUseCases(locale: Locale): UseCase[] {
       tone: "research",
       range: "QID draft",
       map: [
-        { year: "Q42", label: t("lp.usecase.research.bar1"), start: "8%", width: "24%", tone: "accent" },
-        { year: "ref", label: t("lp.usecase.research.bar2"), start: "40%", width: "28%", tone: "sky" },
-        { year: "tdsl", label: t("lp.usecase.research.bar3"), start: "70%", width: "20%", tone: "gold" },
+        {
+          year: "Q42",
+          label: t("lp.usecase.research.bar1"),
+          start: "8%",
+          width: "24%",
+          tone: "accent",
+        },
+        {
+          year: "ref",
+          label: t("lp.usecase.research.bar2"),
+          start: "40%",
+          width: "28%",
+          tone: "sky",
+        },
+        {
+          year: "tdsl",
+          label: t("lp.usecase.research.bar3"),
+          start: "70%",
+          width: "20%",
+          tone: "gold",
+        },
       ],
     },
   ];

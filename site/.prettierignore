@@ -3,4 +3,4 @@ dist/
 node_modules/
 public/wasm/
 pnpm-lock.yaml
-src/data/
+src/data/*.generated.json

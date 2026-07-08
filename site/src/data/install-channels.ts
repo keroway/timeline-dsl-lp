@@ -28,7 +28,9 @@ export const INSTALL_CHANNELS: InstallChannel[] = [
     id: "shell",
     labelKey: "lp.install.tab.shell",
     osKey: "lp.install.os.shell",
-    lines: ["curl -sSfL https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.sh | sh"],
+    lines: [
+      "curl -sSfL https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.sh | sh",
+    ],
   },
   {
     id: "powershell",
