@@ -1,13 +1,14 @@
 // @vitest-environment node
-// global.css の明示的テーマ切替ブロック（:root[data-theme="light|dark"]、#431）が、
+// tokens.css の明示的テーマ切替ブロック（:root[data-theme="light|dark"]、#431）が、
 // 対応する既存ブロック（base :root / light HC / dark media / dark HC）と
 // 同一の色トークン値を持つことを検証する。手動 duplicate の drift を検知する。
+// (トークンは global.css から tokens.css へ移設済み。Docs/starlight.css とも共有)
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const cssText = readFileSync(
-  fileURLToPath(new URL("../styles/global.css", import.meta.url)),
+  fileURLToPath(new URL("../styles/tokens.css", import.meta.url)),
   "utf8",
 );
 

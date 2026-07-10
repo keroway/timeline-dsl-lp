@@ -1,6 +1,7 @@
 // @vitest-environment node
-// global.css の lane 色 4 ブロック (light / lightHc / dark / darkHc) と
+// tokens.css の lane 色 4 ブロック (light / lightHc / dark / darkHc) と
 // LANE_PALETTE が一致することを assert する。CSS とコードのドリフトを検知する。
+// (トークンは global.css から tokens.css へ移設済み)
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -8,7 +9,7 @@ import { describe, expect, it } from "vitest";
 import { LANE_PALETTE, type LaneColor, type LaneTheme } from "./lane-palette";
 
 const cssText = readFileSync(
-  fileURLToPath(new URL("../styles/global.css", import.meta.url)),
+  fileURLToPath(new URL("../styles/tokens.css", import.meta.url)),
   "utf8",
 );
 

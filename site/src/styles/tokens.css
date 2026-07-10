@@ -1,0 +1,335 @@
+/* デザイントークン（色 / spacing / radius / font / a11y 属性 / lane ブリッジ）の単一ソース。
+   LP 系ページ（global.css 経由）と Docs（starlight.css 経由）の両方から @import され、
+   同じ値を共有する（Docs レビュー統一, #改善タスク）。base 要素セレクタ（body / a 等）は
+   ここに含めない — global.css 側にのみ残し、Starlight の本文スタイルとの衝突を避ける。 */
+
+:root {
+  color-scheme: light;
+  --color-bg: #ffffff;
+  --color-ink: #17212b;
+  --color-muted: #596575;
+  --color-line: #d8dde5;
+  --color-panel: #f6f8fb;
+  --color-accent: #0d766f;
+  --color-accent-strong: #095c56;
+  /* accent 背景（chip 選択 / retry・edit ボタン hover）に乗る前景。accent 値は
+     テーマごとに色相・明度が異なるため、白固定だと dark / HC で AA 未達や不可視になる。
+     light teal (#0d766f) 上では白で 5.47:1 (AA)。4 ブロックで個別定義する（DESIGN.md §2） */
+  --color-on-accent: #ffffff;
+  --color-warm: #a74718;
+  --color-gold: #d69a24;
+  --color-plum: #7b4569;
+  --color-sky: #2c6f9f;
+  /* lane 色のバー（mini-span / usecase-bar / hero の WASM レンダリング SVG）に乗る固定前景。lane 背景は
+     light / dark とも有色・暗色のため白が最適前景で、terminal 同様にテーマ非依存。HC でも
+     白が最大コントラストのため override しない。注意: gold lane 上の白は light 2.47:1 /
+     HC 5.85:1 で AA/AAA 未達だが、これは lane 背景（--color-gold）側の既存課題で後続 issue 扱い */
+  --color-on-lane: #ffffff;
+  /* lane セマンティクスの named theme tokens（DESIGN.md §8）。既存 lane palette
+     （--color-warm/gold/plum/sky）をプロキシするだけで、新色は追加しない。
+     プロキシ先の --color-* が light / dark / high-contrast の 4 ブロックで再定義済みのため、
+     この :root の 1 定義で全テーマに自動追従する（var() は use 時に各テーマ値へ解決される）。
+     本体 WASM v1.20.0 は SVG <style> に index ベースの --tdsl-lane-0..7 を吐くため（semantic
+     名ではない）、index→semantic のブリッジは下の .tdsl-root ブロックで行う。 */
+  --tdsl-lane-warm: var(--color-warm);
+  --tdsl-lane-gold: var(--color-gold);
+  --tdsl-lane-plum: var(--color-plum);
+  --tdsl-lane-sky: var(--color-sky);
+  /* playground の warn ステータス文字。gold は light 値が白背景でテキスト不適（約2:1）のため
+     専用トークン化する。warn サーフェス（--color-bg）はテーマ依存なので 4 ブロックで定義する */
+  --color-status-warn: #845d0c;
+  /* playground の error ステータス文字。従来 --color-warm を流用していたが dark 背景で AA 未達
+     （約3:1）のため専用トークン化する（DESIGN.md §2）。warn 同様サーフェス（--color-bg）依存で
+     4 ブロックで定義する。light は白背景で AA (5.62:1)、warn(amber)/ready(teal) と色相で区別 */
+  --color-status-error: #c62828;
+  /* Terminal surface (DESIGN.md §2) — 意図的に dark。ページテーマ非依存で
+     light / dark とも同一見た目のため :root に 1 度だけ定義する。HC のみ
+     下の high-contrast ブロックで上書きする。dot は lane ではなくウィンドウ信号色 */
+  --color-terminal-bg: #121921;
+  --color-terminal-ink: #eaf1f8;
+  --color-terminal-border: #cdd4df;
+  --color-terminal-shadow: rgba(21, 32, 44, 0.16);
+  --color-terminal-bar-border: rgba(255, 255, 255, 0.1);
+  --color-terminal-dot: #738090;
+  --color-terminal-dot-warm: #df6a54;
+  --color-terminal-dot-gold: #d8ad43;
+  --color-terminal-dot-green: #58a96d;
+  --color-terminal-prompt: #72d8c9;
+  --color-terminal-output: #aeb9c5;
+  --color-terminal-diag-muted: #b8c4d1;
+  --color-terminal-ok: #8de0a2;
+  --color-terminal-warn: #e0bd66;
+  --color-terminal-error: #ff947d;
+  --font-display:
+    "Avenir Next", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic",
+    "Noto Sans JP", system-ui, sans-serif;
+  --font-sans:
+    Aptos, "Hiragino Kaku Gothic ProN", "BIZ UDPGothic", "Yu Gothic UI", "Yu Gothic",
+    "Noto Sans JP", system-ui, sans-serif;
+  --font-mono: "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --font-size-base: 1rem;
+  --line-height-base: 1.65;
+  --letter-spacing-base: 0em;
+  --word-spacing-base: normal;
+  /* Spacing scale (DESIGN.md §4) — gap / margin / padding の段階値 */
+  --space-2xs: 0.35rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.7rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 2.7rem;
+  /* Radius scale (DESIGN.md §4) */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+  /* セクション/ヘッダー/フッターの共通最大幅（DESIGN.md §4） */
+  --layout-width: min(1120px, calc(100% - 2rem));
+}
+
+:root[data-a11y-text-size="xx-large"] {
+  --font-size-base: 2rem;
+}
+
+:root[data-a11y-text-spacing="enhanced"] {
+  --letter-spacing-base: 0.12em;
+  --word-spacing-base: 0.16em;
+}
+
+:root[data-a11y-contrast="high"] {
+  --color-bg: #ffffff;
+  --color-ink: #000000;
+  --color-muted: #333333;
+  --color-line: #000000;
+  --color-panel: #ffffff;
+  --color-accent: #0000ff;
+  --color-accent-strong: #000080;
+  /* light HC accent は青 (#0000ff)。白前景で 8.59:1 (AAA) */
+  --color-on-accent: #ffffff;
+  --color-warm: #800000;
+  --color-gold: #806000;
+  --color-plum: #600060;
+  --color-sky: #00557a;
+  /* warn 文字は白背景で AAA (9.11:1)。on-lane は白固定のため HC でも override 不要 */
+  --color-status-warn: #5c4500;
+  /* error 文字は白背景で AAA (9.14:1)。warn(amber)/ready(青) と色相で区別 */
+  --color-status-error: #960000;
+  /* Terminal は HC でも意図的に dark を維持。near-black (#000) 上で全色 AAA (7:1+)。
+     light/dark HC で同値のため、ここに 1 度だけ定義し dark HC からはカスケードで適用する。 */
+  --color-terminal-bg: #000000;
+  --color-terminal-ink: #ffffff;
+  --color-terminal-border: #ffffff;
+  --color-terminal-shadow: transparent;
+  --color-terminal-bar-border: rgba(255, 255, 255, 0.6);
+  --color-terminal-dot: #d8e0e8;
+  --color-terminal-dot-warm: #ff8a75;
+  --color-terminal-dot-gold: #ffd24a;
+  --color-terminal-dot-green: #5fe08a;
+  --color-terminal-prompt: #5ff0e0;
+  --color-terminal-output: #d8e0e8;
+  --color-terminal-diag-muted: #d8e0e8;
+  --color-terminal-ok: #7dffa0;
+  --color-terminal-warn: #ffd24a;
+  --color-terminal-error: #ff8a75;
+}
+
+:root[data-a11y-text-size="large"] {
+  --font-size-base: 1.25rem;
+}
+
+:root[data-a11y-text-size="extra-large"] {
+  --font-size-base: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-bg: #111920;
+    --color-ink: #e8f0f8;
+    --color-muted: #8fa3ba;
+    --color-line: #2a3544;
+    --color-panel: #1a2434;
+    --color-accent: #1a9e96;
+    --color-accent-strong: #22c4bb;
+    /* dark accent (#1a9e96) は明度が高く、白前景だと 3.29:1 で AA 未達。
+       濃色インクへ反転し 5.14:1 (AA) を確保する */
+    --color-on-accent: #06211e;
+    /* dark base での warn 文字。暗背景 (#111920) 上で明 amber に上げ AA 以上 (10.55:1) */
+    --color-status-warn: #e6c46e;
+    /* dark base での error 文字。暗背景 (#111920) 上で明 red に上げ AA 以上 (7.74:1) */
+    --color-status-error: #ff8a78;
+    /* lane パレット（DESIGN.md §2）。dark 背景では light 値を流用せず、白前景 (--color-on-lane)
+       に対し AA 以上、かつ暗背景でバーが視認できる輝度へ調整する。warm=起点 / gold=周年 /
+       plum=人物 / sky=外部要因 の色相は維持。白文字: warm 5.0 / gold 4.7 / plum 5.5 / sky 4.6 */
+    --color-warm: #b8501c;
+    --color-gold: #9a6a12;
+    --color-plum: #915581;
+    --color-sky: #2f7bb0;
+  }
+
+  :root[data-a11y-contrast="high"] {
+    --color-bg: #000000;
+    --color-ink: #ffffff;
+    --color-muted: #cccccc;
+    --color-line: #ffffff;
+    --color-panel: #000000;
+    --color-accent: #00ffff;
+    --color-accent-strong: #80ffff;
+    /* dark HC accent は cyan (#00ffff)。白前景は 1.25:1 で不可視のため黒へ反転し 16.7:1 (AAA) */
+    --color-on-accent: #000000;
+    /* warn 文字は黒背景で AAA (14.57:1)。terminal-warn HC と意図的に同値 */
+    --color-status-warn: #ffd24a;
+    /* error 文字は黒背景で AAA (9.14:1)。terminal-error HC と同値で統一 */
+    --color-status-error: #ff8a75;
+    /* dark HC の lane パレット（DESIGN.md §2）。黒背景 (#000) でバーが視認でき (vs 黒 >= 3:1)、
+       かつ白前景 (--color-on-lane) で AA 以上を満たす値。light HC (warm #800000 等) は黒背景で
+       沈むため流用しない。白文字: warm 5.1 / gold 5.3 / plum 6.1 / sky 4.8、vs 黒: 4.13 / 4.00 / 3.46 / 4.40 */
+    --color-warm: #c0461a;
+    --color-gold: #8f6410;
+    --color-plum: #8a4f76;
+    --color-sky: #2f78ac;
+    /* Terminal HC は light HC と同値のため、上の :root[data-a11y-contrast="high"] が
+       メディアクエリ非依存でカスケード適用される。ここでの再列挙は不要。 */
+  }
+}
+
+/* 明示的テーマ切替（#431 / theme.ts）。:root[data-theme] は prefers-color-scheme に
+   依存せず、ユーザーが SiteHeader / DocsA11yMenu のテーマトグルで選んだ light/dark を
+   強制する。data-theme 未設定（JS 無効環境）では上の @media (prefers-color-scheme: dark)
+   が引き続きフォールバックとして働く。値は base / light HC / dark media / dark HC の
+   4 ブロックと同一（drift は theme-tokens.test.ts で検知）。属性セレクタにより
+   specificity が @media 内の :root より高いため、OS 設定より優先して確実に上書きする。 */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: #ffffff;
+  --color-ink: #17212b;
+  --color-muted: #596575;
+  --color-line: #d8dde5;
+  --color-panel: #f6f8fb;
+  --color-accent: #0d766f;
+  --color-accent-strong: #095c56;
+  --color-on-accent: #ffffff;
+  --color-warm: #a74718;
+  --color-gold: #d69a24;
+  --color-plum: #7b4569;
+  --color-sky: #2c6f9f;
+  --color-status-warn: #845d0c;
+  --color-status-error: #c62828;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #111920;
+  --color-ink: #e8f0f8;
+  --color-muted: #8fa3ba;
+  --color-line: #2a3544;
+  --color-panel: #1a2434;
+  --color-accent: #1a9e96;
+  --color-accent-strong: #22c4bb;
+  --color-on-accent: #06211e;
+  --color-warm: #b8501c;
+  --color-gold: #9a6a12;
+  --color-plum: #915581;
+  --color-sky: #2f7bb0;
+  --color-status-warn: #e6c46e;
+  --color-status-error: #ff8a78;
+}
+
+:root[data-theme="light"][data-a11y-contrast="high"] {
+  --color-bg: #ffffff;
+  --color-ink: #000000;
+  --color-muted: #333333;
+  --color-line: #000000;
+  --color-panel: #ffffff;
+  --color-accent: #0000ff;
+  --color-accent-strong: #000080;
+  --color-on-accent: #ffffff;
+  --color-warm: #800000;
+  --color-gold: #806000;
+  --color-plum: #600060;
+  --color-sky: #00557a;
+  --color-status-warn: #5c4500;
+  --color-status-error: #960000;
+}
+
+:root[data-theme="dark"][data-a11y-contrast="high"] {
+  --color-bg: #000000;
+  --color-ink: #ffffff;
+  --color-muted: #cccccc;
+  --color-line: #ffffff;
+  --color-panel: #000000;
+  --color-accent: #00ffff;
+  --color-accent-strong: #80ffff;
+  --color-on-accent: #000000;
+  --color-warm: #c0461a;
+  --color-gold: #8f6410;
+  --color-plum: #8a4f76;
+  --color-sky: #2f78ac;
+  --color-status-warn: #ffd24a;
+  --color-status-error: #ff8a75;
+}
+
+/* span / event 着色の index→semantic ブリッジ（DESIGN.md §8 / #303）。
+   本体 WASM v1.20.0 は span/event を style="fill:var(--tdsl-lane-N, #fallback)" （N=lane 出現順
+   0..7）で着色し、同時に SVG 内の <style> で :root にデフォルト hex を定義する。
+   その :root デフォルトを LP テーマで上書きするため、dot/span の最近祖先である
+   .tdsl-root に index トークンを再定義する（:root 同士の競合では WASM の inline <style> が
+   後勝ちするため :root では効かず、より近い .tdsl-root の継承で確実に上書きする）。
+   LP パレット（warm/gold/plum/sky）を 8 スロットにサイクル適用。プロキシ先の
+   --tdsl-lane-* → --color-* が light/dark/HC に追従するため、テーマ追従は自動。
+   WCAG: マッピング先は検証済み LP パレット（lane-palette.test.ts / DESIGN §2）。gold lane 上の
+   白ラベルは §2 記載の既知・後続扱い例外を踏襲。 */
+.tdsl-root {
+  --tdsl-lane-0: var(--tdsl-lane-warm);
+  --tdsl-lane-1: var(--tdsl-lane-gold);
+  --tdsl-lane-2: var(--tdsl-lane-plum);
+  --tdsl-lane-3: var(--tdsl-lane-sky);
+  --tdsl-lane-4: var(--tdsl-lane-warm);
+  --tdsl-lane-5: var(--tdsl-lane-gold);
+  --tdsl-lane-6: var(--tdsl-lane-plum);
+  --tdsl-lane-7: var(--tdsl-lane-sky);
+}
+
+/* Timeline preview SVG（WASM 出力 .tdsl-root）の軸・バンド・ラベルの着色。
+   WASM (crates/tdsl-render/src/svg.rs) が出力する SVG のうち band/軸/ラベルは class のみで
+   fill/stroke を持たないため、ここで一括着色する。未指定だと rect は黒 fill / line は
+   stroke:none になり、lane band が黒塗り・軸線が不可視になる（本家 webui の App.css 相当）。
+   色は既存テーマトークンに連動させ light=白系 / dark=暗色系で表示する。
+   Playground / Gallery / TimelineEmbed の全 preview で共通。 */
+.tdsl-root .tdsl-lane-band-even {
+  fill: var(--color-bg);
+}
+.tdsl-root .tdsl-lane-band-odd {
+  fill: var(--color-panel);
+}
+.tdsl-root .tdsl-axis-baseline {
+  stroke: var(--color-muted);
+}
+.tdsl-root .tdsl-event-stem {
+  stroke: var(--color-muted);
+}
+.tdsl-root .tdsl-axis-tick,
+.tdsl-root .tdsl-axis-month-tick,
+.tdsl-root .tdsl-axis-day-tick,
+.tdsl-root .tdsl-grid-line,
+.tdsl-root .tdsl-group-separator {
+  stroke: var(--color-line);
+}
+.tdsl-root .tdsl-axis-text,
+.tdsl-root .tdsl-axis-day-text {
+  fill: var(--color-muted);
+}
+.tdsl-root .tdsl-lane-label,
+.tdsl-root .tdsl-group-label {
+  fill: var(--color-ink);
+}
+/* span / event の本体はデータ駆動（lane パレット）で fill 済み。ラベルは有色バー上の
+   固定前景なので白固定トークン（--color-on-lane）を使う。ヒット領域は透明。 */
+.tdsl-root .tdsl-item-label {
+  fill: var(--color-on-lane);
+}
+.tdsl-root .tdsl-event-hit {
+  fill: transparent;
+}

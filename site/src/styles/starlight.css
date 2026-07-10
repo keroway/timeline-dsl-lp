@@ -1,3 +1,6 @@
+/* LP と共通のデザイントークン（色/spacing/radius/a11y 属性）。Docs レビュー統一。 */
+@import "./tokens.css";
+
 :root {
   --sl-color-accent-low: #d8f0ec;
   --sl-color-accent: #0d766f;
@@ -16,3 +19,96 @@
   font-family: var(--sl-text-h1);
   letter-spacing: 0;
 }
+
+/* ---------------------------------------------------------------------------
+ * --sl-color-* → --color-* ブリッジ（Docs デザイン統一）
+ *
+ * Starlight の既定パレット（@layer starlight.base）はブルー系グレースケールで、
+ * LP の --color-* トークン（tokens.css）とは色相・明度が異なる。ここで Starlight の
+ * カラー変数を LP トークンへ再定義し、Docs のヘッダー/サイドバー/本文/コードブロックを
+ * LP と同じ配色（light/dark/high-contrast すべて）に揃える。
+ *
+ * customCss はレイヤー無しで後読みされるため、@layer starlight.base 内の既定値より
+ * 確実に優先される。Starlight は light テーマを [data-theme='light'] で上書きするため、
+ * 同じセレクタで対抗する（このファイルの記述順は問わない — 同 specificity は後勝ち）。
+ * high-contrast は --color-* 側が data-a11y-contrast="high" で切り替わるため、
+ * ブリッジ式のままで自動追従する（個別ブロック不要）。
+ * ------------------------------------------------------------------------- */
+:root {
+  --sl-color-bg: var(--color-bg);
+  --sl-color-bg-nav: var(--color-panel);
+  --sl-color-bg-sidebar: var(--color-panel);
+  --sl-color-bg-inline-code: var(--color-panel);
+  --sl-color-bg-accent: var(--color-accent);
+  --sl-color-text: var(--color-ink);
+  --sl-color-text-accent: var(--color-accent-strong);
+  --sl-color-text-invert: var(--color-bg);
+  --sl-color-white: var(--color-ink);
+  --sl-color-black: var(--color-bg);
+  --sl-color-gray-1: var(--color-ink);
+  --sl-color-gray-2: var(--color-muted);
+  --sl-color-gray-3: var(--color-muted);
+  --sl-color-gray-4: var(--color-line);
+  --sl-color-gray-5: var(--color-line);
+  --sl-color-gray-6: var(--color-panel);
+  --sl-color-gray-7: var(--color-panel);
+  --sl-color-hairline: var(--color-line);
+  --sl-color-hairline-light: var(--color-line);
+  --sl-color-hairline-shade: var(--color-line);
+}
+
+:root[data-theme="light"] {
+  --sl-color-bg: var(--color-bg);
+  --sl-color-bg-nav: var(--color-panel);
+  --sl-color-bg-sidebar: var(--color-bg);
+  --sl-color-bg-inline-code: var(--color-panel);
+  --sl-color-bg-accent: var(--color-accent);
+  --sl-color-text: var(--color-ink);
+  --sl-color-text-accent: var(--color-accent-strong);
+  --sl-color-text-invert: var(--color-bg);
+  --sl-color-white: var(--color-ink);
+  --sl-color-black: var(--color-bg);
+  --sl-color-gray-1: var(--color-panel);
+  --sl-color-gray-2: var(--color-muted);
+  --sl-color-gray-3: var(--color-muted);
+  --sl-color-gray-4: var(--color-line);
+  --sl-color-gray-5: var(--color-line);
+  --sl-color-gray-6: var(--color-panel);
+  --sl-color-gray-7: var(--color-panel);
+  --sl-color-hairline: var(--color-line);
+  --sl-color-hairline-light: var(--color-line);
+  --sl-color-hairline-shade: var(--color-line);
+}
+
+/* ---------------------------------------------------------------------------
+ * a11y 実効化（Docs レビュー統一）
+ *
+ * DocsA11yMenu / A11yMenuPanel は data-a11y-* 属性を <html> に立てるが、それに反応する
+ * CSS は元々 global.css にしかなく Docs では未読込だった。tokens.css の import で
+ * 色（contrast）は自動追従するが、文字サイズ/字間は LP が --font-size-base を body に
+ * 適用する方式のため、Starlight（--sl-text-* が rem 基準）には効かない。
+ * ここでは Docs 側だけ root font-size をスケールし、rem 基準の --sl-text-* 全体を
+ * 一律拡大することで同等の効果を得る。
+ * ------------------------------------------------------------------------- */
+:root[data-a11y-text-size="large"] {
+  font-size: 125%;
+}
+
+:root[data-a11y-text-size="extra-large"] {
+  font-size: 150%;
+}
+
+:root[data-a11y-text-size="xx-large"] {
+  /* Starlight はサイドバー幅等が rem 固定のため、LP と同じ 200% だと横スクロールが
+     発生しやすい。Docs では上限を 180% に緩めて崩れを防ぐ。 */
+  font-size: 180%;
+}
+
+.sl-markdown-content {
+  letter-spacing: var(--letter-spacing-base);
+  word-spacing: var(--word-spacing-base);
+}
+
+/* 補足: reduced-motion は Starlight 本体が prefers-reduced-motion: no-preference を
+   条件にアニメーションを opt-in する設計のため、OS 設定に既に追従済み。
+   data-a11y-reduced-motion 用の Starlight 固有トークンは存在しないため対応不要。 */
