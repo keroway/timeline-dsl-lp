@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const cssText = readFileSync(
-  fileURLToPath(new URL("../styles/global.css", import.meta.url)),
+  fileURLToPath(new URL("../styles/tokens.css", import.meta.url)),
   "utf8",
 );
 

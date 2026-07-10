@@ -66,9 +66,23 @@ export default defineConfig({
         SocialIcons: "./src/components/DocsA11yMenu.astro",
         Head: "./src/components/StarlightHead.astro",
         Search: "./src/components/DocsSearch.astro",
+        Footer: "./src/components/StarlightFooter.astro",
+        Header: "./src/components/StarlightHeader.astro",
       },
       customCss: ["./src/styles/starlight.css"],
       sidebar: [
+        {
+          // Docs 内のモバイルサイドバー先頭にサイト共通ナビ(Playground/Gallery/Showcase/Changelog)を置く。
+          // デスクトップの TOP_NAV は StarlightHeader.astro が担うため、こちらはモバイル幅での回遷性確保用(Docs レビュー統一)。
+          label: "サイト",
+          translations: { en: "Site" },
+          items: [
+            { label: "Playground", link: "/playground/" },
+            { label: "Gallery", link: "/gallery/" },
+            { label: "Showcase", link: "/showcase/" },
+            { label: "Changelog", link: "/changelog/" },
+          ],
+        },
         {
           label: "はじめる",
           translations: { en: "Get Started" },
