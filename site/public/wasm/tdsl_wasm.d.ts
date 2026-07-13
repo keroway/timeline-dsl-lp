@@ -24,40 +24,40 @@
  * default) to keep the historical appearance.
  */
 export class JsRenderOptions {
-  free(): void;
-  [Symbol.dispose](): void;
-  constructor();
-  /**
-   * Height of each lane in pixels. `0` (default) uses the renderer default (60).
-   * Larger values increase vertical density (taller bands and thicker bars).
-   */
-  lane_height: number;
-  /**
-   * When true, labels are rendered next to Event/EventRange items.
-   */
-  show_event_labels: boolean;
-  /**
-   * When true, render a static legend panel showing lane and tag colors.
-   */
-  show_legend: boolean;
-  /**
-   * When true, append an item listing table.
-   */
-  show_table: boolean;
-  grid: string;
-  /**
-   * High-level visual layout style (#543/#564/#565): `"timeline"` (default),
-   * `"group-bands"`, `"gantt"`, or `"zigzag"`. Orthogonal to `orientation`.
-   * `"zigzag"` only takes effect when the timeline has at most
-   * `ZIGZAG_MAX_LANES` lanes; beyond that it falls back to `"timeline"`
-   * positioning at the `tdsl-render` layer — callers that need a
-   * user-facing warning (mirroring the CLI's `--layout-style zigzag`
-   * notice) should check the timeline's lane count themselves before
-   * rendering.
-   */
-  layout_style: string;
-  orientation: string;
-  theme: string;
+    free(): void;
+    [Symbol.dispose](): void;
+    constructor();
+    /**
+     * Height of each lane in pixels. `0` (default) uses the renderer default (60).
+     * Larger values increase vertical density (taller bands and thicker bars).
+     */
+    lane_height: number;
+    /**
+     * When true, labels are rendered next to Event/EventRange items.
+     */
+    show_event_labels: boolean;
+    /**
+     * When true, render a static legend panel showing lane and tag colors.
+     */
+    show_legend: boolean;
+    /**
+     * When true, append an item listing table.
+     */
+    show_table: boolean;
+    grid: string;
+    /**
+     * High-level visual layout style (#543/#564/#565): `"timeline"` (default),
+     * `"group-bands"`, `"gantt"`, or `"zigzag"`. Orthogonal to `orientation`.
+     * `"zigzag"` only takes effect when the timeline has at most
+     * `ZIGZAG_MAX_LANES` lanes; beyond that it falls back to `"timeline"`
+     * positioning at the `tdsl-render` layer — callers that need a
+     * user-facing warning (mirroring the CLI's `--layout-style zigzag`
+     * notice) should check the timeline's lane count themselves before
+     * rendering.
+     */
+    layout_style: string;
+    orientation: string;
+    theme: string;
 }
 
 /**
@@ -154,60 +154,45 @@ export function render_svg_from_source(source: string, scale: number): string;
  * `scale` controls pixels-per-year. Pass `0.0` (or negative) to auto-calculate.
  * Returns Ok(svg_string) or Err(error_message).
  */
-export function render_svg_from_source_with_options(
-  source: string,
-  scale: number,
-  opts: JsRenderOptions,
-): string;
+export function render_svg_from_source_with_options(source: string, scale: number, opts: JsRenderOptions): string;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
-  readonly memory: WebAssembly.Memory;
-  readonly __wbg_get_jsrenderoptions_lane_height: (a: number) => number;
-  readonly __wbg_get_jsrenderoptions_show_event_labels: (a: number) => number;
-  readonly __wbg_get_jsrenderoptions_show_legend: (a: number) => number;
-  readonly __wbg_get_jsrenderoptions_show_table: (a: number) => number;
-  readonly __wbg_jsrenderoptions_free: (a: number, b: number) => void;
-  readonly __wbg_set_jsrenderoptions_lane_height: (a: number, b: number) => void;
-  readonly __wbg_set_jsrenderoptions_show_event_labels: (a: number, b: number) => void;
-  readonly __wbg_set_jsrenderoptions_show_legend: (a: number, b: number) => void;
-  readonly __wbg_set_jsrenderoptions_show_table: (a: number, b: number) => void;
-  readonly check_source: (a: number, b: number, c: number) => void;
-  readonly compile_to_ir: (a: number, b: number, c: number) => void;
-  readonly format_source: (a: number, b: number, c: number) => void;
-  readonly jsrenderoptions_grid: (a: number, b: number) => void;
-  readonly jsrenderoptions_layout_style: (a: number, b: number) => void;
-  readonly jsrenderoptions_new: () => number;
-  readonly jsrenderoptions_orientation: (a: number, b: number) => void;
-  readonly jsrenderoptions_set_grid: (a: number, b: number, c: number) => void;
-  readonly jsrenderoptions_set_layout_style: (a: number, b: number, c: number) => void;
-  readonly jsrenderoptions_set_orientation: (a: number, b: number, c: number) => void;
-  readonly jsrenderoptions_set_theme: (a: number, b: number, c: number) => void;
-  readonly jsrenderoptions_theme: (a: number, b: number) => void;
-  readonly lint_fix_source: (a: number, b: number, c: number) => void;
-  readonly lint_source: (a: number, b: number, c: number) => void;
-  readonly render_html_from_source: (a: number, b: number, c: number) => void;
-  readonly render_html_from_source_with_options: (
-    a: number,
-    b: number,
-    c: number,
-    d: number,
-  ) => void;
-  readonly render_svg_from_source: (a: number, b: number, c: number, d: number) => void;
-  readonly render_svg_from_source_with_options: (
-    a: number,
-    b: number,
-    c: number,
-    d: number,
-    e: number,
-  ) => void;
-  readonly main: () => void;
-  readonly __wbindgen_export: (a: number, b: number, c: number) => void;
-  readonly __wbindgen_export2: (a: number, b: number) => number;
-  readonly __wbindgen_export3: (a: number, b: number, c: number, d: number) => number;
-  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
-  readonly __wbindgen_start: () => void;
+    readonly memory: WebAssembly.Memory;
+    readonly __wbg_get_jsrenderoptions_lane_height: (a: number) => number;
+    readonly __wbg_get_jsrenderoptions_show_event_labels: (a: number) => number;
+    readonly __wbg_get_jsrenderoptions_show_legend: (a: number) => number;
+    readonly __wbg_get_jsrenderoptions_show_table: (a: number) => number;
+    readonly __wbg_jsrenderoptions_free: (a: number, b: number) => void;
+    readonly __wbg_set_jsrenderoptions_lane_height: (a: number, b: number) => void;
+    readonly __wbg_set_jsrenderoptions_show_event_labels: (a: number, b: number) => void;
+    readonly __wbg_set_jsrenderoptions_show_legend: (a: number, b: number) => void;
+    readonly __wbg_set_jsrenderoptions_show_table: (a: number, b: number) => void;
+    readonly check_source: (a: number, b: number, c: number) => void;
+    readonly compile_to_ir: (a: number, b: number, c: number) => void;
+    readonly format_source: (a: number, b: number, c: number) => void;
+    readonly jsrenderoptions_grid: (a: number, b: number) => void;
+    readonly jsrenderoptions_layout_style: (a: number, b: number) => void;
+    readonly jsrenderoptions_new: () => number;
+    readonly jsrenderoptions_orientation: (a: number, b: number) => void;
+    readonly jsrenderoptions_set_grid: (a: number, b: number, c: number) => void;
+    readonly jsrenderoptions_set_layout_style: (a: number, b: number, c: number) => void;
+    readonly jsrenderoptions_set_orientation: (a: number, b: number, c: number) => void;
+    readonly jsrenderoptions_set_theme: (a: number, b: number, c: number) => void;
+    readonly jsrenderoptions_theme: (a: number, b: number) => void;
+    readonly lint_fix_source: (a: number, b: number, c: number) => void;
+    readonly lint_source: (a: number, b: number, c: number) => void;
+    readonly render_html_from_source: (a: number, b: number, c: number) => void;
+    readonly render_html_from_source_with_options: (a: number, b: number, c: number, d: number) => void;
+    readonly render_svg_from_source: (a: number, b: number, c: number, d: number) => void;
+    readonly render_svg_from_source_with_options: (a: number, b: number, c: number, d: number, e: number) => void;
+    readonly main: () => void;
+    readonly __wbindgen_export: (a: number, b: number, c: number) => void;
+    readonly __wbindgen_export2: (a: number, b: number) => number;
+    readonly __wbindgen_export3: (a: number, b: number, c: number, d: number) => number;
+    readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
+    readonly __wbindgen_start: () => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
@@ -230,9 +215,4 @@ export function initSync(module: { module: SyncInitInput } | SyncInitInput): Ini
  *
  * @returns {Promise<InitOutput>}
  */
-export default function __wbg_init(
-  module_or_path?:
-    | { module_or_path: InitInput | Promise<InitInput> }
-    | InitInput
-    | Promise<InitInput>,
-): Promise<InitOutput>;
+export default function __wbg_init (module_or_path?: { module_or_path: InitInput | Promise<InitInput> } | InitInput | Promise<InitInput>): Promise<InitOutput>;
