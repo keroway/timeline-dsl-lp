@@ -3,6 +3,7 @@ import {
   assertContentType,
   assertIncludes,
   assertStatus,
+  captureNavigationTarget,
   get,
   normalizeBaseUrl,
   parseArgs,
@@ -339,21 +340,8 @@ async function checkLangToggle(browser, rootUrl, startPath, expectedPath, label)
     throw new Error(`${label}: .lang-toggle button not found on ${startPath}`);
   }
 
-  // Mock location.assign to capture navigation target without actually navigating
-  await page.evaluate(() => {
-    window.__langToggleTarget = null;
-    Object.defineProperty(window.location, "assign", {
-      value: (url) => {
-        window.__langToggleTarget = url;
-      },
-      writable: true,
-      configurable: true,
-    });
-  });
-
-  await langToggle.click();
-
-  const target = await page.evaluate(() => window.__langToggleTarget);
+  // location.assign を直接書き換えず、ナビゲーションリクエストをネットワークレベルで捕捉する（#456）
+  const target = await captureNavigationTarget(page, () => langToggle.click());
   if (target !== expectedPath) {
     throw new Error(`${label}: expected navigation to ${expectedPath}, got: ${target}`);
   }

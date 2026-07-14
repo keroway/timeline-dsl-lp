@@ -3,6 +3,7 @@ import {
   assertContentType,
   assertIncludes,
   assertStatus,
+  captureNavigationTarget,
   get,
   normalizeBaseUrl,
   parseArgs,
@@ -420,21 +421,8 @@ async function smokeLocaleToggle(rootUrl, browser) {
   // クリック時に localStorage へ tdsl-locale が保存されること（実際の遷移はテスト外）
   await page.evaluate(() => localStorage.removeItem("tdsl-locale"));
 
-  // クリック前に location.assign をモックして遷移を防ぐ
-  await page.evaluate(() => {
-    window.__langToggleTarget = null;
-    const orig = window.location.assign.bind(window.location);
-    window.__origAssign = orig;
-    Object.defineProperty(window.location, "assign", {
-      value: (url) => {
-        window.__langToggleTarget = url;
-      },
-      writable: true,
-      configurable: true,
-    });
-  });
-
-  await langToggle.click();
+  // location.assign を直接書き換えず、ナビゲーションリクエストをネットワークレベルで捕捉する（#456）
+  const target = await captureNavigationTarget(page, () => langToggle.click());
 
   // localStorage に tdsl-locale が保存されること
   const stored = await page.evaluate(() => localStorage.getItem("tdsl-locale"));
@@ -442,18 +430,11 @@ async function smokeLocaleToggle(rootUrl, browser) {
     throw new Error("lang-toggle click should save tdsl-locale to localStorage");
   }
 
-  // /playground/ は英語版が未提供なので /en/ に遷移すること
-  const target = await page.evaluate(() => window.__langToggleTarget);
-  if (target !== "/en/") {
-    throw new Error(`lang-toggle from /playground/ should redirect to /en/, got: ${target}`);
-  }
-
-  // aria-live で未提供メッセージが通知されること
-  const liveText = await page.evaluate(() => {
-    return document.querySelector("[data-a11y-live]")?.textContent ?? "";
-  });
-  if (!liveText) {
-    throw new Error("lang-toggle should announce unavailability via [data-a11y-live]");
+  // /playground/ には /en/playground/ という英語版が存在するので、そこに遷移すること（#137）
+  if (target !== "/en/playground/") {
+    throw new Error(
+      `lang-toggle from /playground/ should redirect to /en/playground/, got: ${target}`,
+    );
   }
 
   // cleanup

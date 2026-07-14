@@ -76,3 +76,43 @@ export function assertIncludes(value, expected, label) {
     throw new Error(`${label}. Expected to find: ${expected}`);
   }
 }
+
+// ページ内の何らかのアクション（例: 言語トグルのクリック）が発生させるナビゲーションの
+// 遷移先 pathname を、実際には遷移させずに捕捉する。
+//
+// 新しい Chromium では `Location.prototype.assign` が non-configurable になり、
+// `Object.defineProperty(window.location, "assign", ...)` による上書きが
+// `TypeError: Cannot redefine property: assign` で失敗するようになったため、
+// `window.location` に一切触れず、Playwright の `page.route()` でナビゲーション
+// リクエストをネットワークレベルで横取りして中断する方式に統一する。
+export async function captureNavigationTarget(page, triggerFn) {
+  let capturedUrl = null;
+
+  const handler = async (route) => {
+    const request = route.request();
+    if (request.isNavigationRequest() && capturedUrl === null) {
+      try {
+        capturedUrl = new URL(request.url()).pathname;
+      } catch {
+        capturedUrl = request.url();
+      }
+      // 204 を返すとブラウザはナビゲーションを実行せず現在のドキュメントに留まる（RFC 9110 §15.3.5）。
+      // route.abort() だと Chromium がエラーページ（opaque origin）に遷移してしまい、
+      // 後続の localStorage アクセスが SecurityError になるため、fulfill で代替する。
+      await route.fulfill({ status: 204, headers: {} });
+      return;
+    }
+    await route.continue();
+  };
+
+  await page.route("**/*", handler);
+  try {
+    await triggerFn();
+    // route ハンドラは非同期のため、abort が処理されるまで少し待つ。
+    await page.waitForTimeout(200);
+  } finally {
+    await page.unroute("**/*", handler);
+  }
+
+  return capturedUrl;
+}
