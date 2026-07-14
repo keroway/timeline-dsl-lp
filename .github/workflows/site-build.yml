@@ -1,36 +1,64 @@
 name: Site build
 
+# NOTE: `pull_request` / `push` triggers intentionally have NO `paths` filter.
+# The `main protection` ruleset requires a status check named "build" on every
+# PR into main. If this workflow only triggered on `site/**` changes, PRs that
+# never touch those paths (e.g. README-only docs PRs) would never get a
+# "build" check reported at all, and the required-status-check would stay
+# stuck at "Expected — waiting for status to be reported" forever, blocking
+# merge permanently (see #463).
+#
+# Instead, the workflow always runs, but the `changes` job detects whether
+# the PR/push actually touches site-relevant paths. The `build` job itself is
+# never skipped at the job level (job-level `if` produces a "skipped"
+# conclusion, which does not satisfy a required status check) — instead, each
+# expensive step is individually gated with `if: needs.changes.outputs.site
+# == 'true'`. When nothing relevant changed, the job still runs and reports
+# "build" success quickly, with all real steps skipped.
 on:
   pull_request:
-    paths:
-      - "site/**"
-      - ".github/**"
-      - "DESIGN.md"
   push:
     branches: [main]
-    paths:
-      - "site/**"
-      - ".github/**"
-      - "DESIGN.md"
   workflow_dispatch:
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      site: ${{ steps.filter.outputs.site }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            site:
+              - "site/**"
+              - ".github/**"
+              - "DESIGN.md"
+
   build:
+    needs: changes
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      RUN_FULL: ${{ needs.changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch' }}
     defaults:
       run:
         working-directory: site
 
     steps:
       - uses: actions/checkout@v6
+        if: env.RUN_FULL == 'true'
 
       - uses: pnpm/action-setup@v6
+        if: env.RUN_FULL == 'true'
         with:
           version: 10.33.3
 
       - uses: actions/setup-node@v6
+        if: env.RUN_FULL == 'true'
         with:
           node-version: 24
           check-latest: true
@@ -38,24 +66,33 @@ jobs:
           cache-dependency-path: site/pnpm-lock.yaml
 
       - run: pnpm install --frozen-lockfile
+        if: env.RUN_FULL == 'true'
       - name: lint
+        if: env.RUN_FULL == 'true'
         run: pnpm lint
       - name: format:check
+        if: env.RUN_FULL == 'true'
         run: pnpm format:check
       - name: test:unit
+        if: env.RUN_FULL == 'true'
         run: pnpm test:unit
       - run: pnpm build
+        if: env.RUN_FULL == 'true'
 
       - name: bundle-size
+        if: env.RUN_FULL == 'true'
         run: pnpm bundle-size
 
       - name: Install Playwright Chromium (for browser smoke + a11y)
+        if: env.RUN_FULL == 'true'
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Start preview server
+        if: env.RUN_FULL == 'true'
         run: pnpm preview &
 
       - name: Wait for preview server
+        if: env.RUN_FULL == 'true'
         run: |
           for _ in $(seq 1 30); do
             if curl -sf http://127.0.0.1:4321 -o /dev/null; then
@@ -68,45 +105,56 @@ jobs:
           exit 1
 
       - name: smoke:seo
+        if: env.RUN_FULL == 'true'
         run: pnpm smoke:seo
         env:
           SEO_BASE_URL: http://127.0.0.1:4321
 
       - name: smoke:i18n
+        if: env.RUN_FULL == 'true'
         run: pnpm smoke:i18n
         env:
           I18N_BASE_URL: http://127.0.0.1:4321
 
       - name: smoke:i18n:browser
+        if: env.RUN_FULL == 'true'
         run: pnpm smoke:i18n:browser
         env:
           I18N_BASE_URL: http://127.0.0.1:4321
 
       - name: smoke:playground
+        if: env.RUN_FULL == 'true'
         run: pnpm smoke:playground
         env:
           PLAYGROUND_BASE_URL: http://127.0.0.1:4321
 
       - name: smoke:playground:browser
+        if: env.RUN_FULL == 'true'
         run: pnpm smoke:playground:browser
         env:
           PLAYGROUND_BASE_URL: http://127.0.0.1:4321
 
       - name: smoke:a11y
+        if: env.RUN_FULL == 'true'
         run: pnpm smoke:a11y
         env:
           A11Y_BASE_URL: http://127.0.0.1:4321
 
       - name: Lighthouse CI (perf / a11y / SEO / best-practices baseline)
+        if: env.RUN_FULL == 'true'
         run: pnpm lhci
         env:
           LHCI_BASE_URL: http://127.0.0.1:4321
 
       - name: Upload Lighthouse reports
-        if: always()
+        if: always() && env.RUN_FULL == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: lighthouse-reports
           path: site/.lighthouseci/
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: No relevant changes — skipping full build
+        if: env.RUN_FULL != 'true'
+        run: echo "No site/**, .github/**, or DESIGN.md changes detected; skipping full build/test/smoke suite."
