@@ -49,7 +49,7 @@ jobs:
       - name: bundle-size
         run: pnpm bundle-size
 
-      - name: Install Playwright Chromium (for a11y smoke)
+      - name: Install Playwright Chromium (for browser smoke + a11y)
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Start preview server
@@ -57,7 +57,7 @@ jobs:
 
       - name: Wait for preview server
         run: |
-          for i in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             if curl -sf http://127.0.0.1:4321 -o /dev/null; then
               echo "Preview server ready"
               exit 0
@@ -77,8 +77,18 @@ jobs:
         env:
           I18N_BASE_URL: http://127.0.0.1:4321
 
+      - name: smoke:i18n:browser
+        run: pnpm smoke:i18n:browser
+        env:
+          I18N_BASE_URL: http://127.0.0.1:4321
+
       - name: smoke:playground
         run: pnpm smoke:playground
+        env:
+          PLAYGROUND_BASE_URL: http://127.0.0.1:4321
+
+      - name: smoke:playground:browser
+        run: pnpm smoke:playground:browser
         env:
           PLAYGROUND_BASE_URL: http://127.0.0.1:4321
 
