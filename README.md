@@ -16,7 +16,7 @@ LP / documentation site for the public [Timeline DSL](https://github.com/keroway
 - Site: <https://timeline-dsl-lp.pages.dev>
 - Main repository: <https://github.com/keroway/timeline-dsl>
 - Playground / WebUI: <https://keroway.github.io/timeline-dsl/>
-- Latest tracked release in this site: `v1.22.0` (`site/public/wasm/package.json`, generated changelog)
+- Latest tracked release in this site: `v1.25.0` (`site/public/wasm/package.json`, generated changelog)
 
 ## Tech stack
 
@@ -25,7 +25,7 @@ LP / documentation site for the public [Timeline DSL](https://github.com/keroway
 | Site framework | Astro 6 + Starlight 0.39 | Static LP, docs, changelog, gallery, showcase, and playground routes. |
 | Language/runtime | TypeScript 6, Node.js 24, pnpm 10 | All commands run under `site/`. |
 | Styling | Astro components + CSS tokens | Global design tokens live in `site/src/styles/global.css`; avoid ad-hoc colors. |
-| Playground | Vendored `@keroway/tdsl-wasm` 1.22.0 | Browser validation and SVG rendering go through `site/src/lib/tdsl-wasm.ts`. |
+| Playground | Vendored `@keroway/tdsl-wasm` 1.25.0 | Browser validation and SVG rendering go through `site/src/lib/tdsl-wasm.ts`. |
 | Search | Pagefind generated at build time | Used by the site-wide search dialog. |
 | Quality | `astro check`, Vitest, ESLint, Prettier, axe-core, Playwright, Lighthouse CI | `pnpm build` is the minimum CI gate; extra smoke scripts cover SEO/i18n/a11y/playground. |
 | Hosting | Cloudflare Pages | GitHub integration builds from `site/` and publishes `dist/`. |
