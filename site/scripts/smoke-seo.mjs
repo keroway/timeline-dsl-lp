@@ -7,6 +7,7 @@ import {
   parseArgs,
 } from "./lib/smoke-helpers.mjs";
 import { HREFLANG_PATHS, JSONLD_TARGETS, OG_IMAGE_TARGETS } from "./lib/site-routes.mjs";
+import { PRODUCTION_ORIGIN } from "../src/lib/site.ts";
 
 const args = parseArgs(process.argv.slice(2));
 const baseUrl = normalizeBaseUrl(args.baseUrl ?? process.env.SEO_BASE_URL ?? DEFAULT_BASE_URL);
@@ -79,8 +80,8 @@ async function smokeSeo(rootUrl) {
   assertIncludes(robotsBody, "Sitemap:", "robots.txt must include a Sitemap line");
   assertIncludes(
     robotsBody,
-    "sitemap-index.xml",
-    "robots.txt Sitemap must point to sitemap-index.xml",
+    `Sitemap: ${PRODUCTION_ORIGIN}/sitemap-index.xml`,
+    "robots.txt Sitemap must point to the production origin's sitemap-index.xml",
   );
   console.log("robots.txt: served with User-agent / Sitemap entries. ✓");
 }
