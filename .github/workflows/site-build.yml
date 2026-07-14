@@ -28,6 +28,11 @@ jobs:
       site: ${{ steps.filter.outputs.site }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          # dorny/paths-filter diffs against the base/head commits on `push`
+          # events (pull_request uses the GitHub API instead and is
+          # unaffected); a shallow depth-1 clone would lack that history.
+          fetch-depth: 2
 
       - uses: dorny/paths-filter@v3
         id: filter
