@@ -10,7 +10,7 @@ Timeline DSL の LP / ドキュメントサイトです。
 - Package manager: pnpm 10.33.3（`cd site` 後に実行）
 - Node.js: 24
 - Deploy: Cloudflare Pages（GitHub integration 経由、push 自動デプロイ）
-- Site URL: https://timeline-dsl-lp.pages.dev
+- Site URL: <https://timeline-dsl-lp.pages.dev>
 
 ## Commands
 
@@ -83,6 +83,15 @@ Playground / runnable docs は `site/src/lib/tdsl-wasm.ts` 経由で WASM を呼
 バイナリは `site/public/wasm/` に vendoring 済み。更新時は本体リポジトリの
 `crates/tdsl-wasm` を `wasm-pack build --target web` し、生成物を `site/public/wasm/` に同期する。
 
+## AI エージェント / LLM 向け公開
+
+Starlight の `plugins` に `starlight-llms-txt` と `starlight-md-txt` を導入済み（docs コレクションのみ対象、LP/Playground/Gallery/Showcase/Changelog には影響しない）。
+
+- `/llms.txt` `/llms-full.txt` `/llms-small.txt` — サイト全体のインデックス/全文/要約
+- `/docs/<slug>.md`（各言語）— 各ドキュメントページの生 Markdown
+
+設定・運用ルールは `.claude/skills/starlight-authoring/SKILL.md` の §4 を参照。
+
 ## Git hooks（pre-commit）
 
 `pnpm install` を実行すると `prepare` スクリプトが `simple-git-hooks` を初期化し、
@@ -120,6 +129,7 @@ cd site && pnpm prepare
 このリポジトリは Claude Code 専用に以下を整備している。実装に入る前に必ず参照する。
 
 - **実装ルール**: `.claude/rules/implementation-policy.md` — 変更の最小性、root-cause 修正、デザイントークン、i18n ペア同期、SEO/JSON-LD、smoke 拡充、Issue 運用などを定義。
+- **Starlight 執筆スキル**: `.claude/skills/starlight-authoring/SKILL.md` — ドキュメント追加/更新・サイドバー編集・コンポーネント上書き・AI/LLM 向け公開（`llms.txt` / 各ページの `.md` 出力）のルール。`site/src/content/docs/` や `astro.config.mjs` の `starlight({...})` を触る前に必ず読む。
 - **Web ディレクター agent**: `.claude/agents/web-director.md` — UX/a11y/ブランド整合性と SEO/i18n/hreflang/JSON-LD の最終判定担当。実装方針の事前相談 / PR 直前の最終チェックに `Agent` ツールで `subagent_type: web-director` を指定して呼ぶ。
 - **Hooks** (`.claude/hooks/`):
   - `astro-check-on-edit.sh` — PostToolUse (Edit/Write/MultiEdit) で `site/src/` 配下の `.astro` / `.ts` / `.tsx` / `.mdx` / `.mjs` 編集後に `astro check` を実行。型エラー時は exit 2 で feedback。

@@ -32,7 +32,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "7.1.2",
+    "@astrojs/markdown-remark": "7.2.1",
     "@astrojs/sitemap": "^3.7.2",
     "@astrojs/starlight": "0.39.2",
     "@codemirror/commands": "^6.10.3",
@@ -41,6 +41,8 @@
     "@codemirror/view": "^6.43.0",
     "astro": "6.4.6",
     "rehype-sanitize": "6.0.0",
+    "starlight-llms-txt": "^0.10.0",
+    "starlight-md-txt": "^0.1.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
