@@ -1,6 +1,8 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
+import starlightLlmsTxt from "starlight-llms-txt";
+import starlightMdTxt from "starlight-md-txt";
 import tdslGrammar from "./src/lib/tdsl.tmLanguage.json" with { type: "json" };
 
 // dev / preview のリッスンポート。PORT env があればそれを使い (portless が割り当てる
@@ -70,6 +72,17 @@ export default defineConfig({
         Header: "./src/components/StarlightHeader.astro",
       },
       customCss: ["./src/styles/starlight.css"],
+      // AI エージェント / LLM がドキュメントを直接読める形で公開する。
+      // - starlight-llms-txt: /llms.txt, /llms-full.txt (サイト全体のインデックス)
+      // - starlight-md-txt: 各ページの /<slug>.md.txt (生 Markdown)
+      // どちらも docs コレクション配下のみが対象で、LP/Playground/Gallery/Showcase/
+      // Changelog (src/pages 直下の非 docs ページ) には影響しない。
+      plugins: [
+        starlightLlmsTxt({
+          projectName: "Timeline DSL",
+        }),
+        starlightMdTxt(),
+      ],
       sidebar: [
         {
           // Docs 内のモバイルサイドバー先頭にサイト共通ナビ(Playground/Gallery/Showcase/Changelog)を置く。

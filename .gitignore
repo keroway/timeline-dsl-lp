@@ -4,12 +4,16 @@ dist/
 .DS_Store
 
 # Local agent and browser automation state.
-# settings.json / hooks / rules / agents are tracked; the rest is local-only.
+# settings.json / hooks / rules / agents and project-owned skills are tracked;
+# other locally installed skills remain ignored.
 .claude/*
 !.claude/settings.json
 !.claude/hooks/
 !.claude/rules/
 !.claude/agents/
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/starlight-authoring/
 .playwright-mcp/
 # pi coding agent local state (mesh config, etc.)
 .pi/
