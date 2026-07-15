@@ -185,6 +185,29 @@ event releases 2026 "v1.0公開" {
 
 `tags` は分類、`id` はレビューや差分追跡で使う安定識別子です。`source wd:Q95;` はWikidata QIDを出典メタデータとして記録します。`origin manual;` は手書きデータであることを示します。
 
+## note、link、color（補足メタデータ）
+
+v1.24.0 以降、`event`、`span`、`event_range` の `{ ... }` には `note`（補足説明）、`link`（参照URL）、`color`（個別カラー）も書けます。いずれも省略可能です。
+
+```tdsl
+timeline "公開履歴" {
+    title "公開履歴";
+    unit year;
+    range 2024..2026;
+    calendar proleptic_gregorian;
+}
+
+lane "リリース" as releases { kind custom; order 10; }
+event releases 2026 "v1.0公開" {
+    note "初回安定版。破壊的変更を含む";
+    link "https://github.com/keroway/timeline-dsl/releases/tag/v1.0.0";
+    color "#2563eb";
+    id "event:v1";
+};
+```
+
+`note` はツールチップ等で表示する補足テキスト、`link` はイベントに紐づく参照URLです。`color` はその項目だけの表示色を指定し、`timeline` ブロックの `color_map` によるタグ単位の色付けより優先されます。
+
 ## import と Wikidata の Web 制約
 
 Wikidataを使う場合は、`import wikidata` でQIDを取り込み、`map` で年表要素へ変換します。

@@ -3,7 +3,9 @@
  * Starlight `components.Header` override for Docs pages.
  *
  * Starlight 既定のヘッダー構成(SiteTitle / Search / SocialIcons+ThemeSelect+LanguageSelect)
- * はそのまま残しつつ、LP の TOP_NAV(Playground/Gallery/Showcase/Changelog)を追加し、
+ * のうち、LanguageSelect は SocialIcons override (DocsA11yMenu.astro) が描画する
+ * LP 共通の EN/JP 切替ボタン(lang-toggle)と機能が重複するため描画しない。
+ * 加えて LP の TOP_NAV(Playground/Gallery/Showcase/Changelog)を追加し、
  * Docs から他セクションへの回遊性を LP と揃える(Docs レビュー統一)。
  * - 現在地の "Docs" 項目と、SocialIcons と重複する "GitHub" 項目は除外する。
  * - デスクトップ幅(md 以上)のみ表示。モバイルは astro.config.mjs の sidebar 先頭
@@ -12,8 +14,6 @@
  * 参照元: node_modules/@astrojs/starlight/components/Header.astro
  */
 import config from "virtual:starlight/user-config";
-// @ts-expect-error virtual:starlight/components/* has no public type declarations
-import LanguageSelect from "virtual:starlight/components/LanguageSelect";
 // @ts-expect-error virtual:starlight/components/* has no public type declarations
 import Search from "virtual:starlight/components/Search";
 // @ts-expect-error virtual:starlight/components/* has no public type declarations
@@ -57,7 +57,6 @@ const siteNavItems = TOP_NAV.filter(
       <SocialIcons />
     </div>
     <ThemeSelect />
-    <LanguageSelect />
   </div>
 </div>
 

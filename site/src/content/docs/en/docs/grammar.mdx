@@ -185,6 +185,29 @@ event releases 2026 "v1.0 Released" {
 
 `tags` is for classification, `id` is a stable identifier used for review and diff tracking. `source wd:Q95;` records a Wikidata QID as provenance metadata. `origin manual;` indicates hand-written data.
 
+## note, link, and color (supplementary metadata)
+
+Since v1.24.0, `event`, `span`, and `event_range` blocks also accept `note` (a supplementary description), `link` (a reference URL), and `color` (a per-item color) inside `{ ... }`. All three are optional.
+
+```tdsl
+timeline "Release History" {
+    title "Release History";
+    unit year;
+    range 2024..2026;
+    calendar proleptic_gregorian;
+}
+
+lane "Releases" as releases { kind custom; order 10; }
+event releases 2026 "v1.0 Released" {
+    note "First stable release. Contains breaking changes";
+    link "https://github.com/keroway/timeline-dsl/releases/tag/v1.0.0";
+    color "#2563eb";
+    id "event:v1";
+};
+```
+
+`note` is supplementary text shown in tooltips and similar UI, and `link` is a reference URL associated with the item. `color` sets the display color for that single item, taking precedence over the tag-based coloring configured via the `timeline` block's `color_map`.
+
 ## import and Wikidata Web Constraints
 
 To use Wikidata, import QIDs with `import wikidata` and transform them into timeline elements with `map`.
