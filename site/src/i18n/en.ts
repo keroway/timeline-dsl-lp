@@ -91,7 +91,7 @@ export const en = {
     "Check syntax and lane references in the Playground, then use `tdsl check` and `tdsl lint` locally or in CI to ensure quality.",
   "lp.feature.render.title": "Output to HTML / SVG / PNG / PDF",
   "lp.feature.render.body":
-    "Generate static artifacts that are easy to embed in documentation sites, GitHub Pages, and more.",
+    "Generate static artifacts that are easy to embed in documentation sites, GitHub Pages, and more. The browser Playground can save HTML / SVG / `.tdsl`; PNG / PDF output and Wikidata resolution are handled by the CLI.",
   "lp.feature.render.lane1.label": "Politics",
   "lp.feature.render.lane1.text": "Reform",
   "lp.feature.render.lane2.label": "Society",

@@ -15,7 +15,8 @@
 
 - Site: <https://timeline-dsl-lp.pages.dev>
 - Main repository: <https://github.com/keroway/timeline-dsl>
-- Playground / WebUI: <https://keroway.github.io/timeline-dsl/>
+- Playground（このサイト、日本語/英語対応、HTML / SVG / `.tdsl` ダウンロード対応）: <https://timeline-dsl-lp.pages.dev/playground/>
+- 代替 WebUI（本体プロジェクト、多言語未対応）: <https://keroway.github.io/timeline-dsl/>
 - このサイトが追従している最新リリース: `v1.25.0`（`site/public/wasm/package.json`、生成 changelog）
 
 ## 技術スタック
