@@ -80,6 +80,9 @@ export default defineConfig({
       plugins: [
         starlightLlmsTxt({
           projectName: "Timeline DSL",
+          // サイトの Cloudflare Pages 運用手順は Timeline DSL 自体の使い方ではないため、
+          // 要約版（llms-small.txt）からは除外する。
+          exclude: ["docs/deployment", "en/docs/deployment"],
         }),
         starlightMdTxt(),
       ],
@@ -135,14 +138,22 @@ export default defineConfig({
           ],
         },
         {
-          label: "開発者向け",
-          translations: { en: "For Developers" },
+          label: "コントリビュート",
+          translations: { en: "Contribute" },
           items: [
             {
               label: "コントリビューター向け",
               translations: { en: "Contributing" },
               slug: "docs/contributing",
             },
+          ],
+        },
+        {
+          // Timeline DSL の利用者向けドキュメントとは別の、このサイト自体を保守する
+          // サイト運用者向けの手順。Timeline DSL CLI/本体の使い方とは無関係。
+          label: "サイト運用者向け",
+          translations: { en: "Site Maintainers Only" },
+          items: [
             {
               label: "サイトのデプロイ",
               translations: { en: "Site Deployment" },

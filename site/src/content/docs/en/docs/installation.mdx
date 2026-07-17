@@ -3,11 +3,29 @@ title: Installation
 description: How to install the Timeline DSL CLI.
 ---
 
-Timeline DSL is used as a CLI tool. This guide assumes installation via Homebrew as the primary method.
+Timeline DSL is used as a CLI tool. Pick the installation method for your platform below.
+
+## macOS / Linux
+
+Install via Homebrew.
 
 ```sh
 brew tap keroway/tap
 brew install tdsl
+```
+
+If you'd rather not use Homebrew, a one-line install script is also available.
+
+```sh
+curl -sSfL https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.sh | sh
+```
+
+## Windows
+
+Install via a one-line PowerShell script.
+
+```powershell
+irm https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.ps1 | iex
 ```
 
 After installation, verify that the CLI runs correctly.
@@ -22,7 +40,7 @@ tdsl --help
 - Windows (PowerShell one-line install / manual binary installation)
 - Git
 
-For installation methods other than Homebrew (macOS / Linux one-liner, Windows PowerShell, cargo-binstall, cargo), see [Homebrew and Other Installation Methods](/en/docs/homebrew/).
+For other installation methods (cargo-binstall, cargo, manual Windows binary install), see [Homebrew and Other Installation Methods](/en/docs/homebrew/).
 
 ## VS Code Extension
 

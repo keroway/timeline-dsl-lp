@@ -89,7 +89,7 @@ export const ja = {
     "Playgroundで構文やlane参照を確認し、ローカルやCIでは `tdsl check` と `tdsl lint` で品質を担保できます。",
   "lp.feature.render.title": "HTML / SVG / PNG / PDF への出力",
   "lp.feature.render.body":
-    "ドキュメントサイトや GitHub Pages 等に容易に組み込める、静的な成果物を生成できます。",
+    "ドキュメントサイトや GitHub Pages 等に容易に組み込める、静的な成果物を生成できます。ブラウザのPlaygroundではHTML / SVG / `.tdsl` を保存でき、PNG / PDF への出力とWikidataの解決はCLIで行います。",
   "lp.feature.render.lane1.label": "政治",
   "lp.feature.render.lane1.text": "制度改革",
   "lp.feature.render.lane2.label": "社会",
