@@ -4,3 +4,6 @@ node_modules/
 public/wasm/
 pnpm-lock.yaml
 src/data/*.generated.json
+test-results/
+playwright-report/
+.lighthouseci/
