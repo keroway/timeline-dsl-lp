@@ -55,7 +55,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-        if: env.RUN_FULL == 'true'
 
       - uses: pnpm/action-setup@v6
         if: env.RUN_FULL == 'true'
