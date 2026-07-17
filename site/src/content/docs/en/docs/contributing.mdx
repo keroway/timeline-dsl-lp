@@ -21,15 +21,18 @@ pnpm dev                        # dev server (http://localhost:4321)
 
 Before pushing a change, check for regressions with the relevant smoke tests.
 
-| Command                 | Purpose                                                          |
-| ----------------------- | ---------------------------------------------------------------- |
-| `pnpm build`            | `smoke:wasm` → `astro check` → `astro build`. The minimum CI bar |
-| `pnpm smoke:wasm`       | Unit smoke for the WASM bindings                                 |
-| `pnpm smoke:playground` | HTTP smoke for the Playground                                    |
-| `pnpm smoke:i18n`       | ja / en pairing and hreflang consistency                         |
-| `pnpm smoke:seo`        | title / meta / OGP / JSON-LD checks                              |
+| Command                 | Purpose                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| `pnpm build`            | `smoke:wasm` → `astro check` → `astro build`. The minimum CI bar               |
+| `pnpm smoke:wasm`       | Unit smoke for the WASM bindings                                               |
+| `pnpm smoke:playground` | HTTP smoke for the Playground                                                  |
+| `pnpm smoke:i18n`       | ja / en pairing and hreflang consistency                                       |
+| `pnpm smoke:seo`        | title / meta / OGP / JSON-LD checks                                            |
+| `pnpm test:visual`      | LP (`/`) screenshot regression (light / dark / high-contrast). Also runs in CI |
 
-When you change the UI, also run the browser smoke (`pnpm smoke:playground:browser`) locally once (it does not run in CI). The first run needs `pnpm exec playwright install chromium`.
+When you change the UI, also run the browser smoke (`pnpm smoke:playground:browser`) locally once (it does not run in CI). The first run needs `pnpm exec playwright install chromium` (the same Chromium install is required for `test:visual`).
+
+If you change the LP's layout, colors, or typography, run `pnpm test:visual`, confirm the diff is an intended change, then update the baselines with `pnpm test:visual:update`. Baseline image changes need visual review and should be included in the PR (this command is never run from CI).
 
 ## Pull request conventions
 

@@ -144,6 +144,19 @@ jobs:
         env:
           A11Y_BASE_URL: http://127.0.0.1:4321
 
+      - name: test:visual (LP screenshot regression)
+        if: env.RUN_FULL == 'true'
+        run: pnpm test:visual
+
+      - name: Upload visual test diffs
+        if: failure() && env.RUN_FULL == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-visual-test-results
+          path: site/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Lighthouse CI (perf / a11y / SEO / best-practices baseline)
         if: env.RUN_FULL == 'true'
         run: pnpm lhci
