@@ -49,6 +49,8 @@ pnpm smoke:a11y                 # axe-core audit for key pages (requires Chromiu
 pnpm lint
 pnpm format:check
 pnpm build                      # smoke:wasm → astro check → astro build
+pnpm check                      # lint → format:check → test:unit → build → bundle-size (local CI mirror, non-browser)
+pnpm check:full                 # pnpm check + preview server + all browser/a11y/visual/Lighthouse gates
 pnpm preview
 ```
 

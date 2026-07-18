@@ -17,22 +17,18 @@ pnpm install --frozen-lockfile  # install dependencies
 pnpm dev                        # dev server (http://localhost:4321)
 ```
 
-## Running smoke tests
+## Local quality gates
 
-Before pushing a change, check for regressions with the relevant smoke tests.
+Two aggregate commands reproduce the same gates CI runs (`.github/workflows/site-build.yml`). Run at least `pnpm check` before pushing.
 
-| Command                 | Purpose                                                                        |
-| ----------------------- | ------------------------------------------------------------------------------ |
-| `pnpm build`            | `smoke:wasm` → `astro check` → `astro build`. The minimum CI bar               |
-| `pnpm smoke:wasm`       | Unit smoke for the WASM bindings                                               |
-| `pnpm smoke:playground` | HTTP smoke for the Playground                                                  |
-| `pnpm smoke:i18n`       | ja / en pairing and hreflang consistency                                       |
-| `pnpm smoke:seo`        | title / meta / OGP / JSON-LD checks                                            |
-| `pnpm test:visual`      | LP (`/`) screenshot regression (light / dark / high-contrast). Also runs in CI |
+| Command           | What it does                                                                                                                                                                                                                                                                             |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm check`      | Fast, non-browser gate. `lint` → `format:check` → `test:unit` → `build` (`smoke:wasm` → `astro check` → `astro build`) → `bundle-size`                                                                                                                                                   |
+| `pnpm check:full` | Everything above, plus a preview server and smoke:seo / smoke:i18n(:browser) / smoke:playground(:browser) / smoke:a11y / `test:visual` / Lighthouse CI. Always stops the preview server, on success, failure, or interruption. Needs Chromium (`pnpm exec playwright install chromium`). |
 
-When you change the UI, also run the browser smoke (`pnpm smoke:playground:browser`) locally once (it does not run in CI). The first run needs `pnpm exec playwright install chromium` (the same Chromium install is required for `test:visual`).
+`pnpm check:full` includes `smoke:i18n:browser` and `smoke:playground:browser`, and **these do run in CI** (browser gates are never skipped there). Individual commands (`pnpm smoke:wasm` / `smoke:playground` / `smoke:i18n` / `smoke:seo`, etc.) remain runnable on their own.
 
-If you change the LP's layout, colors, or typography, run `pnpm test:visual`, confirm the diff is an intended change, then update the baselines with `pnpm test:visual:update`. Baseline image changes need visual review and should be included in the PR (this command is never run from CI).
+If you change the LP's layout, colors, or typography, run `pnpm test:visual` on its own, confirm the diff is an intended change, then update the baselines with `pnpm test:visual:update`. Baseline image changes need visual review and should be included in the PR (this command is never run from CI).
 
 ## Pull request conventions
 

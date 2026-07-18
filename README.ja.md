@@ -49,6 +49,8 @@ pnpm smoke:a11y                 # 主要ページの axe-core 監査（Chromium 
 pnpm lint
 pnpm format:check
 pnpm build                      # smoke:wasm → astro check → astro build
+pnpm check                      # lint → format:check → test:unit → build → bundle-size（ローカル CI ミラー、ブラウザ不要）
+pnpm check:full                 # pnpm check + preview サーバ + 全ブラウザ/a11y/visual/Lighthouse ゲート
 pnpm preview
 ```
 
