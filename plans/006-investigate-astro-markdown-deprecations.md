@@ -66,3 +66,40 @@
 ## Maintenance notes
 
 Keep this plan separate from future Astro 7 migration. A BLOCKED outcome with precise upstream ownership is successful investigation and prevents repeated speculative audits.
+
+## Investigation results (executed 2026-07-18, commit range 001–005 merged, `astro@6.4.6` / `@astrojs/starlight@0.39.2` / `@astrojs/markdown-remark@7.2.1`)
+
+**Outcome: BLOCKED — fix requires an Astro 7 + Starlight 0.41 major upgrade for both warnings; no compatible patch exists on the Astro 6 / Starlight 0.39–0.40 line that removes both without an unproven Markdown-processor swap.**
+
+### Warning 1: `markdown.remarkPlugins`/`rehypePlugins`/`remarkRehype` are deprecated
+
+- **Reproduced in**: `pnpm test:unit` (Astro component tests) and `pnpm build` (once, at config-setup time).
+- **Owner, proven via `console.trace()` inserted at the exact `console.warn` call site** (`node_modules/astro/dist/core/config/validate.js`, `coerceLegacyMarkdownPlugins`): the stack trace resolves through `runHookConfigSetup` → the `astro:config:setup` hook — i.e. an **integration**, not this project's `astro.config.mjs` (which only sets `shikiConfig`).
+- **Confirmed exact call site in source**: `@astrojs/starlight@0.39.2`'s `index.ts` (`astro:config:setup` hook) calls
+
+  ```js
+  updateConfig({
+    markdown: {
+      remarkPlugins: [...starlightRemarkPlugins(remarkRehypeOptions)],
+      rehypePlugins: [...starlightRehypePlugins(remarkRehypeOptions)],
+    },
+    ...
+  });
+  ```
+
+  This is how Starlight 0.39.x injects its own remark/rehype plugins (asides, code-tab handling, etc.) — the *only* API available to it on this Astro line.
+- **Compatible fix path checked**: Starlight `0.40.0` (changelog, [PR #3923](https://github.com/withastro/starlight/pull/3923)) adds an *opt-in* Astro 6.4 `markdown.processor: satteri()` path (requires installing the new `@astrojs/markdown-satteri` package and switching the site's Markdown engine to Ast ro's new "Sätteri" processor). Per the PR description, Starlight only skips the legacy `remarkPlugins`/`rehypePlugins` assignment **when `markdown.processor` is explicitly configured to the new processor**; without opting in, 0.40.x still falls back to the same deprecated path and the warning persists. Adopting Sätteri is a genuine Markdown-processing-engine swap (different plugin pipeline), not a drop-in option change — exactly what this plan's scope and STOP conditions rule out ("Do not invent a `unified()` configuration shape from the warning alone"; "No intentional Markdown output change occurs") without the representative-output verification this plan is not resourced to carry out.
+- Starlight `0.41.0` (changelog) is a **BREAKING CHANGE: "Adds support for Astro v7, drops support for Astro v6."**
+
+### Warning 2: `markdown.gfm`/`markdown.smartypants` are deprecated
+
+- **Reproduced in**: `pnpm build` only (not `pnpm test:unit`), during static-route generation.
+- **Owner, proven via the same `console.trace()` technique**: the stack resolves through `experimental_AstroContainer.create()` → `validateConfig`. `AstroContainer.create()` (`node_modules/astro/dist/container/index.js`) calls `validateConfig(ASTRO_CONFIG_DEFAULTS, ...)`, and `ASTRO_CONFIG_DEFAULTS.markdown` (`node_modules/astro/dist/core/config/schemas/index.js`) hardcodes `gfm: true, smartypants: true`. The deprecation check in `validate.js` fires whenever `config.markdown.gfm !== undefined`, so **any** use of `experimental_AstroContainer.create()` without an explicit config override trips this — it is a **false positive baked into Astro core itself**, unrelated to any value this project (or Starlight) sets.
+- **Confirmed the exact consumer**: `starlight-llms-txt@0.10.0`'s `entryToSimpleMarkdown.ts` calls `experimental_AstroContainer.create({ renderers: [...] })` (no config override) to render each docs page to Markdown for `llms.txt`/`llms-full.txt`. This runs during the `/llms-full.txt` and `/llms-small.txt` build steps, matching the observed timing.
+- **This exact bug is already fixed upstream**: [withastro/astro#17261](https://github.com/withastro/astro/pull/17261) — "Fixes a false deprecation warning for `markdown.gfm` and `markdown.smartypants` when using the Container API." **Shipped in `astro@7.0.6`** (astro's own changelog: “#17261 … Fixes a false deprecation warning…” under the `7.0.6` heading, compared against `7.0.5`). There is no equivalent fix on any Astro 6.x release — the patch was never backported.
+
+### Conclusion
+
+Both warnings are entirely upstream-owned (Astro core and `@astrojs/starlight`), not something this project's `astro.config.mjs` or dependency choices caused. A full, safe fix requires moving to `astro@7` (for the AstroContainer false-positive fix in `7.0.6`) together with `@astrojs/starlight@0.41+` (the first Starlight line that supports Astro 7; `starlight-llms-txt`/`starlight-md-txt` compatibility with that pairing would also need re-verification) — an Astro/Starlight **major upgrade**, explicitly out of this plan's scope and an explicit STOP condition. The narrower Starlight `0.40.x` Sätteri opt-in does not remove the AstroContainer warning at all (that requires Astro 7 regardless) and would require adopting an unproven new Markdown processor to remove the other, so it is not a safe partial fix either.
+
+**Recommendation**: track this as a natural part of a future, deliberate Astro 7 / Starlight 0.41 migration (a separate plan, per the Maintenance notes below), not as a standalone fix. No config, lockfile, or code changes were made by this investigation.
