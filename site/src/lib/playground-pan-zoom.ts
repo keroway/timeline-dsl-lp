@@ -86,6 +86,11 @@ export function createPanZoom({
 
   const onPointerDown = (e: PointerEvent) => {
     if (e.button !== 0) return;
+    // reset ボタンなど surface 内の操作対象上での press はパン開始扱いにしない。
+    // ここで pointer capture を取ってしまうと、ブラウザによっては pointerup のターゲットが
+    // ボタンではなく surface にリダイレクトされ、応答するネイティブ click イベントが
+    // 一切発火しなくなる（reset ボタンがクリックできなくなる）。
+    if (resetButton && e.target instanceof Node && resetButton.contains(e.target)) return;
     pendingPan = {
       startX: e.clientX,
       startY: e.clientY,
