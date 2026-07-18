@@ -37,6 +37,7 @@ export const ja = {
   "a11y.field.reduced_motion": "動きを抑える (Reduced motion)",
   "a11y.field.high_contrast": "高コントラスト表示",
   "a11y.field.text_spacing": "テキストの余白を広げる",
+  "a11y.field.text_size": "文字サイズ",
   "a11y.live.reduced_motion_on": "動きを抑える設定を有効にしました",
   "a11y.live.reduced_motion_off": "動きを抑える設定を解除しました",
   "a11y.live.high_contrast_on": "高コントラスト表示を有効にしました",
