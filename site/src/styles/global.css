@@ -131,7 +131,10 @@ button:focus-visible {
   font-weight: 700;
   letter-spacing: 0.04em;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    border-color 0.2s;
 }
 
 .nav-utilities {

@@ -39,6 +39,7 @@ export const en = {
   "a11y.field.reduced_motion": "Reduce motion",
   "a11y.field.high_contrast": "High contrast",
   "a11y.field.text_spacing": "Increase text spacing",
+  "a11y.field.text_size": "Text size",
   "a11y.live.reduced_motion_on": "Reduced motion enabled",
   "a11y.live.reduced_motion_off": "Reduced motion disabled",
   "a11y.live.high_contrast_on": "High contrast enabled",

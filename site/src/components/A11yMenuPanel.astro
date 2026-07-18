@@ -64,7 +64,7 @@ const t = getT(locale);
         </label>
       </div>
       <div class="a11y-field">
-        <select data-a11y-text-size>
+        <select data-a11y-text-size aria-label={t("a11y.field.text_size")}>
           <option value="normal">{t("a11y.text_size.normal")}</option>
           <option value="large">{t("a11y.text_size.large")}</option>
           <option value="extra-large">{t("a11y.text_size.extra_large")}</option>
@@ -89,7 +89,10 @@ const t = getT(locale);
     background: var(--a11y-toggle-bg, var(--color-bg));
     color: var(--a11y-muted, var(--color-muted));
     cursor: pointer;
-    transition: all 0.2s;
+    transition:
+      color 0.2s,
+      background-color 0.2s,
+      border-color 0.2s;
   }
 
   .a11y-toggle:hover {
