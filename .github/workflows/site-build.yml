@@ -15,6 +15,15 @@ name: Site build
 # expensive step is individually gated with `if: needs.changes.outputs.site
 # == 'true'`. When nothing relevant changed, the job still runs and reports
 # "build" success quickly, with all real steps skipped.
+#
+# Local mirror: the steps below are the authoritative sequence. `pnpm check`
+# (lint / format:check / test:unit / build / bundle-size) mirrors the non-
+# browser steps, and `pnpm check:full` additionally runs a preview server
+# plus every browser-dependent gate (smoke:i18n:browser, smoke:playground:
+# browser, smoke:a11y, test:visual, lhci) with guaranteed preview cleanup.
+# Steps stay individually named/artifact-uploading here rather than calling
+# one aggregate script, so a CI failure stays attributable to one gate; keep
+# both in sync when adding/removing a gate.
 on:
   pull_request:
   push:

@@ -17,22 +17,18 @@ pnpm install --frozen-lockfile  # 依存をインストール
 pnpm dev                        # 開発サーバー（http://localhost:4321）
 ```
 
-## smoke の実行
+## ローカルの品質ゲート
 
-変更を push する前に、対応する smoke でリグレッションを確認します。
+CI（`.github/workflows/site-build.yml`）と同一のゲートをローカルで再現する 2 つの集約コマンドがあります。プッシュ前は少なくとも `pnpm check` を実行してください。
 
-| コマンド                | 用途                                                                           |
-| ----------------------- | ------------------------------------------------------------------------------ |
-| `pnpm build`            | `smoke:wasm` → `astro check` → `astro build`。CI が見る最低条件                |
-| `pnpm smoke:wasm`       | WASM バインディングの単体 smoke                                                |
-| `pnpm smoke:playground` | Playground の HTTP smoke                                                       |
-| `pnpm smoke:i18n`       | ja / en ペアと hreflang の整合                                                 |
-| `pnpm smoke:seo`        | title / meta / OGP / JSON-LD の検証                                            |
-| `pnpm test:visual`      | LP（`/`）のスクリーンショット回帰（light / dark / high-contrast）。CI でも実行 |
+| コマンド          | 内容                                                                                                                                                                                                                                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm check`      | ブラウザ不要の高速ゲート。`lint` → `format:check` → `test:unit` → `build`（`smoke:wasm` → `astro check` → `astro build`）→ `bundle-size`                                                                                                                                                                |
+| `pnpm check:full` | 上記に加えて preview サーバを起動し、smoke:seo / smoke:i18n(:browser) / smoke:playground(:browser) / smoke:a11y / `test:visual` / Lighthouse CI を実行。成功・失敗・中断のいずれでも preview サーバを必ず停止します。Chromium の事前インストール（`pnpm exec playwright install chromium`）が必要です。 |
 
-UI を変更したときは、ブラウザ smoke（`pnpm smoke:playground:browser`）もローカルで一度通してください（CI では走りません）。初回は `pnpm exec playwright install chromium` が必要です（`test:visual` にも同じ Chromium が必要です）。
+`pnpm check:full` は `smoke:i18n:browser` や `smoke:playground:browser` を含め、**CI でも実行されます**（ブラウザ系のゲートは CI でスキップされません）。個々のコマンド（`pnpm smoke:wasm` / `smoke:playground` / `smoke:i18n` / `smoke:seo` など）も引き続き単独で実行できます。
 
-LP のレイアウト・配色・タイポグラフィを変更した場合は `pnpm test:visual` を実行し、差分が意図した変更であることを確認してから `pnpm test:visual:update` でベースラインを更新してください。ベースライン画像の変更は目視レビューが必要な差分として PR に含めます（このコマンドは CI からは実行しません）。
+LP のレイアウト・配色・タイポグラフィを変更した場合は `pnpm test:visual` を単独実行し、差分が意図した変更であることを確認してから `pnpm test:visual:update` でベースラインを更新してください。ベースライン画像の変更は目視レビューが必要な差分として PR に含めます（このコマンドは CI からは実行しません）。
 
 ## pull request の規約
 
