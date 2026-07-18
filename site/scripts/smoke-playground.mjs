@@ -141,13 +141,74 @@ async function smokeBrowserFlow(rootUrl) {
     await smokeA11yMenu(rootUrl, browser);
     await smokeLocaleToggle(rootUrl, browser);
     await smokeShowEventLabelsToggle(rootUrl, browser);
+    await smokePanZoom(rootUrl, browser);
   } finally {
     await browser.close();
   }
 
   console.log(
-    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, and show-event-labels toggle.",
+    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, show-event-labels toggle, and pan/zoom wheel+reset.",
   );
+}
+
+async function smokePanZoom(rootUrl, browser) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await page.goto(`${rootUrl}${PLAYGROUND_PATH}`, { waitUntil: "networkidle" });
+  const stage = page.locator("[data-pan-zoom-stage]").first();
+  await stage.locator("svg").first().waitFor({ state: "visible" });
+
+  const readTransform = () => stage.evaluate((el) => el.style.transform);
+
+  // 初回の applySvg() は SVG 差し替え後 1 rAF 後に fit を適用する。
+  // svg の可視化直後だと fit 適用前の空 transform を拾うことがあるので、
+  // 非空になるまでポーリングする。
+  await page.waitForFunction(
+    () => !!document.querySelector("[data-pan-zoom-stage]")?.style.transform,
+    undefined,
+    { timeout: 5000 },
+  );
+
+  const fittedTransform = await readTransform();
+  if (!fittedTransform) {
+    throw new Error("pan-zoom stage should have a fitted transform after initial render");
+  }
+
+  const box = await stage.boundingBox();
+  if (!box) {
+    throw new Error("pan-zoom stage should have a bounding box");
+  }
+  const centerX = box.x + box.width / 2;
+  const centerY = box.y + box.height / 2;
+
+  await page.mouse.move(centerX, centerY);
+  await page.mouse.wheel(0, -200);
+  await page.waitForFunction(
+    (before) => document.querySelector("[data-pan-zoom-stage]")?.style.transform !== before,
+    fittedTransform,
+    { timeout: 5000 },
+  );
+  const zoomedTransform = await readTransform();
+  if (zoomedTransform === fittedTransform) {
+    throw new Error("wheel zoom should change the pan-zoom stage transform");
+  }
+
+  const resetButton = page.locator("[data-pan-zoom-reset]").first();
+  await resetButton.click();
+  await page.waitForFunction(
+    (before) => document.querySelector("[data-pan-zoom-stage]")?.style.transform !== before,
+    zoomedTransform,
+    { timeout: 5000 },
+  );
+  const resetTransform = await readTransform();
+  if (resetTransform !== fittedTransform) {
+    throw new Error(
+      `reset control should restore the fitted transform (expected ${fittedTransform}, got ${resetTransform})`,
+    );
+  }
+
+  await context.close();
 }
 
 async function smokeShowEventLabelsToggle(rootUrl, browser) {
