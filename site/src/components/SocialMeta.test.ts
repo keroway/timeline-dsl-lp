@@ -43,6 +43,63 @@ describe("SocialMeta", () => {
     expect(result).toContain('content="en_US"');
   });
 
+  it("ja ロケールで og:locale:alternate が en_US になる（対応する英語ページを予告）", async () => {
+    const container = await AstroContainer.create();
+    const result = await container.renderToString(SocialMeta, {
+      props: {
+        title: "タイトル",
+        description: "説明",
+        pathname: "/",
+        locale: "ja",
+      },
+    });
+    expect(result).toContain('property="og:locale:alternate" content="en_US"');
+    expect(result).toContain('property="og:locale" content="ja_JP"');
+  });
+
+  it("en ロケールで og:locale:alternate が ja_JP になる", async () => {
+    const container = await AstroContainer.create();
+    const result = await container.renderToString(SocialMeta, {
+      props: {
+        title: "Title",
+        description: "Description",
+        pathname: "/en/",
+        locale: "en",
+      },
+    });
+    expect(result).toContain('property="og:locale:alternate" content="ja_JP"');
+    expect(result).toContain('property="og:locale" content="en_US"');
+  });
+
+  it("locale 未指定時は既存の ja フォールバックに従い、og:locale:alternate は en_US になる", async () => {
+    const container = await AstroContainer.create();
+    const result = await container.renderToString(SocialMeta, {
+      props: {
+        title: "タイトル",
+        description: "説明",
+        pathname: "/",
+      },
+    });
+    expect(result).toContain('property="og:locale" content="ja_JP"');
+    expect(result).toContain('property="og:locale:alternate" content="en_US"');
+  });
+
+  it("og:locale と og:locale:alternate はそれぞれ 1 つずつだけ出力される（重複なし）", async () => {
+    const container = await AstroContainer.create();
+    const result = await container.renderToString(SocialMeta, {
+      props: {
+        title: "タイトル",
+        description: "説明",
+        pathname: "/",
+        locale: "ja",
+      },
+    });
+    const localeMatches = result.match(/property="og:locale"/g) ?? [];
+    const alternateMatches = result.match(/property="og:locale:alternate"/g) ?? [];
+    expect(localeMatches).toHaveLength(1);
+    expect(alternateMatches).toHaveLength(1);
+  });
+
   it("og:image:type に png の MIME タイプが付く", async () => {
     const container = await AstroContainer.create();
     const result = await container.renderToString(SocialMeta, {
