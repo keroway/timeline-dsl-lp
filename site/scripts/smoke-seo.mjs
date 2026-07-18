@@ -68,9 +68,28 @@ async function smokeSeo(rootUrl) {
     if (!contentType.includes("image/png")) {
       throw new Error(`${image} must be served as image/png (got "${contentType}")`);
     }
+
+    // og:locale / og:locale:alternate は SocialMeta.astro を使う LP 系ページ（OG_IMAGE_TARGETS
+    // と同一スコープ）でのみ、ページの locale と逆向きのペアで 1 つずつ出力される想定
+    // （DESIGN.md §9）。Starlight が自前で OGP を出力する docs ページは別パイプラインなので対象外。
+    const isEnglish = path === "/en" || path.startsWith("/en/");
+    const [expectedLocale, expectedAlternate] = isEnglish ? ["en_US", "ja_JP"] : ["ja_JP", "en_US"];
+    assertIncludes(
+      html,
+      `property="og:locale" content="${expectedLocale}"`,
+      `${path} must include og:locale=${expectedLocale}`,
+    );
+    assertIncludes(
+      html,
+      `property="og:locale:alternate" content="${expectedAlternate}"`,
+      `${path} must include og:locale:alternate=${expectedAlternate}`,
+    );
   }
   console.log(
     `og:image: per-page PNG + type + 1200x630 dimensions confirmed on ${OG_IMAGE_TARGETS.length} pages. ✓`,
+  );
+  console.log(
+    `og:locale / og:locale:alternate: reciprocal pair confirmed on ${OG_IMAGE_TARGETS.length} pages. ✓`,
   );
 
   const robotsRes = await get(`${rootUrl}/robots.txt`);
