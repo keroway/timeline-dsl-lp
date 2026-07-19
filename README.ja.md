@@ -2,8 +2,8 @@
 
 [English README →](./README.md)
 
-[![Astro](https://img.shields.io/badge/Astro-6.4.6-BC52EE?logo=astro&logoColor=white)](https://astro.build/)
-[![Starlight](https://img.shields.io/badge/Starlight-0.39.2-5A45FF)](https://starlight.astro.build/)
+[![Astro](https://img.shields.io/badge/Astro-7.1.1-BC52EE?logo=astro&logoColor=white)](https://astro.build/)
+[![Starlight](https://img.shields.io/badge/Starlight-0.41.3-5A45FF)](https://starlight.astro.build/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-10.33.3-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![Node.js](https://img.shields.io/badge/Node.js-24-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -23,7 +23,7 @@
 
 | 領域 | スタック | 補足 |
 | --- | --- | --- |
-| サイトフレームワーク | Astro 6 + Starlight 0.39 | LP、Docs、Changelog、Gallery、Showcase、Playground を静的生成します。 |
+| サイトフレームワーク | Astro 7 + Starlight 0.41 | LP、Docs、Changelog、Gallery、Showcase、Playground を静的生成します。 |
 | 言語 / ランタイム | TypeScript 6、Node.js 24、pnpm 10 | すべてのコマンドは `site/` 配下で実行します。 |
 | スタイリング | Astro コンポーネント + CSS トークン | デザイントークンは `site/src/styles/global.css` に集約。色の直書きは避けます。 |
 | Playground | vendoring した `@keroway/tdsl-wasm` 1.25.0 | ブラウザ内検証と SVG レンダリングは `site/src/lib/tdsl-wasm.ts` 経由に統一します。 |
