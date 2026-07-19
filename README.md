@@ -2,8 +2,8 @@
 
 [日本語 README →](./README.ja.md)
 
-[![Astro](https://img.shields.io/badge/Astro-6.4.6-BC52EE?logo=astro&logoColor=white)](https://astro.build/)
-[![Starlight](https://img.shields.io/badge/Starlight-0.39.2-5A45FF)](https://starlight.astro.build/)
+[![Astro](https://img.shields.io/badge/Astro-7.1.1-BC52EE?logo=astro&logoColor=white)](https://astro.build/)
+[![Starlight](https://img.shields.io/badge/Starlight-0.41.3-5A45FF)](https://starlight.astro.build/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-10.33.3-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![Node.js](https://img.shields.io/badge/Node.js-24-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -23,7 +23,7 @@ LP / documentation site for the public [Timeline DSL](https://github.com/keroway
 
 | Area | Stack | Notes |
 | --- | --- | --- |
-| Site framework | Astro 6 + Starlight 0.39 | Static LP, docs, changelog, gallery, showcase, and playground routes. |
+| Site framework | Astro 7 + Starlight 0.41 | Static LP, docs, changelog, gallery, showcase, and playground routes. |
 | Language/runtime | TypeScript 6, Node.js 24, pnpm 10 | All commands run under `site/`. |
 | Styling | Astro components + CSS tokens | Global design tokens live in `site/src/styles/global.css`; avoid ad-hoc colors. |
 | Playground | Vendored `@keroway/tdsl-wasm` 1.25.0 | Browser validation and SVG rendering go through `site/src/lib/tdsl-wasm.ts`. |
