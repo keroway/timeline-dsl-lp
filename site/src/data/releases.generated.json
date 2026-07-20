@@ -1,15 +1,29 @@
 {
   "repository": "keroway/timeline-dsl",
   "source": "github-releases",
-  "fetchedAt": "2026-07-13T06:40:57.414Z",
+  "fetchedAt": "2026-07-20T03:47:52.253Z",
   "latest": {
-    "tagName": "v1.25.0",
-    "name": "v1.25.0",
-    "publishedAt": "2026-07-13T02:48:07Z",
-    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.25.0",
-    "body": "## What's Changed\n* docs(plans): Add Batch 2 execution plans (010-015) by @keroway in https://github.com/keroway/timeline-dsl/pull/594\n* feat(webui): complete the WebUI i18n migration by @keroway in https://github.com/keroway/timeline-dsl/pull/595\n* chore: ignore .pi-subagents/ agent artifacts dir by @keroway in https://github.com/keroway/timeline-dsl/pull/596\n* ci(pages): auto-retry transient deploy-pages failures by @keroway in https://github.com/keroway/timeline-dsl/pull/597\n* test(cli): add unit coverage for build/fetch handlers (Plan 015) by @keroway in https://github.com/keroway/timeline-dsl/pull/598\n* feat(webui): replace native confirm with in-app modal by @keroway in https://github.com/keroway/timeline-dsl/pull/600\n* fix(deps): update memmap2 to 0.9.11, resolving RUSTSEC-2026-0186 by @keroway in https://github.com/keroway/timeline-dsl/pull/599\n* perf(webui): run WASM compile/render in a Web Worker by @keroway in https://github.com/keroway/timeline-dsl/pull/601\n* chore(deps): bump clap_complete from 4.6.5 to 4.6.7 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/602\n* chore(deps): bump indicatif from 0.18.5 to 0.18.6 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/603\n* chore(deps): bump pest_derive from 2.8.6 to 2.8.7 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/604\n* chore(deps): bump pest from 2.8.6 to 2.8.7 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/605\n* fix: harden CLI parse-error reporting and WebUI Worker recovery by @keroway in https://github.com/keroway/timeline-dsl/pull/625\n* chore: release v1.25.0 by @keroway in https://github.com/keroway/timeline-dsl/pull/626\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.24.0...v1.25.0"
+    "tagName": "v1.27.0",
+    "name": "v1.27.0",
+    "publishedAt": "2026-07-18T17:19:54Z",
+    "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.27.0",
+    "body": "## What's Changed\n* docs(adr): 秒精度+TZオフセットとPDFページ分割(テーブルのみ)のADRを確定 by @keroway in https://github.com/keroway/timeline-dsl/pull/632\n* feat(render): PDFテーブルページ分割レイアウトエンジン実装 (#618) by @keroway in https://github.com/keroway/timeline-dsl/pull/634\n* feat(parser): 秒・オフセット構文のparser/AST対応 (#612) by @keroway in https://github.com/keroway/timeline-dsl/pull/635\n* feat(render): PDFテーブルページのヘッダ/フッタ/ページ番号 + CLI配線 (#619) by @keroway in https://github.com/keroway/timeline-dsl/pull/636\n* feat(core): IR/schema/lowering/Wikidataの秒精度対応 (#613) by @keroway in https://github.com/keroway/timeline-dsl/pull/637\n* feat(render): unit secondティック/decompile/CSVの秒対応 (#614) by @keroway in https://github.com/keroway/timeline-dsl/pull/638\n* test(render): paginationと既存機能(show-legend/group band/gantt/zigzag/open-ended)の整合検証 (#620) by @keroway in https://github.com/keroway/timeline-dsl/pull/639\n* feat(lsp): 秒/オフセットのhover/range対応 + WASM影響計測 (#615) by @keroway in https://github.com/keroway/timeline-dsl/pull/640\n* test(render): PDF paginationの決定的テストマトリクス拡充 + ドキュメント化 (#621) by @keroway in https://github.com/keroway/timeline-dsl/pull/641\n* docs: --pdf-paginationの仕様ドキュメントとデフォルト互換性を明記 (#622) by @keroway in https://github.com/keroway/timeline-dsl/pull/642\n* docs: 秒/オフセット仕様のドキュメント化 + minute-level互換ルール (#616) by @keroway in https://github.com/keroway/timeline-dsl/pull/643\n* chore(deps): bump actions/setup-node from 6 to 7 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/633\n* chore: release v1.27.0 by @keroway in https://github.com/keroway/timeline-dsl/pull/644\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.26.0...v1.27.0"
   },
   "releases": [
+    {
+      "tagName": "v1.27.0",
+      "name": "v1.27.0",
+      "publishedAt": "2026-07-18T17:19:54Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.27.0",
+      "body": "## What's Changed\n* docs(adr): 秒精度+TZオフセットとPDFページ分割(テーブルのみ)のADRを確定 by @keroway in https://github.com/keroway/timeline-dsl/pull/632\n* feat(render): PDFテーブルページ分割レイアウトエンジン実装 (#618) by @keroway in https://github.com/keroway/timeline-dsl/pull/634\n* feat(parser): 秒・オフセット構文のparser/AST対応 (#612) by @keroway in https://github.com/keroway/timeline-dsl/pull/635\n* feat(render): PDFテーブルページのヘッダ/フッタ/ページ番号 + CLI配線 (#619) by @keroway in https://github.com/keroway/timeline-dsl/pull/636\n* feat(core): IR/schema/lowering/Wikidataの秒精度対応 (#613) by @keroway in https://github.com/keroway/timeline-dsl/pull/637\n* feat(render): unit secondティック/decompile/CSVの秒対応 (#614) by @keroway in https://github.com/keroway/timeline-dsl/pull/638\n* test(render): paginationと既存機能(show-legend/group band/gantt/zigzag/open-ended)の整合検証 (#620) by @keroway in https://github.com/keroway/timeline-dsl/pull/639\n* feat(lsp): 秒/オフセットのhover/range対応 + WASM影響計測 (#615) by @keroway in https://github.com/keroway/timeline-dsl/pull/640\n* test(render): PDF paginationの決定的テストマトリクス拡充 + ドキュメント化 (#621) by @keroway in https://github.com/keroway/timeline-dsl/pull/641\n* docs: --pdf-paginationの仕様ドキュメントとデフォルト互換性を明記 (#622) by @keroway in https://github.com/keroway/timeline-dsl/pull/642\n* docs: 秒/オフセット仕様のドキュメント化 + minute-level互換ルール (#616) by @keroway in https://github.com/keroway/timeline-dsl/pull/643\n* chore(deps): bump actions/setup-node from 6 to 7 by @dependabot[bot] in https://github.com/keroway/timeline-dsl/pull/633\n* chore: release v1.27.0 by @keroway in https://github.com/keroway/timeline-dsl/pull/644\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.26.0...v1.27.0"
+    },
+    {
+      "tagName": "v1.26.0",
+      "name": "v1.26.0",
+      "publishedAt": "2026-07-14T16:01:57Z",
+      "url": "https://github.com/keroway/timeline-dsl/releases/tag/v1.26.0",
+      "body": "## What's Changed\n* docs: correct keywords single source of truth to keywords.json (#623) by @keroway in https://github.com/keroway/timeline-dsl/pull/627\n* feat(cli): preserve source/origin through export-csv/import-csv round-trip (#608) by @keroway in https://github.com/keroway/timeline-dsl/pull/628\n* feat(webui): add demo SEO/OGP metadata and lang/title locale sync by @keroway in https://github.com/keroway/timeline-dsl/pull/630\n* chore: release v1.26.0 by @keroway in https://github.com/keroway/timeline-dsl/pull/631\n\n\n**Full Changelog**: https://github.com/keroway/timeline-dsl/compare/v1.25.0...v1.26.0"
+    },
     {
       "tagName": "v1.25.0",
       "name": "v1.25.0",
