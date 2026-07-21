@@ -8,7 +8,7 @@ export const en = {
   "nav.changelog": "Changelog",
   "nav.github": "GitHub",
   "nav.search.aria_label": "Search",
-  "nav.search.not_built": "Search index not found. Run pnpm build to generate it.",
+  "nav.search.not_built": "Search is unavailable right now. Please try again later.",
   "nav.lang_toggle.aria_label": "Switch language to Japanese",
   "nav.theme_toggle.aria_label": "Switch theme",
   "nav.theme.auto": "Auto",

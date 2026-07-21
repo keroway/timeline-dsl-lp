@@ -6,7 +6,7 @@ export const ja = {
   "nav.changelog": "Changelog",
   "nav.github": "GitHub",
   "nav.search.aria_label": "検索",
-  "nav.search.not_built": "検索インデックスが見つかりません。pnpm build を実行してください。",
+  "nav.search.not_built": "検索を利用できません。しばらくしてから再度お試しください。",
   "nav.lang_toggle.aria_label": "言語を英語に切り替える",
   "nav.theme_toggle.aria_label": "テーマを切り替える",
   "nav.theme.auto": "自動",

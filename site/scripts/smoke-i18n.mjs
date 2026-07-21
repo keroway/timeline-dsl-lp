@@ -284,12 +284,49 @@ async function smokeBrowserFlow(rootUrl) {
 
     // Gallery のタグ filter トグル動作を検証する
     await checkGalleryFilter(browser, rootUrl);
+
+    // サイト内検索(Pagefind UI)が LP / Docs 双方で初期化され結果を返すことを検証する(#482)
+    await checkSearch(browser, rootUrl, "/", "site-search-btn", "site-search-ui", "LP search");
+    await checkSearch(
+      browser,
+      rootUrl,
+      "/docs/",
+      "docs-search-btn",
+      "docs-search-ui",
+      "Docs search",
+    );
   } finally {
     await browser.close();
   }
 
   console.log("Browser smoke: language toggle navigation verified. ✓");
   console.log("Browser smoke: gallery tag filter verified. ✓");
+  console.log("Browser smoke: site search (LP / Docs) verified. ✓");
+}
+
+async function checkSearch(browser, rootUrl, path, buttonId, uiId, label) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await page.goto(`${rootUrl}${path}`);
+  await page.locator(`#${buttonId}`).click();
+
+  const searchUi = page.locator(`#${uiId}`);
+  const notBuiltMessage = await searchUi.getAttribute("data-not-built-msg");
+  await page.locator(`#${uiId} .pagefind-ui__search-input`).waitFor({ state: "visible" });
+
+  const uiText = await searchUi.textContent();
+  if (notBuiltMessage && uiText?.includes(notBuiltMessage)) {
+    throw new Error(`${label}: PagefindUI failed to initialize (fallback message shown)`);
+  }
+
+  await page.locator(`#${uiId} .pagefind-ui__search-input`).fill("install");
+  await page
+    .locator(`#${uiId} .pagefind-ui__result`)
+    .first()
+    .waitFor({ state: "visible", timeout: 5000 });
+
+  await context.close();
 }
 
 async function checkGalleryFilter(browser, rootUrl) {
