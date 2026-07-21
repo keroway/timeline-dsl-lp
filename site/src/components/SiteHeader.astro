@@ -243,8 +243,15 @@ const t = getT(locale);
         link.href = "/pagefind/pagefind-ui.css";
         document.head.appendChild(link);
         // @ts-expect-error pagefind-ui.js is generated at build time and not resolvable at type-check time
-        const { PagefindUI } = await import("/pagefind/pagefind-ui.js");
-        new PagefindUI({ element: searchUi, showSubResults: true, resetStyles: false });
+        const pagefindUiModule = await import("/pagefind/pagefind-ui.js");
+        // pagefind-ui.js assigns to window.PagefindUI instead of exporting it as ESM
+        const PagefindUI =
+          pagefindUiModule.PagefindUI ?? (window as unknown as { PagefindUI: unknown }).PagefindUI;
+        new (PagefindUI as new (options: unknown) => unknown)({
+          element: searchUi,
+          showSubResults: true,
+          resetStyles: false,
+        });
       } catch {
         searchUi.textContent = searchUi.dataset.notBuiltMsg ?? "";
       }
