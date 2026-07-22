@@ -16,13 +16,20 @@ const t = getT(locale);
 
 const pathname = locale === "ja" ? "/gallery/" : "/en/gallery/";
 
-const samples = gallerySamples as {
+const rawSamples = gallerySamples as {
   id: string;
-  title: string;
-  description: string;
+  title: { ja: string; en: string };
+  description: { ja: string; en: string };
   tags: string[];
   source: string;
 }[];
+
+// title/description のみロケールで解決する。source(DSL)はスコープ外のため日本語のまま共通。
+const samples = rawSamples.map((sample) => ({
+  ...sample,
+  title: sample.title[locale],
+  description: sample.description[locale],
+}));
 
 const msgs = {
   errorSummary: t("gallery.error.summary"),

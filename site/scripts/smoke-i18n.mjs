@@ -147,19 +147,66 @@ async function smokeHttpSurface(rootUrl) {
     );
   }
   // Regression guard: en ページにタグラベルの日本語が漏れてはいけない。
-  // title / description / DSL source には現状日本語が残るため、それらに出現しない
-  // 「タグラベル固有の語」だけをネガティブ検査対象にする。
-  // 将来サンプル追加でこれらの語が title/description/source に混入すると誤検知するので、
-  // その際は検査語を見直すこと。
-  // Regression guard: en ページにタグラベルの日本語が漏れてはいけない。
-  // 注意: gallery-samples.json の title / description に出現する語は誤検知になるため対象外。
-  //   除外する語：「歴史」(title/desc内)、「年表」(title/desc内)、「ロードマップ」(title/desc内)、「創作」(title/desc内)、「OSS」(同形)。
-  //   将来サンプル追加で語がtitle/description/sourceに混入する場合は検査語を見直すこと。
+  // DSL source には現状日本語が残るため、そこに出現しない「タグラベル固有の語」だけを
+  // ネガティブ検査対象にする。将来サンプル追加でこれらの語が source に混入すると
+  // 誤検知するので、その際は検査語を見直すこと。
   for (const jpTag of ["プロジェクト管理", "世界観", "伝記"]) {
     assertExcludes(
       enGalleryHtml,
       jpTag,
       `/en/gallery/ must not leak Japanese tag label "${jpTag}"`,
+    );
+  }
+
+  // Regression guard (#484): en gallery の作例タイトル・説明文は英語でなければならない。
+  const GALLERY_SAMPLE_LOCALES = [
+    {
+      ja: { title: "日本近現代史", description: "幕末から大正時代までの主要な政治" },
+      en: { title: "Modern Japanese History", description: "late Edo period through the Taisho" },
+    },
+    {
+      ja: { title: "ソフトウェア開発ロードマップ", description: "フェーズと節目を span" },
+      en: {
+        title: "Software Development Roadmap",
+        description: "expressing phases and milestones",
+      },
+    },
+    {
+      ja: { title: "架空世界年表", description: "王朝・事件・人物を 3 つの lane" },
+      en: { title: "Fictional World Chronicle", description: "dynasties, incidents, and people" },
+    },
+    {
+      ja: { title: "ライブラリ リリースサイクル", description: "メジャー・マイナーバージョン" },
+      en: { title: "Library Release Cycle", description: "major/minor versions and LTS periods" },
+    },
+    {
+      ja: { title: "人物年表", description: "出生から没年まで" },
+      en: { title: "Biographical Timeline", description: "from birth to death, using event" },
+    },
+  ];
+  for (const sample of GALLERY_SAMPLE_LOCALES) {
+    assertIncludes(
+      enGalleryHtml,
+      sample.en.title,
+      `/en/gallery/ must show English sample title "${sample.en.title}"`,
+    );
+    assertIncludes(
+      enGalleryHtml,
+      sample.en.description,
+      `/en/gallery/ must show English sample description "${sample.en.description}"`,
+    );
+    // 注意: title は DSL source(`timeline "..."` ヘッダ)に同一の日本語文字列が
+    // 意図的に残るサンプルがある(source はスコープ外)ため、title のリーク検査は
+    // description のみに限定する。
+    assertExcludes(
+      enGalleryHtml,
+      sample.ja.description,
+      `/en/gallery/ must not leak Japanese sample description "${sample.ja.description}"`,
+    );
+    assertIncludes(
+      jaGalleryHtml,
+      sample.ja.title,
+      `/gallery/ must still show Japanese sample title "${sample.ja.title}"`,
     );
   }
   // Regression guard: en gallery に日本語ボタン文言が漏れてはいけない。
