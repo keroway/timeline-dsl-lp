@@ -57,9 +57,8 @@ const t = getT(locale);
             >
               <p class="install-panel-os">{t(channel.osKey)}</p>
               <div class="command-copy">
-                <pre class="command">
-                  <code id={commandId}>{commandText}</code>
-                </pre>
+                {/* prettier-ignore */}
+                <pre class="command"><code id={commandId}>{commandText}</code></pre>
                 <button
                   class="copy-button"
                   type="button"
