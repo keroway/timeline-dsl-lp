@@ -48,7 +48,7 @@
   min-height: 7.35rem;
   border: 1px solid color-mix(in srgb, var(--color-ink), transparent 86%);
   background: color-mix(in srgb, var(--color-bg), transparent 14%);
-  box-shadow: 0 12px 28px color-mix(in srgb, var(--color-ink), transparent 92%);
+  box-shadow: 0 12px 28px var(--shadow-color);
 }
 
 .feature-figure-bar,

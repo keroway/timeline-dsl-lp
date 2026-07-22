@@ -97,7 +97,7 @@
   height: 1.85rem;
   padding: 0 0.45rem;
   color: var(--color-on-lane);
-  box-shadow: 0 8px 18px rgba(21, 32, 44, 0.12);
+  box-shadow: 0 8px 18px var(--shadow-color);
 }
 
 .usecase-bar::before {

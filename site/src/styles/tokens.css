@@ -52,7 +52,6 @@
   --color-terminal-bg: #121921;
   --color-terminal-ink: #eaf1f8;
   --color-terminal-border: #cdd4df;
-  --color-terminal-shadow: rgba(21, 32, 44, 0.16);
   --color-terminal-bar-border: rgba(255, 255, 255, 0.1);
   --color-terminal-dot: #738090;
   --color-terminal-dot-warm: #df6a54;
@@ -102,6 +101,13 @@
   --radius-pill: 999px;
   /* セクション/ヘッダー/フッターの共通最大幅（DESIGN.md §4） */
   --layout-width: min(1120px, calc(100% - 2rem));
+  /* Shadow color scale (DESIGN.md §4, #486) — box-shadow の色成分を --color-ink からの
+     color-mix に統一する。--color-ink は light/dark/high-contrast で個別定義済みのため、
+     ここを 1 度定義するだけで 3 テーマに自動追従する。86/88/90/92% の近接値は --shadow-color
+     (88%) に統合し、80% の濃いクラスタのみ --shadow-color-strong として区別する
+     (DESIGN.md Calm density 原則により 2 種に絞る) */
+  --shadow-color: color-mix(in srgb, var(--color-ink), transparent 88%);
+  --shadow-color-strong: color-mix(in srgb, var(--color-ink), transparent 80%);
 }
 
 :root[data-a11y-text-size="xx-large"] {
@@ -136,7 +142,6 @@
   --color-terminal-bg: #000000;
   --color-terminal-ink: #ffffff;
   --color-terminal-border: #ffffff;
-  --color-terminal-shadow: transparent;
   --color-terminal-bar-border: rgba(255, 255, 255, 0.6);
   --color-terminal-dot: #d8e0e8;
   --color-terminal-dot-warm: #ff8a75;
