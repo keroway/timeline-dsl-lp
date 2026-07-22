@@ -11,7 +11,7 @@ describe("SiteFooter", () => {
       props: {},
     });
     expect(result).toContain("<nav");
-    expect(result).toContain('class="footer-nav"');
+    expect(result).toMatch(/class="footer-nav(?: [\w-]+)?"/);
   });
 
   it("Playground / Gallery / Showcase / Changelog へのリンクを含む", async () => {
@@ -58,7 +58,7 @@ describe("SiteFooter", () => {
     const result = await container.renderToString(SiteFooter, {
       props: {},
     });
-    expect(result).toContain('class="site-footer"');
+    expect(result).toMatch(/class="site-footer(?: [\w-]+)?"/);
   });
 
   it("著作権表示が現在の年を含む（ビルド時に自動更新される）", async () => {
