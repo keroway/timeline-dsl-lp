@@ -67,7 +67,7 @@ button:focus-visible {
   height: 2rem;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: #232526;
+  background: var(--color-brand-badge-bg);
   box-shadow: 0 8px 20px color-mix(in srgb, var(--color-ink), transparent 86%);
 }
 
@@ -331,7 +331,7 @@ h1 {
 
 .button-primary {
   background: var(--color-accent);
-  color: #ffffff;
+  color: var(--color-on-accent);
 }
 
 .button-primary:hover {
