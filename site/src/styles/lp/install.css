@@ -19,7 +19,7 @@
   background: var(--color-bg);
   padding: var(--space-md) 3.4rem var(--space-md) var(--space-md);
   font-family: var(--font-mono);
-  font-size: 0.95rem;
+  font-size: var(--text-md);
 }
 
 .install-tabs {

@@ -83,6 +83,9 @@
   --text-xs: calc(var(--font-size-base) * 0.86);
   --text-sm: calc(var(--font-size-base) * 0.92);
   --text-md: calc(var(--font-size-base) * 0.95);
+  /* LP セクションの code ブロック系(#491)。0.64rem/0.68rem の近接値を --text-3xs に統合する */
+  --text-3xs: calc(var(--font-size-base) * 0.68);
+  --text-4xs: calc(var(--font-size-base) * 0.56);
   /* Spacing scale (DESIGN.md §4) — gap / margin / padding の段階値 */
   --space-2xs: 0.35rem;
   --space-xs: 0.5rem;

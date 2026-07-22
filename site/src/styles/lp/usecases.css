@@ -2,7 +2,7 @@
   margin: 0;
   color: var(--color-warm);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: var(--text-2xs);
   font-weight: 740;
 }
 
@@ -83,7 +83,7 @@
   border-bottom: 1px solid color-mix(in srgb, var(--color-line), transparent 14%);
   color: var(--color-muted);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: var(--text-3xs);
   font-weight: 720;
 }
 
@@ -133,7 +133,7 @@
 
 .usecase-year {
   font-family: var(--font-mono);
-  font-size: 0.56rem;
+  font-size: var(--text-4xs);
   line-height: 1;
   opacity: 0.84;
 }
