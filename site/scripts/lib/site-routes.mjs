@@ -257,6 +257,19 @@ const _CATALOG = [
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
+  // Docs: styling（hreflang 確認を追加, #500）
+  {
+    path: "/docs/styling/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/styling/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
   // Docs: faq（FAQPage / Question は引き継ぎ）
   {
     path: "/docs/faq/",
