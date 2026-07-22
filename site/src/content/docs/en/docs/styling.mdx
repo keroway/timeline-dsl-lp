@@ -1,0 +1,238 @@
+---
+title: Styling
+description: How to customize the HTML output of tdsl render with built-in themes and custom CSS.
+---
+
+The HTML output of `tdsl render` can be customized by switching built-in themes and injecting custom CSS.
+This page covers the reference for available CSS classes/properties and practical customization examples.
+
+## Basic Usage
+
+```bash
+# Specify a built-in theme (default / dark / print / pastel)
+tdsl render my_timeline.tdsl --theme dark --output out.html
+
+# Inject a custom CSS file (applied after the theme CSS)
+tdsl render my_timeline.tdsl --custom-css my_style.css --output out.html
+
+# Combine both (add your own styles on top of a theme)
+tdsl render my_timeline.tdsl --theme pastel --custom-css my_style.css --output out.html
+```
+
+The content of the file passed to `--custom-css` is injected as a `<style>` tag immediately after the theme CSS,
+so it can override any rule from the theme.
+
+The output HTML has no external font/CDN dependency by default. Body text uses the OS system font stack (e.g. Hiragino Sans / Yu Gothic / Meiryo / Segoe UI / Roboto). If you want to use a web font, add the necessary `@font-face` or `<link>`-equivalent CSS explicitly via `--custom-css`.
+
+## Built-in Themes
+
+| Theme     | Characteristics                                              |
+| --------- | ------------------------------------------------------------ |
+| `default` | White background, steel-blue spans, red event_range. Default |
+| `dark`    | Dark navy background. Easy on the eyes for night viewing     |
+| `print`   | White background, monochrome palette. For print/PDF output   |
+| `pastel`  | Soft cream-based palette. For presentations/sharing          |
+
+## CSS Class Reference
+
+The SVG and surrounding elements in the output HTML carry the following CSS classes.
+Override each class via `--custom-css` to change the appearance of the corresponding element.
+
+### Container
+
+| Class            | Target                                        | Main Properties                                    |
+| ---------------- | --------------------------------------------- | -------------------------------------------------- |
+| `.tdsl-timeline` | The div container wrapping the whole timeline | `background`, `border`, `border-radius`, `padding` |
+
+### Lanes
+
+| Class                  | Target                                            | Main Properties                                                    |
+| ---------------------- | ------------------------------------------------- | ------------------------------------------------------------------ |
+| `.tdsl-lane-band-even` | Background band of even-numbered lanes (SVG rect) | `fill`                                                             |
+| `.tdsl-lane-band-odd`  | Background band of odd-numbered lanes (SVG rect)  | `fill`                                                             |
+| `.tdsl-lane-label`     | Lane name text                                    | `font-size` (default: 13px), `fill` (default: #333), `font-weight` |
+
+### Time Axis
+
+| Class                 | Target                        | Main Properties                                     |
+| --------------------- | ----------------------------- | --------------------------------------------------- |
+| `.tdsl-axis-baseline` | The baseline of the time axis | `stroke`, `stroke-width`                            |
+| `.tdsl-axis-tick`     | Tick mark lines               | `stroke`, `stroke-width`                            |
+| `.tdsl-axis-text`     | Tick label text               | `font-size` (default: 11px), `fill` (default: #666) |
+
+### Common Item Properties
+
+An item's fill color is determined in this order: `item.color` (the DSL's `color "...";`) > the `color_map` tag color > the lane palette color. `color` only accepts hex colors (`#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA`) or simple CSS color keywords.
+
+| Class                                             | Target                                                                 | Main Properties                                                               |
+| ------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `.tdsl-item`                                      | The group element (`<g>`) for each item                                | For focus styling (combine with the `:focus-visible` pseudo-class)            |
+| `.tdsl-item-label`                                | The text label on an item                                              | `font-size` (default: 11px), `fill` (default: #fff)                           |
+| `.tdsl-item-label-external` / `.tdsl-event-label` | Labels placed outside the bar                                          | `font-size` may be overridden by an inline `style` attribute                  |
+| `.tdsl-label-leader`                              | The leader line (SVG line) connecting an external label to its bar/dot | `stroke` (default: #999), `stroke-width`, `stroke-dasharray` (default: `2 2`) |
+
+When `show_event_labels` is enabled, a label that doesn't fit the bar width is automatically adjusted in this order: font shrinking → truncation with an ellipsis → placement outside the bar (connected via `.tdsl-label-leader`). The full label text is always available via `<title>` (tooltip).
+
+### Span (Duration Bar)
+
+| Class        | Target                  | Main Properties                                                                     |
+| ------------ | ----------------------- | ----------------------------------------------------------------------------------- |
+| `.tdsl-span` | Duration bar (SVG rect) | `fill` (default: #4682B4), `fill-opacity` (default: 0.78), `stroke`, `stroke-width` |
+
+On hover, opacity changes via `.tdsl-span:hover { fill-opacity: 1; }`.
+
+### EventRange (Range Event Bar)
+
+| Class               | Target                     | Main Properties                                                                     |
+| ------------------- | -------------------------- | ----------------------------------------------------------------------------------- |
+| `.tdsl-event-range` | Range event bar (SVG rect) | `fill` (default: #DC143C), `fill-opacity` (default: 0.75), `stroke`, `stroke-width` |
+
+### Event (Point Event)
+
+| Class              | Target                                     | Main Properties                                                               |
+| ------------------ | ------------------------------------------ | ----------------------------------------------------------------------------- |
+| `.tdsl-event-dot`  | The event's dot (SVG circle)               | `fill` (default: #333), `stroke` (default: #fff), `stroke-width`              |
+| `.tdsl-event-stem` | The vertical line from the dot to the axis | `stroke` (default: #aaa), `stroke-width`, `stroke-dasharray` (default: `2 2`) |
+| `.tdsl-event-hit`  | The transparent hit area for hover         | `fill: transparent` (no need to change)                                       |
+
+### Open-ended Items
+
+| Class                   | Target                                                                      | Main Properties                                                                                          |
+| ----------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `.tdsl-item-open-ended` | Hook class added to the `<g>` of a span/event_range with `end` set to `now` | By default overrides the inner `.tdsl-span` / `.tdsl-event-range`'s `stroke-dasharray` to `4 2` (dashed) |
+
+```css
+/* Example: change the default dashed border of open-ended items into an arrow-like look */
+.tdsl-item-open-ended .tdsl-span,
+.tdsl-item-open-ended .tdsl-event-range {
+  stroke-dasharray: none;
+  opacity: 0.85;
+}
+```
+
+### Tooltip
+
+| Class           | Target                     | Main Properties                                                                            |
+| --------------- | -------------------------- | ------------------------------------------------------------------------------------------ |
+| `.tdsl-tooltip` | The tooltip shown on hover | `background`, `border`, `border-radius` (default: 6px), `color`, `font-size`, `box-shadow` |
+
+## Customization Examples
+
+### Example 1: Change the color of spans
+
+```css
+/* Change span to a green tone */
+.tdsl-span {
+  fill: #2e8b57;
+  stroke: #1a5c38;
+}
+
+/* Change event_range to a purple tone */
+.tdsl-event-range {
+  fill: #7b68ee;
+  stroke: #483d8b;
+}
+```
+
+```bash
+tdsl render my_timeline.tdsl --custom-css green_theme.css --output out.html
+```
+
+### Example 2: Increase font size
+
+```css
+/* Enlarge lane names and axis labels */
+.tdsl-lane-label {
+  font-size: 16px;
+  font-weight: 700;
+}
+.tdsl-axis-text {
+  font-size: 13px;
+}
+
+/* Enlarge item labels too */
+.tdsl-item-label {
+  font-size: 13px;
+}
+```
+
+### Example 3: Add your own colors on top of the dark theme
+
+First apply the dark theme with `--theme dark`, then change the accent colors with `--custom-css`.
+
+```css
+/* Change the dark theme's span to an orange tone */
+.tdsl-span {
+  fill: #e07b39;
+  stroke: #b85c1a;
+}
+.tdsl-event-range {
+  fill: #c45c8b;
+  stroke: #8b2a5a;
+}
+```
+
+```bash
+tdsl render my_timeline.tdsl --theme dark --custom-css accents.css --output out.html
+```
+
+### Example 4: Change the tooltip style
+
+```css
+/* A simpler tooltip with rounded corners and no shadow */
+.tdsl-tooltip {
+  background: #1a1a1a;
+  color: #f0f0f0;
+  border: none;
+  border-radius: 3px;
+  box-shadow: none;
+  font-size: 13px;
+}
+```
+
+## Notes
+
+### SVG's `fill` / `stroke` are different properties from CSS's `color`
+
+SVG elements use `fill` (fill color) and `stroke` (outline color) instead of CSS's `color` for color specification.
+A typical HTML `color: red;` declaration does not affect an SVG element's `fill`.
+
+```css
+/* Wrong: has no effect on SVG elements */
+.tdsl-span {
+  color: red;
+}
+
+/* Correct: SVG elements use fill for color */
+.tdsl-span {
+  fill: red;
+}
+```
+
+### Custom CSS application order
+
+Styles in the HTML are applied in the following order:
+
+1. Base CSS (layout, default colors)
+2. Theme CSS (overrides corresponding to `--theme`)
+3. Custom CSS (the content of the file passed to `--custom-css`)
+
+Because custom CSS is always applied last, it can reliably override any class.
+However, be mindful of specificity — if a theme's rule includes `!important`, your custom CSS may need `!important` too.
+
+### The difference between `fill-opacity` and `opacity`
+
+`.tdsl-span` and `.tdsl-event-range` use `fill-opacity` to become semi-transparent.
+Use `opacity` to make the whole element transparent, but note that this also fades the label text.
+
+```css
+/* fill-opacity: only the bar's fill color becomes transparent (labels unaffected) */
+.tdsl-span {
+  fill-opacity: 0.5;
+}
+
+/* opacity: the whole element (including labels) becomes transparent */
+.tdsl-span {
+  opacity: 0.5;
+}
+```

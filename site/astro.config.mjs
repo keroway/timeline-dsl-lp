@@ -122,6 +122,11 @@ export default defineConfig({
               translations: { en: "Grammar & Examples" },
               slug: "docs/grammar",
             },
+            {
+              label: "スタイリング",
+              translations: { en: "Styling" },
+              slug: "docs/styling",
+            },
           ],
         },
         {
