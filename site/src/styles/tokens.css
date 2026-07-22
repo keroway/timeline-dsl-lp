@@ -75,6 +75,14 @@
   --line-height-base: 1.65;
   --letter-spacing-base: 0em;
   --word-spacing-base: normal;
+  /* Typography scale (DESIGN.md §4, #490) — フッタ/キャプション系の「小さめテキスト」に
+     乱立していた近接 rem 値を統合する。--font-size-base からの相対値(calc)にすることで
+     a11y テキストサイズ変更(data-a11y-text-size)にも追従する。0.78rem と 0.8rem のみ
+     近接のため --text-2xs に統合し、他は既存の見た目を保つため個別の値を維持する */
+  --text-2xs: calc(var(--font-size-base) * 0.8);
+  --text-xs: calc(var(--font-size-base) * 0.86);
+  --text-sm: calc(var(--font-size-base) * 0.92);
+  --text-md: calc(var(--font-size-base) * 0.95);
   /* Spacing scale (DESIGN.md §4) — gap / margin / padding の段階値 */
   --space-2xs: 0.35rem;
   --space-xs: 0.5rem;
