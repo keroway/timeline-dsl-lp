@@ -60,6 +60,39 @@ for (const sample of samples) {
   <div class="gallery-grid">
     {samples.map((sample) => <GalleryCard sample={sample} locale={locale} />)}
   </div>
+
+  {
+    /* 全カード共有の拡大表示モーダル(#481)。native <dialog>.showModal() で
+     フォーカストラップ・Esc クローズ・トップレイヤー表示を無料で得る
+     (SiteHeader のモバイルナビ disclosure と同じパターン)。 */
+  }
+  <dialog class="gallery-preview-dialog" id="gallery-preview-dialog">
+    <div class="gallery-preview-dialog-inner">
+      <button
+        type="button"
+        class="gallery-preview-dialog-close"
+        id="gallery-preview-dialog-close"
+        aria-label={t("gallery.preview_modal.close_aria_label")}
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <h2 class="gallery-preview-dialog-title" id="gallery-preview-dialog-title"></h2>
+      <div class="gallery-preview-dialog-content" id="gallery-preview-dialog-content"></div>
+    </div>
+  </dialog>
 </section>
 
 <style>
@@ -152,5 +185,74 @@ for (const sample of samples) {
 
   :root[data-a11y-reduced-motion="true"] .gallery-filter-chip {
     transition: none;
+  }
+
+  .gallery-preview-dialog {
+    margin: auto;
+    width: min(90vw, 1100px);
+    max-height: calc(100vh - 4rem);
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
+  .gallery-preview-dialog::backdrop {
+    background: color-mix(in srgb, var(--color-ink), transparent 65%);
+  }
+
+  .gallery-preview-dialog-inner {
+    position: relative;
+    max-height: calc(100vh - 4rem);
+    padding: 1.5rem;
+    overflow: auto;
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    box-shadow: 0 20px 60px color-mix(in srgb, var(--color-ink), transparent 80%);
+  }
+
+  .gallery-preview-dialog-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg);
+    color: var(--color-muted);
+    cursor: pointer;
+  }
+
+  .gallery-preview-dialog-close:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .gallery-preview-dialog-close:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .gallery-preview-dialog-title {
+    margin: 0 2.5rem 1rem 0;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 760;
+    color: var(--color-ink);
+  }
+
+  .gallery-preview-dialog-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-preview-dialog-content :global(svg) {
+    max-width: 100%;
+    height: auto;
   }
 </style>
