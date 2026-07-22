@@ -42,6 +42,10 @@
      （約3:1）のため専用トークン化する（DESIGN.md §2）。warn 同様サーフェス（--color-bg）依存で
      4 ブロックで定義する。light は白背景で AA (5.62:1)、warn(amber)/ready(teal) と色相で区別 */
   --color-status-error: #c62828;
+  /* ブランドマークのバッジ背景 (SiteHeader / SiteFooter)。ロゴアイコンの背後に
+     常に必要な dark badge で、ページテーマ非依存のため terminal-bg 同様に
+     :root へ 1 度だけ定義する（light/dark/HC すべて同一見た目を維持） */
+  --color-brand-badge-bg: #232526;
   /* Terminal surface (DESIGN.md §2) — 意図的に dark。ページテーマ非依存で
      light / dark とも同一見た目のため :root に 1 度だけ定義する。HC のみ
      下の high-contrast ブロックで上書きする。dot は lane ではなくウィンドウ信号色 */
