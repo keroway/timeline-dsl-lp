@@ -48,7 +48,7 @@
 .step-number {
   color: var(--color-accent-strong);
   font-family: var(--font-mono);
-  font-size: 0.84rem;
+  font-size: var(--text-xs);
   font-weight: 760;
 }
 

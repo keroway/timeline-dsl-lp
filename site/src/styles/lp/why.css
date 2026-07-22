@@ -36,7 +36,7 @@
 .why-compare table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.92rem;
+  font-size: var(--text-sm);
 }
 
 .why-compare th,
@@ -70,7 +70,7 @@
 
 .why-faq-link {
   margin: var(--space-lg) 0 0;
-  font-size: 0.95rem;
+  font-size: var(--text-md);
   text-align: right;
 }
 

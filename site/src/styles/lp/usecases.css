@@ -14,7 +14,7 @@
 
 .usecase-showcase-link {
   margin: var(--space-lg) 0 0;
-  font-size: 0.95rem;
+  font-size: var(--text-md);
   text-align: right;
 }
 
@@ -140,6 +140,7 @@
 
 .usecase-label {
   margin-top: 0.15rem;
+  /* ミニ年表カード内の装飾ラベルのため据置(#507)。拡大時のはみ出し防止 */
   font-size: 0.64rem;
   font-weight: 760;
   line-height: 1;
