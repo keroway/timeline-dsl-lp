@@ -63,7 +63,7 @@
   border-bottom: 1px solid color-mix(in srgb, var(--color-line), transparent 15%);
   color: var(--color-muted);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: var(--text-3xs);
 }
 
 .feature-figure-bar span:last-child,
@@ -78,7 +78,7 @@
   padding: 0.62rem 0.68rem;
   color: var(--color-ink);
   font-family: var(--font-mono);
-  font-size: 0.64rem;
+  font-size: var(--text-3xs);
   line-height: 1.56;
   /* Shiki の inline 背景はパネル側で持つので無効化する */
   background: transparent !important;
@@ -116,7 +116,7 @@
   margin: 0;
   color: var(--color-terminal-diag-muted);
   font-family: var(--font-mono);
-  font-size: 0.64rem;
+  font-size: var(--text-3xs);
   line-height: 1.45;
 }
 
