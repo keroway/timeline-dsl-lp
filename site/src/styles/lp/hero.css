@@ -142,7 +142,7 @@
       )
       0 0 / 100% 4.2rem,
     var(--color-bg);
-  box-shadow: 0 24px 70px color-mix(in srgb, var(--color-ink), transparent 86%);
+  box-shadow: 0 24px 70px var(--shadow-color);
   content: "";
   transform: rotate(-1.4deg);
 }
@@ -153,7 +153,7 @@
   z-index: 1;
   border: 1px solid color-mix(in srgb, var(--color-ink), transparent 84%);
   background: var(--color-bg);
-  box-shadow: 0 18px 48px color-mix(in srgb, var(--color-ink), transparent 86%);
+  box-shadow: 0 18px 48px var(--shadow-color);
 }
 
 .editor-panel {
