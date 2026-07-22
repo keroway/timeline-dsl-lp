@@ -15,8 +15,14 @@ const t = getT(locale);
 // 静的 SVG として埋め込む（#433）。クライアント WASM 起動は LP に持ち込まない
 // （LCP / TBT を守る、#428 の TimelineEmbed / renderSvgFromSource と同じ経路）。
 const FEATURED_SAMPLE_IDS = ["fictional-world", "japanese-history", "release-cycle"];
-const allSamples = gallerySamples as { id: string; title: string; source: string }[];
-const samples = allSamples.filter((sample) => FEATURED_SAMPLE_IDS.includes(sample.id));
+const allSamples = gallerySamples as {
+  id: string;
+  title: { ja: string; en: string };
+  source: string;
+}[];
+const samples = allSamples
+  .filter((sample) => FEATURED_SAMPLE_IDS.includes(sample.id))
+  .map((sample) => ({ ...sample, title: sample.title[locale] }));
 ---
 
 <section class="section examples-section" aria-labelledby="examples-heading">

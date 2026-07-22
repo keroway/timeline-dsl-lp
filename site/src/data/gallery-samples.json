@@ -1,36 +1,51 @@
 [
   {
     "id": "japanese-history",
-    "title": "日本近現代史",
-    "description": "幕末から大正時代までの主要な政治・文化イベントを year 単位で整理した年表",
+    "title": { "ja": "日本近現代史", "en": "Modern Japanese History" },
+    "description": {
+      "ja": "幕末から大正時代までの主要な政治・文化イベントを year 単位で整理した年表",
+      "en": "A year-based timeline of major political and cultural events from the late Edo period through the Taisho era."
+    },
     "tags": ["history", "chronology"],
     "source": "timeline \"日本近現代史\" {\n    title \"日本近現代史\";\n    unit year;\n    range 1853..1926;\n    calendar proleptic_gregorian;\n}\n\nlane \"政治\" as politics { kind custom; order 10; }\nlane \"外交\" as diplomacy { kind custom; order 20; }\nlane \"文化\" as culture { kind custom; order 30; }\n\nevent politics 1868 \"明治改元\" { tags [\"era\"]; };\nspan politics 1868..1912 \"明治時代\" { tags [\"era\"]; };\nspan politics 1912..1926 \"大正時代\" { tags [\"era\"]; };\nevent diplomacy 1853 \"黒船来航\" {};\nevent diplomacy 1854 \"日米和親条約\" {};\nevent diplomacy 1894 \"日清戦争開始\" {};\nevent diplomacy 1904 \"日露戦争開始\" {};\nevent culture 1872 \"新橋〜横浜間鉄道開業\" {};\nevent culture 1885 \"内閣制度発足\" {};\n"
   },
   {
     "id": "project-roadmap",
-    "title": "ソフトウェア開発ロードマップ",
-    "description": "フェーズと節目を span / event で表現したプロジェクト年表",
+    "title": { "ja": "ソフトウェア開発ロードマップ", "en": "Software Development Roadmap" },
+    "description": {
+      "ja": "フェーズと節目を span / event で表現したプロジェクト年表",
+      "en": "A project timeline expressing phases and milestones with span / event."
+    },
     "tags": ["project", "roadmap"],
     "source": "timeline \"開発ロードマップ\" {\n    title \"開発ロードマップ\";\n    unit year;\n    range 2024..2028;\n    calendar proleptic_gregorian;\n}\n\nlane \"フェーズ\" as phases { kind custom; order 10; }\nlane \"リリース\" as releases { kind custom; order 20; }\n\nspan phases 2024..2025 \"要件定義・設計\" { tags [\"phase\"]; };\nspan phases 2025..2026 \"開発\" { tags [\"phase\"]; };\nspan phases 2026..2027 \"テスト・改善\" { tags [\"phase\"]; };\nspan phases 2027..2028 \"安定稼働\" { tags [\"phase\"]; };\nevent releases 2025 \"α版リリース\" { tags [\"milestone\"]; };\nevent releases 2026 \"β版リリース\" { tags [\"milestone\"]; };\nevent releases 2027 \"v1.0 GA\" { tags [\"milestone\"]; };\n"
   },
   {
     "id": "fictional-world",
-    "title": "架空世界年表",
-    "description": "王朝・事件・人物を 3 つの lane で整理した創作世界の歴史",
+    "title": { "ja": "架空世界年表", "en": "Fictional World Chronicle" },
+    "description": {
+      "ja": "王朝・事件・人物を 3 つの lane で整理した創作世界の歴史",
+      "en": "A fictional world's history organized into three lanes for dynasties, incidents, and people."
+    },
     "tags": ["creative", "worldbuilding"],
     "source": "timeline \"架空世界年表\" {\n    title \"架空世界年表\";\n    unit year;\n    range 980..1260;\n    calendar proleptic_gregorian;\n}\n\nlane \"王朝\" as realm { kind custom; order 10; }\nlane \"事件\" as incident { kind custom; order 20; }\nlane \"人物\" as people { kind custom; order 30; }\n\nspan realm 990..1184 \"灰都王朝\" { tags [\"dynasty\"]; };\nspan realm 1200..1260 \"東方連盟\" { tags [\"dynasty\"]; };\nevent incident 1042 \"北方遠征\" {};\nevent_range incident 1130..1137 \"継承戦争\" { tags [\"war\"]; };\nspan people 1088..1162 \"巡礼王\" { tags [\"person\"]; };\nevent people 1184 \"王朝終焉\" {};\n"
   },
   {
     "id": "release-cycle",
-    "title": "ライブラリ リリースサイクル",
-    "description": "メジャー・マイナーバージョンと LTS 期間を span で可視化した例",
+    "title": { "ja": "ライブラリ リリースサイクル", "en": "Library Release Cycle" },
+    "description": {
+      "ja": "メジャー・マイナーバージョンと LTS 期間を span で可視化した例",
+      "en": "An example visualizing major/minor versions and LTS periods with span."
+    },
     "tags": ["project", "oss"],
     "source": "timeline \"ライブラリ リリースサイクル\" {\n    title \"ライブラリ リリースサイクル\";\n    unit year;\n    range 2020..2028;\n    calendar proleptic_gregorian;\n}\n\nlane \"メジャー\" as major { kind custom; order 10; }\nlane \"LTS\" as lts { kind custom; order 20; }\n\nspan major 2020..2022 \"v1.x\" {};\nspan major 2022..2024 \"v2.x\" {};\nspan major 2024..2026 \"v3.x\" {};\nspan major 2026..2028 \"v4.x\" {};\nspan lts 2022..2025 \"v2.x LTS\" { tags [\"lts\"]; };\nspan lts 2024..2027 \"v3.x LTS\" { tags [\"lts\"]; };\nevent major 2022 \"v2.0 リリース\" {};\nevent major 2024 \"v3.0 リリース\" {};\nevent major 2026 \"v4.0 リリース\" {};\n"
   },
   {
     "id": "person-timeline",
-    "title": "人物年表",
-    "description": "出生から没年まで、生涯の主要な出来事を event で記録した例",
+    "title": { "ja": "人物年表", "en": "Biographical Timeline" },
+    "description": {
+      "ja": "出生から没年まで、生涯の主要な出来事を event で記録した例",
+      "en": "An example recording the major events of a life, from birth to death, using event."
+    },
     "tags": ["history", "biography"],
     "source": "timeline \"ある人物の生涯\" {\n    title \"ある人物の生涯\";\n    unit year;\n    range 1850..1940;\n    calendar proleptic_gregorian;\n}\n\nlane \"生涯\" as life { kind custom; order 10; }\nlane \"著作\" as works { kind custom; order 20; }\n\nspan life 1850..1940 \"全生涯\" {};\nevent life 1850 \"誕生\" {};\nevent life 1870 \"大学入学\" {};\nevent life 1878 \"最初の職\" {};\nevent life 1910 \"引退\" {};\nevent life 1940 \"没\" {};\nevent works 1882 \"処女作刊行\" {};\nevent works 1895 \"代表作刊行\" {};\nevent works 1920 \"全集出版\" {};\n"
   }
