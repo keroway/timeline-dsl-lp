@@ -41,7 +41,7 @@
   color: var(--color-muted);
   font: inherit;
   font-weight: 650;
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
   cursor: pointer;
 }
 
@@ -64,12 +64,12 @@
 .install-panel-os {
   margin: 0 0 var(--space-xs);
   color: var(--color-muted);
-  font-size: 0.85rem;
+  font-size: var(--text-xs);
 }
 
 .install-other-methods {
   margin: var(--space-sm) 0 0;
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
 }
 
 .install-other-methods a {

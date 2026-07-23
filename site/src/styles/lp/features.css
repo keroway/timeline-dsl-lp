@@ -15,7 +15,7 @@
   margin: 0;
   color: var(--color-warm);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: var(--text-2xs);
   font-weight: 740;
 }
 
@@ -143,6 +143,9 @@
   color: var(--color-terminal-error);
 }
 
+/* ミニタイムライン内のラベル(0.58〜0.65rem)は固定寸法の装飾プレビューのため
+   スケールトークン化せず据置(#507)。a11y テキストサイズ変更で拡大すると
+   レーン幅(--start/--width)から溢れて欠けるのを防ぐ */
 .feature-mini-timeline {
   padding-bottom: var(--space-xs);
 }
