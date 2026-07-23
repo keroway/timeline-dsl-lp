@@ -82,6 +82,75 @@ jobs:
           path: "*.svg"
 ```
 
+### Example: Deploy interactive HTML to GitHub Pages
+
+```yaml
+name: Deploy Timeline
+
+on:
+  push:
+    branches: [main]
+    paths: ["timelines/**/*.tdsl"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: keroway/timeline-dsl@v1
+        with:
+          file: timelines/main.tdsl
+          format: html
+          output: public/index.html
+          interactive: "true"
+          offline: "true"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public/
+
+      - uses: actions/deploy-pages@v4
+```
+
+### Example: Attach a dark-theme SVG to a release
+
+This is an excerpt intended for release-triggered workflows such as a tag push. Configure the job with an `actions/checkout` step and `permissions: contents: write` (required to upload to the release).
+
+```yaml
+- uses: keroway/timeline-dsl@v1
+  id: render
+  with:
+    file: timeline.tdsl
+    format: svg
+    output: timeline-dark.svg
+    theme: dark
+
+- name: Upload to release
+  uses: softprops/action-gh-release@v2
+  with:
+    files: ${{ steps.render.outputs.output_path }}
+```
+
+### Example: Pin a specific version
+
+```yaml
+- uses: keroway/timeline-dsl@v1
+  with:
+    file: timeline.tdsl
+    version: v1.5.0 # Pin the version
+```
+
+### Notes
+
+- **Wikidata fetching**: `.tdsl` files that use `import wikidata` call the Wikidata API unless `offline: 'true'` is set. For repeated CI runs, we recommend `offline: 'true'` plus pre-populating the local cache (via the `tdsl cache` command).
+- **Version pinning**: for production CI, we recommend pinning with `version: vX.Y.Z`. `latest` always fetches the newest release.
+- **GitHub Actions caching**: the tdsl binary itself is downloaded on every run. To reduce download time, you can cache the binary with `actions/cache`.
+
 ## Installing the tdsl CLI Directly
 
 If you need to run multiple `tdsl` commands, install it directly via the install script.

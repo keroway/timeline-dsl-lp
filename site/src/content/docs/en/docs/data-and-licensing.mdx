@@ -1,0 +1,29 @@
+---
+title: Data Usage & Licensing
+description: Explains the license terms for data sourced from Wikidata / Wikipedia and the attribution required when publishing generated timelines.
+---
+
+Timeline DSL supports importing from Wikidata (`import wikidata`). This page explains the license terms for imported data and whether attribution is required when publishing generated timelines.
+
+Note that this page is a project-level summary, not legal advice.
+
+## Wikidata data
+
+Wikidata structured data is licensed under **CC0**. It is free to use without attribution.
+
+Structured data such as entity labels and dates imported via `import wikidata` falls under this. See the [grammar reference](/en/docs/grammar/) for the import syntax.
+
+## Wikipedia data
+
+Wikipedia article text is licensed under **CC BY-SA 4.0**. When quoting, you must provide attribution, a [link to the license](https://creativecommons.org/licenses/by-sa/4.0/), an indication of whether changes were made, and apply the same license (CC BY-SA 4.0).
+
+Images and figures, unlike article text, carry individual licenses set per file. If you use them, check the license on each file's description page (such as Wikimedia Commons).
+
+## Attribution when publishing
+
+Whether attribution is required when publishing a generated timeline depends on the kind of data you used.
+
+- Timelines that use **only Wikidata structured data**: CC0, so they can be published without attribution.
+- Timelines that **quote Wikipedia article text**: you must show the source (the Wikipedia article quoted), a link to the license, and whether changes were made, and apply CC BY-SA 4.0 to the quoted parts. If you include images or figures, follow each file's individual license.
+
+Provide attribution in a form readers can verify, such as the timeline's `source` field or a footnote on the published page.

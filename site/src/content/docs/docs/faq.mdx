@@ -10,10 +10,16 @@ faqs:
     answer: "使えます。timeline、lane、span、event、event_range を手で書く静的な .tdsl ファイルはローカルで検証・ビルド・描画できます。Wikidata import を含むファイルでも、build と render に --offline を付けると静的項目だけを処理します。"
   - question: "どのコマンドから始めればよいですか？"
     answer: "手で作る場合は tdsl init、Wikidata から作る場合は tdsl search と tdsl inspect から始めます。既存ファイルを確認するだけなら tdsl check と tdsl lint を使います。"
+  - question: "紀元前の年はどう書きますか？"
+    answer: "負の整数で表現します。例えば紀元前 206 年は -206、紀元前 221 年は -221 です。range の開始にも負の整数が使えます。"
+  - question: "lane（レーン）を複数定義できますか？"
+    answer: "lane 宣言を複数並べるだけです。order でレーンの表示順を制御できます（数値が小さいほど上に表示）。kind は分類ラベルで、dynasty・person・nation などを自由に指定できます。"
   - question: "CSV から取り込めますか？"
     answer: "tdsl import-csv が使えます。CSV は UTF-8 で、lane,type,start,end,time,label,tags,id のヘッダー行が必要です。"
   - question: "CI では何を実行すべきですか？"
     answer: "基本は tdsl check と tdsl lint です。成果物の生成まで確認する場合は tdsl build --pretty --output timeline.json を追加します。Wikidata 取得を避けたい場合は --offline を使います。"
+  - question: "Wikidata の取得キャッシュをリセットできますか？"
+    answer: "できます。キャッシュは ~/.cache/tdsl/ に保存されており、tdsl cache status で状態確認、tdsl cache clear で全削除、tdsl cache clear --older-than 30 で 30 日以上古いエントリのみ削除できます。"
   - question: "HTML テーマは選べますか？"
     answer: "tdsl render --theme で default、dark、print、pastel を指定できます。独自 CSS は --custom-css で追加できます。"
   - question: "印刷・一覧用にすべてのラベルを常時表示できますか？"
@@ -42,6 +48,34 @@ faqs:
 
 手で作る場合は `tdsl init`、Wikidataから作る場合は `tdsl search` と `tdsl inspect` から始めます。既存ファイルを確認するだけなら `tdsl check` と `tdsl lint` を使います。
 
+## 紀元前の年はどう書きますか？
+
+負の整数で表現します。例えば紀元前 206 年は `-206`、紀元前 221 年は `-221` です。
+
+```tdsl
+span qin -221..-206 "秦" { tags ["dynasty"]; };
+```
+
+`range` の開始にも負の整数が使えます。
+
+```tdsl
+timeline "古代年表" {
+    range -500..500;
+}
+```
+
+## lane（レーン）を複数定義できますか？
+
+`lane` 宣言を複数並べるだけです。`order` でレーンの表示順を制御できます（数値が小さいほど上に表示）。
+
+```tdsl
+lane "秦" as qin     { kind dynasty; order 10; }
+lane "漢" as han     { kind dynasty; order 20; }
+lane "三国" as sanguo { kind dynasty; order 30; }
+```
+
+`kind` は分類ラベルで、`dynasty`（王朝）・`person`（人物）・`nation`（国）などを自由に指定できます。`as` で内部 ID を明示しない場合、ラベルから ASCII スラッグが自動生成されます（日本語ラベルのみの場合は `lane_1`、`lane_2`... のように自動採番されます）。
+
 ## CSVから取り込めますか？
 
 `tdsl import-csv` が使えます。CSVはUTF-8で、`lane,type,start,end,time,label,tags,id` のヘッダー行が必要です。
@@ -54,6 +88,16 @@ tdsl import-csv items.csv --append manual.tdsl
 ## CIでは何を実行すべきですか？
 
 基本は `tdsl check` と `tdsl lint` です。成果物の生成まで確認する場合は `tdsl build --pretty --output timeline.json` を追加します。Wikidata取得を避けたい場合は `--offline` を使います。
+
+## Wikidataの取得キャッシュをリセットできますか？
+
+できます。Wikidata取得キャッシュは `~/.cache/tdsl/` に保存されており、`tdsl cache` コマンドで管理できます。
+
+```sh
+tdsl cache status
+tdsl cache clear
+tdsl cache clear --older-than 30
+```
 
 ## HTMLテーマは選べますか？
 

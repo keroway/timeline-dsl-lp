@@ -371,6 +371,19 @@ const _CATALOG = [
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
+  // Docs: data-and-licensing（データ利用とライセンス, #502）
+  {
+    path: "/docs/data-and-licensing/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/data-and-licensing/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
 ];
 
 /** hreflang 3 タグ（ja / en / x-default）確認対象のパス一覧 */

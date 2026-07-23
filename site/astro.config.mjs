@@ -177,6 +177,11 @@ export default defineConfig({
               slug: "docs/errors",
             },
             { label: "FAQ", slug: "docs/faq" },
+            {
+              label: "データ利用とライセンス",
+              translations: { en: "Data Usage & Licensing" },
+              slug: "docs/data-and-licensing",
+            },
           ],
         },
       ],
