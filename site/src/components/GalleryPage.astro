@@ -341,9 +341,10 @@ const sampleList = itemListLd({
     text-align: center;
   }
 
-  /* エラー詳細の 0.75rem / 0.7rem はスケール段から ±0.02 超の縮小表示用装飾値のため据置(#509) */
+  /* エラー詳細はユーザー向けテキストのため a11y テキストサイズ変更に追従させる。
+     0.75 はスケール段(2xs=0.8/3xs=0.68)から ±0.02 超のため base からの計算値で据置(#509) */
   :global(.gallery-error-detail) {
-    font-size: 0.75rem;
+    font-size: calc(var(--font-size-base) * 0.75);
     color: var(--color-muted);
     text-align: left;
     cursor: pointer;
@@ -352,7 +353,7 @@ const sampleList = itemListLd({
   :global(.gallery-error-message) {
     margin: 0.25rem 0 0;
     padding: 0.3rem;
-    font-size: 0.7rem;
+    font-size: var(--text-3xs);
     white-space: pre-wrap;
     word-break: break-all;
     max-height: 80px;
