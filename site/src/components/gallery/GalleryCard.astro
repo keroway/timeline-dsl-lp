@@ -141,7 +141,7 @@ const playgroundBase = locale === "ja" ? "" : "/en";
 
   .gallery-card-desc {
     margin: 0 0 0.6rem;
-    font-size: 0.875rem;
+    font-size: var(--text-xs);
     color: var(--color-muted);
     line-height: 1.5;
   }
@@ -152,6 +152,7 @@ const playgroundBase = locale === "ja" ? "" : "/en";
     gap: 0.3rem;
   }
 
+  /* タグチップの 0.75rem はスケール段(2xs=0.8/3xs=0.68)から ±0.02 超のため据置(#509) */
   .gallery-tag {
     padding: 0.15em 0.55em;
     border: 1px solid var(--color-line);
@@ -179,6 +180,8 @@ const playgroundBase = locale === "ja" ? "" : "/en";
     border-right: 1px solid var(--color-line);
   }
 
+  /* コードプレビューペインの 0.72rem(ラベル/コード 3 件)は固定高カード内の
+     縮小表示用で、スケール段(2xs=0.8/3xs=0.68)から ±0.02 超のため据置(#509) */
   .gallery-pane-label {
     margin: 0;
     padding: 0.35rem 0.8rem;
@@ -322,7 +325,7 @@ const playgroundBase = locale === "ja" ? "" : "/en";
     border-radius: 6px;
     background: transparent;
     color: var(--color-accent);
-    font-size: 0.875rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     text-decoration: none;
     transition:
