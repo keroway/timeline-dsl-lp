@@ -33,14 +33,14 @@ Errors raised while parsing a file. They are reported when the `.tdsl` file cont
 ```
 tdsl::parse_error
 
-  × 構文エラー: expected EOI, timeline_block, lane_decl, ...
+  × Syntax error: expected EOI, timeline_block, lane_decl, ...
    ╭─[myfile.tdsl:1:1]
  1 │ xyzzy "bad" {
    · ┬
-   · ╰── ここに問題があります
+   · ╰── the problem is here
  2 │   title "T";
    ╰────
-  help: DSL 仕様書 docs/dsl-spec.md を確認してください
+  help: See the DSL specification docs/dsl-spec.md
 ```
 
 ```
@@ -49,7 +49,7 @@ span dynasty { ... }   # a lane reference cannot appear before the lane keyword
 
 # Correct
 lane "王朝" as dynasty
-span dynasty 206..-9 "秦" { ... }
+span dynasty -206..-9 "秦" { ... }
 ```
 
 ### E002: Integer conversion error
