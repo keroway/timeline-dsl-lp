@@ -82,6 +82,72 @@ jobs:
           path: "*.svg"
 ```
 
+### インタラクティブ HTML を GitHub Pages にデプロイする例
+
+```yaml
+name: Deploy Timeline
+
+on:
+  push:
+    branches: [main]
+    paths: ["timelines/**/*.tdsl"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: keroway/timeline-dsl@v1
+        with:
+          file: timelines/main.tdsl
+          format: html
+          output: public/index.html
+          interactive: "true"
+          offline: "true"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public/
+
+      - uses: actions/deploy-pages@v4
+```
+
+### ダークテーマの SVG を生成してリリースに添付する例
+
+```yaml
+- uses: keroway/timeline-dsl@v1
+  id: render
+  with:
+    file: timeline.tdsl
+    format: svg
+    output: timeline-dark.svg
+    theme: dark
+
+- name: Upload to release
+  uses: softprops/action-gh-release@v2
+  with:
+    files: ${{ steps.render.outputs.output_path }}
+```
+
+### 特定バージョンを固定して使う例
+
+```yaml
+- uses: keroway/timeline-dsl@v1
+  with:
+    file: timeline.tdsl
+    version: v1.5.0 # バージョンを固定
+```
+
+### 注意事項
+
+- **Wikidata フェッチ**: `import wikidata` を使う `.tdsl` ファイルは `offline: 'true'` でなければ Wikidata API を呼び出します。CI での繰り返し実行には `offline: 'true'` + ローカルキャッシュの事前投入（`tdsl cache` コマンド）を推奨します。
+- **バージョン固定**: 本番 CI では `version: vX.Y.Z` で固定することを推奨します。`latest` は常に最新版を取得します。
+- **GitHub Actions のキャッシュ**: tdsl バイナリ自体は毎回ダウンロードします。ダウンロード時間を削減するには `actions/cache` でバイナリをキャッシュする構成も可能です。
+
 ## tdsl CLI を直接インストールして使う
 
 tdsl を複数のコマンドで使い回す場合は、インストールスクリプトで直接取得します。

@@ -10,10 +10,16 @@ faqs:
     answer: "Yes. Static .tdsl files written by hand using timeline, lane, span, event, and event_range can be validated, built, and rendered locally. For files that include Wikidata imports, adding --offline to build and render processes only the static items."
   - question: "Which command should I start with?"
     answer: "Use tdsl init when creating manually, or tdsl search and tdsl inspect when creating from Wikidata. If you just need to check an existing file, use tdsl check and tdsl lint."
+  - question: "How do I write BCE years?"
+    answer: "Use negative integers. For example, 206 BCE is -206, and 221 BCE is -221. Negative integers can also be used for the start of a range."
+  - question: "Can I define multiple lanes?"
+    answer: "Simply list multiple lane declarations. Use order to control the display order (lower numbers appear higher). kind is a classification label; you can freely specify values like dynasty, person, or nation."
   - question: "Can I import from CSV?"
     answer: "Yes, tdsl import-csv is available. The CSV must be UTF-8 and requires a header row of lane,type,start,end,time,label,tags,id."
   - question: "What should I run in CI?"
     answer: "The basics are tdsl check and tdsl lint. If you want to verify artifact generation as well, add tdsl build --pretty --output timeline.json. Use --offline if you want to avoid Wikidata fetching."
+  - question: "Can I reset the Wikidata fetch cache?"
+    answer: "Yes. The cache is stored under ~/.cache/tdsl/. Use tdsl cache status to inspect it, tdsl cache clear to remove all entries, and tdsl cache clear --older-than 30 to remove only entries older than 30 days."
   - question: "Can I choose an HTML theme?"
     answer: "Use tdsl render --theme to specify default, dark, print, or pastel. Custom CSS can be added with --custom-css."
   - question: "Can I always show every label, for printing or listing?"
@@ -42,6 +48,34 @@ Yes. Static `.tdsl` files written by hand using `timeline`, `lane`, `span`, `eve
 
 Use `tdsl init` when creating manually, or `tdsl search` and `tdsl inspect` when creating from Wikidata. If you just need to check an existing file, use `tdsl check` and `tdsl lint`.
 
+## How do I write BCE years?
+
+Use negative integers. For example, 206 BCE is `-206`, and 221 BCE is `-221`.
+
+```tdsl
+span qin -221..-206 "Qin dynasty" { tags ["dynasty"]; };
+```
+
+Negative integers can also be used for the start of a `range`:
+
+```tdsl
+timeline "Ancient History" {
+    range -500..500;
+}
+```
+
+## Can I define multiple lanes?
+
+Simply list multiple `lane` declarations. Use `order` to control the display order (lower numbers appear higher).
+
+```tdsl
+lane "Qin"       as qin    { kind dynasty; order 10; }
+lane "Han"       as han    { kind dynasty; order 20; }
+lane "Three Kingdoms" as sanguo { kind dynasty; order 30; }
+```
+
+`kind` is a classification label; you can freely specify values like `dynasty`, `person`, `nation`, etc. If you do not provide an explicit `as` ID, an ASCII slug is auto-generated from the label (for labels with only non-ASCII characters, names like `lane_1`, `lane_2`, ... are assigned automatically).
+
 ## Can I import from CSV?
 
 Yes, `tdsl import-csv` is available. The CSV must be UTF-8 and requires a header row of `lane,type,start,end,time,label,tags,id`.
@@ -54,6 +88,16 @@ tdsl import-csv items.csv --append manual.tdsl
 ## What should I run in CI?
 
 The basics are `tdsl check` and `tdsl lint`. If you want to verify artifact generation as well, add `tdsl build --pretty --output timeline.json`. Use `--offline` if you want to avoid Wikidata fetching.
+
+## Can I reset the Wikidata fetch cache?
+
+Yes. The Wikidata fetch cache is stored under `~/.cache/tdsl/` and managed with the `tdsl cache` command.
+
+```sh
+tdsl cache status
+tdsl cache clear
+tdsl cache clear --older-than 30
+```
 
 ## Can I choose an HTML theme?
 
