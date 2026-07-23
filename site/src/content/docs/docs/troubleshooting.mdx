@@ -27,6 +27,8 @@ tdsl check sample.tdsl
 tdsl ast sample.tdsl
 ```
 
+出力される `E001` などの診断コードの意味と修正方法は[エラーコードリファレンス](/docs/errors/)を参照してください。
+
 ## lane参照やIDの問題を直したい
 
 `lint` は未定義lane参照、重複id、`start > end`、空label、タグの空要素・重複などを検出します。安全に直せる項目は `--fix` で修正できます。

@@ -358,6 +358,19 @@ const _CATALOG = [
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
+  // Docs: errors（エラーコードリファレンス, #501）
+  {
+    path: "/docs/errors/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/errors/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
 ];
 
 /** hreflang 3 タグ（ja / en / x-default）確認対象のパス一覧 */

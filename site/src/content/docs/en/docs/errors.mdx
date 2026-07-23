@@ -1,0 +1,616 @@
+---
+title: Error Code Reference
+description: A reference of the diagnostic codes (errors, warnings, and lint) emitted by tdsl check / build / lint.
+---
+
+This is a reference of the diagnostic codes emitted by `tdsl check` / `tdsl build` / `tdsl lint`, with the cause and fix for each code. See [Troubleshooting](/en/docs/troubleshooting/) for symptom-based diagnosis.
+
+## Parse errors (E001–E008)
+
+Errors raised while parsing a file. They are reported when the `.tdsl` file contains invalid notation.
+
+| Code | Description              |
+| ---- | ------------------------ |
+| E001 | Syntax error             |
+| E002 | Integer conversion error |
+| E003 | Unknown re-import policy |
+| E004 | Unknown map target type  |
+| E005 | Unexpected rule          |
+| E006 | Invalid month/day        |
+| E007 | Invalid second           |
+| E008 | Invalid UTC offset       |
+
+### E001: Syntax error
+
+**Message**: `Syntax error: ...`
+
+**Cause**: The file contains notation that violates the DSL grammar, such as missing tokens, mismatched braces, or unknown keywords.
+
+**Fix**: `tdsl check` / `tdsl build` highlight the offending line with a caret (`^`) underneath. Check the highlighted position and compare the notation against the [DSL grammar reference](/en/docs/grammar/).
+
+**Example output (v1.14.0 and later: miette caret display)**
+
+```
+tdsl::parse_error
+
+  × Syntax error: expected EOI, timeline_block, lane_decl, ...
+   ╭─[myfile.tdsl:1:1]
+ 1 │ xyzzy "bad" {
+   · ┬
+   · ╰── the problem is here
+ 2 │   title "T";
+   ╰────
+  help: See the DSL specification docs/dsl-spec.md
+```
+
+```
+# Wrong
+span dynasty { ... }   # a lane reference cannot appear before the lane keyword
+
+# Correct
+lane "王朝" as dynasty
+span dynasty -206..-9 "秦" { ... }
+```
+
+### E002: Integer conversion error
+
+**Message**: `Invalid integer at {location}: {value}`
+
+**Cause**: A value that cannot be interpreted as a year is written.
+
+**Fix**: Write years as integers. BCE years are written as negative numbers (e.g. `-206`). Decimals and strings are not allowed.
+
+```
+# Wrong
+span dynasty 200bc..0 "秦"
+
+# Correct
+span dynasty -206..-9 "秦"
+```
+
+### E003: Unknown re-import policy
+
+**Message**: `Unknown re-import policy: {value}`
+
+**Cause**: The policy name given to `on_reimport` in an `import` block is invalid.
+
+**Fix**: The following three policies are available.
+
+| Value                | Description                                |
+| -------------------- | ------------------------------------------ |
+| `merge_by_source`    | Merge items with the same source (default) |
+| `overwrite_imported` | Overwrite imported items                   |
+| `keep_manual`        | Keep manual items with priority            |
+
+### E004: Unknown map target type
+
+**Message**: `Unknown map target type '{value}' (expected one of: span, event, event_range)`
+
+**Cause**: The `<target_type>` in `map <alias> to <target_type> { ... }` is something other than `span` / `event` / `event_range`.
+
+**Fix**: Specify `span`, `event`, or `event_range` as `<target_type>` (it goes right after `to`).
+
+```tdsl
+# Wrong (timeline is not a valid target_type)
+map wd.han_dynasty to timeline {
+    lane han;
+}
+
+# Correct
+map wd.han_dynasty to span {
+    lane han;
+    start claim(P571).year;
+    end claim(P576).year;
+}
+```
+
+For the generated item kind and required properties per `target_type`, see the DSL specification (docs/dsl-spec.md, map section, in the main repository).
+
+### E005: Unexpected rule
+
+**Message**: `Unexpected rule {rule} at {location}`
+
+**Cause**: An unexpected grammar rule was detected during the internal AST conversion in the parser. This normally does not happen.
+
+**Fix**: Simplify the `.tdsl` file to isolate the reproduction, and report it as an [Issue](https://github.com/keroway/timeline-dsl/issues).
+
+### E006: Invalid month/day
+
+**Message**: `Invalid month at {location}: {value} (expected 1-12)` / `Invalid day at {location}: {value} (expected 1-31)`
+
+**Cause**: In a time literal (`YYYY-MM-DD` / `YYYY-MM-DDTHH:MM[:SS][±HH:MM]`), the month is outside 1–12 or the day is outside 1–31.
+
+**Fix**: Specify months in the 1–12 range and days in the 1–31 range. Calendar day-count validation (leap years, etc.) is not performed here — only a simple range check.
+
+```
+# Wrong
+ event a 2024-13-01 "E" {};
+
+# Correct
+event a 2024-12-01 "E" {};
+```
+
+### E007: Invalid second
+
+**Message**: `Invalid second at {location}: {value} (expected 0-59)`
+
+**Cause**: The seconds part of a time literal (the `SS` in `HH:MM:SS`) is outside the 0–59 range (ADR 0003 D4). Leap seconds are not supported, so `60` is always rejected.
+
+**Fix**: Specify seconds in the 0–59 range.
+
+```
+# Wrong
+event a 2024-01-01T10:00:60 "E" {};
+
+# Correct
+event a 2024-01-01T10:00:59 "E" {};
+```
+
+### E008: Invalid UTC offset
+
+**Message**: `Invalid UTC offset at {location}: {value} (expected Z or -14:00 through +14:00)`
+
+**Cause**: The offset part of a time literal (`Z` or `±HH:MM`) is invalid (ADR 0003 D4). Specifically, one of the following:
+
+- Outside the allowed range `-14:00` to `+14:00` (the range of real-world UTC offsets), e.g. `+25:00`
+- Malformed, e.g. `+09:3`, `+9:00`
+
+**Fix**: Use `Z` (UTC) or the `[+-]HH:MM` format (e.g. `+09:00`, `-05:00`, `+05:45`), within the `-14:00` to `+14:00` range. There is no silent fallback (clamping or ignoring) — the value is always rejected as a parse error.
+
+```
+# Wrong (out of range)
+event a 2024-01-01T10:00+15:00 "E" {};
+
+# Wrong (malformed)
+event a 2024-01-01T10:00+9:00 "E" {};
+
+# Correct
+event a 2024-01-01T10:00+09:00 "E" {};
+event a 2024-01-01T10:00Z "E" {};
+```
+
+## Semantic errors (E101–E113)
+
+Errors raised in the AST-to-IR conversion (lowering) phase. They are reported when the file is syntactically correct but semantically contradictory.
+
+| Code | Description                                            |
+| ---- | ------------------------------------------------------ |
+| E101 | Unknown lane reference                                 |
+| E102 | Duplicate lane alias                                   |
+| E103 | Duplicate item ID                                      |
+| E104 | No timeline block                                      |
+| E105 | Multiple timeline blocks                               |
+| E106 | Unresolved import reference                            |
+| E107 | Unresolved entity key                                  |
+| E108 | Map references unknown lane                            |
+| E109 | Duplicate template alias                               |
+| E110 | Unknown template reference                             |
+| E111 | Invalid item link URL                                  |
+| E112 | Invalid item color value                               |
+| E113 | Comparing a UTC-offset value with an offset-free value |
+
+### E101: Unknown lane reference
+
+**Message**: `Unknown lane reference: {id}`
+
+**Cause**: The lane ID referenced by a `span` / `event` / `event_range` is not defined by any `lane` declaration.
+
+**Fix**: Check that the `as` alias of the lane declaration matches the item's lane reference.
+
+**Detection timing**: Detected in lowering Pass 2, before Wikidata fetching (resolution of `import` blocks). The error is reported before any network access, with no need for the `--offline` flag.
+
+```
+# Wrong ("dynasty" is undefined)
+span dynasty -206..-9 "秦"
+
+# Correct
+lane "王朝" as dynasty
+span dynasty -206..-9 "秦"
+```
+
+### E102: Duplicate lane alias
+
+**Message**: `Duplicate lane alias: {id}`
+
+**Cause**: Multiple `lane` declarations share the same `as` alias.
+
+**Fix**: Give each lane a unique alias.
+
+### E103: Duplicate item ID
+
+**Message**: `Duplicate item id: {id}`
+
+**Cause**: Multiple items are defined with the same `id`.
+
+**Fix**: Make each `id` unique within the file.
+
+```
+# Wrong (id "qin" is duplicated)
+span dynasty -206..-9 "秦" { id: qin }
+span dynasty -206..-9 "秦（再掲）" { id: qin }
+
+# Correct
+span dynasty -206..-9 "秦" { id: qin }
+span dynasty -206..-9 "秦（再掲）" { id: qin_2 }
+```
+
+### E104: No timeline block
+
+**Message**: `No timeline block found`
+
+**Cause**: The file has no `timeline` block.
+
+**Fix**: Add a `timeline` block at the top of the file.
+
+```tdsl
+timeline {
+  title: "私の年表"
+  unit: year
+  range: -500..2000
+}
+```
+
+### E105: Multiple timeline blocks
+
+**Message**: `Multiple timeline blocks found`
+
+**Cause**: The file contains two or more `timeline` blocks.
+
+**Fix**: Write exactly one `timeline` block per file.
+
+### E106: Unresolved import reference
+
+**Message**: `Unresolved import reference: {key}`
+
+**Cause**: The `wd.key` referenced inside a `map` block is not defined by any corresponding `import` block.
+
+**Fix**: Check that the alias name of the `import` block matches the reference name in `map`.
+
+```
+# Wrong (the import alias is "emperors" but "emperor" is referenced)
+import Q7209 as emperors { ... }
+map wd.emperor { ... }   # "emperor" is undefined
+
+# Correct
+map wd.emperors { ... }
+```
+
+### E107: Unresolved entity key
+
+**Message**: `Unresolved entity key: {key}`
+
+**Cause**: The entity key referenced inside a `map` block does not exist in the result fetched from Wikidata.
+
+**Fix**: Check the entity's contents with `tdsl fetch {QID}` and use a property that exists.
+
+### E108: Map references unknown lane
+
+**Message**: `Map references unknown lane: {id}`
+
+**Cause**: The lane ID given to the `lane` field of a `map` block is not defined.
+
+**Fix**: As with E101, add a lane declaration or specify the correct lane ID.
+
+### E109: Duplicate template alias
+
+**Message**: `Duplicate template alias: {id}`
+
+**Cause**: Multiple `template` declarations share the same alias.
+
+### E110: Unknown template reference
+
+**Message**: `Unknown template reference: {id}`
+
+**Cause**: The template referenced by `apply` is not defined.
+
+### E111: Invalid item link URL
+
+**Message**: `Invalid item link URL: {url} (expected http:// or https:// URL)`
+
+**Cause**: The `link` option contains a URL other than `http://` / `https://` (e.g. `javascript:`, `data:`, or a relative URL).
+
+**Fix**: Use an absolute URL with an `http://` or `https://` scheme.
+
+### E112: Invalid item color value
+
+**Message**: `Invalid item color value: {value}`
+
+**Cause**: The `color` option contains a string that cannot be treated as a safe color value.
+
+**Fix**: Specify a hex color (`#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA`) or a simple CSS color keyword.
+
+### E113: Comparing a UTC-offset value with an offset-free value
+
+**Message**: `Cannot compare a UTC-offset time value with a value that has no offset (author must make both sides consistent): {0} vs {1}`
+
+**Cause**: Within a single comparison context (e.g. the `start..end` of the same `span` / `event_range`, or ordering within the same lane), a time value with an offset (`DateTimeOffset` / `DateTimeSecondOffset`) was compared directly with a time value without an offset (`Year` through `DateTimeSecond`) (ADR 0003 D2).
+
+Offset-free values are treated not as "unknown time zone" but as bare calendar times that have no concept of a time zone, so they are never implicitly normalized to UTC for comparison. Wikidata imports are always stored without an offset (`DateTime` / `DateTimeSecond`), so adding an offset to static data and mixing it with Wikidata data in the same comparison context can trigger this error (this is intended behavior).
+
+**Fix**: Make all values within the same comparison context consistent — either add an offset to all of them or remove the offset from all of them. If you want to mix a Wikidata import and a static definition in the same `span` / `event_range`, remove the offset from the static side so both are offset-free (see the "mixing Wikidata and static offset data" section of docs/migration-second-precision.md in the main repository).
+
+```
+# Wrong (offset and offset-free mixed in the same span)
+span a 2024-01-01T10:00:00+09:00..2024-01-02T10:00 "S" {};
+
+# Correct (add an offset to both)
+span a 2024-01-01T10:00:00+09:00..2024-01-02T10:00+09:00 "S" {};
+
+# Correct (remove the offset from both)
+span a 2024-01-01T10:00:00..2024-01-02T10:00 "S" {};
+```
+
+## Validation warnings (W201–W207)
+
+Warnings raised by the consistency check after IR generation. The build continues, but the output may differ from what you intended.
+
+| Code | Description                                                     |
+| ---- | --------------------------------------------------------------- |
+| W201 | Item references unknown lane                                    |
+| W202 | Span start is after its end                                     |
+| W203 | Invalid timeline range                                          |
+| W204 | Lane uses an unknown kind                                       |
+| W205 | Event is outside timeline.range                                 |
+| W206 | Span / EventRange is entirely outside timeline.range            |
+| W207 | Span / EventRange is partially outside timeline.range (clipped) |
+
+### W201: Item references unknown lane
+
+**Message**: `Item references unknown lane: {lane}`
+
+**Cause**: The lane cannot be found at the validation stage (normally this is detected during lowering).
+
+### W202: Span start is after its end
+
+**Message**: `Span "{id}" has start ({start}) > end ({end})`
+
+**Cause**: The span's start year is greater than its end year.
+
+**Fix**: Write it in `start..end` order. This can be auto-fixed with `tdsl lint --fix`.
+
+```
+# Wrong
+span dynasty 9..-206 "秦"
+
+# Correct
+span dynasty -206..9 "秦"
+```
+
+### W203: Invalid timeline range
+
+**Message**: `Timeline range is invalid: {start}..{end}`
+
+**Cause**: In the `timeline` block's `range`, the start is greater than or equal to the end.
+
+**Fix**: Fix it so that `start < end` in the `range: start..end` form.
+
+### W204: Lane uses an unknown kind
+
+**Message**: `Lane "{id}" uses unknown kind: {kind} (known kinds: {known}; use custom for user-defined categories)`
+
+**Cause**: The lane's `kind` does not match any of the known values (`custom` / `dynasty` / `person` / `country` / `event`). Since `kind` is meant for free-form classification, this is not an error.
+
+**Fix**: If it is not a typo, you can ignore it. Use `kind custom;` if you want to make a user-defined classification explicit.
+
+### W205: Event is outside timeline.range
+
+**Message**: `Event "{id}" at {time} is outside timeline.range and will not be rendered`
+
+**Cause**: The event's time is outside `timeline.range`. The renderer does not draw out-of-range events (previously they were silently dropped without a warning).
+
+**Fix**: Expand `timeline.range`, or ignore the warning if you are intentionally narrowing the displayed range.
+
+### W206: Span / EventRange is entirely outside timeline.range
+
+**Message**: `{Span|EventRange} "{id}" is entirely outside timeline.range and will not be rendered`
+
+**Cause**: The period of the `span` / `event_range` does not overlap `timeline.range` at all.
+
+**Fix**: Expand `timeline.range` or review the item's dates.
+
+### W207: Span / EventRange is partially outside timeline.range (clipped)
+
+**Message**: `{Span|EventRange} "{id}" is partially outside timeline.range and will be clipped`
+
+**Cause**: Only part of the `span` / `event_range` sticks out of `timeline.range`. If you are intentionally narrowing the displayed range, you can ignore this.
+
+**Fix**: No action needed if intentional. If it is a typo, fix `timeline.range` or the item's dates.
+
+## Lowering warnings (W210)
+
+Warnings raised when a Wikidata entity declared via `map` / `apply` could not resolve a required field and produced no item at all. Since this is not an error, the build continues, but it is reported to catch the silent gap of "imported but nothing was output". `tdsl build` / `tdsl check` emit it as `Warning:` on stderr.
+
+| Code | Description                                                      |
+| ---- | ---------------------------------------------------------------- |
+| W210 | Mapped entity produced no item due to unresolved required fields |
+
+### W210: Mapped entity produced no item due to unresolved required fields
+
+**Message**:
+
+- `Mapped entity {id} produced no item: required lane is unresolved/empty`
+- `Mapped entity {id} produced no item: required label could not be resolved`
+- `Mapped entity {id} produced no span: start/end could not be resolved`
+- `Mapped entity {id} produced no event: time could not be resolved`
+- `Mapped entity {id} produced no event_range: start/end could not be resolved`
+
+When `expand` is used, `{id}` is suffixed with `(property#index)` to indicate which statement could not be resolved (e.g. `Q7209 (P39#2)`).
+
+**Cause**: A required value became `None` because, for example, the specified `claim(...)` does not exist on the entity, the entity has no `label` in the target language, or the `lane` property is not specified.
+
+**Fix**: Check the property number in the mapping expression (`claim(P...).year`, etc.), provide a fallback with `??`, or add a fetch language such as `label@en`. If the target entity genuinely lacks the information, exclude it from the `map` targets.
+
+## Wikidata errors (E301–E307)
+
+Errors raised while communicating with the Wikidata API or parsing its data.
+
+| Code | Description            |
+| ---- | ---------------------- |
+| E301 | HTTP error             |
+| E302 | Invalid input          |
+| E303 | Entity not found       |
+| E304 | Time value parse error |
+| E305 | Missing claim          |
+| E306 | Timeout                |
+| E307 | Rate limit             |
+
+### E301: HTTP error
+
+**Message**: `HTTP error: ...`
+
+**Cause**: The HTTP request to the Wikidata API failed. Possible causes include network failures and DNS resolution failures.
+
+**Fix**: Check your network connection. During development, you can skip Wikidata access with the `--offline` flag.
+
+```bash
+tdsl build examples/my.tdsl --offline
+```
+
+### E302: Invalid input
+
+**Message**: `Invalid input: {detail}`
+
+**Cause**: The format of a QID or property ID is invalid.
+
+**Fix**: Write QIDs in the `Q123` form and property IDs in the `P569` form.
+
+### E303: Entity not found
+
+**Message**: `Entity not found: {id}`
+
+**Cause**: No entity with the specified QID exists on Wikidata.
+
+**Fix**: Verify the QID with `tdsl fetch {QID}` or on Wikidata (wikidata.org).
+
+### E304: Time value parse error
+
+**Message**: `Failed to parse time value: {value}`
+
+**Cause**: A time value in the Wikidata API response could not be converted to a year.
+
+**Fix**: Check the entity's properties with `tdsl fetch {QID}` and confirm that a time value exists. Extremely old dates (tens of thousands of years ago or earlier) may not be convertible.
+
+### E305: Missing claim
+
+**Message**: `Missing claim {property} on entity {entity}`
+
+**Cause**: The property referenced in a `map` block (`claim(P569).year`, etc.) does not exist on the entity.
+
+**Fix**: Check the entity's available properties with `tdsl fetch {QID}`.
+
+```bash
+tdsl fetch Q7209 --lang ja
+```
+
+### E306: Timeout
+
+**Message**: `Wikidata API request timed out. Try running with the --offline flag.`
+
+**Cause**: The request to the Wikidata API did not complete in time.
+
+**Fix**: Wait a while and run again. Use the `--offline` flag during development.
+
+### E307: Rate limit
+
+**Message**: `Wikidata API rate limit exceeded (HTTP 429). Please wait a moment and retry.`
+
+**Cause**: The Wikidata API rate-limited you because a large number of requests were sent in a short time.
+
+**Fix**: Wait a few minutes and run again. When importing many entities, we recommend first checking the static items with `--offline` and running an online build only for the final check.
+
+## Lint codes
+
+Quality issues detected by `tdsl lint`. Codes that can be auto-fixed with `--fix` are noted in the body of each entry.
+
+| Code                          | Description            |
+| ----------------------------- | ---------------------- |
+| ERROR: `unknown_lane`         | Unknown lane reference |
+| ERROR: `empty_label`          | Empty label            |
+| ERROR: `invalid_tags`         | Invalid tags           |
+| ERROR: `duplicate_id`         | Duplicate ID           |
+| ERROR: `start_gt_end`         | Reversed start/end     |
+| WARN: `missing_id`            | Missing ID             |
+| WARN: `invalid_calendar_date` | Invalid calendar date  |
+
+### ERROR: unknown_lane — Unknown lane reference
+
+**Message**: `unknown lane reference '{id}'`
+
+**Cause**: An item references a lane ID that does not exist.
+
+**Fix**: Apply the same fix as E101.
+
+### ERROR: empty_label — Empty label
+
+**Message**: `label must not be empty`
+
+**Cause**: The item's label is an empty string.
+
+**Fix**: Give the item a meaningful label.
+
+### ERROR: invalid_tags — Invalid tags
+
+**Message**: `tags contain empty elements` / `tags contain duplicated elements` / `tags contain empty and duplicated elements`
+
+**Cause**: The tag list contains empty strings or duplicated tags.
+
+**Fix**: Auto-fixed by `tdsl lint --fix`. To fix manually, remove the empty and duplicated tags.
+
+### ERROR: duplicate_id — Duplicate ID
+
+**Message**: `id '{id}' duplicates line {line}`
+
+**Cause**: The same ID is used by multiple items.
+
+**Fix**: As with E103, make the IDs unique.
+
+### ERROR: start_gt_end — Reversed start/end
+
+**Message**: `span range is reversed: {start}..{end}` / `event_range is reversed: {start}..{end}`
+
+**Cause**: The start and end years are reversed.
+
+**Fix**: Auto-fixed by `tdsl lint --fix`.
+
+### WARN: missing_id — Missing ID
+
+**Message**: `id is missing`
+
+**Cause**: The item has no `id` property. Without an ID, Wikidata integration (`map` blocks) and programmatic references are not possible.
+
+**Fix**: `tdsl lint --fix` auto-generates a random ID. Set one manually if you want a meaningful ID.
+
+```tdsl
+span dynasty -206..-9 "秦" {
+  id: qin
+}
+```
+
+### WARN: invalid_calendar_date — Invalid calendar date
+
+**Message**: `Invalid calendar date: YYYY-MM-DD`
+
+**Cause**: A date in `YYYY-MM-DD` form does not exist on the calendar. Typical cases:
+
+- February 30 or 31 (February has at most 28 or 29 days)
+- The 31st of April, June, September, or November (these months have 30 days)
+- February 29 in a non-leap year (e.g. `1900-02-29`, `2021-02-29`)
+
+**Fix**: Correct it to a valid calendar date. A leap year is a year "divisible by 4 and (not divisible by 100 or divisible by 400)". `2000-02-29` is valid; `1900-02-29` is not.
+
+```tdsl
+# Wrong (February has at most 29 days; 2024 is a leap year but the 30th does not exist)
+event events 2024-02-30 "存在しない日付"
+
+# Correct
+event events 2024-02-29 "2024年は閏年"
+event events 2024-03-01 "3月1日"
+```
+
+**Note**: The parser only validates the value ranges of dates (month 1–12, day 1–31). Verifying calendar existence (leap-year handling, end-of-month days) is lint's responsibility. Month-precision values (e.g. `2024-02`) are not checked.
+
+## Related documentation
+
+- [DSL grammar reference](/en/docs/grammar/) — grammar details
+- [Quick Start](/en/docs/quick-start/) — basic usage
+- [Troubleshooting](/en/docs/troubleshooting/) — symptom-based diagnosis
