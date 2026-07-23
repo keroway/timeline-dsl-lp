@@ -161,6 +161,8 @@ const t = getT(locale);
     border-color: var(--color-ink);
   }
 
+  /* キーボードヒントバッジの 0.6rem は絶対配置の装飾値のため据置(#509)。
+     拡大するとトグルボタンに重なる */
   .search-toggle-hint {
     position: absolute;
     bottom: -0.4rem;
@@ -204,7 +206,7 @@ const t = getT(locale);
     background: var(--color-bg);
     color: var(--color-muted);
     font: inherit;
-    font-size: 0.82rem;
+    font-size: var(--text-2xs);
     font-weight: 650;
     cursor: pointer;
   }
