@@ -96,6 +96,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pages: write
       id-token: write
     steps:
@@ -117,6 +118,8 @@ jobs:
 ```
 
 ### Example: Attach a dark-theme SVG to a release
+
+This is an excerpt intended for release-triggered workflows such as a tag push. Configure the job with an `actions/checkout` step and `permissions: contents: write` (required to upload to the release).
 
 ```yaml
 - uses: keroway/timeline-dsl@v1

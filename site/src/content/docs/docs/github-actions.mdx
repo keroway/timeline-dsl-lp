@@ -96,6 +96,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pages: write
       id-token: write
     steps:
@@ -117,6 +118,8 @@ jobs:
 ```
 
 ### ダークテーマの SVG を生成してリリースに添付する例
+
+タグ push などリリース起点のワークフローでの利用を想定した抜粋です。ジョブには `actions/checkout` ステップと `permissions: contents: write`（リリースへのアップロードに必要）を併せて設定してください。
 
 ```yaml
 - uses: keroway/timeline-dsl@v1
