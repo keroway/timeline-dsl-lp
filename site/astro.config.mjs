@@ -171,6 +171,11 @@ export default defineConfig({
           translations: { en: "Support" },
           items: [
             { label: "Troubleshooting", slug: "docs/troubleshooting" },
+            {
+              label: "エラーコードリファレンス",
+              translations: { en: "Error Code Reference" },
+              slug: "docs/errors",
+            },
             { label: "FAQ", slug: "docs/faq" },
           ],
         },
