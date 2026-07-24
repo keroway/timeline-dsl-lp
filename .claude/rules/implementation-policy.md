@@ -18,7 +18,7 @@
 ## 2. 根本原因 (root cause) を直す
 
 - テストや型エラーが出たら **エラーメッセージを抑える** のではなく原因を直す。
-- `// @ts-ignore` / `// eslint-disable` / `any` の追加は禁止。例外は web-director agent に明示的に承認を取ってから。
+- `// @ts-ignore` / `// biome-ignore` / `any` の追加は禁止。例外は web-director agent に明示的に承認を取ってから。
 - `--no-verify` / `--force` / `git reset --hard` などの破壊的・回避的コマンドは、ユーザーに口頭で承認を得てから。
 
 ## 3. デザイン規約
