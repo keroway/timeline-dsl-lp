@@ -1,3 +1,5 @@
+# keroway 標準 dependabot 設定（templates/dependabot.yml ベース）。
+# このリポジトリ固有の方針: major は意図しない破壊的変更を防ぐためブロックし、手動で追従する。
 version: 2
 updates:
   - package-ecosystem: npm
@@ -5,9 +7,14 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - dependencies
     groups:
       # マイナー / パッチはまとめて 1 PR にしてノイズを抑える
-      minor-and-patch:
+      npm-minor-patch:
         update-types:
           - minor
           - patch
@@ -22,12 +29,17 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+    labels:
+      - dependencies
     groups:
-      actions:
+      github-actions:
         update-types:
           - minor
           - patch
     ignore:
+      # major は意図しない破壊的変更を防ぐためブロックし、手動で追従する
       - dependency-name: "*"
         update-types:
           - version-update:semver-major
