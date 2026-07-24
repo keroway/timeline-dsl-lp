@@ -23,5 +23,5 @@ pre-commit:
 
     - name: astro check (typecheck)
       root: site/
-      glob: "src/**/*"
+      glob: "site/src/**/*"
       run: pnpm astro check
