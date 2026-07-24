@@ -1,0 +1,4 @@
+# keroway 標準 mise 設定。Node / pnpm のバージョンをリポジトリ単位でピンする。
+[tools]
+node = "24"
+pnpm = "11"

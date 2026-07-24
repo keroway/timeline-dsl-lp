@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "type": "module",
-  "packageManager": "pnpm@10.33.3",
+  "packageManager": "pnpm@11.0.8",
   "engines": {
     "node": ">=24"
   },
@@ -29,11 +29,11 @@
     "check": "pnpm lint && pnpm format:check && pnpm test:unit && pnpm build && pnpm bundle-size",
     "check:full": "node scripts/check-full.mjs",
     "preview": "astro preview",
-    "prepare": "simple-git-hooks",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "prepare": "lefthook install",
+    "lint": "biome lint .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write . && prettier --write \"**/*.{astro,md,mdx}\"",
+    "format:check": "biome format . && prettier --check \"**/*.{astro,md,mdx}\""
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.2.1",
@@ -52,47 +52,16 @@
   "devDependencies": {
     "@astrojs/check": "0.9.9",
     "@axe-core/playwright": "^4.11.3",
+    "@biomejs/biome": "^2.5.4",
     "@lhci/cli": "^0.15.1",
     "@resvg/resvg-js": "^2.6.2",
-    "@typescript-eslint/eslint-plugin": "^8.60.0",
-    "@typescript-eslint/parser": "^8.60.0",
-    "eslint": "^10.4.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-astro": "^1.7.0",
     "jsdom": "^29.1.1",
-    "lint-staged": "^15.5.2",
+    "lefthook": "^2.1.10",
     "playwright": "^1.60.0",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
     "shiki": "^4.2.0",
-    "simple-git-hooks": "^2.11.1",
     "typescript": "6.0.3",
     "vitest": "^4.1.8"
-  },
-  "simple-git-hooks": {
-    "pre-commit": "cd site && pnpm exec lint-staged && if git diff --cached --name-only | grep -q 'site/src/'; then pnpm astro check; fi"
-  },
-  "pnpm": {
-    "overrides": {
-      "esbuild": "0.28.1",
-      "fast-uri": "3.1.2",
-      "js-yaml": "4.3.0",
-      "tmp": "0.2.7",
-      "undici": "7.28.0",
-      "uuid": "11.1.1",
-      "yaml": "2.8.4"
-    },
-    "patchedDependencies": {
-      "@lhci/utils@0.15.1": "patches/@lhci__utils@0.15.1.patch",
-      "undici@7.28.0": "patches/undici@7.28.0.patch"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{astro,ts,mjs,mdx,js}": [
-      "prettier --write"
-    ],
-    "src/**/*.{ts,mjs,js}": [
-      "eslint --fix"
-    ]
   }
 }
