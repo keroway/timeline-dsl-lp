@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 
 const cssText = readFileSync(
   fileURLToPath(new URL("../styles/tokens.css", import.meta.url)),
-  "utf8",
+  "utf8"
 );
 
 const THEME_VARS = [
@@ -40,7 +40,9 @@ function extractBlock(start: string, source = cssText): string {
 function readValues(block: string): Record<string, string> {
   const values: Record<string, string> = {};
   for (const name of THEME_VARS) {
-    const match = block.match(new RegExp(`${name.replace(/[-]/g, "\\-")}:\\s*([^;]+);`));
+    const match = block.match(
+      new RegExp(`${name.replace(/[-]/g, "\\-")}:\\s*([^;]+);`)
+    );
     if (match) values[name] = match[1].trim();
   }
   return values;
@@ -66,17 +68,21 @@ describe(":root[data-theme] の色トークンが既存ブロックと一致す�
   });
 
   it('[data-theme="light"][data-a11y-contrast="high"] は light HC ブロックと同じ値を持つ', () => {
-    const lightHc = readValues(extractBlock(':root[data-a11y-contrast="high"] {'));
+    const lightHc = readValues(
+      extractBlock(':root[data-a11y-contrast="high"] {')
+    );
     const forced = readValues(
-      extractBlock(':root[data-theme="light"][data-a11y-contrast="high"] {'),
+      extractBlock(':root[data-theme="light"][data-a11y-contrast="high"] {')
     );
     expect(forced).toEqual(lightHc);
   });
 
   it('[data-theme="dark"][data-a11y-contrast="high"] は dark HC ブロックと同じ値を持つ', () => {
-    const darkHc = readValues(extractBlock(':root[data-a11y-contrast="high"] {', darkMedia));
+    const darkHc = readValues(
+      extractBlock(':root[data-a11y-contrast="high"] {', darkMedia)
+    );
     const forced = readValues(
-      extractBlock(':root[data-theme="dark"][data-a11y-contrast="high"] {'),
+      extractBlock(':root[data-theme="dark"][data-a11y-contrast="high"] {')
     );
     expect(forced).toEqual(darkHc);
   });

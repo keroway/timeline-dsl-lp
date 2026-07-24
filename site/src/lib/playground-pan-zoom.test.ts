@@ -30,8 +30,14 @@ function makeEnv({
   surface.appendChild(stage);
   document.body.appendChild(surface);
 
-  Object.defineProperty(surface, "clientWidth", { value: surfaceW, configurable: true });
-  Object.defineProperty(surface, "clientHeight", { value: surfaceH, configurable: true });
+  Object.defineProperty(surface, "clientWidth", {
+    value: surfaceW,
+    configurable: true,
+  });
+  Object.defineProperty(surface, "clientHeight", {
+    value: surfaceH,
+    configurable: true,
+  });
   surface.getBoundingClientRect = () =>
     ({
       top,
@@ -57,7 +63,10 @@ function makeEnv({
 
   let svg: SVGSVGElement | null = null;
   if (withSvg) {
-    svg = document.createElementNS("http://www.w3.org/2000/svg", "svg") as unknown as SVGSVGElement;
+    svg = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    ) as unknown as SVGSVGElement;
     svg.setAttribute("viewBox", `0 0 ${svgW} ${svgH}`);
     stage.appendChild(svg);
   }
@@ -79,7 +88,12 @@ function parseMatrix(el: HTMLElement) {
 function firePointer(
   target: HTMLElement,
   type: string,
-  init: { clientX?: number; clientY?: number; pointerId?: number; button?: number },
+  init: {
+    clientX?: number;
+    clientY?: number;
+    pointerId?: number;
+    button?: number;
+  }
 ) {
   target.dispatchEvent(
     new PointerEvent(type, {
@@ -89,7 +103,7 @@ function firePointer(
       button: init.button ?? 0,
       bubbles: true,
       cancelable: true,
-    }),
+    })
   );
 }
 
@@ -108,7 +122,12 @@ describe("createPanZoom — fit / scaling", () => {
   });
 
   it("通常時は SVG を中央にフィットさせ、拡大はしない（scale <= 1）", () => {
-    const { surface, stage } = makeEnv({ surfaceW: 800, surfaceH: 600, svgW: 400, svgH: 200 });
+    const { surface, stage } = makeEnv({
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 400,
+      svgH: 200,
+    });
     const pz = createPanZoom({ surface, stage });
     pz.reset();
 
@@ -120,7 +139,12 @@ describe("createPanZoom — fit / scaling", () => {
   });
 
   it("SVG が surface より大きいときは 1 未満に縮小してフィットさせる", () => {
-    const { surface, stage } = makeEnv({ surfaceW: 800, surfaceH: 600, svgW: 2000, svgH: 1000 });
+    const { surface, stage } = makeEnv({
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 2000,
+      svgH: 1000,
+    });
     const pz = createPanZoom({ surface, stage });
     pz.reset();
 
@@ -130,7 +154,12 @@ describe("createPanZoom — fit / scaling", () => {
   });
 
   it("フィット後の scale は設定した minScale を下回らない", () => {
-    const { surface, stage } = makeEnv({ surfaceW: 100, surfaceH: 100, svgW: 5000, svgH: 5000 });
+    const { surface, stage } = makeEnv({
+      surfaceW: 100,
+      surfaceH: 100,
+      svgW: 5000,
+      svgH: 5000,
+    });
     const pz = createPanZoom({ surface, stage, minScale: 0.25 });
     pz.reset();
 
@@ -142,7 +171,12 @@ describe("createPanZoom — fit / scaling", () => {
   it("SVG の viewBox/clientWidth/Height が両方 0 のときは identity にフォールバックする", () => {
     // surface 幅も 0 にすることで viewBox||clientWidth||sw のフォールバック連鎖を
     // すべて 0 にし、svgW<=0 の無効値分岐を踏む。
-    const { surface, stage } = makeEnv({ surfaceW: 0, surfaceH: 0, svgW: 0, svgH: 0 });
+    const { surface, stage } = makeEnv({
+      surfaceW: 0,
+      surfaceH: 0,
+      svgW: 0,
+      svgH: 0,
+    });
     const pz = createPanZoom({ surface, stage });
     pz.reset();
 
@@ -160,7 +194,7 @@ describe("createPanZoom — fit / scaling", () => {
         clientY: 300,
         bubbles: true,
         cancelable: true,
-      }),
+      })
     );
 
     const m = parseMatrix(stage)!;
@@ -181,7 +215,7 @@ describe("createPanZoom — fit / scaling", () => {
         clientY: 0,
         bubbles: true,
         cancelable: true,
-      }),
+      })
     );
 
     expect(parseMatrix(stage)!.scale).toBe(8);
@@ -198,14 +232,19 @@ describe("createPanZoom — fit / scaling", () => {
         clientY: 0,
         bubbles: true,
         cancelable: true,
-      }),
+      })
     );
 
     expect(parseMatrix(stage)!.scale).toBe(0.25);
   });
 
   it("ダブルクリックでフィット表示に戻る", () => {
-    const { surface, stage } = makeEnv({ surfaceW: 800, surfaceH: 600, svgW: 400, svgH: 200 });
+    const { surface, stage } = makeEnv({
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 400,
+      svgH: 200,
+    });
     createPanZoom({ surface, stage });
 
     surface.dispatchEvent(
@@ -215,7 +254,7 @@ describe("createPanZoom — fit / scaling", () => {
         clientY: 300,
         bubbles: true,
         cancelable: true,
-      }),
+      })
     );
     expect(parseMatrix(stage)!.scale).not.toBe(1);
 
@@ -228,7 +267,12 @@ describe("createPanZoom — fit / scaling", () => {
   });
 
   it("reset ボタンをクリックするとフィット表示に戻る", () => {
-    const { surface, stage } = makeEnv({ surfaceW: 800, surfaceH: 600, svgW: 400, svgH: 200 });
+    const { surface, stage } = makeEnv({
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 400,
+      svgH: 200,
+    });
     const resetButton = document.createElement("button");
     createPanZoom({ surface, stage, resetButton });
 
@@ -239,7 +283,7 @@ describe("createPanZoom — fit / scaling", () => {
         clientY: 300,
         bubbles: true,
         cancelable: true,
-      }),
+      })
     );
     expect(parseMatrix(stage)!.scale).not.toBe(1);
 
@@ -254,8 +298,16 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     const { surface, stage } = makeEnv();
     createPanZoom({ surface, stage, panThreshold: 5 });
 
-    firePointer(surface, "pointerdown", { clientX: 100, clientY: 100, pointerId: 1 });
-    firePointer(surface, "pointermove", { clientX: 102, clientY: 101, pointerId: 1 });
+    firePointer(surface, "pointerdown", {
+      clientX: 100,
+      clientY: 100,
+      pointerId: 1,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 102,
+      clientY: 101,
+      pointerId: 1,
+    });
 
     expect(surface.setPointerCapture).toHaveBeenCalledWith(1);
     expect(stage.classList.contains("is-panning")).toBe(false);
@@ -270,8 +322,16 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     tooltipEl.setAttribute("aria-hidden", "false");
     createPanZoom({ surface, stage, tooltipEl });
 
-    firePointer(surface, "pointerdown", { clientX: 100, clientY: 100, pointerId: 1 });
-    firePointer(surface, "pointermove", { clientX: 120, clientY: 100, pointerId: 1 });
+    firePointer(surface, "pointerdown", {
+      clientX: 100,
+      clientY: 100,
+      pointerId: 1,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 120,
+      clientY: 100,
+      pointerId: 1,
+    });
 
     expect(stage.classList.contains("is-panning")).toBe(true);
     expect(surface.classList.contains("is-panning")).toBe(true);
@@ -288,9 +348,21 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     const { surface, stage } = makeEnv();
     createPanZoom({ surface, stage, panThreshold: 5 });
 
-    firePointer(surface, "pointerdown", { clientX: 0, clientY: 0, pointerId: 1 });
-    firePointer(surface, "pointermove", { clientX: 10, clientY: 0, pointerId: 1 }); // activates + schedules RAF
-    firePointer(surface, "pointermove", { clientX: 30, clientY: 0, pointerId: 1 }); // coalesced, no new RAF
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 1,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 10,
+      clientY: 0,
+      pointerId: 1,
+    }); // activates + schedules RAF
+    firePointer(surface, "pointermove", {
+      clientX: 30,
+      clientY: 0,
+      pointerId: 1,
+    }); // coalesced, no new RAF
 
     expect(rafSpy).toHaveBeenCalledTimes(1);
 
@@ -298,7 +370,11 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(parseMatrix(stage)!.tx).toBeCloseTo(30);
 
     // 次の move は RAF がクリアされているので再スケジュールする
-    firePointer(surface, "pointermove", { clientX: 40, clientY: 0, pointerId: 1 });
+    firePointer(surface, "pointermove", {
+      clientX: 40,
+      clientY: 0,
+      pointerId: 1,
+    });
     expect(rafSpy).toHaveBeenCalledTimes(2);
   });
 
@@ -306,9 +382,21 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     const { surface, stage } = makeEnv();
     createPanZoom({ surface, stage, panThreshold: 5 });
 
-    firePointer(surface, "pointerdown", { clientX: 0, clientY: 0, pointerId: 7 });
-    firePointer(surface, "pointermove", { clientX: 15, clientY: 0, pointerId: 7 });
-    firePointer(surface, "pointerup", { clientX: 15, clientY: 0, pointerId: 7 });
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 7,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 15,
+      clientY: 0,
+      pointerId: 7,
+    });
+    firePointer(surface, "pointerup", {
+      clientX: 15,
+      clientY: 0,
+      pointerId: 7,
+    });
 
     expect(stage.classList.contains("is-panning")).toBe(false);
     expect(surface.classList.contains("is-panning")).toBe(false);
@@ -320,16 +408,33 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     const { surface, stage } = makeEnv();
     createPanZoom({ surface, stage, panThreshold: 5 });
 
-    firePointer(surface, "pointerdown", { clientX: 0, clientY: 0, pointerId: 9 });
-    firePointer(surface, "pointermove", { clientX: 15, clientY: 0, pointerId: 9 });
-    firePointer(surface, "pointercancel", { clientX: 15, clientY: 0, pointerId: 9 });
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 9,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 15,
+      clientY: 0,
+      pointerId: 9,
+    });
+    firePointer(surface, "pointercancel", {
+      clientX: 15,
+      clientY: 0,
+      pointerId: 9,
+    });
 
     expect(stage.classList.contains("is-panning")).toBe(false);
     expect(surface.releasePointerCapture).toHaveBeenCalledWith(9);
   });
 
   it("reset ボタン上の pointerdown はパン開始として扱わず、ボタンの click を妨げない（回帰: reset クリックが効かないバグ）", () => {
-    const { surface, stage } = makeEnv({ surfaceW: 800, surfaceH: 600, svgW: 400, svgH: 200 });
+    const { surface, stage } = makeEnv({
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 400,
+      svgH: 200,
+    });
     const resetButton = document.createElement("button");
     surface.appendChild(resetButton);
     createPanZoom({ surface, stage, resetButton, panThreshold: 5 });
@@ -340,8 +445,16 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     const rect = { left: 10, top: 10 } as DOMRect;
     resetButton.getBoundingClientRect = () => rect;
 
-    firePointer(resetButton, "pointerdown", { clientX: 30, clientY: 30, pointerId: 5 });
-    firePointer(resetButton, "pointerup", { clientX: 30, clientY: 30, pointerId: 5 });
+    firePointer(resetButton, "pointerdown", {
+      clientX: 30,
+      clientY: 30,
+      pointerId: 5,
+    });
+    firePointer(resetButton, "pointerup", {
+      clientX: 30,
+      clientY: 30,
+      pointerId: 5,
+    });
     resetButton.dispatchEvent(new MouseEvent("click", { bubbles: true }));
 
     expect(clicks).toBe(1);
@@ -354,8 +467,16 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     const { surface, stage } = makeEnv();
     createPanZoom({ surface, stage, panThreshold: 5 });
 
-    firePointer(surface, "pointerdown", { clientX: 0, clientY: 0, pointerId: 1 });
-    firePointer(surface, "pointermove", { clientX: 50, clientY: 0, pointerId: 2 });
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 1,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 50,
+      clientY: 0,
+      pointerId: 2,
+    });
 
     expect(stage.classList.contains("is-panning")).toBe(false);
   });
@@ -363,12 +484,25 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
   it("destroy() は保留中の RAF をキャンセルし、以降のイベントに反応しなくなる", () => {
     vi.useFakeTimers();
     const cancelSpy = vi.spyOn(window, "cancelAnimationFrame");
-    const { surface, stage } = makeEnv({ surfaceW: 800, surfaceH: 600, svgW: 400, svgH: 200 });
+    const { surface, stage } = makeEnv({
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 400,
+      svgH: 200,
+    });
     const resetButton = document.createElement("button");
     const pz = createPanZoom({ surface, stage, resetButton, panThreshold: 5 });
 
-    firePointer(surface, "pointerdown", { clientX: 0, clientY: 0, pointerId: 1 });
-    firePointer(surface, "pointermove", { clientX: 15, clientY: 0, pointerId: 1 }); // schedules RAF, never flushed
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 1,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 15,
+      clientY: 0,
+      pointerId: 1,
+    }); // schedules RAF, never flushed
 
     pz.destroy();
     expect(cancelSpy).toHaveBeenCalled();
@@ -376,8 +510,16 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     const before = stage.style.transform;
 
     // 破棄後はリスナーが外れているため、以下は何の効果も持たない
-    firePointer(surface, "pointerdown", { clientX: 0, clientY: 0, pointerId: 1 });
-    firePointer(surface, "pointermove", { clientX: 200, clientY: 0, pointerId: 1 });
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 1,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 200,
+      clientY: 0,
+      pointerId: 1,
+    });
     surface.dispatchEvent(
       new WheelEvent("wheel", {
         deltaY: -100,
@@ -385,7 +527,7 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
         clientY: 0,
         bubbles: true,
         cancelable: true,
-      }),
+      })
     );
     surface.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
     resetButton.click();

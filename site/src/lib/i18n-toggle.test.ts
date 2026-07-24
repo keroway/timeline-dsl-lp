@@ -33,7 +33,9 @@ afterEach(() => {
 
 describe("initLangToggle", () => {
   it("ボタンが存在しないときは例外を投げず early return する", () => {
-    expect(() => initLangToggle({ buttonSelector: "#absent", currentLocale: "ja" })).not.toThrow();
+    expect(() =>
+      initLangToggle({ buttonSelector: "#absent", currentLocale: "ja" })
+    ).not.toThrow();
   });
 
   it("ja→en: LOCALE_KEY に en を保存し /en プレフィックス付き URL へ遷移する", () => {

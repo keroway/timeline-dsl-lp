@@ -5,7 +5,10 @@ interface InitOpts {
   currentLocale: string;
 }
 
-export function initLangToggle({ buttonSelector, currentLocale }: InitOpts): void {
+export function initLangToggle({
+  buttonSelector,
+  currentLocale,
+}: InitOpts): void {
   const button = document.querySelector<HTMLButtonElement>(buttonSelector);
   if (!button) return;
 
@@ -19,7 +22,9 @@ export function initLangToggle({ buttonSelector, currentLocale }: InitOpts): voi
     if (targetLocale === "en") {
       targetUrl = `/en${currentPath}`;
     } else {
-      const stripped = currentPath.startsWith("/en") ? currentPath.slice(3) : currentPath;
+      const stripped = currentPath.startsWith("/en")
+        ? currentPath.slice(3)
+        : currentPath;
       targetUrl = stripped || "/";
     }
 

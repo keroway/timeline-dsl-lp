@@ -16,7 +16,12 @@ export interface A11ySettings {
 
 export const SETTINGS_KEY = "tdsl-a11y-settings";
 
-const VALID_TEXT_SIZES: A11yTextSize[] = ["normal", "large", "extra-large", "xx-large"];
+const VALID_TEXT_SIZES: A11yTextSize[] = [
+  "normal",
+  "large",
+  "extra-large",
+  "xx-large",
+];
 
 function isValidTextSize(v: unknown): v is A11yTextSize {
   return VALID_TEXT_SIZES.includes(v as A11yTextSize);
@@ -24,7 +29,8 @@ function isValidTextSize(v: unknown): v is A11yTextSize {
 
 export function loadSettings(): A11ySettings {
   const osDefaults: A11ySettings = {
-    reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)")
+      .matches,
     highContrast: window.matchMedia("(prefers-contrast: more)").matches,
     textSize: "normal",
     textSpacing: false,
@@ -37,8 +43,13 @@ export function loadSettings(): A11ySettings {
     const p = parsed as Record<string, unknown>;
     return {
       reducedMotion:
-        typeof p.reducedMotion === "boolean" ? p.reducedMotion : osDefaults.reducedMotion,
-      highContrast: typeof p.highContrast === "boolean" ? p.highContrast : osDefaults.highContrast,
+        typeof p.reducedMotion === "boolean"
+          ? p.reducedMotion
+          : osDefaults.reducedMotion,
+      highContrast:
+        typeof p.highContrast === "boolean"
+          ? p.highContrast
+          : osDefaults.highContrast,
       textSize: isValidTextSize(p.textSize) ? p.textSize : "normal",
       textSpacing: typeof p.textSpacing === "boolean" ? p.textSpacing : false,
     };
@@ -83,13 +94,20 @@ const TEXT_SIZE_LABELS: Record<A11yTextSize, string> = {
 };
 
 const MESSAGES = {
-  reducedMotion: { on: "動きを抑える設定を有効にしました", off: "動きを抑える設定を解除しました" },
+  reducedMotion: {
+    on: "動きを抑える設定を有効にしました",
+    off: "動きを抑える設定を解除しました",
+  },
   highContrast: {
     on: "高コントラスト表示を有効にしました",
     off: "高コントラスト表示を解除しました",
   },
-  textSpacing: { on: "テキストの余白を広げました", off: "テキストの余白を標準に戻しました" },
-  textSize: (size: A11yTextSize) => `文字サイズを${TEXT_SIZE_LABELS[size]}に変更しました`,
+  textSpacing: {
+    on: "テキストの余白を広げました",
+    off: "テキストの余白を標準に戻しました",
+  },
+  textSize: (size: A11yTextSize) =>
+    `文字サイズを${TEXT_SIZE_LABELS[size]}に変更しました`,
 };
 
 function announce(menuEl: HTMLElement, text: string) {
@@ -107,17 +125,29 @@ interface InitOpts {
   messages?: A11yMessages;
 }
 
-export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): void {
+export function initA11yMenu({
+  toggleSelector,
+  menuId,
+  messages,
+}: InitOpts): void {
   const toggle = document.querySelector<HTMLButtonElement>(toggleSelector);
   const menu = document.getElementById(menuId);
   if (!toggle || !menu) return;
 
   const msgs = messages ?? MESSAGES;
 
-  const reducedMotionInput = menu.querySelector<HTMLInputElement>("[data-a11y-reduced-motion]");
-  const highContrastInput = menu.querySelector<HTMLInputElement>("[data-a11y-high-contrast]");
-  const textSpacingInput = menu.querySelector<HTMLInputElement>("[data-a11y-text-spacing-input]");
-  const textSizeInput = menu.querySelector<HTMLSelectElement>("[data-a11y-text-size]");
+  const reducedMotionInput = menu.querySelector<HTMLInputElement>(
+    "[data-a11y-reduced-motion]"
+  );
+  const highContrastInput = menu.querySelector<HTMLInputElement>(
+    "[data-a11y-high-contrast]"
+  );
+  const textSpacingInput = menu.querySelector<HTMLInputElement>(
+    "[data-a11y-text-spacing-input]"
+  );
+  const textSizeInput = menu.querySelector<HTMLSelectElement>(
+    "[data-a11y-text-size]"
+  );
 
   function syncForm(settings: A11ySettings) {
     if (reducedMotionInput) reducedMotionInput.checked = settings.reducedMotion;
@@ -129,8 +159,8 @@ export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): vo
   function getFocusableElements(): HTMLElement[] {
     return Array.from(
       menu!.querySelectorAll<HTMLElement>(
-        "input:not([disabled]), select:not([disabled]), button:not([disabled])",
-      ),
+        "input:not([disabled]), select:not([disabled]), button:not([disabled])"
+      )
     );
   }
 
@@ -207,7 +237,7 @@ export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): vo
   const bindCheckboxSetting = (
     input: HTMLInputElement | null,
     key: "reducedMotion" | "highContrast" | "textSpacing",
-    getMessage: (s: A11ySettings) => string,
+    getMessage: (s: A11ySettings) => string
   ): void => {
     input?.addEventListener("change", () => {
       const prev = loadSettings();
@@ -223,22 +253,24 @@ export function initA11yMenu({ toggleSelector, menuId, messages }: InitOpts): vo
   bindCheckboxSetting(
     reducedMotionInput,
     "reducedMotion",
-    (s) => msgs.reducedMotion[s.reducedMotion ? "on" : "off"],
+    (s) => msgs.reducedMotion[s.reducedMotion ? "on" : "off"]
   );
   bindCheckboxSetting(
     highContrastInput,
     "highContrast",
-    (s) => msgs.highContrast[s.highContrast ? "on" : "off"],
+    (s) => msgs.highContrast[s.highContrast ? "on" : "off"]
   );
   bindCheckboxSetting(
     textSpacingInput,
     "textSpacing",
-    (s) => msgs.textSpacing[s.textSpacing ? "on" : "off"],
+    (s) => msgs.textSpacing[s.textSpacing ? "on" : "off"]
   );
 
   textSizeInput?.addEventListener("change", () => {
     const prev = loadSettings();
-    const newSize = isValidTextSize(textSizeInput.value) ? textSizeInput.value : "normal";
+    const newSize = isValidTextSize(textSizeInput.value)
+      ? textSizeInput.value
+      : "normal";
     const next = { ...prev, textSize: newSize };
     saveSettings(next);
     applySettings(next);

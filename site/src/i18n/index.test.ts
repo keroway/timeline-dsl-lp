@@ -9,7 +9,11 @@ import {
   resolveLocaleFromLocation,
 } from "./index";
 
-function collectKeyPaths(obj: Record<string, unknown>, prefix: string, out: Set<string>): void {
+function collectKeyPaths(
+  obj: Record<string, unknown>,
+  prefix: string,
+  out: Set<string>
+): void {
   for (const [key, value] of Object.entries(obj)) {
     const path = prefix ? `${prefix}.${key}` : key;
     if (value && typeof value === "object" && !Array.isArray(value)) {
@@ -42,7 +46,9 @@ describe("isLocale", () => {
 
 describe("getLocaleFromUrl", () => {
   it("/en/... は en", () => {
-    expect(getLocaleFromUrl(new URL("https://example.com/en/docs/intro"))).toBe("en");
+    expect(getLocaleFromUrl(new URL("https://example.com/en/docs/intro"))).toBe(
+      "en"
+    );
   });
 
   it("/ja/... は ja", () => {
@@ -50,12 +56,18 @@ describe("getLocaleFromUrl", () => {
   });
 
   it("プレフィックス無しは DEFAULT_LOCALE", () => {
-    expect(getLocaleFromUrl(new URL("https://example.com/docs/intro"))).toBe(DEFAULT_LOCALE);
-    expect(getLocaleFromUrl(new URL("https://example.com/"))).toBe(DEFAULT_LOCALE);
+    expect(getLocaleFromUrl(new URL("https://example.com/docs/intro"))).toBe(
+      DEFAULT_LOCALE
+    );
+    expect(getLocaleFromUrl(new URL("https://example.com/"))).toBe(
+      DEFAULT_LOCALE
+    );
   });
 
   it("未対応ロケールプレフィックスは DEFAULT_LOCALE", () => {
-    expect(getLocaleFromUrl(new URL("https://example.com/fr/"))).toBe(DEFAULT_LOCALE);
+    expect(getLocaleFromUrl(new URL("https://example.com/fr/"))).toBe(
+      DEFAULT_LOCALE
+    );
   });
 });
 
@@ -77,8 +89,12 @@ describe("resolveLocale", () => {
 
 describe("resolveLocaleFromLocation", () => {
   it("href から locale を解決する", () => {
-    expect(resolveLocaleFromLocation({ href: "https://example.com/en/docs/" })).toBe("en");
-    expect(resolveLocaleFromLocation({ href: "https://example.com/" })).toBe(DEFAULT_LOCALE);
+    expect(
+      resolveLocaleFromLocation({ href: "https://example.com/en/docs/" })
+    ).toBe("en");
+    expect(resolveLocaleFromLocation({ href: "https://example.com/" })).toBe(
+      DEFAULT_LOCALE
+    );
   });
 
   it("引数省略時は window.location を参照する", () => {
@@ -97,7 +113,13 @@ describe("dictionary parity", () => {
     const missingInEn = [...jaKeys].filter((key) => !enKeys.has(key)).sort();
     const missingInJa = [...enKeys].filter((key) => !jaKeys.has(key)).sort();
 
-    expect(missingInEn, `ja.ts にあって en.ts にないキー: ${missingInEn.join(", ")}`).toEqual([]);
-    expect(missingInJa, `en.ts にあって ja.ts にないキー: ${missingInJa.join(", ")}`).toEqual([]);
+    expect(
+      missingInEn,
+      `ja.ts にあって en.ts にないキー: ${missingInEn.join(", ")}`
+    ).toEqual([]);
+    expect(
+      missingInJa,
+      `en.ts にあって ja.ts にないキー: ${missingInJa.join(", ")}`
+    ).toEqual([]);
   });
 });

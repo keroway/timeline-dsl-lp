@@ -35,7 +35,9 @@ describe("initInstallTabs", () => {
     tabB.click();
 
     expect(tabB.getAttribute("aria-selected")).toBe("true");
-    expect(document.getElementById("install-tab-a")!.getAttribute("aria-selected")).toBe("false");
+    expect(
+      document.getElementById("install-tab-a")!.getAttribute("aria-selected")
+    ).toBe("false");
     expect(document.getElementById("install-panel-b")!.hidden).toBe(false);
     expect(document.getElementById("install-panel-a")!.hidden).toBe(true);
   });
@@ -47,10 +49,14 @@ describe("initInstallTabs", () => {
     const tabA = document.getElementById("install-tab-a") as HTMLButtonElement;
     const tabC = document.getElementById("install-tab-c") as HTMLButtonElement;
 
-    tabA.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
+    tabA.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true })
+    );
     expect(tabC.getAttribute("aria-selected")).toBe("true");
 
-    tabC.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+    tabC.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true })
+    );
     expect(tabA.getAttribute("aria-selected")).toBe("true");
   });
 
@@ -61,10 +67,14 @@ describe("initInstallTabs", () => {
     const tabA = document.getElementById("install-tab-a") as HTMLButtonElement;
     const tabC = document.getElementById("install-tab-c") as HTMLButtonElement;
 
-    tabA.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true }));
+    tabA.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "End", bubbles: true })
+    );
     expect(tabC.getAttribute("aria-selected")).toBe("true");
 
-    tabC.dispatchEvent(new KeyboardEvent("keydown", { key: "Home", bubbles: true }));
+    tabC.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Home", bubbles: true })
+    );
     expect(tabA.getAttribute("aria-selected")).toBe("true");
   });
 

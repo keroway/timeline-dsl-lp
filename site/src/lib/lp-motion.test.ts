@@ -13,13 +13,15 @@ function stubMatchMedia(matches: Record<string, boolean>) {
         media: query,
         addEventListener: () => {},
         removeEventListener: () => {},
-      }) as unknown as MediaQueryList,
+      }) as unknown as MediaQueryList
   );
 }
 
 // document.execCommand は jsdom では未実装相当。フォールバック経路の戻り値を制御するため差し替える。
 function setExecCommand(fn: ((command: string) => boolean) | undefined) {
-  (document as unknown as { execCommand?: (command: string) => boolean }).execCommand = fn;
+  (
+    document as unknown as { execCommand?: (command: string) => boolean }
+  ).execCommand = fn;
 }
 
 beforeEach(() => {
@@ -35,7 +37,11 @@ afterEach(() => {
   setExecCommand(undefined);
 });
 
-function mountCopyButton(opts?: { text?: string; successLabel?: string; errorLabel?: string }) {
+function mountCopyButton(opts?: {
+  text?: string;
+  successLabel?: string;
+  errorLabel?: string;
+}) {
   const text = opts?.text ?? "npm install timeline-dsl";
   const success = opts?.successLabel ?? "コピーしました";
   const error = opts?.errorLabel ?? "コピーに失敗しました";
@@ -141,8 +147,12 @@ describe("initMotion", () => {
 
     initMotion();
 
-    expect(document.body.classList.contains("cli-strip-motion-enabled")).toBe(false);
-    expect(document.body.classList.contains("hero-editor-motion-enabled")).toBe(false);
+    expect(document.body.classList.contains("cli-strip-motion-enabled")).toBe(
+      false
+    );
+    expect(document.body.classList.contains("hero-editor-motion-enabled")).toBe(
+      false
+    );
   });
 
   it("data-a11y-reduced-motion 属性があるときもモーションを無効化する", () => {
@@ -152,7 +162,9 @@ describe("initMotion", () => {
 
     initMotion();
 
-    expect(document.body.classList.contains("cli-strip-motion-enabled")).toBe(false);
+    expect(document.body.classList.contains("cli-strip-motion-enabled")).toBe(
+      false
+    );
   });
 
   it("モーション許可時は該当要素に応じて body クラスを付与する", () => {
@@ -161,8 +173,12 @@ describe("initMotion", () => {
 
     initMotion();
 
-    expect(document.body.classList.contains("cli-strip-motion-enabled")).toBe(true);
-    expect(document.body.classList.contains("hero-editor-motion-enabled")).toBe(true);
+    expect(document.body.classList.contains("cli-strip-motion-enabled")).toBe(
+      true
+    );
+    expect(document.body.classList.contains("hero-editor-motion-enabled")).toBe(
+      true
+    );
   });
 
   it("IntersectionObserver で交差した要素に is-visible を付与し unobserve する", () => {
@@ -189,23 +205,35 @@ describe("initMotion", () => {
 
     const a = document.getElementById("a")!;
     const b = document.getElementById("b")!;
-    expect(document.body.classList.contains("scroll-reveal-enabled")).toBe(true);
+    expect(document.body.classList.contains("scroll-reveal-enabled")).toBe(
+      true
+    );
     expect(a.style.getPropertyValue("--reveal-delay")).toBe("0ms");
     expect(b.style.getPropertyValue("--reveal-delay")).toBe("80ms");
     expect(observe).toHaveBeenCalledTimes(2);
 
     // 交差を通知すると is-visible を付与し unobserve する。
     ioCallback(
-      [{ isIntersecting: true, target: a } as unknown as IntersectionObserverEntry],
-      {} as IntersectionObserver,
+      [
+        {
+          isIntersecting: true,
+          target: a,
+        } as unknown as IntersectionObserverEntry,
+      ],
+      {} as IntersectionObserver
     );
     expect(a.classList.contains("is-visible")).toBe(true);
     expect(unobserve).toHaveBeenCalledWith(a);
 
     // 非交差エントリは無視する。
     ioCallback(
-      [{ isIntersecting: false, target: b } as unknown as IntersectionObserverEntry],
-      {} as IntersectionObserver,
+      [
+        {
+          isIntersecting: false,
+          target: b,
+        } as unknown as IntersectionObserverEntry,
+      ],
+      {} as IntersectionObserver
     );
     expect(b.classList.contains("is-visible")).toBe(false);
   });

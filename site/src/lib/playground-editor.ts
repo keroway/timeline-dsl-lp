@@ -1,14 +1,14 @@
-import { EditorState } from "@codemirror/state";
-import {
-  EditorView,
-  lineNumbers,
-  highlightActiveLine,
-  drawSelection,
-  keymap,
-  highlightSpecialChars,
-} from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { bracketMatching, indentOnInput } from "@codemirror/language";
+import { EditorState } from "@codemirror/state";
+import {
+  drawSelection,
+  EditorView,
+  highlightActiveLine,
+  highlightSpecialChars,
+  keymap,
+  lineNumbers,
+} from "@codemirror/view";
 
 // CodeMirror 6 dark theme matching LP design tokens
 const darkTheme = EditorView.theme(
@@ -57,7 +57,7 @@ const darkTheme = EditorView.theme(
     // （base theme の `1px dotted #212121` は CSS 側で上書きされる）。
     ".cm-cursor, .cm-dropCursor": { borderLeftColor: "#eaf1f8" },
   },
-  { dark: true },
+  { dark: true }
 );
 
 export interface PlaygroundEditorOptions {

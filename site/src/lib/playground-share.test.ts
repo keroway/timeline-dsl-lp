@@ -44,9 +44,11 @@ describe("buildShareUrl", () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.url.startsWith("https://timeline-dsl-lp.pages.dev/playground/?src=")).toBe(
-        true,
-      );
+      expect(
+        result.url.startsWith(
+          "https://timeline-dsl-lp.pages.dev/playground/?src="
+        )
+      ).toBe(true);
     }
   });
 
@@ -72,7 +74,9 @@ describe("extractSourceFromLocation", () => {
   });
 
   it("legacy の source クエリはそのまま返す", async () => {
-    expect(await extractSourceFromLocation("?source=event%20legacy")).toBe("event legacy");
+    expect(await extractSourceFromLocation("?source=event%20legacy")).toBe(
+      "event legacy"
+    );
   });
 
   it("復号できない src は null を返す", async () => {

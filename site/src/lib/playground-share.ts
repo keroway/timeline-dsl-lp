@@ -7,7 +7,10 @@ function bytesToBase64Url(bytes: Uint8Array): string {
   for (let i = 0; i < bytes.length; i += 1) {
     binary += String.fromCharCode(bytes[i]);
   }
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return btoa(binary)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
 function base64UrlToBytes(encoded: string): Uint8Array<ArrayBuffer> {
@@ -26,19 +29,25 @@ function base64UrlToBytes(encoded: string): Uint8Array<ArrayBuffer> {
 
 export async function encodeShareSource(source: string): Promise<string> {
   const bytes = new TextEncoder().encode(source);
-  const stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream("gzip"));
+  const stream = new Blob([bytes])
+    .stream()
+    .pipeThrough(new CompressionStream("gzip"));
   const compressed = new Uint8Array(await new Response(stream).arrayBuffer());
   return bytesToBase64Url(compressed);
 }
 
 export async function decodeShareSource(encoded: string): Promise<string> {
   const bytes = base64UrlToBytes(encoded);
-  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+  const stream = new Blob([bytes])
+    .stream()
+    .pipeThrough(new DecompressionStream("gzip"));
   const buffer = await new Response(stream).arrayBuffer();
   return new TextDecoder().decode(buffer);
 }
 
-export async function extractSourceFromLocation(search: string): Promise<string | null> {
+export async function extractSourceFromLocation(
+  search: string
+): Promise<string | null> {
   const params = new URLSearchParams(search);
   const compressed = params.get(SHARE_QUERY_PARAM);
   if (compressed) {

@@ -20,17 +20,19 @@ function formatBytes(bytes) {
 
 function evaluate(label, value, threshold) {
   if (value >= threshold.fail) {
-    console.log(`  FAIL  ${label}: ${formatBytes(value)} >= fail=${formatBytes(threshold.fail)}`);
+    console.log(
+      `  FAIL  ${label}: ${formatBytes(value)} >= fail=${formatBytes(threshold.fail)}`
+    );
     return "fail";
   }
   if (value >= threshold.warn) {
     console.log(
-      `  WARN  ${label}: ${formatBytes(value)} >= warn=${formatBytes(threshold.warn)} (fail=${formatBytes(threshold.fail)})`,
+      `  WARN  ${label}: ${formatBytes(value)} >= warn=${formatBytes(threshold.warn)} (fail=${formatBytes(threshold.fail)})`
     );
     return "warn";
   }
   console.log(
-    `  PASS  ${label}: ${formatBytes(value)} (warn=${formatBytes(threshold.warn)}, fail=${formatBytes(threshold.fail)})`,
+    `  PASS  ${label}: ${formatBytes(value)} (warn=${formatBytes(threshold.warn)}, fail=${formatBytes(threshold.fail)})`
   );
   return "pass";
 }
@@ -53,20 +55,31 @@ const jsFiles = existsSync(astroDir)
   : [];
 
 const totalJs = jsFiles.reduce((sum, f) => sum + f.size, 0);
-results.push(evaluate("Total JS (dist/_astro/*.js)", totalJs, THRESHOLDS.totalJs));
+results.push(
+  evaluate("Total JS (dist/_astro/*.js)", totalJs, THRESHOLDS.totalJs)
+);
 
-const maxJsFile = jsFiles.reduce((a, b) => (a.size >= b.size ? a : b), { name: "(none)", size: 0 });
-results.push(evaluate(`Max JS file (${maxJsFile.name})`, maxJsFile.size, THRESHOLDS.maxJs));
+const maxJsFile = jsFiles.reduce((a, b) => (a.size >= b.size ? a : b), {
+  name: "(none)",
+  size: 0,
+});
+results.push(
+  evaluate(`Max JS file (${maxJsFile.name})`, maxJsFile.size, THRESHOLDS.maxJs)
+);
 
 const hasFail = results.includes("fail");
 const hasWarn = results.includes("warn");
 
 if (hasFail) {
-  console.log("\nbundle-size: FAILED (one or more metrics exceed fail threshold)");
+  console.log(
+    "\nbundle-size: FAILED (one or more metrics exceed fail threshold)"
+  );
   process.exit(1);
 }
 if (hasWarn) {
-  console.log("\nbundle-size: WARNED (one or more metrics exceed warn threshold)");
+  console.log(
+    "\nbundle-size: WARNED (one or more metrics exceed warn threshold)"
+  );
 } else {
   console.log("\nbundle-size: all metrics within budget.");
 }

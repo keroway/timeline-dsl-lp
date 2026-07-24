@@ -3,6 +3,7 @@
 import { describe, expect, it } from "vitest";
 import {
   breadcrumbLd,
+  type ChangelogRelease,
   changelogLd,
   faqPageLd,
   graphLd,
@@ -10,7 +11,6 @@ import {
   organizationLd,
   softwareApplicationLd,
   webPageLd,
-  type ChangelogRelease,
 } from "./seo-jsonld";
 
 const SITE_URL = new URL("https://timeline-dsl-lp.pages.dev/");
@@ -84,7 +84,7 @@ describe("breadcrumbLd", () => {
         { name: "Home", url: "/" },
         { name: "Docs", url: "/docs/" },
       ],
-      SITE_URL,
+      SITE_URL
     );
     expect(ld["@type"]).toBe("BreadcrumbList");
     const items = ld.itemListElement as Array<Record<string, unknown>>;
@@ -188,7 +188,11 @@ describe("itemListLd", () => {
       description: "幕末から大正までの年表",
     });
     // description 省略時はキー自体を出さない
-    expect(elements[1]).toEqual({ "@type": "ListItem", position: 2, name: "開発ロードマップ" });
+    expect(elements[1]).toEqual({
+      "@type": "ListItem",
+      position: 2,
+      name: "開発ロードマップ",
+    });
   });
 
   it("en locale で inLanguage=en の URL に揃える", () => {
@@ -202,7 +206,9 @@ describe("itemListLd", () => {
     });
     expect(ld.inLanguage).toBe("en");
     expect(ld.url).toBe("https://timeline-dsl-lp.pages.dev/en/playground/");
-    expect(ld.mainEntityOfPage).toBe("https://timeline-dsl-lp.pages.dev/en/playground/");
+    expect(ld.mainEntityOfPage).toBe(
+      "https://timeline-dsl-lp.pages.dev/en/playground/"
+    );
   });
 });
 

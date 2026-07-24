@@ -10,7 +10,8 @@ const setTdslWasmMessages = vi.fn();
 
 vi.mock("./tdsl-wasm", () => ({
   checkTdslSource: (...args: unknown[]) => checkTdslSource(...args),
-  renderTdslSvgWithOptions: (...args: unknown[]) => renderTdslSvgWithOptions(...args),
+  renderTdslSvgWithOptions: (...args: unknown[]) =>
+    renderTdslSvgWithOptions(...args),
   renderTdslHtml: (...args: unknown[]) => renderTdslHtml(...args),
   setTdslWasmMessages: (...args: unknown[]) => setTdslWasmMessages(...args),
 }));
@@ -33,15 +34,15 @@ vi.mock("./playground-editor", () => ({
 }));
 
 import {
-  initPlayground,
   buildDiagnosticsFragment,
   createRunLoop,
+  initPlayground,
   wireDownloads,
-  wireShare,
   wireFileOpen,
-  wireTooltip,
   wireScale,
+  wireShare,
   wireShowEventLabels,
+  wireTooltip,
 } from "./playground-controller";
 
 const MSGS = {
@@ -104,7 +105,9 @@ describe("initPlayground runPlayground の状態分岐", () => {
   it("起動時に setTdslWasmMessages へ i18n 化された WASM 文言を注入する", async () => {
     setupDom();
     checkTdslSource.mockResolvedValue([]);
-    renderTdslSvgWithOptions.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    renderTdslSvgWithOptions.mockResolvedValue(
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    );
 
     initPlayground();
 
@@ -116,7 +119,9 @@ describe("initPlayground runPlayground の状態分岐", () => {
   it("診断なし＆描画成功なら ready 状態になる", async () => {
     const dom = setupDom();
     checkTdslSource.mockResolvedValue([]);
-    renderTdslSvgWithOptions.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    renderTdslSvgWithOptions.mockResolvedValue(
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    );
 
     initPlayground();
 
@@ -124,14 +129,22 @@ describe("initPlayground runPlayground の状態分岐", () => {
       expect(dom.root.getAttribute("data-playground-state")).toBe("ready");
     });
     expect(dom.status.textContent).toBe(MSGS.statusOk);
-    expect(dom.diagnosticsMeta.textContent).toBe("0 errors / 0 warnings / 0 info");
-    expect(renderTdslSvgWithOptions).toHaveBeenCalledWith("event x", 0, { showEventLabels: false });
+    expect(dom.diagnosticsMeta.textContent).toBe(
+      "0 errors / 0 warnings / 0 info"
+    );
+    expect(renderTdslSvgWithOptions).toHaveBeenCalledWith("event x", 0, {
+      showEventLabels: false,
+    });
   });
 
   it("warning のみなら warn 状態になり描画は実行する", async () => {
     const dom = setupDom();
-    checkTdslSource.mockResolvedValue([{ severity: "warning", message: "w", line: 1, col: 1 }]);
-    renderTdslSvgWithOptions.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    checkTdslSource.mockResolvedValue([
+      { severity: "warning", message: "w", line: 1, col: 1 },
+    ]);
+    renderTdslSvgWithOptions.mockResolvedValue(
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    );
 
     initPlayground();
 
@@ -144,7 +157,9 @@ describe("initPlayground runPlayground の状態分岐", () => {
 
   it("error があれば error 状態になり描画は実行しない", async () => {
     const dom = setupDom();
-    checkTdslSource.mockResolvedValue([{ severity: "error", message: "e", line: 2, col: 3 }]);
+    checkTdslSource.mockResolvedValue([
+      { severity: "error", message: "e", line: 2, col: 3 },
+    ]);
 
     initPlayground();
 
@@ -157,8 +172,12 @@ describe("initPlayground runPlayground の状態分岐", () => {
 
   it("info-only 診断（error も warning も無い）なら ready 状態になり描画は実行する", async () => {
     const dom = setupDom();
-    checkTdslSource.mockResolvedValue([{ severity: "info", message: "i", line: 1, col: 1 }]);
-    renderTdslSvgWithOptions.mockResolvedValue('<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+    checkTdslSource.mockResolvedValue([
+      { severity: "info", message: "i", line: 1, col: 1 },
+    ]);
+    renderTdslSvgWithOptions.mockResolvedValue(
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    );
 
     initPlayground();
 
@@ -214,7 +233,9 @@ describe("buildDiagnosticsFragment", () => {
   });
 
   it("line が 0 のとき location テキストは 'global' になる", () => {
-    const items = [{ severity: "error" as const, message: "global err", line: 0, col: 0 }];
+    const items = [
+      { severity: "error" as const, message: "global err", line: 0, col: 0 },
+    ];
     const { node } = buildDiagnosticsFragment(items, msgs);
     const ol = node as HTMLOListElement;
     const strong = ol.querySelector("strong");
@@ -267,7 +288,14 @@ describe("wireDownloads", () => {
       writable: true,
     });
 
-    wireDownloads({ tdslBtn, svgBtn, htmlBtn, getSource, getLastSvg, getLastSource });
+    wireDownloads({
+      tdslBtn,
+      svgBtn,
+      htmlBtn,
+      getSource,
+      getLastSvg,
+      getLastSource,
+    });
     tdslBtn.click();
 
     expect(getSource).toHaveBeenCalled();
@@ -289,7 +317,14 @@ describe("wireDownloads", () => {
       writable: true,
     });
 
-    wireDownloads({ tdslBtn, svgBtn, htmlBtn, getSource, getLastSvg, getLastSource });
+    wireDownloads({
+      tdslBtn,
+      svgBtn,
+      htmlBtn,
+      getSource,
+      getLastSvg,
+      getLastSource,
+    });
     svgBtn.click();
 
     expect(createObjectURL).not.toHaveBeenCalled();
@@ -298,7 +333,9 @@ describe("wireDownloads", () => {
 
 describe("wireShare", () => {
   it("copyLinkButton クリックで buildShareUrl が呼ばれる", async () => {
-    const { buildShareUrl: mockBuildShareUrl } = await import("./playground-share");
+    const { buildShareUrl: mockBuildShareUrl } = await import(
+      "./playground-share"
+    );
     const bsu = mockBuildShareUrl as ReturnType<typeof vi.fn>;
     bsu.mockResolvedValue({ ok: true, url: "https://example.com/share" });
 
@@ -333,7 +370,12 @@ describe("wireFileOpen", () => {
     const inputClick = vi.spyOn(openFileInput, "click");
     const onApplySource = vi.fn();
 
-    wireFileOpen({ openFileButton, openFileInput, sampleSelect: null, onApplySource });
+    wireFileOpen({
+      openFileButton,
+      openFileInput,
+      sampleSelect: null,
+      onApplySource,
+    });
     openFileButton.click();
 
     expect(inputClick).toHaveBeenCalled();
@@ -415,7 +457,9 @@ describe("wireShowEventLabels", () => {
 
     expect(onRun).toHaveBeenCalledOnce();
     expect(getShowEventLabels()).toBe(true);
-    expect(window.localStorage.getItem("tdsl-playground-show-event-labels")).toBe("true");
+    expect(
+      window.localStorage.getItem("tdsl-playground-show-event-labels")
+    ).toBe("true");
   });
 
   it("toggle が null でもエラーにならず false を返す", () => {

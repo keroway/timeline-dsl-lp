@@ -1,4 +1,7 @@
-import { defineEcConfig, pluginFramesTexts } from "@astrojs/starlight/expressive-code";
+import {
+  defineEcConfig,
+  pluginFramesTexts,
+} from "@astrojs/starlight/expressive-code";
 import tdslGrammar from "./src/lib/tdsl.tmLanguage.json" with { type: "json" };
 
 pluginFramesTexts.overrideTexts(undefined, {

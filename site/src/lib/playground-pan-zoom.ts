@@ -42,7 +42,12 @@ export function createPanZoom({
   let pendingTx = 0;
   let pendingTy = 0;
 
-  const applyTransform = (s: number, x: number, y: number, animated: boolean) => {
+  const applyTransform = (
+    s: number,
+    x: number,
+    y: number,
+    animated: boolean
+  ) => {
     stage.style.transition = animated ? "transform 0.18s ease" : "none";
     stage.style.transform = `matrix(${s},0,0,${s},${x},${y})`;
   };
@@ -61,7 +66,7 @@ export function createPanZoom({
     const rect = surface.getBoundingClientRect();
     const sh = Math.max(
       120,
-      Math.min(surface.clientHeight, window.innerHeight - Math.max(0, rect.top)),
+      Math.min(surface.clientHeight, window.innerHeight - Math.max(0, rect.top))
     );
     const svgW = svg.viewBox.baseVal.width || svg.clientWidth || sw;
     const svgH = svg.viewBox.baseVal.height || svg.clientHeight || sh;
@@ -82,7 +87,8 @@ export function createPanZoom({
     applyTransform(scale, tx, ty, true);
   };
 
-  const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+  const clamp = (v: number, lo: number, hi: number) =>
+    Math.max(lo, Math.min(hi, v));
 
   const onPointerDown = (e: PointerEvent) => {
     if (e.button !== 0) return;
@@ -90,7 +96,12 @@ export function createPanZoom({
     // ここで pointer capture を取ってしまうと、ブラウザによっては pointerup のターゲットが
     // ボタンではなく surface にリダイレクトされ、応答するネイティブ click イベントが
     // 一切発火しなくなる（reset ボタンがクリックできなくなる）。
-    if (resetButton && e.target instanceof Node && resetButton.contains(e.target)) return;
+    if (
+      resetButton &&
+      e.target instanceof Node &&
+      resetButton.contains(e.target)
+    )
+      return;
     pendingPan = {
       startX: e.clientX,
       startY: e.clientY,

@@ -1,16 +1,22 @@
+import { PRODUCTION_ORIGIN } from "../src/lib/site.ts";
 import {
-  DEFAULT_BASE_URL,
+  HREFLANG_PATHS,
+  JSONLD_TARGETS,
+  OG_IMAGE_TARGETS,
+} from "./lib/site-routes.mjs";
+import {
   assertIncludes,
   assertStatus,
+  DEFAULT_BASE_URL,
   get,
   normalizeBaseUrl,
   parseArgs,
 } from "./lib/smoke-helpers.mjs";
-import { HREFLANG_PATHS, JSONLD_TARGETS, OG_IMAGE_TARGETS } from "./lib/site-routes.mjs";
-import { PRODUCTION_ORIGIN } from "../src/lib/site.ts";
 
 const args = parseArgs(process.argv.slice(2));
-const baseUrl = normalizeBaseUrl(args.baseUrl ?? process.env.SEO_BASE_URL ?? DEFAULT_BASE_URL);
+const baseUrl = normalizeBaseUrl(
+  args.baseUrl ?? process.env.SEO_BASE_URL ?? DEFAULT_BASE_URL
+);
 
 await smokeSeo(baseUrl);
 
@@ -21,9 +27,15 @@ async function smokeSeo(rootUrl) {
     const html = await res.text();
     assertIncludes(html, 'hreflang="ja"', `${path} must include hreflang=ja`);
     assertIncludes(html, 'hreflang="en"', `${path} must include hreflang=en`);
-    assertIncludes(html, 'hreflang="x-default"', `${path} must include hreflang=x-default`);
+    assertIncludes(
+      html,
+      'hreflang="x-default"',
+      `${path} must include hreflang=x-default`
+    );
   }
-  console.log(`hreflang: 3 tags confirmed on ${HREFLANG_PATHS.length} pages. ✓`);
+  console.log(
+    `hreflang: 3 tags confirmed on ${HREFLANG_PATHS.length} pages. ✓`
+  );
 
   for (const { path, required } of JSONLD_TARGETS) {
     const res = await get(`${rootUrl}${path}`);
@@ -34,7 +46,9 @@ async function smokeSeo(rootUrl) {
       assertIncludes(compact, needle, `${path} must include JSON-LD ${needle}`);
     }
   }
-  console.log(`JSON-LD: required @type tokens confirmed on ${JSONLD_TARGETS.length} pages. ✓`);
+  console.log(
+    `JSON-LD: required @type tokens confirmed on ${JSONLD_TARGETS.length} pages. ✓`
+  );
 
   // OG 画像メタの整合（DESIGN.md §9）: ページ種別ごとに専用 PNG を参照し（#308/#309）、
   // type は実体（PNG）に追従、width/height は 1200x630 固定。ja/en は同一種別で同じ画像。
@@ -44,63 +58,83 @@ async function smokeSeo(rootUrl) {
     const html = await res.text();
     // og:image の content は Astro.site（本番 origin）で出力されるため、preview origin に
     // 依存しないようパス部分の一致で検証する（origin 結合を避ける）。
-    assertIncludes(html, 'property="og:image"', `${path} must include og:image`);
-    assertIncludes(html, `${image}"`, `${path} og:image must reference ${image}`);
+    assertIncludes(
+      html,
+      'property="og:image"',
+      `${path} must include og:image`
+    );
+    assertIncludes(
+      html,
+      `${image}"`,
+      `${path} og:image must reference ${image}`
+    );
     assertIncludes(
       html,
       'property="og:image:type" content="image/png"',
-      `${path} must declare og:image:type=image/png`,
+      `${path} must declare og:image:type=image/png`
     );
     assertIncludes(
       html,
       'property="og:image:width" content="1200"',
-      `${path} must include og:image:width=1200`,
+      `${path} must include og:image:width=1200`
     );
     assertIncludes(
       html,
       'property="og:image:height" content="630"',
-      `${path} must include og:image:height=630`,
+      `${path} must include og:image:height=630`
     );
     // 参照先 PNG が実際に 200 / image/png で配信されることも確認する。
     const imageRes = await get(`${rootUrl}${image}`);
     assertStatus(imageRes, image);
     const contentType = imageRes.headers.get("content-type") ?? "";
     if (!contentType.includes("image/png")) {
-      throw new Error(`${image} must be served as image/png (got "${contentType}")`);
+      throw new Error(
+        `${image} must be served as image/png (got "${contentType}")`
+      );
     }
 
     // og:locale / og:locale:alternate は SocialMeta.astro を使う LP 系ページ（OG_IMAGE_TARGETS
     // と同一スコープ）でのみ、ページの locale と逆向きのペアで 1 つずつ出力される想定
     // （DESIGN.md §9）。Starlight が自前で OGP を出力する docs ページは別パイプラインなので対象外。
     const isEnglish = path === "/en" || path.startsWith("/en/");
-    const [expectedLocale, expectedAlternate] = isEnglish ? ["en_US", "ja_JP"] : ["ja_JP", "en_US"];
+    const [expectedLocale, expectedAlternate] = isEnglish
+      ? ["en_US", "ja_JP"]
+      : ["ja_JP", "en_US"];
     assertIncludes(
       html,
       `property="og:locale" content="${expectedLocale}"`,
-      `${path} must include og:locale=${expectedLocale}`,
+      `${path} must include og:locale=${expectedLocale}`
     );
     assertIncludes(
       html,
       `property="og:locale:alternate" content="${expectedAlternate}"`,
-      `${path} must include og:locale:alternate=${expectedAlternate}`,
+      `${path} must include og:locale:alternate=${expectedAlternate}`
     );
   }
   console.log(
-    `og:image: per-page PNG + type + 1200x630 dimensions confirmed on ${OG_IMAGE_TARGETS.length} pages. ✓`,
+    `og:image: per-page PNG + type + 1200x630 dimensions confirmed on ${OG_IMAGE_TARGETS.length} pages. ✓`
   );
   console.log(
-    `og:locale / og:locale:alternate: reciprocal pair confirmed on ${OG_IMAGE_TARGETS.length} pages. ✓`,
+    `og:locale / og:locale:alternate: reciprocal pair confirmed on ${OG_IMAGE_TARGETS.length} pages. ✓`
   );
 
   const robotsRes = await get(`${rootUrl}/robots.txt`);
   assertStatus(robotsRes, "/robots.txt");
   const robotsBody = await robotsRes.text();
-  assertIncludes(robotsBody, "User-agent: *", "robots.txt must list User-agent: *");
-  assertIncludes(robotsBody, "Sitemap:", "robots.txt must include a Sitemap line");
+  assertIncludes(
+    robotsBody,
+    "User-agent: *",
+    "robots.txt must list User-agent: *"
+  );
+  assertIncludes(
+    robotsBody,
+    "Sitemap:",
+    "robots.txt must include a Sitemap line"
+  );
   assertIncludes(
     robotsBody,
     `Sitemap: ${PRODUCTION_ORIGIN}/sitemap-index.xml`,
-    "robots.txt Sitemap must point to the production origin's sitemap-index.xml",
+    "robots.txt Sitemap must point to the production origin's sitemap-index.xml"
   );
   console.log("robots.txt: served with User-agent / Sitemap entries. ✓");
 }

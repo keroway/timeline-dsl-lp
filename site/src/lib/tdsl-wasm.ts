@@ -19,7 +19,7 @@ export interface TdslWasmApi {
   renderSvgFromSourceWithOptions(
     source: string,
     scale: number | undefined,
-    options: TdslSvgRenderOptions,
+    options: TdslSvgRenderOptions
   ): string;
   renderHtmlFromSource(source: string): string;
   checkSource(source: string): TdslDiagnostic[];
@@ -41,14 +41,14 @@ interface RawTdslWasmModule {
     moduleOrPath?:
       | { module_or_path: InitInput | Promise<InitInput> }
       | InitInput
-      | Promise<InitInput>,
+      | Promise<InitInput>
   ) => Promise<unknown>;
   compile_to_ir(source: string): string;
   render_svg_from_source(source: string, scale: number): string;
   render_svg_from_source_with_options(
     source: string,
     scale: number,
-    opts: RawJsRenderOptions,
+    opts: RawJsRenderOptions
   ): string;
   render_html_from_source(source: string): string;
   check_source(source: string): string;
@@ -92,7 +92,9 @@ export function loadTdslWasm(): Promise<TdslWasmLoadResult> {
   return loadPromise;
 }
 
-export async function checkTdslSource(source: string): Promise<TdslDiagnostic[]> {
+export async function checkTdslSource(
+  source: string
+): Promise<TdslDiagnostic[]> {
   const loaded = await loadTdslWasm();
   if (loaded.status !== "ready") {
     return [toDiagnostic(loaded.message)];
@@ -101,7 +103,10 @@ export async function checkTdslSource(source: string): Promise<TdslDiagnostic[]>
   return loaded.api.checkSource(source);
 }
 
-export async function renderTdslSvg(source: string, scale?: number): Promise<string> {
+export async function renderTdslSvg(
+  source: string,
+  scale?: number
+): Promise<string> {
   const loaded = await loadTdslWasm();
   if (loaded.status !== "ready") {
     throw new Error(loaded.message, { cause: loaded.cause });
@@ -118,7 +123,7 @@ export async function renderTdslSvg(source: string, scale?: number): Promise<str
 export async function renderTdslSvgWithOptions(
   source: string,
   scale: number | undefined,
-  options: TdslSvgRenderOptions,
+  options: TdslSvgRenderOptions
 ): Promise<string> {
   const loaded = await loadTdslWasm();
   if (loaded.status !== "ready") {
@@ -152,7 +157,9 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
   }
 
   try {
-    const rawModule = (await import(/* @vite-ignore */ TDSL_WASM_JS_URL)) as RawTdslWasmModule;
+    const rawModule = (await import(
+      /* @vite-ignore */ TDSL_WASM_JS_URL
+    )) as RawTdslWasmModule;
     await rawModule.default({ module_or_path: TDSL_WASM_BINARY_URL });
 
     return {
@@ -160,7 +167,10 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
       api: {
         compileToIr: rawModule.compile_to_ir,
         renderSvgFromSource: (source, scale) =>
-          rawModule.render_svg_from_source(source, scale ?? RENDER_SVG_AUTO_SCALE),
+          rawModule.render_svg_from_source(
+            source,
+            scale ?? RENDER_SVG_AUTO_SCALE
+          ),
         renderSvgFromSourceWithOptions: (source, scale, options) => {
           const opts = new rawModule.JsRenderOptions();
           // NOTE: render_svg_from_source_with_options consumes `opts` internally
@@ -171,7 +181,7 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
           return rawModule.render_svg_from_source_with_options(
             source,
             scale ?? RENDER_SVG_AUTO_SCALE,
-            opts,
+            opts
           );
         },
         renderHtmlFromSource: rawModule.render_html_from_source,
@@ -194,7 +204,9 @@ export function parseDiagnostics(raw: string): TdslDiagnostic[] {
 
     return parsed.filter(isDiagnostic);
   } catch (cause) {
-    return [toDiagnostic("WASM diagnostic response could not be parsed.", cause)];
+    return [
+      toDiagnostic("WASM diagnostic response could not be parsed.", cause),
+    ];
   }
 }
 
@@ -205,7 +217,9 @@ export function isDiagnostic(value: unknown): value is TdslDiagnostic {
 
   const item = value as Record<string, unknown>;
   return (
-    (item.severity === "error" || item.severity === "warning" || item.severity === "info") &&
+    (item.severity === "error" ||
+      item.severity === "warning" ||
+      item.severity === "info") &&
     typeof item.message === "string" &&
     typeof item.line === "number" &&
     typeof item.col === "number"
@@ -214,7 +228,7 @@ export function isDiagnostic(value: unknown): value is TdslDiagnostic {
 
 export function toDiagnostic(
   message: string,
-  severityOrCause: TdslDiagnosticSeverity | unknown = "error",
+  severityOrCause: TdslDiagnosticSeverity | unknown = "error"
 ): TdslDiagnostic {
   return {
     severity: severityOrCause === "warning" ? "warning" : "error",

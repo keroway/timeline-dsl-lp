@@ -7,7 +7,10 @@ export function initCopyButtons(): void {
         await Promise.race([
           navigator.clipboard.writeText(text),
           new Promise((_, reject) => {
-            window.setTimeout(() => reject(new Error("Clipboard write timed out")), 800);
+            window.setTimeout(
+              () => reject(new Error("Clipboard write timed out")),
+              800
+            );
           }),
         ]);
         return true;
@@ -26,8 +29,9 @@ export function initCopyButtons(): void {
     field.select();
 
     try {
-      const legacyCopy = (document as unknown as { execCommand: (command: string) => boolean })
-        .execCommand;
+      const legacyCopy = (
+        document as unknown as { execCommand: (command: string) => boolean }
+      ).execCommand;
       return legacyCopy.call(document, "copy");
     } finally {
       field.remove();
@@ -37,8 +41,10 @@ export function initCopyButtons(): void {
   copyButtons.forEach((button) => {
     const targetId = button.getAttribute("data-copy-target");
     const target = targetId ? document.getElementById(targetId) : null;
-    const successLabel = button.getAttribute("data-copy-success-label") || "コピーしました";
-    const errorLabel = button.getAttribute("data-copy-error-label") || "コピーに失敗しました";
+    const successLabel =
+      button.getAttribute("data-copy-success-label") || "コピーしました";
+    const errorLabel =
+      button.getAttribute("data-copy-error-label") || "コピーに失敗しました";
     const status = button.parentElement?.querySelector(".copy-status");
     let resetTimer: number | undefined;
     const setStatus = (message: string) => {
@@ -68,7 +74,8 @@ export function initCopyButtons(): void {
 export function initMotion(): void {
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const motionAllowed =
-    !motionQuery.matches && !document.documentElement.hasAttribute("data-a11y-reduced-motion");
+    !motionQuery.matches &&
+    !document.documentElement.hasAttribute("data-a11y-reduced-motion");
 
   if (motionAllowed && document.querySelector(".command-strip__command")) {
     document.body.classList.add("cli-strip-motion-enabled");
@@ -88,10 +95,12 @@ export function initMotion(): void {
     const revealTargets: HTMLElement[] = [];
 
     revealGroups.forEach(({ selector, delayStep }) => {
-      document.querySelectorAll<HTMLElement>(selector).forEach((target, index) => {
-        target.style.setProperty("--reveal-delay", `${index * delayStep}ms`);
-        revealTargets.push(target);
-      });
+      document
+        .querySelectorAll<HTMLElement>(selector)
+        .forEach((target, index) => {
+          target.style.setProperty("--reveal-delay", `${index * delayStep}ms`);
+          revealTargets.push(target);
+        });
     });
 
     if (revealTargets.length > 0) {
@@ -111,7 +120,7 @@ export function initMotion(): void {
         {
           rootMargin: "0px 0px -12% 0px",
           threshold: 0.12,
-        },
+        }
       );
 
       let revealFrame = 0;
@@ -139,7 +148,7 @@ export function initMotion(): void {
           () => {
             target.classList.add("is-revealed");
           },
-          { once: true },
+          { once: true }
         );
         revealObserver.observe(target);
       });

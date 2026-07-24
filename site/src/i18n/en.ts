@@ -1,4 +1,4 @@
-import type { ExactDictionary, Dictionary } from "./ja";
+import type { Dictionary, ExactDictionary } from "./ja";
 
 export const en = {
   "nav.playground": "Playground",
@@ -8,7 +8,8 @@ export const en = {
   "nav.changelog": "Changelog",
   "nav.github": "GitHub",
   "nav.search.aria_label": "Search",
-  "nav.search.not_built": "Search is unavailable right now. Please try again later.",
+  "nav.search.not_built":
+    "Search is unavailable right now. Please try again later.",
   "nav.lang_toggle.aria_label": "Switch language to Japanese",
   "nav.theme_toggle.aria_label": "Switch theme",
   "nav.theme.auto": "Auto",
@@ -142,7 +143,8 @@ export const en = {
   "lp.usecase.research.bar1": "Candidates",
   "lp.usecase.research.bar2": "Sources",
   "lp.usecase.research.bar3": "Annotations",
-  "lp.why.heading": "Why Timeline DSL instead of hand-drawn diagrams or spreadsheets",
+  "lp.why.heading":
+    "Why Timeline DSL instead of hand-drawn diagrams or spreadsheets",
   "lp.why.lead":
     "There are other ways to build a timeline. Here is an honest account of what Timeline DSL prioritizes among them.",
   "lp.why.point1.title": "A timeline you can validate",
@@ -174,7 +176,8 @@ export const en = {
   "lp.why.compare.generic_dsl.approach": "Generic diagram DSL (e.g. Mermaid)",
   "lp.why.compare.generic_dsl.validation": "Syntax errors only",
   "lp.why.compare.generic_dsl.diff": "Git diffs on text",
-  "lp.why.compare.generic_dsl.output": "Diagram (timeline-specific features limited)",
+  "lp.why.compare.generic_dsl.output":
+    "Diagram (timeline-specific features limited)",
   "lp.why.faq_link": "See frequently asked questions in the FAQ →",
   "lp.closing.heading": "Write your first timeline in 30 seconds",
   "lp.closing.lead":
@@ -191,7 +194,8 @@ export const en = {
   "lp.install.os.powershell": "Windows",
   "lp.install.tab.cargo": "Cargo",
   "lp.install.os.cargo": "Rust toolchain",
-  "lp.install.other_methods_link": "See other installation methods (cargo / manual binary, etc.) →",
+  "lp.install.other_methods_link":
+    "See other installation methods (cargo / manual binary, etc.) →",
   "gallery.page.title": "Gallery — Timeline DSL",
   "gallery.page.description":
     "Sample timelines for Timeline DSL. Edit and customize each sample in the Playground.",
@@ -207,7 +211,8 @@ export const en = {
   "gallery.preview_modal.close_aria_label": "Close enlarged preview",
   "gallery.error.summary": "Could not display preview",
   "gallery.error.retry": "Retry",
-  "gallery.see_showcase": "Looking for fully built examples? See the Showcase →",
+  "gallery.see_showcase":
+    "Looking for fully built examples? See the Showcase →",
   "gallery.tag.history": "History",
   "gallery.tag.chronology": "Chronology",
   "gallery.tag.project": "Project management",
@@ -238,7 +243,8 @@ export const en = {
     "The `.tdsl` source side by side with the SVG it produces — every example below is rendered by the actual WASM engine.",
   "lp.examples.view_all": "Browse all samples in the Gallery →",
   "changelog.page.title": "Changelog | Timeline DSL",
-  "changelog.page.description": "Changelog generated from Timeline DSL GitHub Releases.",
+  "changelog.page.description":
+    "Changelog generated from Timeline DSL GitHub Releases.",
   "changelog.eyebrow": "GitHub Releases",
   "changelog.lead.has_data": "Showing release information from {repository}.",
   "changelog.lead.no_data":
@@ -278,12 +284,14 @@ export const en = {
   "playground.toolbar.save_svg": "Save .svg",
   "playground.toolbar.save_html": "Save HTML",
   "playground.toolbar.copy_link": "Copy as link",
-  "playground.toolbar.copy_link_aria": "Copy a shareable link containing the current source",
+  "playground.toolbar.copy_link_aria":
+    "Copy a shareable link containing the current source",
   "playground.toolbar.aria_label": "Playground controls",
   "playground.workspace.aria_label": "Timeline DSL editor and preview",
   "playground.share.copy_success": "Shareable link copied",
   "playground.share.copy_error": "Could not copy the shareable link",
-  "playground.share.too_long": "Source is too long to share as a link (limit {limit} chars)",
+  "playground.share.too_long":
+    "Source is too long to share as a link (limit {limit} chars)",
   "playground.diagnostics.panel": "Diagnostics",
   "playground.diagnostics.aria_label": "Diagnostics",
   "playground.diagnostics.waiting": "Diagnostics will appear here.",

@@ -52,7 +52,7 @@ export async function get(url) {
   const response = await fetch(url, { redirect: "manual" });
   if (response.status >= 300 && response.status < 400) {
     throw new Error(
-      `${url} redirected with ${response.status}; smoke expects a directly served asset/page.`,
+      `${url} redirected with ${response.status}; smoke expects a directly served asset/page.`
     );
   }
   return response;
@@ -66,8 +66,14 @@ export function assertStatus(response, label) {
 
 export function assertContentType(response, label, expectedTypes) {
   const contentType = response.headers.get("content-type") ?? "";
-  if (!expectedTypes.some((expectedType) => contentType.toLowerCase().includes(expectedType))) {
-    throw new Error(`${label} returned unexpected Content-Type: ${contentType || "(missing)"}`);
+  if (
+    !expectedTypes.some((expectedType) =>
+      contentType.toLowerCase().includes(expectedType)
+    )
+  ) {
+    throw new Error(
+      `${label} returned unexpected Content-Type: ${contentType || "(missing)"}`
+    );
   }
 }
 

@@ -16,14 +16,22 @@ const _CATALOG = [
     path: "/",
     hreflang: true,
     ogImage: "/og/lp.png",
-    jsonLd: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'],
+    jsonLd: [
+      '"@type":"Organization"',
+      '"@type":"WebPage"',
+      '"@type":"SoftwareApplication"',
+    ],
     a11y: true,
   },
   {
     path: "/en/",
     hreflang: true,
     ogImage: "/og/lp.png",
-    jsonLd: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"SoftwareApplication"'],
+    jsonLd: [
+      '"@type":"Organization"',
+      '"@type":"WebPage"',
+      '"@type":"SoftwareApplication"',
+    ],
     a11y: true,
   },
   // Playground
@@ -103,39 +111,63 @@ const _CATALOG = [
   {
     path: "/showcase/oda-nobunaga/",
     hreflang: true,
-    jsonLd: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    jsonLd: [
+      '"@type":"Organization"',
+      '"@type":"WebPage"',
+      '"@type":"BreadcrumbList"',
+    ],
     a11y: true,
   },
   {
     path: "/en/showcase/oda-nobunaga/",
     hreflang: true,
-    jsonLd: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    jsonLd: [
+      '"@type":"Organization"',
+      '"@type":"WebPage"',
+      '"@type":"BreadcrumbList"',
+    ],
     a11y: true,
   },
   // Showcase: natsume-soseki
   {
     path: "/showcase/natsume-soseki/",
     hreflang: true,
-    jsonLd: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    jsonLd: [
+      '"@type":"Organization"',
+      '"@type":"WebPage"',
+      '"@type":"BreadcrumbList"',
+    ],
     a11y: true,
   },
   {
     path: "/en/showcase/natsume-soseki/",
     hreflang: true,
-    jsonLd: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    jsonLd: [
+      '"@type":"Organization"',
+      '"@type":"WebPage"',
+      '"@type":"BreadcrumbList"',
+    ],
     a11y: true,
   },
   // Showcase: internet-history
   {
     path: "/showcase/internet-history/",
     hreflang: true,
-    jsonLd: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    jsonLd: [
+      '"@type":"Organization"',
+      '"@type":"WebPage"',
+      '"@type":"BreadcrumbList"',
+    ],
     a11y: true,
   },
   {
     path: "/en/showcase/internet-history/",
     hreflang: true,
-    jsonLd: ['"@type":"Organization"', '"@type":"WebPage"', '"@type":"BreadcrumbList"'],
+    jsonLd: [
+      '"@type":"Organization"',
+      '"@type":"WebPage"',
+      '"@type":"BreadcrumbList"',
+    ],
     a11y: true,
   },
   // Changelog
@@ -387,7 +419,9 @@ const _CATALOG = [
 ];
 
 /** hreflang 3 タグ（ja / en / x-default）確認対象のパス一覧 */
-export const HREFLANG_PATHS = _CATALOG.filter((r) => r.hreflang).map((r) => r.path);
+export const HREFLANG_PATHS = _CATALOG
+  .filter((r) => r.hreflang)
+  .map((r) => r.path);
 
 /** JSON-LD @type 確認対象（path + required types のペア） */
 export const JSONLD_TARGETS = _CATALOG

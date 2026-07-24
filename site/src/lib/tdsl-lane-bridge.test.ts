@@ -11,7 +11,7 @@ import { describe, expect, it } from "vitest";
 
 const cssText = readFileSync(
   fileURLToPath(new URL("../styles/tokens.css", import.meta.url)),
-  "utf8",
+  "utf8"
 );
 
 // `.tdsl-root {` ブロック（index ブリッジ）を抽出する。複数の `.tdsl-root .foo {`
@@ -31,7 +31,9 @@ describe("tdsl-lane index→semantic bridge (#303)", () => {
   for (let i = 0; i < 8; i++) {
     const semantic = EXPECTED_CYCLE[i % EXPECTED_CYCLE.length];
     it(`--tdsl-lane-${i} が var(--tdsl-lane-${semantic}) にマップされる`, () => {
-      const re = new RegExp(`--tdsl-lane-${i}:\\s*var\\(--tdsl-lane-${semantic}\\)`);
+      const re = new RegExp(
+        `--tdsl-lane-${i}:\\s*var\\(--tdsl-lane-${semantic}\\)`
+      );
       expect(block).toMatch(re);
     });
   }
