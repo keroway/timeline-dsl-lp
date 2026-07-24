@@ -1,0 +1,34 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "schedule": ["before 4am on monday"],
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 5,
+  "packageRules": [
+    {
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "commitMessagePrefix": "chore",
+      "groupName": "npm minor/patch",
+      "groupSlug": "npm-minor-patch"
+    },
+    {
+      "description": "major は意図しない破壊的変更を防ぐためブロックし、手動で追従する",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "commitMessagePrefix": "chore",
+      "groupName": "github-actions"
+    },
+    {
+      "description": "major は意図しない破壊的変更を防ぐためブロックし、手動で追従する",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    }
+  ]
+}
