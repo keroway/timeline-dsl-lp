@@ -1,7 +1,7 @@
 // @vitest-environment node
 // site.ts はブラウザ API に依存しない純粋関数群なので node 環境で検証する。
 import { describe, expect, it } from "vitest";
-import { PRODUCTION_ORIGIN, getSiteUrl, formatDate } from "./site";
+import { formatDate, getSiteUrl, PRODUCTION_ORIGIN } from "./site";
 
 describe("getSiteUrl", () => {
   it("Astro.site があればそれをそのまま返す", () => {
@@ -10,7 +10,9 @@ describe("getSiteUrl", () => {
   });
 
   it("Astro.site が undefined なら本番 origin を返す", () => {
-    expect(getSiteUrl({ site: undefined }).toString()).toBe(new URL(PRODUCTION_ORIGIN).toString());
+    expect(getSiteUrl({ site: undefined }).toString()).toBe(
+      new URL(PRODUCTION_ORIGIN).toString()
+    );
   });
 });
 

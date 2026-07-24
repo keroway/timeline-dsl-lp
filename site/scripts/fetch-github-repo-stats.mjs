@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const REPOSITORY = "keroway/timeline-dsl";
 const OUTPUT_PATH = resolve(
   dirname(fileURLToPath(import.meta.url)),
-  "../src/data/repo-stats.generated.json",
+  "../src/data/repo-stats.generated.json"
 );
 const REPO_API_URL = `https://api.github.com/repos/${REPOSITORY}`;
 const CONTRIBUTORS_API_URL = `https://api.github.com/repos/${REPOSITORY}/contributors?per_page=1&anon=true`;
@@ -42,7 +42,9 @@ function buildHeaders() {
 
 function getLastPageNumber(response) {
   const link = response.headers.get("link");
-  const lastLink = link?.split(",").find((value) => value.includes('rel="last"'));
+  const lastLink = link
+    ?.split(",")
+    .find((value) => value.includes('rel="last"'));
   const match = lastLink?.match(/[?&]page=(\d+)/);
 
   return match ? Number(match[1]) : null;
@@ -52,14 +54,19 @@ async function fetchRepo(headers) {
   const response = await fetch(REPO_API_URL, { headers });
 
   if (!response.ok) {
-    throw new Error(`GitHub Repo API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `GitHub Repo API request failed: ${response.status} ${response.statusText}`
+    );
   }
 
   const data = await response.json();
 
   return {
-    stargazersCount: Number.isFinite(data.stargazers_count) ? data.stargazers_count : null,
-    licenseSpdxId: typeof data.license?.spdx_id === "string" ? data.license.spdx_id : null,
+    stargazersCount: Number.isFinite(data.stargazers_count)
+      ? data.stargazers_count
+      : null,
+    licenseSpdxId:
+      typeof data.license?.spdx_id === "string" ? data.license.spdx_id : null,
   };
 }
 
@@ -68,7 +75,7 @@ async function fetchContributorsCount(headers) {
 
   if (!response.ok) {
     throw new Error(
-      `GitHub Contributors API request failed: ${response.status} ${response.statusText}`,
+      `GitHub Contributors API request failed: ${response.status} ${response.statusText}`
     );
   }
 
@@ -101,7 +108,7 @@ try {
       stargazersCount: repo.stargazersCount,
       licenseSpdxId: repo.licenseSpdxId,
       contributorsCount,
-    }),
+    })
   );
   console.log(`Wrote repo stats to ${OUTPUT_PATH}`);
 } catch (error) {

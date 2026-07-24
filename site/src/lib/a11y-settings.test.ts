@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  type A11ySettings,
   applySettings,
   loadSettings,
-  saveSettings,
   SETTINGS_KEY,
-  type A11ySettings,
+  saveSettings,
 } from "./a11y-settings";
 
 // jsdom は matchMedia を実装しないので、prefers-* クエリごとの結果を差し込めるよう stub する。
@@ -17,7 +17,7 @@ function stubMatchMedia(matches: Record<string, boolean>) {
         media: query,
         addEventListener: () => {},
         removeEventListener: () => {},
-      }) as unknown as MediaQueryList,
+      }) as unknown as MediaQueryList
   );
 }
 
@@ -93,7 +93,11 @@ describe("loadSettings", () => {
   it("不正な textSize 値は normal に矯正する", () => {
     localStorage.setItem(
       SETTINGS_KEY,
-      JSON.stringify({ reducedMotion: false, highContrast: false, textSize: "gigantic" }),
+      JSON.stringify({
+        reducedMotion: false,
+        highContrast: false,
+        textSize: "gigantic",
+      })
     );
 
     expect(loadSettings().textSize).toBe("normal");
@@ -103,7 +107,11 @@ describe("loadSettings", () => {
     stubMatchMedia({ [REDUCE]: true, [CONTRAST]: true });
     localStorage.setItem(
       SETTINGS_KEY,
-      JSON.stringify({ reducedMotion: "yes", highContrast: 1, textSpacing: "no" }),
+      JSON.stringify({
+        reducedMotion: "yes",
+        highContrast: 1,
+        textSpacing: "no",
+      })
     );
 
     const result = loadSettings();
@@ -124,7 +132,9 @@ describe("saveSettings", () => {
 
     saveSettings(settings);
 
-    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? "{}")).toEqual(settings);
+    expect(JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? "{}")).toEqual(
+      settings
+    );
     expect(loadSettings()).toEqual(settings);
   });
 });

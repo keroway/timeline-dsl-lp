@@ -1,5 +1,5 @@
 import type { APIRoute, GetStaticPaths } from "astro";
-import { OG_CARDS, renderOgPng, type OgCardKey } from "../../lib/og-image";
+import { OG_CARDS, type OgCardKey, renderOgPng } from "../../lib/og-image";
 
 /**
  * ページ種別ごとの OG 画像を `/og/<type>.png` として静的生成する。

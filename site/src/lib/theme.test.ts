@@ -20,7 +20,7 @@ function stubMatchMedia(prefersLight: boolean) {
         media: query,
         addEventListener: () => {},
         removeEventListener: () => {},
-      }) as unknown as MediaQueryList,
+      }) as unknown as MediaQueryList
   );
 }
 
@@ -138,7 +138,7 @@ describe("initThemeToggle", () => {
       <select data-theme-select><option value="auto">a</option><option value="light">l</option><option value="dark">d</option></select>
       <select data-theme-select><option value="auto">a</option><option value="light">l</option><option value="dark">d</option></select>`;
     const [first, second] = Array.from(
-      document.querySelectorAll<HTMLSelectElement>("[data-theme-select]"),
+      document.querySelectorAll<HTMLSelectElement>("[data-theme-select]")
     );
     initThemeToggle({ selectSelector: "[data-theme-select]" });
 
@@ -150,6 +150,8 @@ describe("initThemeToggle", () => {
 
   it("select が存在しないマークアップでは何もしない", () => {
     document.body.innerHTML = "";
-    expect(() => initThemeToggle({ selectSelector: "[data-theme-select]" })).not.toThrow();
+    expect(() =>
+      initThemeToggle({ selectSelector: "[data-theme-select]" })
+    ).not.toThrow();
   });
 });

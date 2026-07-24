@@ -1,8 +1,13 @@
-import { ja, type Dictionary, type DictionaryKeys, type ExactDictionary } from "./ja";
 import { en } from "./en";
+import {
+  type Dictionary,
+  type DictionaryKeys,
+  type ExactDictionary,
+  ja,
+} from "./ja";
 
 export type { Dictionary, DictionaryKeys, ExactDictionary };
-export { ja, en };
+export { en, ja };
 
 const LOCALES = ["ja", "en"] as const;
 export type Locale = (typeof LOCALES)[number];
@@ -20,11 +25,15 @@ export function getLocaleFromUrl(url: URL): Locale {
   return isLocale(first) ? first : DEFAULT_LOCALE;
 }
 
-export function resolveLocale(astro: { currentLocale?: string | undefined }): Locale {
+export function resolveLocale(astro: {
+  currentLocale?: string | undefined;
+}): Locale {
   return isLocale(astro.currentLocale) ? astro.currentLocale : DEFAULT_LOCALE;
 }
 
-export function resolveLocaleFromLocation(loc: { href: string } = window.location): Locale {
+export function resolveLocaleFromLocation(
+  loc: { href: string } = window.location
+): Locale {
   return getLocaleFromUrl(new URL(loc.href));
 }
 
@@ -39,6 +48,12 @@ export function getT(locale: Locale): (key: DictionaryKeys) => string {
   return (key) => dict[key];
 }
 
-export function interpolate(template: string, vars: Record<string, string>): string {
-  return Object.entries(vars).reduce((s, [k, v]) => s.replace(`{${k}}`, v), template);
+export function interpolate(
+  template: string,
+  vars: Record<string, string>
+): string {
+  return Object.entries(vars).reduce(
+    (s, [k, v]) => s.replace(`{${k}}`, v),
+    template
+  );
 }

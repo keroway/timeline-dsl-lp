@@ -18,7 +18,10 @@ export function getSiteUrl(astro: { site?: URL | undefined }): URL {
  * ロケールに応じて year/month/day を整形する。
  * 値が空または不正な日付なら null を返す。
  */
-export function formatDate(value: string | null | undefined, locale: Locale): string | null {
+export function formatDate(
+  value: string | null | undefined,
+  locale: Locale
+): string | null {
   if (!value) return null;
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;

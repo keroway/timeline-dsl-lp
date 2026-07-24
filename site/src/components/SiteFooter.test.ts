@@ -1,8 +1,8 @@
 // @vitest-environment node
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { describe, expect, it } from "vitest";
-import SiteFooter from "./SiteFooter.astro";
 import { localizedPath } from "../i18n/index";
+import SiteFooter from "./SiteFooter.astro";
 
 describe("SiteFooter", () => {
   it("nav ランドマークが出力される", async () => {
@@ -41,9 +41,15 @@ describe("SiteFooter", () => {
     const result = await container.renderToString(SiteFooter, {
       props: {},
     });
-    expect(result).toContain("https://github.com/keroway/timeline-dsl/blob/main/LICENSE");
-    expect(result).toContain("https://github.com/keroway/timeline-dsl/blob/main/CONTRIBUTING.md");
-    expect(result).toContain("https://github.com/keroway/timeline-dsl/releases");
+    expect(result).toContain(
+      "https://github.com/keroway/timeline-dsl/blob/main/LICENSE"
+    );
+    expect(result).toContain(
+      "https://github.com/keroway/timeline-dsl/blob/main/CONTRIBUTING.md"
+    );
+    expect(result).toContain(
+      "https://github.com/keroway/timeline-dsl/releases"
+    );
     expect(result).toContain("License (MIT)");
   });
 

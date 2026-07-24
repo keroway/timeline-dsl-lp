@@ -6,7 +6,8 @@ export const ja = {
   "nav.changelog": "Changelog",
   "nav.github": "GitHub",
   "nav.search.aria_label": "検索",
-  "nav.search.not_built": "検索を利用できません。しばらくしてから再度お試しください。",
+  "nav.search.not_built":
+    "検索を利用できません。しばらくしてから再度お試しください。",
   "nav.lang_toggle.aria_label": "言語を英語に切り替える",
   "nav.theme_toggle.aria_label": "テーマを切り替える",
   "nav.theme.auto": "自動",
@@ -127,7 +128,8 @@ export const ja = {
   "lp.usecase.classroom.bar2": "明治改元",
   "lp.usecase.classroom.bar3": "日露",
   "lp.usecase.company.title": "組織の沿革",
-  "lp.usecase.company.body": "創業、製品発表、拠点展開、制度変更を一つの履歴として保守できます。",
+  "lp.usecase.company.body":
+    "創業、製品発表、拠点展開、制度変更を一つの履歴として保守できます。",
   "lp.usecase.company.sample": "Company history",
   "lp.usecase.company.bar1": "創業",
   "lp.usecase.company.bar2": "製品",
@@ -188,7 +190,8 @@ export const ja = {
   "lp.install.os.powershell": "Windows",
   "lp.install.tab.cargo": "Cargo",
   "lp.install.os.cargo": "Rust ツールチェイン",
-  "lp.install.other_methods_link": "その他の導入方法（cargo / バイナリ手動など）を見る →",
+  "lp.install.other_methods_link":
+    "その他の導入方法（cargo / バイナリ手動など）を見る →",
   "gallery.page.title": "Gallery — Timeline DSL",
   "gallery.page.description":
     "Timeline DSL のサンプル年表一覧。各サンプルを Playground で編集・カスタマイズできます。",
@@ -235,7 +238,8 @@ export const ja = {
     "`.tdsl` ソースと、そこから生成した実際の SVG を並べて見せます。ここでの出力はすべて本体の WASM レンダリングです。",
   "lp.examples.view_all": "すべてのサンプルを見る（Gallery）→",
   "changelog.page.title": "Changelog | Timeline DSL",
-  "changelog.page.description": "Timeline DSL の GitHub Releases から生成した changelog です。",
+  "changelog.page.description":
+    "Timeline DSL の GitHub Releases から生成した changelog です。",
   "changelog.eyebrow": "GitHub Releases",
   "changelog.lead.has_data": "{repository} のリリース情報を表示しています。",
   "changelog.lead.no_data":
@@ -261,11 +265,13 @@ export const ja = {
   "playground.status.ok": "診断結果なし",
   "playground.status.wasm_failed": "WASM 処理に失敗しました",
   "playground.preview.waiting": "待機中",
-  "playground.preview.placeholder": "WASM の読み込み後にプレビューを表示します。",
+  "playground.preview.placeholder":
+    "WASM の読み込み後にプレビューを表示します。",
   "playground.preview.fix_errors": "エラーを修正するとプレビューを表示します。",
   "playground.preview.render_failed": "レンダリングできませんでした。",
   "playground.preview.reset_aria": "ビューをフィット",
-  "playground.preview.reset_title": "ビューをフィット (ダブルクリックでもリセット)",
+  "playground.preview.reset_title":
+    "ビューをフィット (ダブルクリックでもリセット)",
   "playground.toolbar.sample_label": "サンプル",
   "playground.toolbar.scale_label": "表示倍率",
   "playground.scale.auto": "自動",
@@ -280,7 +286,8 @@ export const ja = {
   "playground.workspace.aria_label": "Timeline DSL のエディタとプレビュー",
   "playground.share.copy_success": "共有リンクをコピーしました",
   "playground.share.copy_error": "共有リンクのコピーに失敗しました",
-  "playground.share.too_long": "ソースが長すぎて共有リンクを作成できません（上限 {limit} 文字）",
+  "playground.share.too_long":
+    "ソースが長すぎて共有リンクを作成できません（上限 {limit} 文字）",
   "playground.diagnostics.panel": "検証結果",
   "playground.diagnostics.aria_label": "診断結果",
   "playground.diagnostics.waiting": "診断結果がここに表示されます。",
@@ -292,7 +299,8 @@ export const ja = {
   "playground.wasm.fallback":
     "ブラウザ版 Timeline DSL を読み込めませんでした。最新のブラウザで再読み込みするか、ローカルの `tdsl check` / `tdsl render` を使って確認してください。",
   "playground.sample.minimal": "Hello Timeline — 1 event だけの最小例",
-  "playground.sample.range": "マーカー 3 種 — span / event / event_range の違い",
+  "playground.sample.range":
+    "マーカー 3 種 — span / event / event_range の違い",
   "playground.sample.lanes": "複数 lane — 並列イベントを階層化する",
   "playground.sample.import": "Wikidata import（CLI 専用機能のデモ）",
   "embed.play_link": "Playground で編集する",

@@ -95,7 +95,8 @@ describe("SocialMeta", () => {
       },
     });
     const localeMatches = result.match(/property="og:locale"/g) ?? [];
-    const alternateMatches = result.match(/property="og:locale:alternate"/g) ?? [];
+    const alternateMatches =
+      result.match(/property="og:locale:alternate"/g) ?? [];
     expect(localeMatches).toHaveLength(1);
     expect(alternateMatches).toHaveLength(1);
   });

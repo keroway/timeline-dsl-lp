@@ -1,4 +1,4 @@
-import { test, expect } from "playwright/test";
+import { expect, test } from "playwright/test";
 
 const THEMES = [
   { name: "light", colorScheme: "light" as const, classes: [] },
@@ -20,7 +20,7 @@ for (const theme of THEMES) {
         (classes: string[]) => {
           document.documentElement.classList.add(...classes);
         },
-        [...theme.classes],
+        [...theme.classes]
       );
     } else {
       await page.goto("/");

@@ -1,9 +1,9 @@
 import {
-  DEFAULT_BASE_URL,
   assertContentType,
   assertIncludes,
   assertStatus,
   captureNavigationTarget,
+  DEFAULT_BASE_URL,
   get,
   normalizeBaseUrl,
   parseArgs,
@@ -37,9 +37,10 @@ event project 2026 "Missing lane" { id "event:broken"; };
 
 const args = parseArgs(process.argv.slice(2), { booleanFlags: ["browser"] });
 const baseUrl = normalizeBaseUrl(
-  args.baseUrl ?? process.env.PLAYGROUND_BASE_URL ?? DEFAULT_BASE_URL,
+  args.baseUrl ?? process.env.PLAYGROUND_BASE_URL ?? DEFAULT_BASE_URL
 );
-const runBrowserSmoke = args.browser || process.env.PLAYGROUND_BROWSER_SMOKE === "1";
+const runBrowserSmoke =
+  args.browser || process.env.PLAYGROUND_BROWSER_SMOKE === "1";
 
 await smokeHttpSurface(baseUrl);
 
@@ -47,7 +48,7 @@ if (runBrowserSmoke) {
   await smokeBrowserFlow(baseUrl);
 } else {
   console.log(
-    "Browser flow skipped. Add --browser to check editor, diagnostics, preview recovery, and visible WASM load errors.",
+    "Browser flow skipped. Add --browser to check editor, diagnostics, preview recovery, and visible WASM load errors."
   );
 }
 
@@ -60,24 +61,35 @@ async function smokeHttpSurface(rootUrl) {
   assertIncludes(
     playgroundHtml,
     'data-smoke="playground-editor"',
-    "playground editor smoke selector",
+    "playground editor smoke selector"
   );
   assertIncludes(
     playgroundHtml,
     'data-smoke="playground-preview"',
-    "playground preview smoke selector",
+    "playground preview smoke selector"
   );
   assertIncludes(
     playgroundHtml,
     'data-smoke="playground-diagnostics"',
-    "playground diagnostics smoke selector",
+    "playground diagnostics smoke selector"
   );
-  assertIncludes(playgroundHtml, "data-copy-link", "playground copy-link button");
-  assertIncludes(playgroundHtml, "data-share-live", "playground share live region");
+  assertIncludes(
+    playgroundHtml,
+    "data-copy-link",
+    "playground copy-link button"
+  );
+  assertIncludes(
+    playgroundHtml,
+    "data-share-live",
+    "playground share live region"
+  );
 
   const wasmJs = await get(`${rootUrl}${WASM_JS_PATH}`);
   assertStatus(wasmJs, WASM_JS_PATH);
-  assertContentType(wasmJs, WASM_JS_PATH, ["application/javascript", "text/javascript"]);
+  assertContentType(wasmJs, WASM_JS_PATH, [
+    "application/javascript",
+    "text/javascript",
+  ]);
   assertCachePolicy(wasmJs, WASM_JS_PATH);
 
   const wasmBinary = await get(`${rootUrl}${WASM_BINARY_PATH}`);
@@ -85,7 +97,9 @@ async function smokeHttpSurface(rootUrl) {
   assertContentType(wasmBinary, WASM_BINARY_PATH, ["application/wasm"]);
   assertCachePolicy(wasmBinary, WASM_BINARY_PATH);
 
-  console.log(`HTTP smoke passed: ${PLAYGROUND_PATH}, ${WASM_JS_PATH}, and ${WASM_BINARY_PATH}`);
+  console.log(
+    `HTTP smoke passed: ${PLAYGROUND_PATH}, ${WASM_JS_PATH}, and ${WASM_BINARY_PATH}`
+  );
 }
 
 async function smokeBrowserFlow(rootUrl) {
@@ -104,30 +118,43 @@ async function smokeBrowserFlow(rootUrl) {
       }
     });
 
-    await page.goto(`${rootUrl}${PLAYGROUND_PATH}`, { waitUntil: "networkidle" });
-    await page.locator('[data-smoke="playground-editor"]').first().waitFor({ state: "visible" });
+    await page.goto(`${rootUrl}${PLAYGROUND_PATH}`, {
+      waitUntil: "networkidle",
+    });
+    await page
+      .locator('[data-smoke="playground-editor"]')
+      .first()
+      .waitFor({ state: "visible" });
     await page
       .locator('[data-smoke="playground-preview"] svg')
       .first()
       .waitFor({ state: "visible" });
-    await page.locator("[data-pan-zoom-stage]").first().waitFor({ state: "attached" });
+    await page
+      .locator("[data-pan-zoom-stage]")
+      .first()
+      .waitFor({ state: "attached" });
 
     if (failedWasmResponses.length > 0) {
-      throw new Error(`WASM asset request failed: ${failedWasmResponses.join(", ")}`);
+      throw new Error(
+        `WASM asset request failed: ${failedWasmResponses.join(", ")}`
+      );
     }
 
     const editor = page.locator('[data-smoke="playground-editor"]').first();
-    const diagnostics = page.locator('[data-smoke="playground-diagnostics"]').first();
+    const diagnostics = page
+      .locator('[data-smoke="playground-diagnostics"]')
+      .first();
 
     await fillEditor(editor, BROKEN_SAMPLE);
     await diagnostics.waitFor({ state: "visible" });
     await page.waitForFunction(
       () =>
         /error|エラー/i.test(
-          document.querySelector('[data-smoke="playground-diagnostics"]')?.textContent ?? "",
+          document.querySelector('[data-smoke="playground-diagnostics"]')
+            ?.textContent ?? ""
         ),
       undefined,
-      { timeout: 5000 },
+      { timeout: 5000 }
     );
 
     await fillEditor(editor, VALID_SAMPLE);
@@ -147,7 +174,7 @@ async function smokeBrowserFlow(rootUrl) {
   }
 
   console.log(
-    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, show-event-labels toggle, and pan/zoom wheel+reset.",
+    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, show-event-labels toggle, and pan/zoom wheel+reset."
   );
 }
 
@@ -167,12 +194,14 @@ async function smokePanZoom(rootUrl, browser) {
   await page.waitForFunction(
     () => !!document.querySelector("[data-pan-zoom-stage]")?.style.transform,
     undefined,
-    { timeout: 5000 },
+    { timeout: 5000 }
   );
 
   const fittedTransform = await readTransform();
   if (!fittedTransform) {
-    throw new Error("pan-zoom stage should have a fitted transform after initial render");
+    throw new Error(
+      "pan-zoom stage should have a fitted transform after initial render"
+    );
   }
 
   const box = await stage.boundingBox();
@@ -185,9 +214,11 @@ async function smokePanZoom(rootUrl, browser) {
   await page.mouse.move(centerX, centerY);
   await page.mouse.wheel(0, -200);
   await page.waitForFunction(
-    (before) => document.querySelector("[data-pan-zoom-stage]")?.style.transform !== before,
+    (before) =>
+      document.querySelector("[data-pan-zoom-stage]")?.style.transform !==
+      before,
     fittedTransform,
-    { timeout: 5000 },
+    { timeout: 5000 }
   );
   const zoomedTransform = await readTransform();
   if (zoomedTransform === fittedTransform) {
@@ -197,14 +228,16 @@ async function smokePanZoom(rootUrl, browser) {
   const resetButton = page.locator("[data-pan-zoom-reset]").first();
   await resetButton.click();
   await page.waitForFunction(
-    (before) => document.querySelector("[data-pan-zoom-stage]")?.style.transform !== before,
+    (before) =>
+      document.querySelector("[data-pan-zoom-stage]")?.style.transform !==
+      before,
     zoomedTransform,
-    { timeout: 5000 },
+    { timeout: 5000 }
   );
   const resetTransform = await readTransform();
   if (resetTransform !== fittedTransform) {
     throw new Error(
-      `reset control should restore the fitted transform (expected ${fittedTransform}, got ${resetTransform})`,
+      `reset control should restore the fitted transform (expected ${fittedTransform}, got ${resetTransform})`
     );
   }
 
@@ -229,7 +262,7 @@ async function smokeShowEventLabelsToggle(rootUrl, browser) {
           document
             .querySelector('[data-smoke="playground-preview"] svg')
             ?.textContent.match(/Kickoff/g) ?? []
-        ).length,
+        ).length
     );
 
   const beforeCount = await countOccurrences();
@@ -246,7 +279,7 @@ async function smokeShowEventLabelsToggle(rootUrl, browser) {
       return count > before;
     },
     beforeCount,
-    { timeout: 5000 },
+    { timeout: 5000 }
   );
 
   await context.close();
@@ -284,7 +317,9 @@ async function smokeA11yMenu(rootUrl, browser) {
     return document.activeElement === first;
   });
   if (!hasFocus) {
-    throw new Error("First focusable in a11y menu should receive focus on open");
+    throw new Error(
+      "First focusable in a11y menu should receive focus on open"
+    );
   }
 
   // Escape キーでメニューが閉じる
@@ -316,7 +351,7 @@ async function smokeA11yMenu(rootUrl, browser) {
     throw new Error("highContrast should be persisted to localStorage");
   }
   const htmlAttr = await page.evaluate(() =>
-    document.documentElement.getAttribute("data-a11y-contrast"),
+    document.documentElement.getAttribute("data-a11y-contrast")
   );
   if (htmlAttr !== "high") {
     throw new Error("data-a11y-contrast=high should be set on html element");
@@ -332,7 +367,7 @@ async function smokeA11yMenu(rootUrl, browser) {
   });
   if (hcTokens.accentStrong === hcTokens.sky) {
     throw new Error(
-      `high-contrast: --color-accent-strong と --color-sky が同色 (${hcTokens.sky}) — lane の区別がつかない`,
+      `high-contrast: --color-accent-strong と --color-sky が同色 (${hcTokens.sky}) — lane の区別がつかない`
     );
   }
 
@@ -351,13 +386,13 @@ async function smokeA11yMenu(rootUrl, browser) {
   });
   if (hcTerminal.bg === hcTerminal.ink) {
     throw new Error(
-      `high-contrast: --color-terminal-bg と --color-terminal-ink が同色 (${hcTerminal.bg}) — terminal 上のテキストが読めない`,
+      `high-contrast: --color-terminal-bg と --color-terminal-ink が同色 (${hcTerminal.bg}) — terminal 上のテキストが読めない`
     );
   }
   const diagColors = [hcTerminal.ok, hcTerminal.warn, hcTerminal.error];
   if (new Set(diagColors).size !== diagColors.length) {
     throw new Error(
-      `high-contrast: diagnostic の ok/warn/error が相互に区別できない (${diagColors.join(", ")})`,
+      `high-contrast: diagnostic の ok/warn/error が相互に区別できない (${diagColors.join(", ")})`
     );
   }
 
@@ -375,7 +410,7 @@ async function smokeA11yMenu(rootUrl, browser) {
   const statusColors = [hcStatus.ready, hcStatus.warn, hcStatus.error];
   if (new Set(statusColors).size !== statusColors.length) {
     throw new Error(
-      `high-contrast: playground status の ready/warn/error が相互に区別できない (${statusColors.join(", ")})`,
+      `high-contrast: playground status の ready/warn/error が相互に区別できない (${statusColors.join(", ")})`
     );
   }
 
@@ -383,20 +418,24 @@ async function smokeA11yMenu(rootUrl, browser) {
   const textSpacingCb = menu.locator("[data-a11y-text-spacing-input]").first();
   await textSpacingCb.check();
   const spacingAttr = await page.evaluate(() =>
-    document.documentElement.getAttribute("data-a11y-text-spacing"),
+    document.documentElement.getAttribute("data-a11y-text-spacing")
   );
   if (spacingAttr !== "enhanced") {
-    throw new Error("data-a11y-text-spacing=enhanced should be set on html element");
+    throw new Error(
+      "data-a11y-text-spacing=enhanced should be set on html element"
+    );
   }
 
   // 200% 文字サイズ → html 属性反映
   const textSizeSelect = menu.locator("[data-a11y-text-size]").first();
   await textSizeSelect.selectOption("xx-large");
   const sizeAttr = await page.evaluate(() =>
-    document.documentElement.getAttribute("data-a11y-text-size"),
+    document.documentElement.getAttribute("data-a11y-text-size")
   );
   if (sizeAttr !== "xx-large") {
-    throw new Error("data-a11y-text-size=xx-large should be set on html element");
+    throw new Error(
+      "data-a11y-text-size=xx-large should be set on html element"
+    );
   }
 
   // 旧スキーマ (textSpacing なし) のマイグレーション
@@ -407,21 +446,25 @@ async function smokeA11yMenu(rootUrl, browser) {
         reducedMotion: false,
         highContrast: true,
         textSize: "large",
-      }),
+      })
     );
   });
   await page.reload({ waitUntil: "networkidle" });
   const migratedAttr = await page.evaluate(() =>
-    document.documentElement.getAttribute("data-a11y-contrast"),
+    document.documentElement.getAttribute("data-a11y-contrast")
   );
   if (migratedAttr !== "high") {
-    throw new Error("Legacy schema (without textSpacing) should migrate and apply highContrast");
+    throw new Error(
+      "Legacy schema (without textSpacing) should migrate and apply highContrast"
+    );
   }
   const migratedSize = await page.evaluate(() =>
-    document.documentElement.getAttribute("data-a11y-text-size"),
+    document.documentElement.getAttribute("data-a11y-text-size")
   );
   if (migratedSize !== "large") {
-    throw new Error("Legacy schema (without textSpacing) should migrate and apply textSize=large");
+    throw new Error(
+      "Legacy schema (without textSpacing) should migrate and apply textSize=large"
+    );
   }
 
   // cleanup
@@ -443,9 +486,12 @@ async function smokeVisibleWasmFailure(rootUrl, browser) {
 
   await page.goto(`${rootUrl}${PLAYGROUND_PATH}`, { waitUntil: "networkidle" });
   await page.waitForFunction(
-    () => /WASM|読み込めません|load|failed|error|エラー/i.test(document.body.textContent ?? ""),
+    () =>
+      /WASM|読み込めません|load|failed|error|エラー/i.test(
+        document.body.textContent ?? ""
+      ),
     undefined,
-    { timeout: 5000 },
+    { timeout: 5000 }
   );
 
   await context.close();
@@ -470,7 +516,9 @@ async function smokeLocaleToggle(rootUrl, browser) {
     return el instanceof HTMLButtonElement && !el.disabled;
   });
   if (!isTabReachable) {
-    throw new Error("lang-toggle should be a non-disabled button (keyboard accessible)");
+    throw new Error(
+      "lang-toggle should be a non-disabled button (keyboard accessible)"
+    );
   }
 
   // aria-label が設定されていること
@@ -488,13 +536,15 @@ async function smokeLocaleToggle(rootUrl, browser) {
   // localStorage に tdsl-locale が保存されること
   const stored = await page.evaluate(() => localStorage.getItem("tdsl-locale"));
   if (!stored) {
-    throw new Error("lang-toggle click should save tdsl-locale to localStorage");
+    throw new Error(
+      "lang-toggle click should save tdsl-locale to localStorage"
+    );
   }
 
   // /playground/ には /en/playground/ という英語版が存在するので、そこに遷移すること（#137）
   if (target !== "/en/playground/") {
     throw new Error(
-      `lang-toggle from /playground/ should redirect to /en/playground/, got: ${target}`,
+      `lang-toggle from /playground/ should redirect to /en/playground/, got: ${target}`
     );
   }
 
@@ -504,7 +554,9 @@ async function smokeLocaleToggle(rootUrl, browser) {
 }
 
 async function fillEditor(locator, value) {
-  const input = locator.locator('[data-smoke="playground-editor-input"]').first();
+  const input = locator
+    .locator('[data-smoke="playground-editor-input"]')
+    .first();
   await input.fill(value);
 }
 
@@ -516,7 +568,7 @@ async function importPlaywright() {
       "Playwright module is installed but the Chromium binary is missing.\n" +
         "Run: pnpm exec playwright install chromium\n" +
         "Then rerun: pnpm smoke:playground:browser -- --base-url <url>",
-      { cause },
+      { cause }
     );
   }
 }
@@ -528,7 +580,7 @@ function assertCachePolicy(response, label) {
 
   if (/immutable/i.test(cacheControl) || maxAge > 3600) {
     throw new Error(
-      `${label} uses an aggressive cache policy for an unversioned WASM asset: ${cacheControl}`,
+      `${label} uses an aggressive cache policy for an unversioned WASM asset: ${cacheControl}`
     );
   }
 }

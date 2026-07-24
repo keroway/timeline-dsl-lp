@@ -1,8 +1,8 @@
 // @vitest-environment node
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { describe, expect, it } from "vitest";
-import ExamplesSection from "./ExamplesSection.astro";
 import gallerySamples from "../../data/gallery-samples.json";
+import ExamplesSection from "./ExamplesSection.astro";
 
 describe("ExamplesSection", () => {
   it("3 件の実レンダリング SVG（.tdsl-root）を含む（#433）", async () => {
@@ -15,7 +15,11 @@ describe("ExamplesSection", () => {
   });
 
   it("選出したサンプルのタイトルが gallery-samples.json に実在する", async () => {
-    const featuredIds = ["fictional-world", "japanese-history", "release-cycle"];
+    const featuredIds = [
+      "fictional-world",
+      "japanese-history",
+      "release-cycle",
+    ];
     const sampleIds = gallerySamples.map((s) => s.id);
     for (const id of featuredIds) {
       expect(sampleIds).toContain(id);

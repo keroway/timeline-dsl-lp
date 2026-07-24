@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
 import { EditorView } from "@codemirror/view";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createPlaygroundEditor } from "./playground-editor";
 
@@ -72,7 +72,9 @@ describe("createPlaygroundEditor", () => {
     });
 
     const content = host.querySelector(".cm-content");
-    expect(content?.getAttribute("aria-label")).toBe("Timeline DSL source editor");
+    expect(content?.getAttribute("aria-label")).toBe(
+      "Timeline DSL source editor"
+    );
     expect(content?.getAttribute("data-smoke")).toBe("playground-editor-input");
 
     view.destroy();

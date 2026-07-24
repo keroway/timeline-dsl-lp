@@ -86,7 +86,7 @@ export function buildOgSvg(spec: OgCardSpec): string {
 
   const eyebrowMarkup = hasEyebrow
     ? `<text x="130" y="320" fill="${accentHex}" font-family="Inter" font-size="30" font-weight="600" letter-spacing="6">${escapeXml(
-        spec.eyebrow!.toUpperCase(),
+        spec.eyebrow!.toUpperCase()
       )}</text>`
     : "";
 
@@ -114,7 +114,7 @@ export function buildOgSvg(spec: OgCardSpec): string {
   ${eyebrowMarkup}
   <text x="128" y="${wordmarkY}" fill="#26333b" font-family="Inter" font-size="78" font-weight="600">Timeline DSL</text>
   <text x="130" y="${subtitleY}" fill="#50636f" font-family="Inter" font-size="32" font-weight="400">${escapeXml(
-    spec.subtitle,
+    spec.subtitle
   )}</text>
   <line x1="132" y1="500" x2="1032" y2="500" stroke="#d6c27b" stroke-width="8" stroke-linecap="round" />
   ${dots}

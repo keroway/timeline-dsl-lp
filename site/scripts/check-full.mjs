@@ -16,9 +16,20 @@ const READY_TIMEOUT_MS = 30_000;
 const READY_POLL_INTERVAL_MS = 500;
 
 const STEPS = [
-  { name: "pnpm check (lint / format / unit / build / bundle-size)", cmd: ["pnpm", ["check"]] },
-  { name: "smoke:seo", cmd: ["pnpm", ["smoke:seo"]], env: { SEO_BASE_URL: BASE_URL } },
-  { name: "smoke:i18n", cmd: ["pnpm", ["smoke:i18n"]], env: { I18N_BASE_URL: BASE_URL } },
+  {
+    name: "pnpm check (lint / format / unit / build / bundle-size)",
+    cmd: ["pnpm", ["check"]],
+  },
+  {
+    name: "smoke:seo",
+    cmd: ["pnpm", ["smoke:seo"]],
+    env: { SEO_BASE_URL: BASE_URL },
+  },
+  {
+    name: "smoke:i18n",
+    cmd: ["pnpm", ["smoke:i18n"]],
+    env: { I18N_BASE_URL: BASE_URL },
+  },
   {
     name: "smoke:i18n:browser",
     cmd: ["pnpm", ["smoke:i18n:browser"]],
@@ -34,9 +45,20 @@ const STEPS = [
     cmd: ["pnpm", ["smoke:playground:browser"]],
     env: { PLAYGROUND_BASE_URL: BASE_URL },
   },
-  { name: "smoke:a11y", cmd: ["pnpm", ["smoke:a11y"]], env: { A11Y_BASE_URL: BASE_URL } },
-  { name: "test:visual (LP screenshot regression)", cmd: ["pnpm", ["test:visual"]] },
-  { name: "lhci (Lighthouse CI)", cmd: ["pnpm", ["lhci"]], env: { LHCI_BASE_URL: BASE_URL } },
+  {
+    name: "smoke:a11y",
+    cmd: ["pnpm", ["smoke:a11y"]],
+    env: { A11Y_BASE_URL: BASE_URL },
+  },
+  {
+    name: "test:visual (LP screenshot regression)",
+    cmd: ["pnpm", ["test:visual"]],
+  },
+  {
+    name: "lhci (Lighthouse CI)",
+    cmd: ["pnpm", ["lhci"]],
+    env: { LHCI_BASE_URL: BASE_URL },
+  },
 ];
 
 async function main() {
@@ -76,10 +98,14 @@ function runStep({ name, cmd: [command, args], env }) {
 
 function startPreview() {
   console.log(`\n▶ Starting preview server on ${BASE_URL}`);
-  const child = spawn(resolveCommand("pnpm"), ["preview", "--port", String(PORT)], {
-    stdio: "inherit",
-    env: { ...process.env, PORT: String(PORT) },
-  });
+  const child = spawn(
+    resolveCommand("pnpm"),
+    ["preview", "--port", String(PORT)],
+    {
+      stdio: "inherit",
+      env: { ...process.env, PORT: String(PORT) },
+    }
+  );
 
   return waitForReady(child).then(() => child);
 }
@@ -88,7 +114,9 @@ async function waitForReady(previewProcess) {
   const deadline = Date.now() + READY_TIMEOUT_MS;
   while (Date.now() < deadline) {
     if (previewProcess.exitCode !== null) {
-      throw new Error(`Preview server exited early (code ${previewProcess.exitCode})`);
+      throw new Error(
+        `Preview server exited early (code ${previewProcess.exitCode})`
+      );
     }
     try {
       const response = await fetch(BASE_URL, { redirect: "manual" });
@@ -101,7 +129,9 @@ async function waitForReady(previewProcess) {
     }
     await sleep(READY_POLL_INTERVAL_MS);
   }
-  throw new Error(`Preview server failed to become ready within ${READY_TIMEOUT_MS}ms`);
+  throw new Error(
+    `Preview server failed to become ready within ${READY_TIMEOUT_MS}ms`
+  );
 }
 
 function stopPreview(child) {

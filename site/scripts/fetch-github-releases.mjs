@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const REPOSITORY = "keroway/timeline-dsl";
 const OUTPUT_PATH = resolve(
   dirname(fileURLToPath(import.meta.url)),
-  "../src/data/releases.generated.json",
+  "../src/data/releases.generated.json"
 );
 const API_URL = `https://api.github.com/repos/${REPOSITORY}/releases?per_page=100`;
 
@@ -31,7 +31,9 @@ function normalizeRelease(release) {
 
 function getNextPageUrl(response) {
   const link = response.headers.get("link");
-  const nextLink = link?.split(",").find((value) => value.includes('rel="next"'));
+  const nextLink = link
+    ?.split(",")
+    .find((value) => value.includes('rel="next"'));
 
   return nextLink?.match(/<([^>]+)>/)?.[1] ?? null;
 }
@@ -55,7 +57,7 @@ async function fetchReleases() {
 
     if (!response.ok) {
       throw new Error(
-        `GitHub Releases API request failed: ${response.status} ${response.statusText}`,
+        `GitHub Releases API request failed: ${response.status} ${response.statusText}`
       );
     }
 
@@ -79,7 +81,9 @@ async function writePayload(payload) {
 
 try {
   const releases = await fetchReleases();
-  await writePayload(createPayload({ fetchedAt: new Date().toISOString(), releases }));
+  await writePayload(
+    createPayload({ fetchedAt: new Date().toISOString(), releases })
+  );
   console.log(`Wrote ${releases.length} releases to ${OUTPUT_PATH}`);
 } catch (error) {
   await writePayload(createPayload());

@@ -13,7 +13,9 @@ export interface InstallTabsRefs {
 export function queryInstallTabs(root: ParentNode): InstallTabsRefs | null {
   const tablist = root.querySelector<HTMLElement>("[data-install-tablist]");
   if (!tablist) return null;
-  const tabs = Array.from(tablist.querySelectorAll<HTMLButtonElement>("[data-install-tab]"));
+  const tabs = Array.from(
+    tablist.querySelectorAll<HTMLButtonElement>("[data-install-tab]")
+  );
   const panels = tabs
     .map((tab) => {
       const panelId = tab.getAttribute("aria-controls");
@@ -24,7 +26,11 @@ export function queryInstallTabs(root: ParentNode): InstallTabsRefs | null {
   return { tablist, tabs, panels };
 }
 
-export function activateInstallTab(refs: InstallTabsRefs, index: number, focus = false): void {
+export function activateInstallTab(
+  refs: InstallTabsRefs,
+  index: number,
+  focus = false
+): void {
   const clamped = Math.max(0, Math.min(index, refs.tabs.length - 1));
   refs.tabs.forEach((tab, i) => {
     const active = i === clamped;
@@ -41,7 +47,9 @@ export function initInstallTabs(root: ParentNode = document): void {
   const refs = queryInstallTabs(root);
   if (!refs) return;
 
-  const initialIndex = refs.tabs.findIndex((tab) => tab.getAttribute("aria-selected") === "true");
+  const initialIndex = refs.tabs.findIndex(
+    (tab) => tab.getAttribute("aria-selected") === "true"
+  );
   activateInstallTab(refs, initialIndex === -1 ? 0 : initialIndex);
 
   refs.tabs.forEach((tab, index) => {

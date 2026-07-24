@@ -38,7 +38,10 @@ export function webPageLd(input: {
   };
 }
 
-export function softwareApplicationLd(siteUrl: URL, locale: Locale): JsonLdNode {
+export function softwareApplicationLd(
+  siteUrl: URL,
+  locale: Locale
+): JsonLdNode {
   const description =
     locale === "en"
       ? "Author validated timelines with a plain-text DSL and render them to SVG via CLI or browser."
@@ -60,7 +63,10 @@ export type BreadcrumbItem = {
   url: string;
 };
 
-export function breadcrumbLd(items: BreadcrumbItem[], siteUrl: URL): JsonLdNode {
+export function breadcrumbLd(
+  items: BreadcrumbItem[],
+  siteUrl: URL
+): JsonLdNode {
   return {
     "@type": "BreadcrumbList",
     itemListElement: items.map((item, index) => ({

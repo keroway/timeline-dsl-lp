@@ -1,18 +1,26 @@
+import type { PlaygroundSample } from "../data/playground-samples";
+import { interpolate } from "../i18n/index";
+import { createPlaygroundEditor } from "./playground-editor";
+import type { PlaygroundMsgs } from "./playground-messages";
+import { createPanZoom } from "./playground-pan-zoom";
+import {
+  buildShareUrl,
+  extractSourceFromLocation,
+  MAX_SHARE_URL_LENGTH,
+} from "./playground-share";
 import {
   checkTdslSource,
-  renderTdslSvgWithOptions,
   renderTdslHtml,
+  renderTdslSvgWithOptions,
   setTdslWasmMessages,
   type TdslDiagnostic,
 } from "./tdsl-wasm";
-import { createPanZoom } from "./playground-pan-zoom";
-import { buildShareUrl, extractSourceFromLocation, MAX_SHARE_URL_LENGTH } from "./playground-share";
-import { createPlaygroundEditor } from "./playground-editor";
-import type { PlaygroundSample } from "../data/playground-samples";
-import type { PlaygroundMsgs } from "./playground-messages";
-import { interpolate } from "../i18n/index";
 
-export function downloadText(filename: string, mimeType: string, value: string): void {
+export function downloadText(
+  filename: string,
+  mimeType: string,
+  value: string
+): void {
   const blob = new Blob([value], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -33,10 +41,12 @@ export function buildDiagnosticsFragment(
   msgs: Pick<
     PlaygroundMsgs,
     "diagnosticsEmpty" | "severityError" | "severityWarn" | "severityInfo"
-  >,
+  >
 ): { metaText: string; node: Node } {
   const errorCount = items.filter((item) => item.severity === "error").length;
-  const warningCount = items.filter((item) => item.severity === "warning").length;
+  const warningCount = items.filter(
+    (item) => item.severity === "warning"
+  ).length;
   const infoCount = items.filter((item) => item.severity === "info").length;
   const metaText = `${errorCount} errors / ${warningCount} warnings / ${infoCount} info`;
 
@@ -62,7 +72,8 @@ export function buildDiagnosticsFragment(
           : msgs.severityInfo;
 
     const location = document.createElement("strong");
-    location.textContent = item.line > 0 ? `${item.line}:${item.col}` : "global";
+    location.textContent =
+      item.line > 0 ? `${item.line}:${item.col}` : "global";
 
     const message = document.createElement("p");
     message.textContent = item.message;
@@ -112,7 +123,10 @@ export function wireDownloads(opts: {
 export function wireShare(opts: {
   copyLinkButton: HTMLButtonElement | null;
   shareLive: HTMLElement | null;
-  msgs: Pick<PlaygroundMsgs, "shareTooLong" | "shareCopySuccess" | "shareCopyError">;
+  msgs: Pick<
+    PlaygroundMsgs,
+    "shareTooLong" | "shareCopySuccess" | "shareCopyError"
+  >;
   getSource: () => string;
 }): void {
   const { copyLinkButton, shareLive, msgs } = opts;
@@ -136,7 +150,11 @@ export function wireShare(opts: {
         pathname: window.location.pathname,
       });
       if (!result.ok) {
-        announceShare(interpolate(msgs.shareTooLong, { limit: String(MAX_SHARE_URL_LENGTH) }));
+        announceShare(
+          interpolate(msgs.shareTooLong, {
+            limit: String(MAX_SHARE_URL_LENGTH),
+          })
+        );
         return;
       }
       await navigator.clipboard.writeText(result.url);
@@ -233,7 +251,10 @@ export function wireScale(opts: {
 const SHOW_EVENT_LABELS_STORAGE_KEY = "tdsl-playground-show-event-labels";
 
 /** Wires the "show event labels" toggle, restoring the last choice from localStorage. */
-export function wireShowEventLabels(opts: { toggle: HTMLInputElement | null; onRun: () => void }): {
+export function wireShowEventLabels(opts: {
+  toggle: HTMLInputElement | null;
+  onRun: () => void;
+}): {
   getShowEventLabels: () => boolean;
 } {
   const { toggle } = opts;
@@ -248,7 +269,10 @@ export function wireShowEventLabels(opts: { toggle: HTMLInputElement | null; onR
 
   toggle?.addEventListener("change", () => {
     try {
-      window.localStorage.setItem(SHOW_EVENT_LABELS_STORAGE_KEY, String(toggle.checked));
+      window.localStorage.setItem(
+        SHOW_EVENT_LABELS_STORAGE_KEY,
+        String(toggle.checked)
+      );
     } catch {
       // 保存に失敗しても描画自体は継続する。
     }
@@ -261,28 +285,52 @@ export function wireShowEventLabels(opts: { toggle: HTMLInputElement | null; onR
 export function initPlayground(): void {
   const root = document.querySelector<HTMLElement>("[data-playground-root]");
   const editorHost = document.querySelector<HTMLElement>("[data-editor-host]");
-  const sampleSelect = document.querySelector<HTMLSelectElement>("[data-sample-select]");
+  const sampleSelect = document.querySelector<HTMLSelectElement>(
+    "[data-sample-select]"
+  );
   const status = document.querySelector<HTMLElement>("[data-status]");
   const preview = document.querySelector<HTMLElement>("[data-preview]");
-  const panZoomStage = document.querySelector<HTMLElement>("[data-pan-zoom-stage]");
-  const panZoomReset = document.querySelector<HTMLButtonElement>("[data-pan-zoom-reset]");
+  const panZoomStage = document.querySelector<HTMLElement>(
+    "[data-pan-zoom-stage]"
+  );
+  const panZoomReset = document.querySelector<HTMLButtonElement>(
+    "[data-pan-zoom-reset]"
+  );
   const diagnostics = document.querySelector<HTMLElement>("[data-diagnostics]");
   const editorMeta = document.querySelector<HTMLElement>("[data-editor-meta]");
-  const previewMeta = document.querySelector<HTMLElement>("[data-preview-meta]");
-  const diagnosticsMeta = document.querySelector<HTMLElement>("[data-diagnostics-meta]");
-  const downloadTdslButton = document.querySelector<HTMLButtonElement>("[data-download-tdsl]");
-  const downloadSvgButton = document.querySelector<HTMLButtonElement>("[data-download-svg]");
-  const downloadHtmlButton = document.querySelector<HTMLButtonElement>("[data-download-html]");
-  const openFileButton = document.querySelector<HTMLButtonElement>("[data-open-file]");
-  const openFileInput = document.querySelector<HTMLInputElement>("[data-open-file-input]");
-  const copyLinkButton = document.querySelector<HTMLButtonElement>("[data-copy-link]");
+  const previewMeta = document.querySelector<HTMLElement>(
+    "[data-preview-meta]"
+  );
+  const diagnosticsMeta = document.querySelector<HTMLElement>(
+    "[data-diagnostics-meta]"
+  );
+  const downloadTdslButton = document.querySelector<HTMLButtonElement>(
+    "[data-download-tdsl]"
+  );
+  const downloadSvgButton = document.querySelector<HTMLButtonElement>(
+    "[data-download-svg]"
+  );
+  const downloadHtmlButton = document.querySelector<HTMLButtonElement>(
+    "[data-download-html]"
+  );
+  const openFileButton =
+    document.querySelector<HTMLButtonElement>("[data-open-file]");
+  const openFileInput = document.querySelector<HTMLInputElement>(
+    "[data-open-file-input]"
+  );
+  const copyLinkButton =
+    document.querySelector<HTMLButtonElement>("[data-copy-link]");
   const shareLive = document.querySelector<HTMLElement>("[data-share-live]");
-  const scaleSelect = document.querySelector<HTMLSelectElement>("[data-scale-select]");
+  const scaleSelect = document.querySelector<HTMLSelectElement>(
+    "[data-scale-select]"
+  );
   const showEventLabelsToggle = document.querySelector<HTMLInputElement>(
-    "[data-show-event-labels-toggle]",
+    "[data-show-event-labels-toggle]"
   );
   const sampleDataElement = document.getElementById("playground-samples");
-  const samples = JSON.parse(sampleDataElement?.textContent || "[]") as PlaygroundSample[];
+  const samples = JSON.parse(
+    sampleDataElement?.textContent || "[]"
+  ) as PlaygroundSample[];
   const i18nEl = document.getElementById("playground-i18n");
   const msgs = JSON.parse(i18nEl?.textContent || "{}") as PlaygroundMsgs;
 
@@ -308,7 +356,10 @@ export function initPlayground(): void {
     if (element) element.textContent = value;
   };
 
-  const setStatus = (message: string, state: "loading" | "ready" | "error" | "warn") => {
+  const setStatus = (
+    message: string,
+    state: "loading" | "ready" | "error" | "warn"
+  ) => {
     setText(status, message);
     root?.setAttribute("data-playground-state", state);
   };
@@ -339,7 +390,9 @@ export function initPlayground(): void {
       const result = await checkTdslSource(source);
       if (runId !== latestRunId) return;
 
-      const hasErrors = result.some((item: TdslDiagnostic) => item.severity === "error");
+      const hasErrors = result.some(
+        (item: TdslDiagnostic) => item.severity === "error"
+      );
       renderDiagnostics(result);
 
       if (hasErrors) {
@@ -347,13 +400,17 @@ export function initPlayground(): void {
         setText(previewMeta, lastSvg ? "previous preview kept" : "no preview");
         if (!lastSvg) {
           stage.replaceChildren(
-            Object.assign(document.createElement("p"), { textContent: msgs.previewFixErrors }),
+            Object.assign(document.createElement("p"), {
+              textContent: msgs.previewFixErrors,
+            })
           );
         }
         return;
       }
 
-      const hasWarnings = result.some((item: TdslDiagnostic) => item.severity === "warning");
+      const hasWarnings = result.some(
+        (item: TdslDiagnostic) => item.severity === "warning"
+      );
       const renderScale = parseFloat(scaleSelect?.value ?? "0");
       const svg = await renderTdslSvgWithOptions(source, renderScale, {
         showEventLabels: showEventLabels.getShowEventLabels(),
@@ -367,7 +424,10 @@ export function initPlayground(): void {
       downloadSvgButton?.removeAttribute("disabled");
       downloadHtmlButton?.removeAttribute("disabled");
       setText(previewMeta, "updated");
-      setStatus(hasWarnings ? msgs.statusWarn : msgs.statusOk, hasWarnings ? "warn" : "ready");
+      setStatus(
+        hasWarnings ? msgs.statusWarn : msgs.statusOk,
+        hasWarnings ? "warn" : "ready"
+      );
     } catch (error) {
       if (runId !== latestRunId) return;
 
@@ -405,7 +465,9 @@ export function initPlayground(): void {
   });
 
   void (async () => {
-    const sharedSource = await extractSourceFromLocation(window.location.search);
+    const sharedSource = await extractSourceFromLocation(
+      window.location.search
+    );
     if (sharedSource !== null) {
       applySource(sharedSource);
       if (sampleSelect) sampleSelect.value = "";
@@ -416,7 +478,9 @@ export function initPlayground(): void {
   })();
 
   sampleSelect?.addEventListener("change", () => {
-    const sample = samples.find((item: PlaygroundSample) => item.id === sampleSelect.value);
+    const sample = samples.find(
+      (item: PlaygroundSample) => item.id === sampleSelect.value
+    );
     if (sample) applySource(sample.source);
   });
 

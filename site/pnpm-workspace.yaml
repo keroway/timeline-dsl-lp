@@ -1,28 +1,38 @@
-# pnpm のセキュリティ寄りデフォルトを opt-in する。
-# pnpm 11 ではこれらが既定値になる予定。10.x のうちに先取りしている。
+# pnpm 11 では overrides / patchedDependencies は pnpm-workspace.yaml に置く
+# (package.json#pnpm からの移動)。
+overrides:
+  esbuild: 0.28.1
+  fast-uri: 3.1.2
+  js-yaml: 4.3.0
+  tmp: 0.2.7
+  undici: 7.28.0
+  uuid: 11.1.1
+  yaml: 2.8.4
+
+patchedDependencies:
+  "@lhci/utils@0.15.1": patches/@lhci__utils@0.15.1.patch
+  "undici@7.28.0": patches/undici@7.28.0.patch
+
+# pnpm 11 のセキュリティ寄りデフォルト (minimumReleaseAge=1440 / strictDepBuilds /
+# blockExoticSubdeps) は既定値のまま使う。
 # 参考: https://pnpm.io/blog/2025/12/29/pnpm-in-2025
 
-# 公開からの経過時間 (分) がこの値未満のバージョンを解決対象から除外する。
-# 1440 分 = 1 日 (pnpm 11 の既定値)。pnpm add / pnpm update 時に効く。
-# CI の `pnpm install --frozen-lockfile` では既決のバージョンを使うので影響しない。
-minimumReleaseAge: 1440
-
-# 緊急修正等で cooldown を待たずに導入したいパッケージはここで例外指定する。
+# 緊急修正等で cooldown (minimumReleaseAge) を待たずに導入したい
+# パッケージはここで例外指定する。
 minimumReleaseAgeExclude: []
 
-# postinstall などのライフサイクルスクリプト実行を明示許可制にする。
-# 許可は onlyBuiltDependencies で列挙する。
-strictDepBuilds: true
-onlyBuiltDependencies:
-  # Astro 6 が画像最適化に使う ネイティブビルド依存。
+# pnpm 11 はデフォルトで依存の build スクリプト実行を遮断する (strictDepBuilds)。
+# 実行を許可するものだけ allowBuilds で明示する。
+allowBuilds:
+  # Astro 6 が画像最適化に使うネイティブビルド依存。
   # node-gyp の install スクリプトでプラットフォーム別バイナリを取得する。
-  - sharp
+  sharp: true
   # Astro / Vite が内部で使うバンドラ。
   # install スクリプトでプラットフォーム別バイナリの解決を検証する。
-  - esbuild
+  esbuild: true
   # git pre-commit フックを .git/hooks/ にインストールする。
-  # postinstall で自動設定するが、prepare スクリプトでも手動再実行できる。
-  - simple-git-hooks
+  # postinstall で自動設定するが、prepare スクリプト (lefthook install) でも手動再実行できる。
+  lefthook: true
 
 # git:/http: など標準レジストリ以外を経由した間接依存をブロックする。
 blockExoticSubdeps: true

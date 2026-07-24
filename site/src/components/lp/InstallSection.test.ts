@@ -1,8 +1,8 @@
 // @vitest-environment node
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { describe, expect, it } from "vitest";
-import InstallSection from "./InstallSection.astro";
 import { INSTALL_CHANNELS } from "../../data/install-channels";
+import InstallSection from "./InstallSection.astro";
 
 describe("InstallSection", () => {
   it("4 チャネル分の role=tab / role=tabpanel を出力する（#430）", async () => {
@@ -10,8 +10,12 @@ describe("InstallSection", () => {
     const result = await container.renderToString(InstallSection, {
       props: { locale: "ja" },
     });
-    expect((result.match(/role="tab"/g) ?? []).length).toBe(INSTALL_CHANNELS.length);
-    expect((result.match(/role="tabpanel"/g) ?? []).length).toBe(INSTALL_CHANNELS.length);
+    expect((result.match(/role="tab"/g) ?? []).length).toBe(
+      INSTALL_CHANNELS.length
+    );
+    expect((result.match(/role="tabpanel"/g) ?? []).length).toBe(
+      INSTALL_CHANNELS.length
+    );
     for (const channel of INSTALL_CHANNELS) {
       expect(result).toContain(`id="install-tab-${channel.id}"`);
       expect(result).toContain(`id="install-panel-${channel.id}"`);

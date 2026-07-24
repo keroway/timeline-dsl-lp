@@ -18,7 +18,11 @@ const libTestConfig = defineConfig({
   test: {
     name: "lib",
     environment: "jsdom",
-    include: ["src/lib/**/*.test.ts", "src/data/**/*.test.ts", "src/i18n/**/*.test.ts"],
+    include: [
+      "src/lib/**/*.test.ts",
+      "src/data/**/*.test.ts",
+      "src/i18n/**/*.test.ts",
+    ],
     globals: false,
   },
 });

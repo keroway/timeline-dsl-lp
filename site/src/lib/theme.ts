@@ -8,7 +8,9 @@ export type Theme = "auto" | "dark" | "light";
 const STORAGE_KEY = "starlight-theme";
 
 export function parseTheme(value: unknown): Theme {
-  return value === "auto" || value === "dark" || value === "light" ? value : "auto";
+  return value === "auto" || value === "dark" || value === "light"
+    ? value
+    : "auto";
 }
 
 export function loadTheme(): Theme {
@@ -22,7 +24,10 @@ export function loadTheme(): Theme {
 export function storeTheme(theme: Theme): void {
   try {
     // Starlight は auto を空文字列として保存する（parseTheme が undefined/"" を auto 扱いする）。
-    localStorage.setItem(STORAGE_KEY, theme === "light" || theme === "dark" ? theme : "");
+    localStorage.setItem(
+      STORAGE_KEY,
+      theme === "light" || theme === "dark" ? theme : ""
+    );
   } catch {
     // localStorage 無効環境（Safari private browsing 等）では永続化を諦め、当該セッション内の
     // 見た目だけ適用する。

@@ -10,7 +10,7 @@ import { LANE_PALETTE, type LaneColor, type LaneTheme } from "./lane-palette";
 
 const cssText = readFileSync(
   fileURLToPath(new URL("../styles/tokens.css", import.meta.url)),
-  "utf8",
+  "utf8"
 );
 
 const LANE_VARS: LaneColor[] = ["warm", "gold", "plum", "sky"];
@@ -30,7 +30,9 @@ function extractBlock(start: string, source = cssText): string {
 }
 
 function readHex(block: string, name: LaneColor): string {
-  const match = block.match(new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`));
+  const match = block.match(
+    new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`)
+  );
   if (!match) throw new Error(`--color-${name} not found in block`);
   return match[1].toLowerCase();
 }
@@ -53,7 +55,9 @@ describe("LANE_PALETTE", () => {
     describe(theme, () => {
       for (const name of LANE_VARS) {
         it(`--color-${name} が LANE_PALETTE.${theme}.${name} と一致する`, () => {
-          expect(readHex(blocks[theme], name)).toBe(LANE_PALETTE[theme][name].toLowerCase());
+          expect(readHex(blocks[theme], name)).toBe(
+            LANE_PALETTE[theme][name].toLowerCase()
+          );
         });
       }
     });
