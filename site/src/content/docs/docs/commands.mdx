@@ -3,7 +3,7 @@ title: Commands
 description: Timeline DSL CLI の主要コマンド一覧です。
 ---
 
-`tdsl` は `.tdsl` ファイルの検証、JSON IRへのコンパイル、HTMLレンダリング、Wikidata起点の年表作成、手作業向けテンプレート生成を扱います。
+`tdsl` は `.tdsl` ファイルの検証、JSON IRへのコンパイル、HTMLレンダリング、Wikidata起点の年表作成、手作業向けテンプレート生成を扱います。各サブコマンドの詳細な引数・オプションは [CLIリファレンス](/docs/cli-reference/) を参照してください。
 
 ```sh
 tdsl --help
@@ -50,11 +50,10 @@ tdsl decompile sample.json --output sample.tdsl
 
 ### merge
 
-複数の `.tdsl` ファイルを1つに結合します。レーンやイベントをファイル分割して管理し、最終的に1ファイルにまとめる場合に使います（v1.2.0〜）。
+複数の `.tdsl` ファイルを統合してIR JSONを出力します。レーンやイベントをファイル分割して管理し、最終的に1つのIRにまとめる場合に使います（v1.2.0〜）。
 
 ```sh
-tdsl merge part1.tdsl part2.tdsl --output combined.tdsl
-tdsl build combined.tdsl --pretty --output combined.json
+tdsl merge part1.tdsl part2.tdsl --output combined.json --pretty
 ```
 
 ### render

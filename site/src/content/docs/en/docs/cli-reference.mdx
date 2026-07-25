@@ -1,0 +1,293 @@
+---
+title: CLI Reference
+description: A complete reference for tdsl global options, exit codes, and the arguments and options of each subcommand.
+---
+
+`tdsl` is a command-line tool for compiling, validating, formatting, and rendering `.tdsl` files. This reference covers the global options, exit codes, and the arguments and options of the main subcommands.
+
+```
+tdsl [OPTIONS] <COMMAND>
+```
+
+`--wikidata-timeout` is a global option, so it can be placed either before or after the subcommand (e.g. `tdsl --wikidata-timeout 60 build sample.tdsl`).
+
+## Global Options
+
+| Option                         | Description                                     | Default |
+| ------------------------------ | ----------------------------------------------- | ------- |
+| `--wikidata-timeout <SECONDS>` | HTTP timeout (in seconds) for Wikidata requests | `30`    |
+| `-h, --help`                   | Show help                                       | —       |
+| `-V, --version`                | Show version                                    | —       |
+
+## Exit Codes
+
+| Code | Meaning                                                   |
+| ---- | --------------------------------------------------------- |
+| `0`  | Success                                                   |
+| `1`  | Error (parse failure, validation failure, IO error, etc.) |
+
+`tdsl check` and `tdsl fmt --check` can be used as CI gates. They return exit code `1` when there is a diff or an error, so a pipeline can rely on the exit code directly to decide pass or fail.
+
+## Subcommands
+
+| Subcommand                                      | Description                                                                                                                                                   |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`build`](#build)                               | Compile `.tdsl` to IR JSON                                                                                                                                    |
+| [`merge`](#merge)                               | Merge multiple `.tdsl` files and output IR JSON                                                                                                               |
+| [`check`](#check)                               | Run a syntax and semantic error check                                                                                                                         |
+| [`ast`](#ast)                                   | Dump the parsed AST (for debugging)                                                                                                                           |
+| [`fetch`](/en/docs/commands/)                   | Fetch and display data for a Wikidata entity                                                                                                                  |
+| [`search`](/en/docs/commands/)                  | Search for Wikidata entities by keyword                                                                                                                       |
+| [`inspect`](/en/docs/commands/)                 | Analyze a Wikidata entity in detail and suggest a mapping strategy                                                                                            |
+| [`resolve`](/en/docs/commands/)                 | Resolve a Wikipedia article URL to a Wikidata QID                                                                                                             |
+| [`scaffold`](/en/docs/commands/)                | Generate a `.tdsl` template from Wikidata entities                                                                                                            |
+| [`render`](/en/docs/commands/#render)           | Render `.tdsl` to a standalone HTML/SVG/PNG/PDF timeline                                                                                                      |
+| [`init`](/en/docs/commands/)                    | Generate a minimal `.tdsl` template for manual editing                                                                                                        |
+| [`import-csv`](/en/docs/commands/)              | Import timeline items from CSV                                                                                                                                |
+| [`export-csv`](/en/docs/commands/#export-csv)   | Export IR to CSV (symmetric with `import-csv`)                                                                                                                |
+| [`fmt`](#fmt)                                   | Format `.tdsl` files to the canonical style                                                                                                                   |
+| [`lint`](#lint)                                 | Lint `.tdsl` files and apply automatic fixes                                                                                                                  |
+| [`cache`](/en/docs/commands/#cache-management)  | Manage the local Wikidata cache                                                                                                                               |
+| [`decompile`](#decompile)                       | Decompile JSON IR back to `.tdsl` source                                                                                                                      |
+| [`completions`](/en/docs/commands/#completions) | Generate shell completion scripts                                                                                                                             |
+| [`lsp`](/en/docs/commands/#lsp)                 | Start the LSP server over stdio (Diagnostics + Completion + Hover + Goto Definition + Code Action + Document Symbols + Find References + Rename + Formatting) |
+
+## build
+
+Compiles `.tdsl` files to IR JSON (intermediate representation JSON). When multiple files are given, they are merged before being compiled.
+
+```
+tdsl build [OPTIONS] [FILE]...
+```
+
+### Arguments
+
+| Argument    | Description                                                                                                           |
+| ----------- | --------------------------------------------------------------------------------------------------------------------- |
+| `[FILE]...` | Path(s) to the input `.tdsl` file(s) (merged in order when multiple are given). Optional when `--json-schema` is used |
+
+### Options
+
+| Option                    | Description                                                         | Default       |
+| ------------------------- | ------------------------------------------------------------------- | ------------- |
+| `-o, --output <OUTPUT>`   | Path to the output JSON file                                        | stdout        |
+| `--pretty`                | Pretty-print the JSON output                                        | —             |
+| `--offline`               | Skip Wikidata fetching and process only statically defined items    | —             |
+| `--no-cache`              | Bypass the local cache and call the API directly                    | —             |
+| `--cache-ttl <CACHE_TTL>` | Cache expiry in seconds; `0` disables caching                       | `86400` (24h) |
+| `--json-schema`           | Write the JSON Schema for the IR to stdout (no input file required) | —             |
+
+### Examples
+
+```sh
+# Compile offline and print pretty-printed JSON
+tdsl build examples/china_dynasties.tdsl --pretty
+
+# Compile with Wikidata integration and save to a file
+tdsl build examples/china_with_import.tdsl --output out.json --pretty
+
+# Offline build (recommended during development)
+tdsl build examples/china_with_import.tdsl --offline --pretty
+
+# Merge multiple files and compile
+tdsl build part1.tdsl part2.tdsl --output merged.json --pretty
+
+# Print the JSON Schema for the IR (no input file required)
+tdsl build --json-schema
+
+# Pretty-print the JSON Schema and save it to a file
+tdsl build --json-schema --pretty --output timeline-ir.schema.json
+```
+
+## check
+
+Checks a `.tdsl` file for syntax errors and semantic errors (undefined lane references, inconsistent date ranges, etc.). Returns exit code `0` when there are no errors.
+
+```
+tdsl check [OPTIONS] <FILE>
+```
+
+### Arguments
+
+| Argument | Description                    |
+| -------- | ------------------------------ |
+| `<FILE>` | Path to the input `.tdsl` file |
+
+### Examples
+
+```sh
+# Run a syntax and semantic check
+tdsl check examples/china_dynasties.tdsl
+
+# Use it in CI (returns a non-zero exit code on error)
+tdsl check my_timeline.tdsl && echo "OK"
+```
+
+## ast
+
+Parses a `.tdsl` file and dumps its AST (abstract syntax tree) to stdout. This command is for grammar debugging and is not part of the normal workflow.
+
+```
+tdsl ast [OPTIONS] <FILE>
+```
+
+### Arguments
+
+| Argument | Description                    |
+| -------- | ------------------------------ |
+| `<FILE>` | Path to the input `.tdsl` file |
+
+### Examples
+
+```sh
+# Dump the AST
+tdsl ast examples/china_dynasties.tdsl
+
+# View it through a pager
+tdsl ast examples/china_with_import.tdsl | less
+```
+
+## merge
+
+Reads multiple `.tdsl` files and outputs a merged IR JSON. Metadata (title, unit, range) from the first file takes precedence.
+
+```
+tdsl merge [OPTIONS] <FILE> <FILE>...
+```
+
+### Arguments
+
+| Argument           | Description                                                             |
+| ------------------ | ----------------------------------------------------------------------- |
+| `<FILE> <FILE>...` | Paths to the input `.tdsl` files (at least 2 required, merged in order) |
+
+### Options
+
+| Option                    | Description                                                      | Default       |
+| ------------------------- | ---------------------------------------------------------------- | ------------- |
+| `-o, --output <OUTPUT>`   | Path to the output JSON file                                     | stdout        |
+| `--pretty`                | Pretty-print the JSON output                                     | —             |
+| `--offline`               | Skip Wikidata fetching and process only statically defined items | —             |
+| `--no-cache`              | Bypass the local cache and call the API directly                 | —             |
+| `--cache-ttl <CACHE_TTL>` | Cache expiry in seconds; `0` disables caching                    | `86400` (24h) |
+
+### Examples
+
+```sh
+# Merge two files and print pretty-printed output
+tdsl merge china_dynasties.tdsl world_wars.tdsl --pretty
+
+# Save to a file
+tdsl merge base.tdsl extension.tdsl --output combined.json --pretty
+```
+
+## decompile
+
+Reverse-generates `.tdsl` source code from a JSON IR file. Useful when the JSON was produced by another tool, or when you want to recover source from an existing IR.
+
+```
+tdsl decompile [OPTIONS] [INPUT]
+```
+
+### Arguments
+
+| Argument  | Description                                          |
+| --------- | ---------------------------------------------------- |
+| `[INPUT]` | Path to the input JSON file (reads stdin if omitted) |
+
+### Options
+
+| Option                  | Description                     | Default |
+| ----------------------- | ------------------------------- | ------- |
+| `-o, --output <OUTPUT>` | Path to the output `.tdsl` file | stdout  |
+
+### Examples
+
+```sh
+# Decompile a JSON IR to .tdsl
+tdsl decompile out.json
+
+# Save to a file
+tdsl decompile out.json --output recovered.tdsl
+
+# Via a pipeline (from stdin)
+tdsl build examples/china_dynasties.tdsl --pretty | tdsl decompile --output recovered.tdsl
+```
+
+> **Limitation (comments are not preserved)**: Since `decompile` starts from a JSON IR, comments (`//` and `/* */`) that existed in the original `.tdsl` source cannot be restored. The IR does not carry any comment information, which is a permanent design constraint of treating the IR as the single source of truth.
+
+## fmt
+
+Formats `.tdsl` files to the canonical style (2-space indentation, one blank line between blocks). By default, the formatted result is written to stdout. Use `--write` to overwrite the file in place, or `--check` to exit non-zero when there is a diff (for CI). `--check` and `--write` cannot be specified together.
+
+Comments (`//` and `/* */`) are preserved. Top-level leading/trailing comments keep their position; comments inside a block keep their content but may be moved to the canonical position.
+
+```
+tdsl fmt [OPTIONS] <FILE>
+```
+
+### Arguments
+
+| Argument | Description                    |
+| -------- | ------------------------------ |
+| `<FILE>` | Path to the input `.tdsl` file |
+
+### Options
+
+| Option    | Description                                                                  | Default |
+| --------- | ---------------------------------------------------------------------------- | ------- |
+| `--check` | Exit non-zero when formatting is needed (the file is left unchanged); for CI | —       |
+| `--write` | Overwrite the file with the formatted result                                 | —       |
+
+### Examples
+
+```sh
+# Print the formatted result to stdout
+tdsl fmt examples/china_dynasties.tdsl
+
+# Overwrite the file
+tdsl fmt examples/china_dynasties.tdsl --write
+
+# Check for formatting diffs in CI (exits 1 if there is a diff)
+tdsl fmt examples/china_dynasties.tdsl --check
+```
+
+## lint
+
+Runs a quality check on a `.tdsl` file and applies automatic fixes for fixable issues with `--fix`.
+
+```
+tdsl lint [OPTIONS] <FILE>
+```
+
+### Arguments
+
+| Argument | Description                    |
+| -------- | ------------------------------ |
+| `<FILE>` | Path to the input `.tdsl` file |
+
+### Options
+
+| Option              | Description                           | Default |
+| ------------------- | ------------------------------------- | ------- |
+| `--fix`             | Apply safe fixes directly to the file | —       |
+| `--format <FORMAT>` | Output format (`text` / `json`)       | `text`  |
+
+### Examples
+
+```sh
+# Lint check only
+tdsl lint examples/china_dynasties.tdsl
+
+# Apply automatic fixes
+tdsl lint examples/china_dynasties.tdsl --fix
+
+# JSON output for CI
+tdsl lint examples/china_dynasties.tdsl --format json
+```
+
+## Related Documentation
+
+- [Commands](/en/docs/commands/) — the entry point for the basic workflow
+- [Grammar](/en/docs/grammar/) — grammar details
+- [Error Code Reference](/en/docs/errors/) — the list of diagnostic codes

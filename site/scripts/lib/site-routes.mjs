@@ -403,6 +403,19 @@ const _CATALOG = [
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
+  // Docs: cli-reference（#524）
+  {
+    path: "/docs/cli-reference/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/cli-reference/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
   // Docs: data-and-licensing（データ利用とライセンス, #502）
   {
     path: "/docs/data-and-licensing/",
