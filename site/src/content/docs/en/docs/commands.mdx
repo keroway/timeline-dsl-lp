@@ -3,7 +3,7 @@ title: Commands
 description: A reference for the main commands of the Timeline DSL CLI.
 ---
 
-`tdsl` handles validation, compilation to JSON IR, HTML rendering, Wikidata-based timeline generation, and template scaffolding for `.tdsl` files.
+`tdsl` handles validation, compilation to JSON IR, HTML rendering, Wikidata-based timeline generation, and template scaffolding for `.tdsl` files. See the [CLI Reference](/en/docs/cli-reference/) for the detailed arguments and options of each subcommand.
 
 ```sh
 tdsl --help
@@ -50,11 +50,10 @@ tdsl decompile sample.json --output sample.tdsl
 
 ### merge
 
-Merges multiple `.tdsl` files into one. Useful when you manage lanes or events across separate files and want to combine them into a single file (v1.2.0+).
+Merges multiple `.tdsl` files and outputs a combined IR JSON. Useful when you manage lanes or events across separate files and want to combine them into a single IR (v1.2.0+).
 
 ```sh
-tdsl merge part1.tdsl part2.tdsl --output combined.tdsl
-tdsl build combined.tdsl --pretty --output combined.json
+tdsl merge part1.tdsl part2.tdsl --output combined.json --pretty
 ```
 
 ### render

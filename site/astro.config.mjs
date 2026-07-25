@@ -133,6 +133,11 @@ export default defineConfig({
           label: "CLI",
           items: [
             { label: "Commands", slug: "docs/commands" },
+            {
+              label: "CLIリファレンス",
+              translations: { en: "CLI Reference" },
+              slug: "docs/cli-reference",
+            },
             { label: "Configuration", slug: "docs/configuration" },
             {
               label: "CIで検証",

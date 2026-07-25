@@ -1,0 +1,293 @@
+---
+title: CLIリファレンス
+description: tdsl コマンドのグローバルオプション・終了コード・各サブコマンドの引数とオプションの一覧です。
+---
+
+`tdsl` は `.tdsl` ファイルのコンパイル・検証・整形・レンダリングを行うコマンドラインツールです。グローバルオプション・終了コード・主要サブコマンドの引数とオプションをリファレンス形式でまとめます。
+
+```
+tdsl [OPTIONS] <COMMAND>
+```
+
+`--wikidata-timeout` はグローバルオプションのため、サブコマンドの前後どちらに置いても有効です（例: `tdsl --wikidata-timeout 60 build sample.tdsl`）。
+
+## グローバルオプション
+
+| オプション                     | 説明                                       | デフォルト |
+| ------------------------------ | ------------------------------------------ | ---------- |
+| `--wikidata-timeout <SECONDS>` | Wikidata HTTP リクエストのタイムアウト秒数 | `30`       |
+| `-h, --help`                   | ヘルプを表示する                           | —          |
+| `-V, --version`                | バージョンを表示する                       | —          |
+
+## 終了コード
+
+| コード | 意味                                                    |
+| ------ | ------------------------------------------------------- |
+| `0`    | 正常終了                                                |
+| `1`    | エラー（パース失敗・バリデーション失敗・IO エラーなど） |
+
+`tdsl check` や `tdsl fmt --check` は CI のゲートとして使えます。差分やエラーがあれば終了コード `1` を返すため、パイプラインの成否判定にそのまま利用できます。
+
+## サブコマンド一覧
+
+| サブコマンド                                 | 概要                                                                                                                                                         |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`build`](#build)                            | `.tdsl` → IR JSON にコンパイル                                                                                                                               |
+| [`merge`](#merge)                            | 複数 `.tdsl` ファイルを統合して IR JSON を出力                                                                                                               |
+| [`check`](#check)                            | 構文・意味エラーチェック                                                                                                                                     |
+| [`ast`](#ast)                                | パース済み AST をダンプ（デバッグ用）                                                                                                                        |
+| [`fetch`](/docs/commands/)                   | Wikidata エンティティのデータを取得・表示                                                                                                                    |
+| [`search`](/docs/commands/)                  | キーワードで Wikidata エンティティを検索                                                                                                                     |
+| [`inspect`](/docs/commands/)                 | Wikidata エンティティを詳細解析してマッピング戦略を提案                                                                                                      |
+| [`resolve`](/docs/commands/)                 | Wikipedia 記事 URL を Wikidata QID に変換                                                                                                                    |
+| [`scaffold`](/docs/commands/)                | Wikidata エンティティから `.tdsl` テンプレートを自動生成                                                                                                     |
+| [`render`](/docs/commands/#render)           | `.tdsl` をスタンドアロン HTML/SVG/PNG/PDF 年表にレンダリング                                                                                                 |
+| [`init`](/docs/commands/)                    | 手動編集用の最小 `.tdsl` テンプレートを生成                                                                                                                  |
+| [`import-csv`](/docs/commands/)              | CSV から年表アイテムを取り込む                                                                                                                               |
+| [`export-csv`](/docs/commands/#export-csv)   | IR を CSV に書き出す（`import-csv` と対称）                                                                                                                  |
+| [`fmt`](#fmt)                                | `.tdsl` ファイルを正準フォーマット                                                                                                                           |
+| [`lint`](#lint)                              | `.tdsl` ファイルのリントと自動修正                                                                                                                           |
+| [`cache`](/docs/commands/#キャッシュ管理)    | Wikidata ローカルキャッシュの管理                                                                                                                            |
+| [`decompile`](#decompile)                    | JSON IR を `.tdsl` ソースに逆変換                                                                                                                            |
+| [`completions`](/docs/commands/#completions) | シェル補完スクリプトを生成                                                                                                                                   |
+| [`lsp`](/docs/commands/#lsp)                 | LSP サーバを stdio 経由で起動（Diagnostics + Completion + Hover + Goto Definition + Code Action + Document Symbols + Find References + Rename + Formatting） |
+
+## build
+
+`.tdsl` ファイルを IR JSON（中間表現 JSON）にコンパイルします。複数ファイルを指定すると、マージしてから出力します。
+
+```
+tdsl build [OPTIONS] [FILE]...
+```
+
+### 引数
+
+| 引数        | 説明                                                                                              |
+| ----------- | ------------------------------------------------------------------------------------------------- |
+| `[FILE]...` | 入力 `.tdsl` ファイルのパス（複数指定時は順番にマージ）。`--json-schema` を指定する場合は省略可能 |
+
+### オプション
+
+| オプション                | 説明                                                    | デフォルト        |
+| ------------------------- | ------------------------------------------------------- | ----------------- |
+| `-o, --output <OUTPUT>`   | 出力 JSON ファイルのパス                                | 標準出力          |
+| `--pretty`                | JSON を整形出力する                                     | —                 |
+| `--offline`               | Wikidata フェッチをスキップし、静的アイテムのみ処理する | —                 |
+| `--no-cache`              | ローカルキャッシュをバイパスして API を直接呼び出す     | —                 |
+| `--cache-ttl <CACHE_TTL>` | キャッシュ有効期限（秒）。`0` で無効化                  | `86400`（24時間） |
+| `--json-schema`           | IR の JSON Schema を標準出力する（入力ファイル不要）    | —                 |
+
+### 実行例
+
+```sh
+# オフラインでコンパイルし整形 JSON を表示
+tdsl build examples/china_dynasties.tdsl --pretty
+
+# Wikidata 連携ありでコンパイルしファイルに保存
+tdsl build examples/china_with_import.tdsl --output out.json --pretty
+
+# オフラインビルド（開発時に推奨）
+tdsl build examples/china_with_import.tdsl --offline --pretty
+
+# 複数ファイルをマージしてコンパイル
+tdsl build part1.tdsl part2.tdsl --output merged.json --pretty
+
+# IR の JSON Schema を標準出力（入力ファイル不要）
+tdsl build --json-schema
+
+# JSON Schema を整形してファイルに保存
+tdsl build --json-schema --pretty --output timeline-ir.schema.json
+```
+
+## check
+
+`.tdsl` ファイルの構文エラーおよび意味エラー（lane 未定義参照、date 範囲矛盾など）を確認します。エラーがなければ終了コード `0` を返します。
+
+```
+tdsl check [OPTIONS] <FILE>
+```
+
+### 引数
+
+| 引数     | 説明                        |
+| -------- | --------------------------- |
+| `<FILE>` | 入力 `.tdsl` ファイルのパス |
+
+### 実行例
+
+```sh
+# 構文・意味チェック
+tdsl check examples/china_dynasties.tdsl
+
+# CI で使う（エラー時に非ゼロの終了コードを返す）
+tdsl check my_timeline.tdsl && echo "OK"
+```
+
+## ast
+
+`.tdsl` ファイルをパースして AST（抽象構文木）を標準出力にダンプします。文法デバッグに使うコマンドで、通常の利用フローでは使いません。
+
+```
+tdsl ast [OPTIONS] <FILE>
+```
+
+### 引数
+
+| 引数     | 説明                        |
+| -------- | --------------------------- |
+| `<FILE>` | 入力 `.tdsl` ファイルのパス |
+
+### 実行例
+
+```sh
+# AST をダンプ
+tdsl ast examples/china_dynasties.tdsl
+
+# ページャで確認
+tdsl ast examples/china_with_import.tdsl | less
+```
+
+## merge
+
+複数の `.tdsl` ファイルを読み込み、統合した IR JSON を出力します。最初のファイルのメタ情報（タイトル・単位・範囲）が優先されます。
+
+```
+tdsl merge [OPTIONS] <FILE> <FILE>...
+```
+
+### 引数
+
+| 引数               | 説明                                                            |
+| ------------------ | --------------------------------------------------------------- |
+| `<FILE> <FILE>...` | 入力 `.tdsl` ファイルのパス（2 ファイル以上必須、順番にマージ） |
+
+### オプション
+
+| オプション                | 説明                                                    | デフォルト        |
+| ------------------------- | ------------------------------------------------------- | ----------------- |
+| `-o, --output <OUTPUT>`   | 出力 JSON ファイルのパス                                | 標準出力          |
+| `--pretty`                | JSON を整形出力する                                     | —                 |
+| `--offline`               | Wikidata フェッチをスキップし、静的アイテムのみ処理する | —                 |
+| `--no-cache`              | ローカルキャッシュをバイパスして API を直接呼び出す     | —                 |
+| `--cache-ttl <CACHE_TTL>` | キャッシュ有効期限（秒）。`0` で無効化                  | `86400`（24時間） |
+
+### 実行例
+
+```sh
+# 2 ファイルをマージして整形出力
+tdsl merge china_dynasties.tdsl world_wars.tdsl --pretty
+
+# ファイルに保存
+tdsl merge base.tdsl extension.tdsl --output combined.json --pretty
+```
+
+## decompile
+
+JSON IR ファイルを `.tdsl` ソースコードに逆変換します。JSON を他ツールで生成した場合や、IR からソースを復元したい場合に使います。
+
+```
+tdsl decompile [OPTIONS] [INPUT]
+```
+
+### 引数
+
+| 引数      | 説明                                         |
+| --------- | -------------------------------------------- |
+| `[INPUT]` | 入力 JSON ファイルのパス（省略時は標準入力） |
+
+### オプション
+
+| オプション              | 説明                        | デフォルト |
+| ----------------------- | --------------------------- | ---------- |
+| `-o, --output <OUTPUT>` | 出力 `.tdsl` ファイルのパス | 標準出力   |
+
+### 実行例
+
+```sh
+# JSON IR を .tdsl に逆変換
+tdsl decompile out.json
+
+# ファイルに保存
+tdsl decompile out.json --output recovered.tdsl
+
+# パイプライン経由（標準入力から）
+tdsl build examples/china_dynasties.tdsl --pretty | tdsl decompile --output recovered.tdsl
+```
+
+> **制約（コメント非対応）**: `decompile` は JSON IR を起点とするため、元の `.tdsl` に書かれていたコメント（`//`・`/* */`）は復元できません。IR にはコメント情報が含まれないため、これは IR を単一の真実とする設計上の恒久的な制約です。
+
+## fmt
+
+`.tdsl` ファイルを正準スタイル（2 スペースインデント・ブロック間空行 1 行）に整形します。デフォルトでは整形結果を標準出力へ出力します。`--write` でファイルを直接上書きし、`--check` で差分があれば非ゼロ終了します（CI 向け）。`--check` と `--write` は同時に指定できません。
+
+コメント（`//`・`/* */`）は保持されます。トップレベルの先頭・末尾コメントは位置を保ち、ブロック内部コメントは内容を保持したまま正準位置へ移動される場合があります。
+
+```
+tdsl fmt [OPTIONS] <FILE>
+```
+
+### 引数
+
+| 引数     | 説明                        |
+| -------- | --------------------------- |
+| `<FILE>` | 入力 `.tdsl` ファイルのパス |
+
+### オプション
+
+| オプション | 説明                                                                      | デフォルト |
+| ---------- | ------------------------------------------------------------------------- | ---------- |
+| `--check`  | フォーマットが必要な場合に非ゼロ終了する（ファイルは変更しない）。CI 向け | —          |
+| `--write`  | 整形結果でファイルを上書きする                                            | —          |
+
+### 実行例
+
+```sh
+# 整形結果を標準出力に表示
+tdsl fmt examples/china_dynasties.tdsl
+
+# ファイルを上書き
+tdsl fmt examples/china_dynasties.tdsl --write
+
+# CI でフォーマット差分チェック（差分があれば exit 1）
+tdsl fmt examples/china_dynasties.tdsl --check
+```
+
+## lint
+
+`.tdsl` ファイルの品質チェックを実施し、自動修正可能な問題を `--fix` で修正します。
+
+```
+tdsl lint [OPTIONS] <FILE>
+```
+
+### 引数
+
+| 引数     | 説明                        |
+| -------- | --------------------------- |
+| `<FILE>` | 入力 `.tdsl` ファイルのパス |
+
+### オプション
+
+| オプション          | 説明                                | デフォルト |
+| ------------------- | ----------------------------------- | ---------- |
+| `--fix`             | 安全な修正をファイルに直接適用する  | —          |
+| `--format <FORMAT>` | 出力フォーマット（`text` / `json`） | `text`     |
+
+### 実行例
+
+```sh
+# リントチェックのみ
+tdsl lint examples/china_dynasties.tdsl
+
+# 自動修正を適用
+tdsl lint examples/china_dynasties.tdsl --fix
+
+# CI 向けに JSON 出力
+tdsl lint examples/china_dynasties.tdsl --format json
+```
+
+## 関連ドキュメント
+
+- [Commands](/docs/commands/) — 基本フローの入口
+- [文法](/docs/grammar/) — 文法の詳細
+- [エラーコードリファレンス](/docs/errors/) — 診断コードの一覧
