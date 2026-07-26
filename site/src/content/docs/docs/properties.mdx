@@ -1,0 +1,108 @@
+---
+title: プロパティリファレンス
+description: timeline / lane / group / event / span / event_range が取りうるプロパティを網羅的に一覧するリファレンスです。
+---
+
+`timeline` / `lane` / `group` / `event` / `span` / `event_range` に書けるプロパティを網羅的に一覧します。サンプル中心の入口は [文法とサンプル](/docs/grammar/) を参照してください。
+
+Wikidata を取り込む `import` / `map` / `template` / `apply` は別ページで扱います。日付・時刻リテラルの書式（`YYYY-MM-DD` 等）は [文法とサンプル](/docs/grammar/) のタイムライン軸表示の節を参照してください。
+
+## timeline
+
+年表全体のメタ情報を定義するブロック。`.tdsl` ファイルにつき 1 つ書きます。
+
+```tdsl
+timeline "中国王朝年表" {
+    title "中国王朝年表";
+    unit year;
+    range -500..2000;
+    calendar proleptic_gregorian;
+    color_map {
+        dynasty: "#3366cc";
+        war:     "#cc0000";
+    }
+}
+```
+
+| プロパティ  | 必須 | 説明                                                                                |
+| ----------- | ---- | ----------------------------------------------------------------------------------- |
+| `title`     | 任意 | 年表の表示タイトル                                                                  |
+| `unit`      | 任意 | 時間単位。`year` / `month` / `day` / `hour` / `minute` / `second`。未知の値はエラー |
+| `range`     | 任意 | 表示範囲。`開始..終了` の形式。負の値は紀元前                                       |
+| `calendar`  | 任意 | 暦法。`proleptic_gregorian` 等                                                      |
+| `color_map` | 任意 | タグ→色のマッピング。`タグ名: "#16進数カラーコード";` の形式で複数定義可能          |
+
+`unit` に `hour` / `minute` / `second` を指定すると、日単位より細かい時刻軸として描画されます（時分秒の目盛りは密度に応じて自動間引きされます）。
+
+`color_map` で定義した色は `tdsl render` 時に自動適用されます。受け付ける値は hex 色（`#RGB` / `#RGBA` / `#RRGGBB` / `#RRGGBBAA`）と単純な CSS 色キーワードです。より高度な装飾は CLI の `--custom-css` を使います。`--color-map "war=#cc0000"` のように CLI フラグでも上書きできます。
+
+`color_map` のキーは識別子（ASCII）または文字列リテラル（任意の Unicode）で指定できます。非 ASCII なタグ（例: `tags ["戦争"]`）に色を割り当てる場合は引用符で囲みます。
+
+```tdsl
+color_map {
+    war: "#cc0000";       // 識別子キー
+    "戦争": "#cc0000";     // 文字列リテラルキー（非ASCII可）
+}
+```
+
+## lane
+
+年表の縦軸カテゴリ（レーン）を定義します。王朝・人物・国・組織などを表します。
+
+```tdsl
+lane "漢" as han { kind dynasty; order 20; }
+```
+
+| プロパティ | 必須 | 説明                                                                                              |
+| ---------- | ---- | ------------------------------------------------------------------------------------------------- |
+| `as <id>`  | 任意 | 内部識別子。省略時はラベルからスラッグを自動生成                                                  |
+| `kind`     | 任意 | 分類（既知値: `custom` / `dynasty` / `person` / `country` / `event`）。独自分類は `custom` を推奨 |
+| `order`    | 任意 | 初期表示順（整数）。小さい値ほど上に並ぶ                                                          |
+
+## group
+
+複数の `lane` をまとめて視覚的に階層化するグループを定義します。レンダリング時にグループラベルとグループ境界線が表示されます。
+
+```tdsl
+group "古代" {
+    lane "秦" as qin { kind dynasty; order 10; }
+    lane "漢" as han { kind dynasty; order 20; }
+}
+```
+
+- グループ内には 1 つ以上の `lane` 宣言を記述します。
+- `group` を使わない既存の `.tdsl` はそのまま動作します（後方互換）。
+
+## event / span / event_range の引数
+
+いずれもレーン ID・時刻値・ラベルを位置引数として取り、末尾の `{ ... }` に後述の block_options（共通オプション）を書きます。
+
+| ブロック      | 書式                                                      | 用途                           |
+| ------------- | --------------------------------------------------------- | ------------------------------ |
+| `span`        | `span <lane-id> <開始>..<終了> "<label>" { ... };`        | 存続期間（王朝の在位期間など） |
+| `event`       | `event <lane-id> <時点> "<label>" { ... };`               | 特定の時点に起きたイベント     |
+| `event_range` | `event_range <lane-id> <開始>..<終了> "<label>" { ... };` | 一定期間のイベント（戦争など） |
+
+`span` / `event_range` の `<終了>` には `now` キーワードも指定できます。現在も継続中の期間を、架空の終了年をでっち上げずに表現できます（詳細は [文法とサンプル](/docs/grammar/) の「継続中の期間」の節を参照）。
+
+## block_options（共通オプション）
+
+`event` / `span` / `event_range` の `{ ... }` に付与できる共通オプションです。すべて省略可能です。
+
+| オプション | 説明                                                         | 例                            |
+| ---------- | ------------------------------------------------------------ | ----------------------------- |
+| `tags`     | タグのリスト                                                 | `tags ["war", "major"];`      |
+| `source`   | データソース（Wikidata の QID 等）                           | `source wd:Q7209;`            |
+| `id`       | 要素の安定識別子。レビューや差分追跡で使う                   | `id "span:han";`              |
+| `origin`   | 由来の識別子                                                 | `origin imported;`            |
+| `note`     | アイテムの補足説明文。ツールチップ等に表示                   | `note "出典メモ";`            |
+| `link`     | 参照 URL。`http://` / `https://` のみ許可                    | `link "https://example.com";` |
+| `color`    | アイテム個別色。`color_map` や lane パレット色より優先される | `color "#3366cc";`            |
+
+`color` の優先順位（`item.color` > `color_map` のタグ色 > lane パレット色）の詳細は [スタイリング](/docs/styling/) を参照してください。
+
+## 次に進む
+
+- [文法とサンプル](/docs/grammar/) で Playground 付きの実例を確認する
+- [スタイリング](/docs/styling/) で色・CSS クラスのリファレンスを確認する
+- [Commands](/docs/commands/) で CLI コマンドを確認する

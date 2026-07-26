@@ -123,6 +123,11 @@ export default defineConfig({
               slug: "docs/grammar",
             },
             {
+              label: "プロパティリファレンス",
+              translations: { en: "Properties Reference" },
+              slug: "docs/properties",
+            },
+            {
               label: "スタイリング",
               translations: { en: "Styling" },
               slug: "docs/styling",
