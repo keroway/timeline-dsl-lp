@@ -30,27 +30,27 @@ tdsl [OPTIONS] <COMMAND>
 
 ## サブコマンド一覧
 
-| サブコマンド                       | 概要                                                                                                                                                         |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`build`](#build)                  | `.tdsl` → IR JSON にコンパイル                                                                                                                               |
-| [`merge`](#merge)                  | 複数 `.tdsl` ファイルを統合して IR JSON を出力                                                                                                               |
-| [`check`](#check)                  | 構文・意味エラーチェック                                                                                                                                     |
-| [`ast`](#ast)                      | パース済み AST をダンプ（デバッグ用）                                                                                                                        |
-| [`fetch`](#fetch)                  | Wikidata エンティティのデータを取得・表示                                                                                                                    |
-| [`search`](#search)                | キーワードで Wikidata エンティティを検索                                                                                                                     |
-| [`inspect`](#inspect)              | Wikidata エンティティを詳細解析してマッピング戦略を提案                                                                                                      |
-| [`resolve`](#resolve)              | Wikipedia 記事 URL を Wikidata QID に変換                                                                                                                    |
-| [`scaffold`](#scaffold)            | Wikidata エンティティから `.tdsl` テンプレートを自動生成                                                                                                     |
-| [`render`](/docs/commands/#render) | `.tdsl` をスタンドアロン HTML/SVG/PNG/PDF 年表にレンダリング                                                                                                 |
-| [`init`](#init)                    | 手動編集用の最小 `.tdsl` テンプレートを生成                                                                                                                  |
-| [`import-csv`](#import-csv)        | CSV から年表アイテムを取り込む                                                                                                                               |
-| [`export-csv`](#export-csv)        | IR を CSV に書き出す（`import-csv` と対称）                                                                                                                  |
-| [`fmt`](#fmt)                      | `.tdsl` ファイルを正準フォーマット                                                                                                                           |
-| [`lint`](#lint)                    | `.tdsl` ファイルのリントと自動修正                                                                                                                           |
-| [`cache`](#cache)                  | Wikidata ローカルキャッシュの管理                                                                                                                            |
-| [`decompile`](#decompile)          | JSON IR を `.tdsl` ソースに逆変換                                                                                                                            |
-| [`completions`](#completions)      | シェル補完スクリプトを生成                                                                                                                                   |
-| [`lsp`](#lsp)                      | LSP サーバを stdio 経由で起動（Diagnostics + Completion + Hover + Goto Definition + Code Action + Document Symbols + Find References + Rename + Formatting） |
+| サブコマンド                  | 概要                                                                                                                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`build`](#build)             | `.tdsl` → IR JSON にコンパイル                                                                                                                               |
+| [`merge`](#merge)             | 複数 `.tdsl` ファイルを統合して IR JSON を出力                                                                                                               |
+| [`check`](#check)             | 構文・意味エラーチェック                                                                                                                                     |
+| [`ast`](#ast)                 | パース済み AST をダンプ（デバッグ用）                                                                                                                        |
+| [`fetch`](#fetch)             | Wikidata エンティティのデータを取得・表示                                                                                                                    |
+| [`search`](#search)           | キーワードで Wikidata エンティティを検索                                                                                                                     |
+| [`inspect`](#inspect)         | Wikidata エンティティを詳細解析してマッピング戦略を提案                                                                                                      |
+| [`resolve`](#resolve)         | Wikipedia 記事 URL を Wikidata QID に変換                                                                                                                    |
+| [`scaffold`](#scaffold)       | Wikidata エンティティから `.tdsl` テンプレートを自動生成                                                                                                     |
+| [`render`](#render)           | `.tdsl` をスタンドアロン HTML/SVG/PNG/PDF 年表にレンダリング                                                                                                 |
+| [`init`](#init)               | 手動編集用の最小 `.tdsl` テンプレートを生成                                                                                                                  |
+| [`import-csv`](#import-csv)   | CSV から年表アイテムを取り込む                                                                                                                               |
+| [`export-csv`](#export-csv)   | IR を CSV に書き出す（`import-csv` と対称）                                                                                                                  |
+| [`fmt`](#fmt)                 | `.tdsl` ファイルを正準フォーマット                                                                                                                           |
+| [`lint`](#lint)               | `.tdsl` ファイルのリントと自動修正                                                                                                                           |
+| [`cache`](#cache)             | Wikidata ローカルキャッシュの管理                                                                                                                            |
+| [`decompile`](#decompile)     | JSON IR を `.tdsl` ソースに逆変換                                                                                                                            |
+| [`completions`](#completions) | シェル補完スクリプトを生成                                                                                                                                   |
+| [`lsp`](#lsp)                 | LSP サーバを stdio 経由で起動（Diagnostics + Completion + Hover + Goto Definition + Code Action + Document Symbols + Find References + Rename + Formatting） |
 
 ## build
 
@@ -454,6 +454,96 @@ tdsl scaffold wikidata \
   --qids "Q7183,Q7209,Q8209" \
   --timeline "漢・新・後漢" \
   --target span
+```
+
+## render
+
+`.tdsl` ファイルをスタンドアロンな HTML / SVG / PNG / PDF 年表にレンダリングします。基本的な使い方は [Commands](/docs/commands/#render) を参照してください。
+
+```
+tdsl render [OPTIONS] <FILE>
+```
+
+### 引数
+
+| 引数     | 説明                        |
+| -------- | --------------------------- |
+| `<FILE>` | 入力 `.tdsl` ファイルのパス |
+
+### オプション一覧
+
+`--format` / `--dpi` / `--png-scale` / `--orientation` / `--grid` / `--show-event-labels` / `--lane-height` / `--layout-style` / `--show-legend` / `--watch` / `--show-table` の使い方は [Commands](/docs/commands/#render) を参照してください。`--theme` / `--custom-css` は [スタイルカスタマイズ](/docs/styling/) を参照してください。
+
+| オプション                      | 値                                                                             | デフォルト         | 導入バージョン                      | 詳細                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------ | ------------------ | ----------------------------------- | --------------------------------------------------------------------------------- |
+| `-o, --output <OUTPUT>`         | 出力ファイルのパス                                                             | 標準出力           | —                                   | —                                                                                 |
+| `--format <FORMAT>`             | `html` / `svg` / `png` / `pdf`                                                 | `html`             | —（`png`/`pdf`はv1.10.0/v1.11.0〜） | [Commands](/docs/commands/#render)                                                |
+| `--scale <SCALE>`               | 横軸の 1 年あたりピクセル数                                                    | `2`                | —                                   | [下記](#--scale----left-gutter----top-margin)                                     |
+| `--lane-height <LANE_HEIGHT>`   | 各レーンの高さ（px）                                                           | `60`               | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--left-gutter <LEFT_GUTTER>`   | レーンラベル用の左ガター幅                                                     | `120`              | —                                   | [下記](#--scale----left-gutter----top-margin)                                     |
+| `--top-margin <TOP_MARGIN>`     | 時間軸のトップマージン                                                         | `40`               | —                                   | [下記](#--scale----left-gutter----top-margin)                                     |
+| `--theme <THEME>`               | `default` / `dark` / `print` / `pastel`                                        | `default`          | —                                   | [スタイルカスタマイズ](/docs/styling/)                                            |
+| `--custom-css <CUSTOM_CSS>`     | テーマ CSS の後に注入するカスタム CSS ファイルのパス                           | —                  | —                                   | [スタイルカスタマイズ](/docs/styling/)                                            |
+| `--dpi <DPI>`                   | PNG 出力の解像度（`--png-scale` と排他）                                       | `96`               | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--png-scale <PNG_SCALE>`       | PNG 出力の固定ピクセル倍率（`--dpi` と排他）                                   | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--interactive`                 | ズーム・パン・検索・凡例・詳細パネルを有効化                                   | —                  | v1.1.0〜                            | [下記](#--interactive)                                                            |
+| `--color-map <COLOR_MAP>`       | タグ→色マッピング（例: `war=#cc0000,dynasty=#3366cc`）                         | —                  | v1.1.0〜                            | [下記](#--color-map)                                                              |
+| `--orientation <ORIENTATION>`   | `horizontal` / `vertical`                                                      | `horizontal`       | v1.13.0〜                           | [Commands](/docs/commands/#render)                                                |
+| `--grid <GRID>`                 | `none` / `decade` / `year` / `month`                                           | `none`             | v1.14.0〜                           | [Commands](/docs/commands/#render)                                                |
+| `--layout-style <LAYOUT_STYLE>` | `timeline` / `group-bands` / `gantt` / `zigzag`                                | `timeline`         | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--watch`                       | 変更検出のたびに自動再レンダリング（`html`/`svg`のみ）                         | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--show-table`                  | 内容一覧の表を追加する                                                         | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--show-event-labels`           | イベントのドット・バー近傍にラベルを常時描画                                   | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--pdf-size <SIZE>`             | `a4` / `a3` / `letter`（`--format pdf` のみ）                                  | `a4`               | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+| `--pdf-landscape`               | PDF を横向きで出力（`--format pdf` のみ）                                      | —                  | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+| `--pdf-margin <MM>`             | PDF の用紙マージン（mm、`--format pdf` のみ）                                  | `10`               | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+| `--pdf-title <TITLE>`           | PDF ドキュメントの Title メタデータ上書き（`--format pdf` のみ）               | 年表タイトル       | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+| `--pdf-pagination`              | アイテムテーブルを複数ページに分割（`--show-table` 必須、`--format pdf` のみ） | 無効（単一ページ） | v1.27.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+
+### `--scale` / `--left-gutter` / `--top-margin`
+
+タイムライン本体のレイアウト寸法を調整します。`--scale` は横軸方向の密度（大きいほど 1 年あたりの幅が広がる）、`--left-gutter` はレーンラベル列の幅、`--top-margin` は時間軸目盛りの上部余白です。長いレーンラベルが折り返される場合は `--left-gutter` を広げます。
+
+```sh
+# 1年あたり4pxに拡大し、長いレーンラベル用にガターを広げる
+tdsl render examples/china_dynasties.tdsl --scale 4 --left-gutter 160 --output china_wide.html
+```
+
+### `--interactive`
+
+ズーム・パン・アイテム検索・凡例・詳細パネルを搭載したインタラクティブ HTML を生成します。`--format html` でのみ意味を持ちます（v1.1.0〜）。
+
+```sh
+tdsl render examples/china_dynasties.tdsl --interactive --output china_interactive.html
+```
+
+### `--color-map`
+
+`timeline` ブロック内の `color_map` 宣言を CLI 側から上書きする、タグ→色マッピングです（v1.1.0〜）。カンマ区切りで `タグ=色コード` を列挙します。
+
+```sh
+tdsl render examples/china_dynasties.tdsl \
+  --color-map "dynasty=#4b7bec,war=#e74c3c" \
+  --output china.html
+```
+
+### `--pdf-size` / `--pdf-landscape` / `--pdf-margin` / `--pdf-title` / `--pdf-pagination`
+
+`--pdf-size` / `--pdf-landscape` / `--pdf-margin` / `--pdf-title` は `--format pdf` のときのみ有効な、用紙サイズ・向き・マージン・メタデータタイトルの指定オプションです（v1.17.0〜）。
+
+```sh
+# A3 横向き・マージン 15mm・タイトル指定で PDF を出力
+tdsl render examples/china_dynasties.tdsl \
+  --format pdf --pdf-size a3 --pdf-landscape --pdf-margin 15 --pdf-title "中国王朝年表" \
+  --output china_a3.pdf
+```
+
+`--pdf-pagination` は `--show-table` と併用したときのみ有効で、アイテムテーブルを用紙サイズ・マージンに収まる行数ごとに複数ページへ分割します（v1.27.0〜）。1 ページ目はタイムライン本体（縮小描画）のみで、2 ページ目以降にテーブルが分割描画されます。`--show-table` を指定せずに `--pdf-pagination` のみ指定するとエラーになります。
+
+```sh
+tdsl render examples/china_dynasties.tdsl \
+  --format pdf --show-table --pdf-pagination \
+  --output china_paginated.pdf
 ```
 
 ## init

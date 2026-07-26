@@ -30,27 +30,27 @@ tdsl [OPTIONS] <COMMAND>
 
 ## Subcommands
 
-| Subcommand                            | Description                                                                                                                                                   |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`build`](#build)                     | Compile `.tdsl` to IR JSON                                                                                                                                    |
-| [`merge`](#merge)                     | Merge multiple `.tdsl` files and output IR JSON                                                                                                               |
-| [`check`](#check)                     | Run a syntax and semantic error check                                                                                                                         |
-| [`ast`](#ast)                         | Dump the parsed AST (for debugging)                                                                                                                           |
-| [`fetch`](#fetch)                     | Fetch and display data for a Wikidata entity                                                                                                                  |
-| [`search`](#search)                   | Search for Wikidata entities by keyword                                                                                                                       |
-| [`inspect`](#inspect)                 | Analyze a Wikidata entity in detail and suggest a mapping strategy                                                                                            |
-| [`resolve`](#resolve)                 | Resolve a Wikipedia article URL to a Wikidata QID                                                                                                             |
-| [`scaffold`](#scaffold)               | Generate a `.tdsl` template from Wikidata entities                                                                                                            |
-| [`render`](/en/docs/commands/#render) | Render `.tdsl` to a standalone HTML/SVG/PNG/PDF timeline                                                                                                      |
-| [`init`](#init)                       | Generate a minimal `.tdsl` template for manual editing                                                                                                        |
-| [`import-csv`](#import-csv)           | Import timeline items from CSV                                                                                                                                |
-| [`export-csv`](#export-csv)           | Export IR to CSV (symmetric with `import-csv`)                                                                                                                |
-| [`fmt`](#fmt)                         | Format `.tdsl` files to the canonical style                                                                                                                   |
-| [`lint`](#lint)                       | Lint `.tdsl` files and apply automatic fixes                                                                                                                  |
-| [`cache`](#cache)                     | Manage the local Wikidata cache                                                                                                                               |
-| [`decompile`](#decompile)             | Decompile JSON IR back to `.tdsl` source                                                                                                                      |
-| [`completions`](#completions)         | Generate shell completion scripts                                                                                                                             |
-| [`lsp`](#lsp)                         | Start the LSP server over stdio (Diagnostics + Completion + Hover + Goto Definition + Code Action + Document Symbols + Find References + Rename + Formatting) |
+| Subcommand                    | Description                                                                                                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`build`](#build)             | Compile `.tdsl` to IR JSON                                                                                                                                    |
+| [`merge`](#merge)             | Merge multiple `.tdsl` files and output IR JSON                                                                                                               |
+| [`check`](#check)             | Run a syntax and semantic error check                                                                                                                         |
+| [`ast`](#ast)                 | Dump the parsed AST (for debugging)                                                                                                                           |
+| [`fetch`](#fetch)             | Fetch and display data for a Wikidata entity                                                                                                                  |
+| [`search`](#search)           | Search for Wikidata entities by keyword                                                                                                                       |
+| [`inspect`](#inspect)         | Analyze a Wikidata entity in detail and suggest a mapping strategy                                                                                            |
+| [`resolve`](#resolve)         | Resolve a Wikipedia article URL to a Wikidata QID                                                                                                             |
+| [`scaffold`](#scaffold)       | Generate a `.tdsl` template from Wikidata entities                                                                                                            |
+| [`render`](#render)           | Render `.tdsl` to a standalone HTML/SVG/PNG/PDF timeline                                                                                                      |
+| [`init`](#init)               | Generate a minimal `.tdsl` template for manual editing                                                                                                        |
+| [`import-csv`](#import-csv)   | Import timeline items from CSV                                                                                                                                |
+| [`export-csv`](#export-csv)   | Export IR to CSV (symmetric with `import-csv`)                                                                                                                |
+| [`fmt`](#fmt)                 | Format `.tdsl` files to the canonical style                                                                                                                   |
+| [`lint`](#lint)               | Lint `.tdsl` files and apply automatic fixes                                                                                                                  |
+| [`cache`](#cache)             | Manage the local Wikidata cache                                                                                                                               |
+| [`decompile`](#decompile)     | Decompile JSON IR back to `.tdsl` source                                                                                                                      |
+| [`completions`](#completions) | Generate shell completion scripts                                                                                                                             |
+| [`lsp`](#lsp)                 | Start the LSP server over stdio (Diagnostics + Completion + Hover + Goto Definition + Code Action + Document Symbols + Find References + Rename + Formatting) |
 
 ## build
 
@@ -454,6 +454,96 @@ tdsl scaffold wikidata \
   --qids "Q7183,Q7209,Q8209" \
   --timeline "Han, Xin, and Eastern Han" \
   --target span
+```
+
+## render
+
+Renders a `.tdsl` file to a standalone HTML / SVG / PNG / PDF timeline. See [Commands](/en/docs/commands/#render) for the basic usage.
+
+```
+tdsl render [OPTIONS] <FILE>
+```
+
+### Arguments
+
+| Argument | Description                    |
+| -------- | ------------------------------ |
+| `<FILE>` | Path to the input `.tdsl` file |
+
+### Option Reference
+
+See [Commands](/en/docs/commands/#render) for `--format` / `--dpi` / `--png-scale` / `--orientation` / `--grid` / `--show-event-labels` / `--lane-height` / `--layout-style` / `--show-legend` / `--watch` / `--show-table`. See [Styling](/en/docs/styling/) for `--theme` / `--custom-css`.
+
+| Option                          | Value                                                                                     | Default                | Introduced                            | Details                                        |
+| ------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------- | ---------------------------------------------- |
+| `-o, --output <OUTPUT>`         | Path to the output file                                                                   | stdout                 | —                                     | —                                              |
+| `--format <FORMAT>`             | `html` / `svg` / `png` / `pdf`                                                            | `html`                 | — (`png`/`pdf` since v1.10.0/v1.11.0) | [Commands](/en/docs/commands/#render)          |
+| `--scale <SCALE>`               | Horizontal pixels per year                                                                | `2`                    | —                                     | [Below](#--scale----left-gutter----top-margin) |
+| `--lane-height <LANE_HEIGHT>`   | Height of each lane in pixels                                                             | `60`                   | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--left-gutter <LEFT_GUTTER>`   | Width of the left gutter for lane labels                                                  | `120`                  | —                                     | [Below](#--scale----left-gutter----top-margin) |
+| `--top-margin <TOP_MARGIN>`     | Top margin above the time axis                                                            | `40`                   | —                                     | [Below](#--scale----left-gutter----top-margin) |
+| `--theme <THEME>`               | `default` / `dark` / `print` / `pastel`                                                   | `default`              | —                                     | [Styling](/en/docs/styling/)                   |
+| `--custom-css <CUSTOM_CSS>`     | Path to a custom CSS file injected after the theme CSS                                    | —                      | —                                     | [Styling](/en/docs/styling/)                   |
+| `--dpi <DPI>`                   | PNG output resolution (mutually exclusive with `--png-scale`)                             | `96`                   | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--png-scale <PNG_SCALE>`       | Fixed pixel scale for PNG output (mutually exclusive with `--dpi`)                        | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--interactive`                 | Enable zoom, pan, search, legend, and detail panel                                        | —                      | since v1.1.0                          | [Below](#--interactive)                        |
+| `--color-map <COLOR_MAP>`       | Tag-to-color mapping (e.g. `war=#cc0000,dynasty=#3366cc`)                                 | —                      | since v1.1.0                          | [Below](#--color-map)                          |
+| `--orientation <ORIENTATION>`   | `horizontal` / `vertical`                                                                 | `horizontal`           | since v1.13.0                         | [Commands](/en/docs/commands/#render)          |
+| `--grid <GRID>`                 | `none` / `decade` / `year` / `month`                                                      | `none`                 | since v1.14.0                         | [Commands](/en/docs/commands/#render)          |
+| `--layout-style <LAYOUT_STYLE>` | `timeline` / `group-bands` / `gantt` / `zigzag`                                           | `timeline`             | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--watch`                       | Re-render automatically on file change (`html`/`svg` only)                                | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--show-table`                  | Append a table listing all items                                                          | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--show-event-labels`           | Always draw labels near event dots/bars                                                   | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--pdf-size <SIZE>`             | `a4` / `a3` / `letter` (`--format pdf` only)                                              | `a4`                   | since v1.17.0                         | [Below](#pdf-options)                          |
+| `--pdf-landscape`               | Output the PDF in landscape orientation (`--format pdf` only)                             | —                      | since v1.17.0                         | [Below](#pdf-options)                          |
+| `--pdf-margin <MM>`             | Paper margin in mm (`--format pdf` only)                                                  | `10`                   | since v1.17.0                         | [Below](#pdf-options)                          |
+| `--pdf-title <TITLE>`           | Override the PDF document Title metadata (`--format pdf` only)                            | timeline title         | since v1.17.0                         | [Below](#pdf-options)                          |
+| `--pdf-pagination`              | Split the item table across multiple pages (requires `--show-table`, `--format pdf` only) | disabled (single page) | since v1.27.0                         | [Below](#pdf-options)                          |
+
+### `--scale` / `--left-gutter` / `--top-margin`
+
+Adjust the layout dimensions of the timeline body. `--scale` controls the horizontal density (a larger value widens the pixels-per-year), `--left-gutter` sets the width of the lane label column, and `--top-margin` sets the top padding above the time axis ticks. Widen `--left-gutter` when long lane labels wrap.
+
+```sh
+# Widen to 4px per year and give long lane labels more room
+tdsl render examples/china_dynasties.tdsl --scale 4 --left-gutter 160 --output china_wide.html
+```
+
+### `--interactive`
+
+Generates interactive HTML with zoom, pan, item search, a legend, and a detail panel. Only meaningful with `--format html` (since v1.1.0).
+
+```sh
+tdsl render examples/china_dynasties.tdsl --interactive --output china_interactive.html
+```
+
+### `--color-map`
+
+Overrides the `color_map` declaration inside a `timeline` block from the CLI, mapping tags to colors (since v1.1.0). Provide a comma-separated list of `tag=color`.
+
+```sh
+tdsl render examples/china_dynasties.tdsl \
+  --color-map "dynasty=#4b7bec,war=#e74c3c" \
+  --output china.html
+```
+
+### PDF options
+
+`--pdf-size` / `--pdf-landscape` / `--pdf-margin` / `--pdf-title` are only meaningful with `--format pdf`, and control the paper size, orientation, margin, and metadata title (since v1.17.0).
+
+```sh
+# A3 landscape, 15mm margin, and an explicit title
+tdsl render examples/china_dynasties.tdsl \
+  --format pdf --pdf-size a3 --pdf-landscape --pdf-margin 15 --pdf-title "Chinese Dynasties" \
+  --output china_a3.pdf
+```
+
+`--pdf-pagination` is only meaningful together with `--show-table`, and splits the item table across as many pages as fit the paper size and margins (since v1.27.0). The first page remains the timeline body only (scaled down), and the table is split across subsequent pages. Specifying `--pdf-pagination` without `--show-table` is an error.
+
+```sh
+tdsl render examples/china_dynasties.tdsl \
+  --format pdf --show-table --pdf-pagination \
+  --output china_paginated.pdf
 ```
 
 ## init
