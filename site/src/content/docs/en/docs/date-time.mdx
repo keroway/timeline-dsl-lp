@@ -21,7 +21,7 @@ Leap seconds (`:60`) are always rejected. Any of these formats can be used in a 
 
 ## Timezone offset
 
-Minute and second precision date-time literals accept one of the following, appended after `HH:MM`:
+Minute and second precision date-time literals accept one of the following. The append position depends on precision: for minute precision (`YYYY-MM-DDTHH:MM`) it goes after `HH:MM`, and for second precision (`YYYY-MM-DDTHH:MM:SS`) it goes after `HH:MM:SS`.
 
 | Notation | Meaning                                                                                          |
 | -------- | ------------------------------------------------------------------------------------------------ |
