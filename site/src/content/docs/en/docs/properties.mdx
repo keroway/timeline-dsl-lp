@@ -1,0 +1,108 @@
+---
+title: Properties Reference
+description: A comprehensive reference of the properties accepted by timeline / lane / group / event / span / event_range.
+---
+
+A comprehensive reference of the properties you can write on `timeline` / `lane` / `group` / `event` / `span` / `event_range`. For a tutorial-style introduction with runnable examples, see [Grammar & Examples](/en/docs/grammar/).
+
+Importing from Wikidata (`import` / `map` / `template` / `apply`) is covered on a separate page. For date/time literal formats (`YYYY-MM-DD` etc.), see the timeline-axis section of [Grammar & Examples](/en/docs/grammar/).
+
+## timeline
+
+Defines the metadata for the whole timeline. Write exactly one per `.tdsl` file.
+
+```tdsl
+timeline "Chinese Dynasties" {
+    title "Chinese Dynasties";
+    unit year;
+    range -500..2000;
+    calendar proleptic_gregorian;
+    color_map {
+        dynasty: "#3366cc";
+        war:     "#cc0000";
+    }
+}
+```
+
+| Property    | Required | Description                                                                                     |
+| ----------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `title`     | Optional | Display title of the timeline                                                                   |
+| `unit`      | Optional | Time unit: `year` / `month` / `day` / `hour` / `minute` / `second`. Unknown values are an error |
+| `range`     | Optional | Display range as `start..end`. Negative values mean BCE                                         |
+| `calendar`  | Optional | Calendar system, e.g. `proleptic_gregorian`                                                     |
+| `color_map` | Optional | Tag-to-color mapping. Define multiple entries as `tag_name: "#hex_color";`                      |
+
+Setting `unit` to `hour` / `minute` / `second` renders a finer-grained time axis than day-level (tick density is auto-thinned based on the range).
+
+Colors defined in `color_map` are applied automatically by `tdsl render`. Accepted values are hex colors (`#RGB` / `#RGBA` / `#RRGGBB` / `#RRGGBBAA`) and simple CSS color keywords. For more advanced styling, use the CLI's `--custom-css`. You can also override with the `--color-map "war=#cc0000"` CLI flag.
+
+`color_map` keys can be identifiers (ASCII) or string literals (any Unicode). Quote non-ASCII tags (e.g. `tags ["war"]` in another language) when assigning a color.
+
+```tdsl
+color_map {
+    war: "#cc0000";       // identifier key
+    "戦争": "#cc0000";     // string literal key (non-ASCII allowed)
+}
+```
+
+## lane
+
+Defines a vertical-axis category (lane) of the timeline — dynasties, people, countries, organizations, etc.
+
+```tdsl
+lane "Han" as han { kind dynasty; order 20; }
+```
+
+| Property  | Required | Description                                                                                                                |
+| --------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `as <id>` | Optional | Internal identifier. If omitted, a slug is auto-generated from the label                                                   |
+| `kind`    | Optional | Classification (known values: `custom` / `dynasty` / `person` / `country` / `event`). Use `custom` for your own categories |
+| `order`   | Optional | Initial display order (integer). Smaller values appear higher                                                              |
+
+## group
+
+Defines a group that bundles multiple `lane`s and visually organizes them. A group label and boundary lines are shown at render time.
+
+```tdsl
+group "Antiquity" {
+    lane "Qin" as qin { kind dynasty; order 10; }
+    lane "Han" as han { kind dynasty; order 20; }
+}
+```
+
+- A group must contain one or more `lane` declarations.
+- Existing `.tdsl` files that don't use `group` keep working as-is (backward compatible).
+
+## Arguments of event / span / event_range
+
+All three take a lane ID, time value(s), and a label as positional arguments, followed by a trailing `{ ... }` for the block_options (shared options) described below.
+
+| Block         | Syntax                                                    | Purpose                                   |
+| ------------- | --------------------------------------------------------- | ----------------------------------------- |
+| `span`        | `span <lane-id> <start>..<end> "<label>" { ... };`        | A duration (e.g. a dynasty's reign)       |
+| `event`       | `event <lane-id> <point-in-time> "<label>" { ... };`      | An event at a specific point in time      |
+| `event_range` | `event_range <lane-id> <start>..<end> "<label>" { ... };` | An event that spans a period (e.g. a war) |
+
+The `<end>` of `span` / `event_range` also accepts the `now` keyword, letting you express a still-ongoing period without making up a fictitious end year (see the "Ongoing period" section of [Grammar & Examples](/en/docs/grammar/) for details).
+
+## block_options (shared options)
+
+Shared options you can add inside the `{ ... }` of `event` / `span` / `event_range`. All are optional.
+
+| Option   | Description                                                                | Example                       |
+| -------- | -------------------------------------------------------------------------- | ----------------------------- |
+| `tags`   | A list of tags                                                             | `tags ["war", "major"];`      |
+| `source` | Data source (e.g. a Wikidata QID)                                          | `source wd:Q7209;`            |
+| `id`     | A stable identifier for the item, used for review and diff tracking        | `id "span:han";`              |
+| `origin` | An identifier for the item's origin                                        | `origin imported;`            |
+| `note`   | Supplementary description shown in tooltips, etc.                          | `note "Source memo";`         |
+| `link`   | A reference URL. Only `http://` / `https://` are allowed                   | `link "https://example.com";` |
+| `color`  | A per-item color that takes priority over `color_map` and the lane palette | `color "#3366cc";`            |
+
+For the color priority order (`item.color` > `color_map` tag color > lane palette color), see [Styling](/en/docs/styling/).
+
+## Next steps
+
+- Check runnable examples with Playground links on [Grammar & Examples](/en/docs/grammar/)
+- See the color and CSS class reference on [Styling](/en/docs/styling/)
+- Check CLI commands on [Commands](/en/docs/commands/)
