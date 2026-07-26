@@ -1,0 +1,82 @@
+---
+title: Date & Time Reference
+description: A reference for every date and time literal you can write in start / end / time, timezone offsets, and how BCE years are handled.
+---
+
+This page lists the date/time literal formats and their precision, as accepted by `time` / `start` / `end` on `event` / `span` / `event_range`, and by `range` on `timeline`. For how these values are actually drawn on the timeline axis (month/day precision, hour/minute tick generation), see [Grammar & Examples](/en/docs/grammar/).
+
+## Literal formats
+
+| Format                | Example               | Precision |
+| --------------------- | --------------------- | --------- |
+| `YYYY`                | `1969`, `-206`        | Year      |
+| `YYYY-MM`             | `1969-07`             | Month     |
+| `YYYY-MM-DD`          | `1969-07-20`          | Day       |
+| `YYYY-MM-DDTHH:MM`    | `1969-07-20T20:17`    | Minute    |
+| `YYYY-MM-DDTHH:MM:SS` | `1969-07-20T20:17:40` | Second    |
+
+Minute and second precision literals accept an optional [timezone offset](#timezone-offset) (e.g. `1969-07-20T20:17:40Z`, `1969-07-20T20:17:40+09:00`).
+
+Leap seconds (`:60`) are always rejected. Any of these formats can be used in a `start..end` range expression (e.g. `1939-09-01..1945-09-02`), and the two ends may have different precision (e.g. `1900..1969-07-20`). For how a range is placed on the timeline axis, see the "Month and Day Precision on the Timeline Axis" section of [Grammar & Examples](/en/docs/grammar/).
+
+## Timezone offset
+
+Minute and second precision date-time literals accept one of the following. The append position depends on precision: for minute precision (`YYYY-MM-DDTHH:MM`) it goes after `HH:MM`, and for second precision (`YYYY-MM-DDTHH:MM:SS`) it goes after `HH:MM:SS`.
+
+| Notation | Meaning                                                                                          |
+| -------- | ------------------------------------------------------------------------------------------------ |
+| `Z`      | UTC                                                                                              |
+| `±HH:MM` | Offset from UTC (e.g. `+09:00`, `-05:00`). 15-minute increments are also allowed (e.g. `+05:45`) |
+
+The valid range is `-14:00` to `+14:00` (the range of real-world UTC offsets, with `+14:00` as observed by Kiribati and others as the upper bound). Both an out-of-range value and a malformed offset are parse errors ([Error Code Reference](/en/docs/errors/), `E008`).
+
+```tdsl
+# Wrong (out of range)
+event a 2024-01-01T10:00+15:00 "E" {};
+
+# Correct
+event a 2024-01-01T10:00+09:00 "E" {};
+```
+
+IANA timezone names such as `Asia/Tokyo` are not supported. An offset is only ever a fixed number of minutes — daylight saving time (DST) is never resolved automatically. If the offset changes across a period, the author must state it explicitly for each part.
+
+## Mixing offset-bearing and offset-free values
+
+You cannot mix an offset-bearing value with an offset-free value within the same **comparison context** (the same `span` / `event_range` `start..end`, ordering within the same lane, and so on).
+
+- Offset-bearing values are normalized to UTC before being compared with each other.
+- Offset-free values are compared as their raw civil-time values (no timezone concept is introduced).
+- Comparing an offset-bearing value with an offset-free value is an explicit error — the ambiguity is never resolved implicitly.
+
+```tdsl
+# Wrong (offset-bearing and offset-free mixed in the same span)
+span a 2024-01-01T10:00:00+09:00..2024-01-02T10:00 "S" {};
+
+# Correct (both sides carry an offset)
+span a 2024-01-01T10:00:00+09:00..2024-01-02T10:00:00+09:00 "S" {};
+
+# Correct (neither side carries an offset)
+span a 2024-01-01T10:00:00..2024-01-02T10:00:00 "S" {};
+```
+
+See `E113` in the [Error Code Reference](/en/docs/errors/) for the error code and how to fix it.
+
+Items generated from a Wikidata import (`import wikidata { ... }` / `map ... to ...`) always store their time values as offset-free. If you add an offset to a static `event` / `span`, mixing it with a Wikidata-derived item in the same comparison context can trigger this error. Remove the offset from the static side, or separate the values into different lanes or items to avoid the comparison altogether.
+
+## BCE (negative years)
+
+BCE years support month/day and hour/minute (second) precision, not just year precision. They are written as a signed year (e.g. `-0206-01-15`).
+
+- A year-only literal (`YYYY`) has no digit limit, so a year beyond 4 digits — like in `range 0..10000;` — can be written as-is.
+- The year portion of a literal that also carries month/day or time-of-day precision is limited to a signed 4-digit year (a 5-digit year with a date, like `10000-07-20`, is not supported).
+
+```tdsl
+span shang -1600-01-01..-1046-01-01 "Shang dynasty" {};
+event founding -0206-01-15 "Founding of the Western Han" {};
+```
+
+## What's next
+
+- [Grammar & Examples](/en/docs/grammar/) — how these values are drawn on the timeline axis, with runnable Playground examples
+- [Properties Reference](/en/docs/properties/) — the full list of properties accepted by `timeline`, `event`, `span`, and others
+- [Error Code Reference](/en/docs/errors/) — the list of diagnostic codes, including `E006`–`E008` and `E113`

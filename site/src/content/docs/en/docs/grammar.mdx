@@ -307,9 +307,11 @@ event events 1914-07 "Outbreak of World War I" {};
 
 Date literals are placed at their exact positions on the timeline axis. When you specify month precision (`YYYY-MM`), it is treated as the first day of that month. Wikidata claim values that carry month or day precision are placed at their exact positions in the same way.
 
+For the full list of date/time literal formats, timezone offsets, and how BCE years are handled, see the [Date & Time Reference](/en/docs/date-time/).
+
 ### Hour and minute precision (`unit hour` / `unit minute`)
 
-Setting `unit hour;` or `unit minute;` draws a sub-day time axis finer than day precision. Write `start` / `end` / `time` as **`YYYY-MM-DDTHH:MM`** date-time literals. From v1.23.0 onwards, axis ticks thin out automatically based on density (1h/3h/6h/12h for hour units, 1min/5min/15min/30min for minute units), with `HH:MM` / `MM-DD HH:MM` labels.
+Setting `unit hour;` or `unit minute;` draws a sub-day time axis finer than day precision. Write `start` / `end` / `time` as **`YYYY-MM-DDTHH:MM`** date-time literals. From v1.23.0 onwards, axis ticks thin out automatically based on density (1h/3h/6h/12h for hour units, 1min/5min/15min/30min for minute units), with `HH:MM` / `MM-DD HH:MM` labels. For whether second precision or a timezone offset (`Z` / `±HH:MM`) can be added, see the [Date & Time Reference](/en/docs/date-time/).
 
 ```tdsl
 timeline "Apollo 11 Landing Day" {
