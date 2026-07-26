@@ -242,6 +242,8 @@ map wd.han_dynasty to span {
 
 ブラウザ版の Playground では、Wikidataのネットワーク取得は行いません。構文確認用として開けますが、`import` 由来の項目は描画結果から省かれることがあります。Webで確実に表示したい内容は、上の例の `event dynasties -221 ...` のように静的な `event`、`span`、`event_range` として書いてください。
 
+`import` の `entity` / `query` / `policy` / `as`、再インポートポリシー、`map` / `template` / `apply` が取りうるアクセサ（`claim(P).year` や `.qualifier(P)` など）とWikidataプロパティ対応表は [Wikidataインポート/マッピングリファレンス](/docs/wikidata-mapping/) を参照してください。
+
 Wikidataを解決してJSONやHTMLへ出力する場合はCLIを使います。
 
 ```sh
@@ -269,7 +271,7 @@ map wd.items to span {
 }
 ```
 
-`filter` に使える演算子は `==`、`!=`、`<`、`<=`、`>`、`>=`、`&&`、`||`、`!`、`null`、`claim()` です。複数の `filter` を並べると AND 条件として扱われます。
+`filter` に使える演算子は `==`、`!=`、`<`、`<=`、`>`、`>=`、`&&`、`||`、`!`、`null`、`claim()` です。複数の `filter` を並べると AND 条件として扱われます。`filter` を含む `map` の全プロパティとアクセサの一覧は [Wikidataインポート/マッピングリファレンス](/docs/wikidata-mapping/) を参照してください。
 
 ### 文字列マッチング（`contains` / `startswith`）
 
@@ -378,6 +380,7 @@ map wd.people to span {
 ## 次に進む
 
 - [プロパティリファレンス](/docs/properties/) で各ブロックのプロパティを網羅的に確認する
+- [Wikidataインポート/マッピングリファレンス](/docs/wikidata-mapping/) で `import` / `map` / `template` / `apply` の全アクセサとWikidataプロパティ対応表を確認する
 - [Quick Start](/docs/quick-start/) で保存、検証、描画の流れを確認する
 - [Commands](/docs/commands/) でCLIコマンドを確認する
 - [CIで検証する](/docs/github-actions/) でGitHub Actionsに組み込む

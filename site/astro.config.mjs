@@ -133,6 +133,11 @@ export default defineConfig({
               slug: "docs/date-time",
             },
             {
+              label: "Wikidataインポート/マッピングリファレンス",
+              translations: { en: "Wikidata Import & Mapping Reference" },
+              slug: "docs/wikidata-mapping",
+            },
+            {
               label: "スタイリング",
               translations: { en: "Styling" },
               slug: "docs/styling",

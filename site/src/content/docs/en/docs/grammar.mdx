@@ -242,6 +242,8 @@ map wd.han_dynasty to span {
 
 In the browser-based Playground, Wikidata network fetches are not performed. You can open the file for syntax checking, but items from `import` may be omitted from the rendered output. For content you want reliably displayed on the web, write it as static `event`, `span`, or `event_range` entries — like the `event dynasties -221 ...` example above.
 
+For `import`'s `entity` / `query` / `policy` / `as`, the re-import policies, and the accessors accepted by `map` / `template` / `apply` (such as `claim(P).year` and `.qualifier(P)`) along with the Wikidata property reference table, see the [Wikidata Import & Mapping Reference](/en/docs/wikidata-mapping/).
+
 To resolve Wikidata and output JSON or HTML, use the CLI.
 
 ```sh
@@ -269,7 +271,7 @@ map wd.items to span {
 }
 ```
 
-Operators available in `filter`: `==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`, `!`, `null`, `claim()`. Multiple `filter` clauses are combined as AND conditions.
+Operators available in `filter`: `==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`, `!`, `null`, `claim()`. Multiple `filter` clauses are combined as AND conditions. For the full list of `map` properties and accessors, including `filter`, see the [Wikidata Import & Mapping Reference](/en/docs/wikidata-mapping/).
 
 ### String Matching (`contains` / `startswith`)
 
@@ -378,6 +380,7 @@ map wd.people to span {
 ## What's Next
 
 - [Properties Reference](/en/docs/properties/) — See the full list of properties for each block
+- [Wikidata Import & Mapping Reference](/en/docs/wikidata-mapping/) — See every accessor of `import` / `map` / `template` / `apply` and the Wikidata property reference table
 - [Quick Start](/en/docs/quick-start/) — Learn the save, validate, and render workflow
 - [Commands](/en/docs/commands/) — Explore CLI commands
 - [Validate in CI](/en/docs/github-actions/) — Integrate with GitHub Actions
