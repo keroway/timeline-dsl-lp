@@ -30,27 +30,27 @@ tdsl [OPTIONS] <COMMAND>
 
 ## Subcommands
 
-| Subcommand                                      | Description                                                                                                                                                   |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`build`](#build)                               | Compile `.tdsl` to IR JSON                                                                                                                                    |
-| [`merge`](#merge)                               | Merge multiple `.tdsl` files and output IR JSON                                                                                                               |
-| [`check`](#check)                               | Run a syntax and semantic error check                                                                                                                         |
-| [`ast`](#ast)                                   | Dump the parsed AST (for debugging)                                                                                                                           |
-| [`fetch`](/en/docs/commands/)                   | Fetch and display data for a Wikidata entity                                                                                                                  |
-| [`search`](/en/docs/commands/)                  | Search for Wikidata entities by keyword                                                                                                                       |
-| [`inspect`](/en/docs/commands/)                 | Analyze a Wikidata entity in detail and suggest a mapping strategy                                                                                            |
-| [`resolve`](/en/docs/commands/)                 | Resolve a Wikipedia article URL to a Wikidata QID                                                                                                             |
-| [`scaffold`](/en/docs/commands/)                | Generate a `.tdsl` template from Wikidata entities                                                                                                            |
-| [`render`](/en/docs/commands/#render)           | Render `.tdsl` to a standalone HTML/SVG/PNG/PDF timeline                                                                                                      |
-| [`init`](/en/docs/commands/)                    | Generate a minimal `.tdsl` template for manual editing                                                                                                        |
-| [`import-csv`](/en/docs/commands/)              | Import timeline items from CSV                                                                                                                                |
-| [`export-csv`](/en/docs/commands/#export-csv)   | Export IR to CSV (symmetric with `import-csv`)                                                                                                                |
-| [`fmt`](#fmt)                                   | Format `.tdsl` files to the canonical style                                                                                                                   |
-| [`lint`](#lint)                                 | Lint `.tdsl` files and apply automatic fixes                                                                                                                  |
-| [`cache`](/en/docs/commands/#cache-management)  | Manage the local Wikidata cache                                                                                                                               |
-| [`decompile`](#decompile)                       | Decompile JSON IR back to `.tdsl` source                                                                                                                      |
-| [`completions`](/en/docs/commands/#completions) | Generate shell completion scripts                                                                                                                             |
-| [`lsp`](/en/docs/commands/#lsp)                 | Start the LSP server over stdio (Diagnostics + Completion + Hover + Goto Definition + Code Action + Document Symbols + Find References + Rename + Formatting) |
+| Subcommand                            | Description                                                                                                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`build`](#build)                     | Compile `.tdsl` to IR JSON                                                                                                                                    |
+| [`merge`](#merge)                     | Merge multiple `.tdsl` files and output IR JSON                                                                                                               |
+| [`check`](#check)                     | Run a syntax and semantic error check                                                                                                                         |
+| [`ast`](#ast)                         | Dump the parsed AST (for debugging)                                                                                                                           |
+| [`fetch`](#fetch)                     | Fetch and display data for a Wikidata entity                                                                                                                  |
+| [`search`](#search)                   | Search for Wikidata entities by keyword                                                                                                                       |
+| [`inspect`](#inspect)                 | Analyze a Wikidata entity in detail and suggest a mapping strategy                                                                                            |
+| [`resolve`](#resolve)                 | Resolve a Wikipedia article URL to a Wikidata QID                                                                                                             |
+| [`scaffold`](#scaffold)               | Generate a `.tdsl` template from Wikidata entities                                                                                                            |
+| [`render`](/en/docs/commands/#render) | Render `.tdsl` to a standalone HTML/SVG/PNG/PDF timeline                                                                                                      |
+| [`init`](#init)                       | Generate a minimal `.tdsl` template for manual editing                                                                                                        |
+| [`import-csv`](#import-csv)           | Import timeline items from CSV                                                                                                                                |
+| [`export-csv`](#export-csv)           | Export IR to CSV (symmetric with `import-csv`)                                                                                                                |
+| [`fmt`](#fmt)                         | Format `.tdsl` files to the canonical style                                                                                                                   |
+| [`lint`](#lint)                       | Lint `.tdsl` files and apply automatic fixes                                                                                                                  |
+| [`cache`](#cache)                     | Manage the local Wikidata cache                                                                                                                               |
+| [`decompile`](#decompile)             | Decompile JSON IR back to `.tdsl` source                                                                                                                      |
+| [`completions`](#completions)         | Generate shell completion scripts                                                                                                                             |
+| [`lsp`](#lsp)                         | Start the LSP server over stdio (Diagnostics + Completion + Hover + Goto Definition + Code Action + Document Symbols + Find References + Rename + Formatting) |
 
 ## build
 
@@ -284,6 +284,390 @@ tdsl lint examples/china_dynasties.tdsl --fix
 
 # JSON output for CI
 tdsl lint examples/china_dynasties.tdsl --format json
+```
+
+## fetch
+
+Fetches and displays the label, description, and properties of a Wikidata entity (given a QID). Use this to inspect an entity's data before writing an `import` block.
+
+```
+tdsl fetch [OPTIONS] <QID>
+```
+
+### Arguments
+
+| Argument | Description                   |
+| -------- | ----------------------------- |
+| `<QID>`  | A Wikidata QID (e.g. `Q7209`) |
+
+### Options
+
+| Option              | Description                                       | Default |
+| ------------------- | ------------------------------------------------- | ------- |
+| `-l, --lang <LANG>` | Language(s) to fetch labels for (comma-separated) | `ja,en` |
+
+### Examples
+
+```sh
+# Fetch information for the Han dynasty
+tdsl fetch Q7209
+
+# Fetch English and French labels
+tdsl fetch Q7209 --lang en,fr
+```
+
+## search
+
+Searches for Wikidata entities by keyword and lists candidate QIDs. Use this to find a QID for use in `import`.
+
+```
+tdsl search [OPTIONS] <QUERY>
+```
+
+### Arguments
+
+| Argument  | Description                         |
+| --------- | ----------------------------------- |
+| `<QUERY>` | Search query (e.g. `"Han dynasty"`) |
+
+### Options
+
+| Option                | Description                             | Default |
+| --------------------- | --------------------------------------- | ------- |
+| `-l, --lang <LANG>`   | Language to use for the Wikidata search | `ja`    |
+| `-n, --limit <LIMIT>` | Maximum number of results (1-50)        | `10`    |
+| `--json`              | Output as JSON                          | —       |
+
+### Examples
+
+```sh
+# Search for "Han dynasty" in English
+tdsl search "Han dynasty" --lang en
+
+# Increase the result count
+tdsl search "Han dynasty" --lang en --limit 20
+
+# Get JSON output and pipe it to a script
+tdsl search "samurai" --json | jq '.[] | .id'
+```
+
+## inspect
+
+Analyzes a Wikidata entity in detail and suggests a mapping strategy (which properties to use for `start`/`end`, etc.). Useful as a preliminary investigation before running `scaffold`.
+
+```
+tdsl inspect [OPTIONS] <QID>
+```
+
+### Arguments
+
+| Argument | Description                   |
+| -------- | ----------------------------- |
+| `<QID>`  | A Wikidata QID (e.g. `Q7209`) |
+
+### Options
+
+| Option              | Description                                       | Default |
+| ------------------- | ------------------------------------------------- | ------- |
+| `-l, --lang <LANG>` | Fallback language(s) for labels (comma-separated) | `ja,en` |
+| `--json`            | Output as JSON                                    | —       |
+
+### Examples
+
+```sh
+# Analyze the Tokugawa Ieyasu entity
+tdsl inspect Q7243
+
+# Output as JSON for scripted processing
+tdsl inspect Q7243 --json | jq '.suggestions'
+```
+
+## resolve
+
+Resolves a Wikipedia article URL to a Wikidata QID. Use this when you have found an article but don't know its QID.
+
+```
+tdsl resolve [OPTIONS] <URL>
+```
+
+### Arguments
+
+| Argument | Description             |
+| -------- | ----------------------- |
+| `<URL>`  | A Wikipedia article URL |
+
+### Options
+
+| Option              | Description                                       | Default |
+| ------------------- | ------------------------------------------------- | ------- |
+| `-l, --lang <LANG>` | Fallback language(s) for labels (comma-separated) | `ja,en` |
+| `--json`            | Output as JSON                                    | —       |
+
+### Examples
+
+```sh
+# Resolve a QID from an article URL
+tdsl resolve "https://ja.wikipedia.org/wiki/%E6%BC%A2"
+
+# Output as JSON
+tdsl resolve "https://en.wikipedia.org/wiki/Han_dynasty" --json
+```
+
+## scaffold
+
+Generates a `.tdsl` template from Wikidata entities. Specify the `wikidata` subcommand.
+
+```
+tdsl scaffold wikidata [OPTIONS] --qids <QIDS> --timeline <TIMELINE>
+```
+
+### `scaffold wikidata` Options
+
+| Option                        | Description                                                         | Default      |
+| ----------------------------- | ------------------------------------------------------------------- | ------------ |
+| `--qids <QIDS>`               | Comma-separated list of QIDs (e.g. `Q7183,Q7209`) **required**      | —            |
+| `--timeline <TIMELINE>`       | Display title of the timeline **required**                          | —            |
+| `-o, --output <OUTPUT>`       | Path to the output `.tdsl` file                                     | stdout       |
+| `-l, --lang <LANG>`           | Fallback language(s) for labels (comma-separated)                   | `ja,en`      |
+| `--target <TARGET>`           | Mapping target strategy (`auto` / `span` / `event` / `event-range`) | `auto`       |
+| `--lane-mode <LANE_MODE>`     | Lane assignment strategy (`single` / `per-entity` / `by-kind`)      | `per-entity` |
+| `--single-lane-label <LABEL>` | Shared lane label used when `--lane-mode single`                    | `項目`       |
+
+### Examples
+
+```sh
+# Scaffold the Western Han and Eastern Han with automatic mapping (Wikidata integration)
+tdsl scaffold wikidata \
+  --qids "Q7209,Q8209" \
+  --timeline "Han Dynasties" \
+  --output han_dynasties.tdsl
+
+# Group all entities into a single lane
+tdsl scaffold wikidata \
+  --qids "Q7209,Q8209" \
+  --timeline "Han Dynasties" \
+  --lane-mode single \
+  --single-lane-label "Dynasty"
+
+# Force mapping as span
+tdsl scaffold wikidata \
+  --qids "Q7183,Q7209,Q8209" \
+  --timeline "Han, Xin, and Eastern Han" \
+  --target span
+```
+
+## init
+
+Generates a minimal `.tdsl` template for manual editing. Does not require a Wikidata connection.
+
+```
+tdsl init [OPTIONS]
+```
+
+### Options
+
+| Option                        | Description                                                  | Default      |
+| ----------------------------- | ------------------------------------------------------------ | ------------ |
+| `-o, --output <OUTPUT>`       | Path to the output `.tdsl` file                              | stdout       |
+| `--timeline <TIMELINE>`       | Display title of the timeline                                | `新しい年表` |
+| `--range-start <RANGE_START>` | Start year of the range                                      | `0`          |
+| `--range-end <RANGE_END>`     | End year of the range                                        | `2000`       |
+| `--lanes <LANES>`             | Lane labels (comma-separated, e.g. `"kingdom,event,person"`) | `""`         |
+
+### Examples
+
+```sh
+# Generate a minimal template (stdout)
+tdsl init
+
+# Save to a file and specify lanes
+tdsl init \
+  --output my_timeline.tdsl \
+  --timeline "Fantasy World Timeline" \
+  --range-start 1000 \
+  --range-end 1500 \
+  --lanes "kingdom,event,person"
+```
+
+## import-csv
+
+Reads timeline items from a CSV file and converts them into a `.tdsl` snippet. See [Commands](/en/docs/commands/) for the CSV column spec (header row, time literals, and the `source`/`origin` columns).
+
+```
+tdsl import-csv [OPTIONS] <CSV>
+```
+
+### Arguments
+
+| Argument | Description                                           |
+| -------- | ----------------------------------------------------- |
+| `<CSV>`  | Path to the input CSV file (UTF-8, with a header row) |
+
+### Options
+
+| Option                  | Description                                            | Default |
+| ----------------------- | ------------------------------------------------------ | ------- |
+| `-o, --output <OUTPUT>` | Path to the output `.tdsl` snippet                     | stdout  |
+| `--append <APPEND>`     | Append the generated items to an existing `.tdsl` file | —       |
+
+### Examples
+
+```sh
+# Convert CSV to a .tdsl snippet (stdout)
+tdsl import-csv items.csv
+
+# Save to a file
+tdsl import-csv items.csv --output items_snippet.tdsl
+
+# Append to an existing file
+tdsl import-csv new_items.csv --append my_timeline.tdsl
+```
+
+## export-csv
+
+Exports IR to CSV. Intended for round-tripping with `import-csv`; see [Commands](/en/docs/commands/#export-csv) for the CSV column spec.
+
+```
+tdsl export-csv [OPTIONS] <FILE>
+```
+
+### Arguments
+
+| Argument | Description                                                                             |
+| -------- | --------------------------------------------------------------------------------------- |
+| `<FILE>` | The input file: a `.tdsl` source (lowered to IR) or a `.json` file (IR loaded directly) |
+
+### Options
+
+| Option                  | Description                                                           | Default |
+| ----------------------- | --------------------------------------------------------------------- | ------- |
+| `-o, --output <OUTPUT>` | Path to the output CSV file                                           | stdout  |
+| `--offline`             | Skip Wikidata fetching (static items only); ignored for `.json` input | `false` |
+| `--no-cache`            | Bypass the local cache and refetch                                    | `false` |
+| `--cache-ttl <SECONDS>` | Cache TTL in seconds; `0` disables caching                            | `86400` |
+
+### Examples
+
+```sh
+# Export .tdsl to CSV (stdout, static only)
+tdsl export-csv my_timeline.tdsl --offline
+
+# Save to a file
+tdsl export-csv my_timeline.tdsl --offline --output items.csv
+
+# Export from an IR JSON
+tdsl build my_timeline.tdsl --offline --output ir.json
+tdsl export-csv ir.json --output items.csv
+```
+
+## cache
+
+Manages the local cache of Wikidata fetch results. Specify the `status` or `clear` subcommand.
+
+```
+tdsl cache <COMMAND>
+```
+
+### `cache status`
+
+Shows cache statistics (file count, total size, oldest/newest entry).
+
+```sh
+tdsl cache status
+```
+
+### `cache clear`
+
+Deletes cache entries.
+
+```
+tdsl cache clear [OPTIONS]
+```
+
+| Option                | Description                                   | Default         |
+| --------------------- | --------------------------------------------- | --------------- |
+| `--older-than <DAYS>` | Only delete entries older than this many days | — (deletes all) |
+
+### Examples
+
+```sh
+# Show cache statistics
+tdsl cache status
+
+# Delete all cache entries
+tdsl cache clear
+
+# Delete entries older than 7 days
+tdsl cache clear --older-than 7
+```
+
+## completions
+
+Generates a shell completion script for the specified shell. Add the generated script to your shell's configuration to enable Tab completion for `tdsl` subcommands and options.
+
+```
+tdsl completions [OPTIONS] <SHELL>
+```
+
+### Arguments
+
+| Argument  | Description                                                      |
+| --------- | ---------------------------------------------------------------- |
+| `<SHELL>` | Target shell (`bash` / `elvish` / `fish` / `powershell` / `zsh`) |
+
+### Examples
+
+```sh
+# Generate and install the bash completion script
+tdsl completions bash >> ~/.bashrc
+source ~/.bashrc
+
+# Install the fish completion script
+tdsl completions fish > ~/.config/fish/completions/tdsl.fish
+
+# Install the zsh completion script
+tdsl completions zsh > ~/.zfunc/_tdsl
+echo 'fpath=(~/.zfunc $fpath)' >> ~/.zshrc
+echo 'autoload -Uz compinit && compinit' >> ~/.zshrc
+source ~/.zshrc
+```
+
+## lsp
+
+Starts the LSP (Language Server Protocol) server over stdio. Reads JSON-RPC 2.0 messages from stdin and writes responses to stdout.
+
+```
+tdsl lsp
+```
+
+### Supported Features
+
+| Feature                           | Description                                                                                  |
+| --------------------------------- | -------------------------------------------------------------------------------------------- |
+| `textDocument/publishDiagnostics` | Reports parse errors, validation warnings, and static reference errors in real time          |
+| `textDocument/didOpen`            | Runs diagnostics when a document is opened                                                   |
+| `textDocument/didChange`          | Re-runs diagnostics on document change (full sync)                                           |
+| `textDocument/didClose`           | Clears diagnostics when a document is closed                                                 |
+| `textDocument/completion`         | Returns DSL keyword completion candidates (context-free, all keywords)                       |
+| `textDocument/hover`              | lane ID → lane info / QID → cached entity info (offline)                                     |
+| `textDocument/definition`         | Jumps from a lane reference to its declaration                                               |
+| `textDocument/codeAction`         | Offers `tdsl lint --fix`-equivalent automatic fixes as quick fixes (full-text, offline)      |
+| `textDocument/documentSymbol`     | Returns a hierarchical symbol tree for timeline / lane / items                               |
+| `textDocument/references`         | Returns all reference locations for a lane ID (`includeDeclaration` toggles the declaration) |
+| `textDocument/rename`             | Renames a lane's declaration and all references at once (explicit `as <alias>` only)         |
+| `textDocument/prepareRename`      | Validates whether a rename target is renameable (rejects lanes without `as`)                 |
+| `textDocument/formatting`         | Returns a full-text TextEdit that formats the DSL source to the canonical style              |
+
+`import` / `map` / `apply` blocks are diagnosed via static analysis (offline, no network access), so entity resolution that requires Wikidata fetching is not performed. See [Installation](/en/docs/installation/#language-server-lsp) for editor setup (VS Code / Neovim / Helix) and detailed usage of each feature.
+
+### Examples
+
+```sh
+# Start the LSP server (blocks waiting on stdin)
+tdsl lsp
+
+# Sanity-check with a minimal JSON-RPC request (Content-Length header required)
+echo -e 'Content-Length: 2\r\n\r\n{}' | tdsl lsp
 ```
 
 ## Related Documentation
