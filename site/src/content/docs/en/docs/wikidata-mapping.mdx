@@ -1,0 +1,267 @@
+---
+title: Wikidata Import & Mapping Reference
+description: A comprehensive reference for the options, accessors, and Wikidata property support that import / map / template / apply accept.
+---
+
+This page comprehensively lists the options and accessors accepted by `import`, which pulls in Wikidata entities, and by `map` / `template` / `apply`, which transform those entities into timeline elements. For a sample-driven entry point, see the "import and Wikidata Web Constraints" section of [Grammar & Examples](/en/docs/grammar/). For the properties accepted by hand-written `event` / `span` / `event_range` blocks, see the [Properties Reference](/en/docs/properties/).
+
+The browser-based Playground does not perform Wikidata network fetches (see [Grammar & Examples](/en/docs/grammar/) for details). To actually resolve the examples on this page, use the CLI (`tdsl build` / `tdsl render`).
+
+## import
+
+Declares an import from an external data source.
+
+```tdsl
+import wikidata as wd {
+    entity Q7183 as qin_dynasty;
+    entity Q7209 as han_dynasty;
+    query "SELECT ?item WHERE { ... }" as samurai;
+    policy merge_by_source;
+}
+```
+
+| Element                         | Description                                                                 |
+| ------------------------------- | --------------------------------------------------------------------------- |
+| `entity <QID> as <alias>`       | Imports a single specific Wikidata entity                                   |
+| `query "<SPARQL>" as <alias>`   | Fetches multiple entities at once via a SPARQL query                        |
+| `policy <name>`                 | Merge strategy applied on re-import (see below)                             |
+| `policy field_priority { ... }` | Per-field merge strategy (see below)                                        |
+| `as <alias>`                    | Alias for the whole import block, referenced from `map` as `wd.han_dynasty` |
+
+### Re-import policies
+
+Controls how ID collisions between Wikidata-derived items and manually written items are handled when the same `.tdsl` file is rebuilt repeatedly.
+
+| Policy                      | Behavior                                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------------------- |
+| `merge_by_source` (default) | Treats ID collisions as an error                                                            |
+| `overwrite_imported`        | Overwrites only existing imported items. Collisions with manual definitions remain an error |
+| `keep_manual`               | Skips the imported item on ID collision, keeping the existing manual item                   |
+
+### field_priority (field priority policy)
+
+Lets you specify a merge strategy per field, finer-grained than an overall policy like `policy merge_by_source;`.
+
+```tdsl
+import wikidata as wd {
+    entity Q7209 as han_dynasty;
+    policy field_priority {
+        label: manual;    // prefer the manual label
+        time:  wikidata;  // prefer the Wikidata time
+        tags:  merge;     // merge both sets of tags
+    }
+}
+```
+
+| Field                     | Value      | Behavior                                                                |
+| ------------------------- | ---------- | ----------------------------------------------------------------------- |
+| `label` / `time` / `tags` | `manual`   | Prefers the existing manual definition, ignoring the Wikidata side      |
+| `label` / `time` / `tags` | `wikidata` | Prefers the Wikidata side, overwriting the manual definition            |
+| `label` / `time` / `tags` | `merge`    | Keeps both (`tags` is unioned; `label` / `time` take the Wikidata side) |
+
+## map
+
+A rule that transforms an imported entity into a timeline element (`span` / `event` / `event_range`).
+
+```tdsl
+map wd.han_dynasty to span {
+    lane han;
+    start claim(P571).year;
+    end claim(P576).year;
+    label label@ja ?? label@en;
+    tags ["dynasty", "imported"];
+}
+```
+
+`<target_type>` in `map <alias> to <target_type> { ... }` accepts only `span` / `event` / `event_range`. Any other value (e.g. `timeline`) is a parse error.
+
+| target_type   | Item kind produced     | Required time property |
+| ------------- | ---------------------- | ---------------------- |
+| `span`        | A duration (start–end) | `start` / `end`        |
+| `event`       | A point event          | `time`                 |
+| `event_range` | A ranged event         | `start` / `end`        |
+
+`source` is automatically set to `wd:<entity_id>` on imported items. It cannot be specified explicitly inside a `map` block.
+
+| Property | Description                                                                                      |
+| -------- | ------------------------------------------------------------------------------------------------ |
+| `lane`   | ID of the target lane                                                                            |
+| `start`  | Expression that computes the start point                                                         |
+| `end`    | Expression that computes the end point (`span` / `event_range`)                                  |
+| `time`   | Expression that computes the point in time (`event`)                                             |
+| `label`  | Expression that computes the label                                                               |
+| `tags`   | A list of tags                                                                                   |
+| `filter` | A condition expression that filters entities. Multiple clauses are combined with AND (see below) |
+| `expand` | Directive that generates multiple items from multiple Statements (see below)                     |
+
+## Accessors and operators
+
+### claim expressions
+
+Retrieves a Wikidata property value. Use the `.year` / `.month` / `.day` / `.hour` / `.minute` / `.second` accessors to extract a value at each precision from a Wikidata time value.
+
+```tdsl
+claim(P571).year     // converts P571 (inception) to a year
+claim(P585).month    // converts P585 (point in time) to a month
+claim(P585).second   // resolves only Wikidata precision 14 (second precision) values
+```
+
+If the source data does not carry the requested precision, that accessor resolves to null. Combine it with `??` to fall back to another candidate. If a required field never resolves, that item is not generated and a warning is reported instead (there is no silent fallback to a different precision).
+
+### qualifier access
+
+Accesses a qualifier property on a Statement.
+
+```tdsl
+claim(P39).qualifier(P580).year   // year of qualifier P580 (start time) on the P39 statement
+claim(P39).qualifier(P582).year   // year of qualifier P582 (end time) on the P39 statement
+```
+
+A missing qualifier resolves to no value (there is no silent fallback).
+
+### expand directive
+
+Writing `expand claim(P)` inside a `map` block expands every non-deprecated Statement of the entity's property P, generating one item per Statement (v1.16.0+). Without `expand`, only the first Statement is referenced as before.
+
+```tdsl
+map wd.elizabeth_ii to span {
+    lane offices;
+    expand claim(P39);                          // expand every office held (P39)
+    start claim(P39).qualifier(P580).year;       // start qualifier of each Statement
+    end   claim(P39).qualifier(P582).year ?? 9999;
+    label label@ja;
+}
+```
+
+If P39 has multiple Statements, multiple spans are generated. A Statement without the qualifiers (P580 / P582) is skipped for that item, since `start` / `end` cannot be resolved.
+
+### label expressions (`label@lang`)
+
+Retrieves a Wikidata entity's label for a given language code.
+
+```tdsl
+label@ja               // Japanese label
+label@ja ?? label@en   // falls back to English if no Japanese label exists
+```
+
+### `??` (fallback) operator
+
+Usable in `start`, `end`, `time`, and `label`. The right-hand side is evaluated only if the left-hand side does not resolve (short-circuit).
+
+```tdsl
+start claim(P580).year ?? claim(P571).year;        // fallback across a claim chain
+end   claim(P570).year ?? 9999;                     // fallback to a literal
+time  claim(P580).year ?? claim(P571).year ?? 0;    // chain + literal
+```
+
+### Integer offset operators (`+N` / `-N`)
+
+In `start` / `end` / `time` expressions, you can add or subtract an integer from a claim-derived year (v1.11.0+). Write `+N` / `-N` immediately after the accessor (e.g. `.year`).
+
+```tdsl
+map wd.people to span {
+    lane people;
+    start claim(P569).year +1;   // birth year + 1
+    end   claim(P570).year -5;   // death year − 5
+    label label@ja ?? label@en;
+}
+```
+
+- The offset is applied to the **year** after the claim is resolved. Negatives are written `-N`, and `+0` is valid.
+- It composes with `??` (fallback); the offset attaches to each claim term: `start claim(P580).year ?? claim(P571).year +1;`.
+- `decompile` / `inspect` output and the Playground Format reproduce it as `+ N` / `- N`.
+
+## filter clause
+
+A `map` block can include `filter` clauses to include only entities that match a condition, narrowing out unwanted data. Multiple `filter` clauses are combined as AND conditions.
+
+### Numeric comparisons
+
+```tdsl
+filter claim(P580).year > 1000;
+filter claim(P576).year != null;
+```
+
+Available operators: `==`, `!=`, `<`, `<=`, `>`, `>=`.
+
+### String matching (`contains` / `startswith`)
+
+Since v1.16.0, you can use the string-matching operators `contains` / `startswith` against labels.
+
+```tdsl
+filter label@ja contains "王朝";        // label contains "王朝"
+filter label@en startswith "Han";       // label starts with "Han"
+```
+
+`label@<lang>` accepts any language code. An entity that lacks a label in the specified language is treated as `false` (excluded) — there is no silent fallback to another language.
+
+### Logical operators
+
+`&&`, `||`, `!`, and parentheses can be combined.
+
+```tdsl
+filter label@ja contains "王朝" && claim(P580).year > 0;
+filter claim(P580).year > 500 || claim(P571).year > 500;
+filter !(label@ja contains "候補");
+```
+
+## template / apply
+
+`template` defines a reusable mapping pattern, and `apply` applies it to multiple imports.
+
+```tdsl
+// Define a template
+template "Dynasty Span" as dynasty_span
+    to span {
+        start claim(P571).year;
+        end claim(P576).year;
+        label label@ja ?? label@en;
+    }
+
+// Apply the template (only lane can be overridden on the apply side)
+apply dynasty_span to dynasties {
+    lane dynasty;
+}
+```
+
+| Element                                              | Description                                                                                                                    |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `template <name> [as <id>] to <target_type> { ... }` | Defines a mapping rule. Accepts the same properties as `map` (`lane` / `start` / `end` / `time` / `label` / `tags` / `filter`) |
+| `apply <template_id> to <import_id> { ... }`         | Applies a defined template to the given import                                                                                 |
+| `lane <id>;` (inside apply)                          | Overrides the template's `lane` on the apply side                                                                              |
+
+Only `lane` can be overridden inside `apply`.
+
+## Wikidata property reference
+
+Representative properties you can pass to `claim(P...)`.
+
+### People
+
+| Property | Meaning       | Usage                                                                     |
+| -------- | ------------- | ------------------------------------------------------------------------- |
+| P569     | date of birth | Birth year. `claim(P569).year`                                            |
+| P570     | date of death | Death year. `claim(P570).year`                                            |
+| P39      | position held | Office. Use `.qualifier(P580)` / `.qualifier(P582)` for the tenure period |
+
+### Organizations, countries, dynasties
+
+| Property | Meaning                            | Usage                                |
+| -------- | ---------------------------------- | ------------------------------------ |
+| P571     | inception                          | Founding year. `claim(P571).year`    |
+| P576     | dissolved, abolished or demolished | Dissolution year. `claim(P576).year` |
+
+### Time
+
+| Property | Meaning       | Usage                                           |
+| -------- | ------------- | ----------------------------------------------- |
+| P580     | start time    | Start point                                     |
+| P582     | end time      | End point                                       |
+| P585     | point in time | A single-point event. Used for `event`'s `time` |
+
+## What's next
+
+- [Grammar & Examples](/en/docs/grammar/) — runnable Playground examples
+- [Properties Reference](/en/docs/properties/) — the full list of properties accepted by hand-written `event` / `span` / `event_range`
+- [Date & Time Reference](/en/docs/date-time/) — the precision and formats shared by Wikidata time values and static literals
+- [Commands](/en/docs/commands/) — CLI commands (`tdsl build` / `tdsl render`)

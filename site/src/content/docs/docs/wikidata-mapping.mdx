@@ -1,0 +1,267 @@
+---
+title: Wikidataインポート/マッピングリファレンス
+description: import / map / template / apply が取りうる指定・アクセサ・Wikidataプロパティ対応を網羅的に一覧するリファレンスです。
+---
+
+Wikidataエンティティを取り込む `import` と、取り込んだエンティティを年表要素へ変換する `map` / `template` / `apply` が取りうる指定・アクセサを網羅的に一覧します。サンプル中心の入口は [文法とサンプル](/docs/grammar/) の「import と Wikidata の Web 制約」を参照してください。手書きで定義する `event` / `span` / `event_range` のプロパティは [プロパティリファレンス](/docs/properties/) を参照してください。
+
+ブラウザ版 Playground は Wikidataのネットワーク取得を行いません（詳細は [文法とサンプル](/docs/grammar/) の「import と Wikidata の Web 制約」を参照）。このページの例を実際に解決するには CLI（`tdsl build` / `tdsl render`）を使います。
+
+## import
+
+外部データソースからの取り込みを宣言するブロックです。
+
+```tdsl
+import wikidata as wd {
+    entity Q7183 as qin_dynasty;
+    entity Q7209 as han_dynasty;
+    query "SELECT ?item WHERE { ... }" as samurai;
+    policy merge_by_source;
+}
+```
+
+| 要素                            | 説明                                                                   |
+| ------------------------------- | ---------------------------------------------------------------------- |
+| `entity <QID> as <alias>`       | 特定のWikidataエンティティを1件指定して取り込む                        |
+| `query "<SPARQL>" as <alias>`   | SPARQLクエリで複数エンティティをまとめて取得する                       |
+| `policy <name>`                 | 再インポート時のマージ戦略（後述）                                     |
+| `policy field_priority { ... }` | フィールド単位のマージ戦略（後述）                                     |
+| `as <alias>`                    | importブロック全体の別名。`wd.han_dynasty` のように `map` から参照する |
+
+### 再インポートポリシー
+
+同じ `.tdsl` を繰り返しビルドしたとき、Wikidata由来の項目と手動追記した項目のID衝突をどう扱うかを指定します。
+
+| ポリシー                  | 動作                                                                   |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `merge_by_source`（既定） | ID衝突をエラーとして扱う                                               |
+| `overwrite_imported`      | 既存のインポート済み項目のみ上書きする。手動定義との衝突はエラーのまま |
+| `keep_manual`             | ID衝突時はインポート側をスキップし、既存の手動項目を保持する           |
+
+### field_priority（フィールド優先度ポリシー）
+
+`policy merge_by_source;` のような全体ポリシーよりも細かく、フィールドごとにマージ戦略を指定できます。
+
+```tdsl
+import wikidata as wd {
+    entity Q7209 as han_dynasty;
+    policy field_priority {
+        label: manual;    // ラベルは手動定義を優先
+        time:  wikidata;  // 時刻はWikidataを優先
+        tags:  merge;     // タグは両方をマージ
+    }
+}
+```
+
+| フィールド                | 値         | 動作                                                                   |
+| ------------------------- | ---------- | ---------------------------------------------------------------------- |
+| `label` / `time` / `tags` | `manual`   | 既存の手動定義を優先し、Wikidata側を無視する                           |
+| `label` / `time` / `tags` | `wikidata` | Wikidata側を優先し、手動定義を上書きする                               |
+| `label` / `time` / `tags` | `merge`    | 両方を保持する（`tags` は和集合、`label` / `time` はWikidata側を採用） |
+
+## map
+
+インポートしたエンティティを年表要素（`span` / `event` / `event_range`）に変換するルールです。
+
+```tdsl
+map wd.han_dynasty to span {
+    lane han;
+    start claim(P571).year;
+    end claim(P576).year;
+    label label@ja ?? label@en;
+    tags ["dynasty", "imported"];
+}
+```
+
+`map <alias> to <target_type> { ... }` の `<target_type>` には `span` / `event` / `event_range` のいずれかのみを指定できます。これ以外の値（例: `timeline`）を書くとパースエラーになります。
+
+| target_type   | 生成されるアイテム種別 | 必須の時間プロパティ |
+| ------------- | ---------------------- | -------------------- |
+| `span`        | 期間（開始〜終了）     | `start` / `end`      |
+| `event`       | 点イベント             | `time`               |
+| `event_range` | 範囲イベント           | `start` / `end`      |
+
+`source` はインポートされたアイテムに `wd:<entity_id>` として自動付与されます。`map` ブロック内での明示指定はできません。
+
+| プロパティ | 説明                                                                        |
+| ---------- | --------------------------------------------------------------------------- |
+| `lane`     | 対象レーンのID                                                              |
+| `start`    | 開始時点を計算する式                                                        |
+| `end`      | 終了時点を計算する式（`span` / `event_range`）                              |
+| `time`     | 点イベントの時点を計算する式（`event`）                                     |
+| `label`    | ラベルを計算する式                                                          |
+| `tags`     | タグのリスト                                                                |
+| `filter`   | エンティティを絞り込む条件式。複数書くとすべて AND として評価される（後述） |
+| `expand`   | 複数Statementから複数アイテムを生成するディレクティブ（後述）               |
+
+## アクセサと演算子
+
+### claim 式
+
+Wikidataのプロパティ値を取得します。`.year` / `.month` / `.day` / `.hour` / `.minute` / `.second` のアクセサで、Wikidataの時刻値から各精度の値を取り出せます。
+
+```tdsl
+claim(P571).year     // P571 (inception) を年に変換
+claim(P585).month    // P585 (point in time) を月に変換
+claim(P585).second   // Wikidata precision 14（秒精度）の値のみを解決
+```
+
+要求した精度を元データが持たない場合、そのアクセサは未解決（null）になります。`??` と組み合わせて次候補にフォールバックしてください。必須フィールドが最後まで未解決なら、そのアイテムは生成されず警告が報告されます（別精度へ silent fallback しません）。
+
+### qualifier アクセス
+
+Statementの qualifier（修飾子）プロパティにアクセスします。
+
+```tdsl
+claim(P39).qualifier(P580).year   // P39 ステートメントの qualifier P580（開始時点）の年
+claim(P39).qualifier(P582).year   // P39 ステートメントの qualifier P582（終了時点）の年
+```
+
+qualifierが存在しない場合は値なしとして扱われます（silent fallbackしません）。
+
+### expand ディレクティブ
+
+`expand claim(P)` を `map` ブロック内に書くと、そのエンティティのプロパティ P の non-deprecated な Statement を全件展開し、Statementごとに1アイテムを生成します（v1.16.0〜）。`expand` がない場合は従来どおり最初のStatementだけを参照します。
+
+```tdsl
+map wd.elizabeth_ii to span {
+    lane offices;
+    expand claim(P39);                          // 在任した役職（P39）をすべて展開
+    start claim(P39).qualifier(P580).year;       // 各 Statement の開始 qualifier
+    end   claim(P39).qualifier(P582).year ?? 9999;
+    label label@ja;
+}
+```
+
+P39のStatementが複数あれば複数のスパンが生成されます。qualifier（P580 / P582）を持たないStatementは、`start` / `end` が解決できないためそのアイテムをスキップします。
+
+### label 式（`label@lang`）
+
+Wikidataエンティティのラベルを言語コード付きで取得します。
+
+```tdsl
+label@ja               // 日本語ラベル
+label@ja ?? label@en   // 日本語がなければ英語にフォールバック
+```
+
+### `??`（フォールバック）演算子
+
+`start` / `end` / `time` / `label` のいずれでも使えます。左辺が解決できない場合にのみ右辺を評価します（短絡評価）。
+
+```tdsl
+start claim(P580).year ?? claim(P571).year;        // claimチェーンへのフォールバック
+end   claim(P570).year ?? 9999;                     // リテラルへのフォールバック
+time  claim(P580).year ?? claim(P571).year ?? 0;    // チェーン + リテラル
+```
+
+### 整数オフセット演算（`+N` / `-N`）
+
+`start` / `end` / `time` の式では、claim由来の年に整数を加算・減算できます（v1.11.0〜）。アクセサ（`.year` など）の直後に `+N` / `-N` を書きます。
+
+```tdsl
+map wd.people to span {
+    lane people;
+    start claim(P569).year +1;   // 誕生年 + 1
+    end   claim(P570).year -5;   // 没年 − 5
+    label label@ja ?? label@en;
+}
+```
+
+- オフセットはclaim解決後の**年**に対して適用されます。負数は `-N`、`+0` も有効です。
+- `??`（フォールバック）と組み合わせられます。オフセットは各claim項ごとに付きます: `start claim(P580).year ?? claim(P571).year +1;`。
+- `decompile` / `inspect` の出力やPlaygroundのFormatでも `+ N` / `- N` 形式で再現されます。
+
+## filter 句
+
+`map` ブロックには `filter` 句を書けます。条件に合うエンティティだけをアイテム化し、不要なデータを絞り込みます。複数の `filter` を並べるとAND条件として扱われます。
+
+### 数値比較
+
+```tdsl
+filter claim(P580).year > 1000;
+filter claim(P576).year != null;
+```
+
+使える演算子は `==` / `!=` / `<` / `<=` / `>` / `>=` です。
+
+### 文字列マッチング（`contains` / `startswith`）
+
+v1.16.0以降、ラベルに対する文字列マッチング演算子 `contains` / `startswith` を使えます。
+
+```tdsl
+filter label@ja contains "王朝";        // ラベルに「王朝」を含む
+filter label@en startswith "Han";       // ラベルが "Han" で始まる
+```
+
+`label@<lang>` には任意の言語コードを指定できます。指定した言語のラベルが存在しないエンティティは `false`（除外）として扱われ、別言語へ silent fallback はしません。
+
+### 論理演算
+
+`&&` / `||` / `!` と括弧を組み合わせられます。
+
+```tdsl
+filter label@ja contains "王朝" && claim(P580).year > 0;
+filter claim(P580).year > 500 || claim(P571).year > 500;
+filter !(label@ja contains "候補");
+```
+
+## template / apply
+
+`template` でマッピングパターンを再利用可能な形で定義し、`apply` で複数のimportに適用します。
+
+```tdsl
+// テンプレート定義
+template "王朝スパン" as dynasty_span
+    to span {
+        start claim(P571).year;
+        end claim(P576).year;
+        label label@ja ?? label@en;
+    }
+
+// テンプレートを適用（lane のみ apply 側で上書き可能）
+apply dynasty_span to dynasties {
+    lane dynasty;
+}
+```
+
+| 要素                                                 | 説明                                                                                                                           |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `template <名前> [as <id>] to <target_type> { ... }` | マッピングルールを定義する。使えるプロパティは `map` と同じ（`lane` / `start` / `end` / `time` / `label` / `tags` / `filter`） |
+| `apply <template_id> to <import_id> { ... }`         | 定義済みテンプレートを指定のimportに適用する                                                                                   |
+| `lane <id>;`（apply内）                              | テンプレートの `lane` をapply側で上書きする                                                                                    |
+
+`apply` 内で上書きできるのは `lane` のみです。
+
+## Wikidataプロパティリファレンス
+
+`claim(P...)` に指定できる代表的なプロパティです。
+
+### 人物
+
+| プロパティ | 意味          | 用途                                                           |
+| ---------- | ------------- | -------------------------------------------------------------- |
+| P569       | date of birth | 誕生年。`claim(P569).year`                                     |
+| P570       | date of death | 死亡年。`claim(P570).year`                                     |
+| P39        | position held | 役職。`.qualifier(P580)` / `.qualifier(P582)` で在任期間を取得 |
+
+### 組織・国・王朝
+
+| プロパティ | 意味                               | 用途                       |
+| ---------- | ---------------------------------- | -------------------------- |
+| P571       | inception                          | 成立年。`claim(P571).year` |
+| P576       | dissolved, abolished or demolished | 消滅年。`claim(P576).year` |
+
+### 時間
+
+| プロパティ | 意味          | 用途                                       |
+| ---------- | ------------- | ------------------------------------------ |
+| P580       | start time    | 開始時点                                   |
+| P582       | end time      | 終了時点                                   |
+| P585       | point in time | 特定時点の出来事。`event` の `time` に使う |
+
+## 次に進む
+
+- [文法とサンプル](/docs/grammar/) でPlayground付きの実例を確認する
+- [プロパティリファレンス](/docs/properties/) で手書きの `event` / `span` / `event_range` が取りうるプロパティを確認する
+- [日付・時刻表現リファレンス](/docs/date-time/) でWikidataの時刻値と静的リテラルに共通する精度・書式を確認する
+- [Commands](/docs/commands/) でCLIコマンド（`tdsl build` / `tdsl render`）を確認する
