@@ -181,17 +181,18 @@ tdsl export-csv manual.tdsl --offline --output manual.csv
 `tdsl build` / `tdsl render` はWikidataの取得結果をローカルにキャッシュします。`tdsl cache` サブコマンドでキャッシュを操作できます（v1.1.0〜）。
 
 ```sh
-tdsl cache list            # キャッシュ済みエントリの一覧を表示する
-tdsl cache clear           # すべてのキャッシュを削除する
-tdsl cache clear --dry-run # 削除対象を確認する（実際には削除しない）
+tdsl cache status               # キャッシュの統計情報（件数・合計サイズ・最古/最新エントリ）を表示する
+tdsl cache clear                # すべてのキャッシュを削除する
+tdsl cache clear --older-than 7 # 7日より古いエントリのみ削除する
 ```
 
-| コマンド           | 用途                                     |
-| ------------------ | ---------------------------------------- |
-| `tdsl cache list`  | キャッシュ済みエントリとサイズを表示する |
-| `tdsl cache clear` | すべてのキャッシュエントリを削除する     |
+| コマンド                         | 用途                                                         |
+| -------------------------------- | ------------------------------------------------------------ |
+| `tdsl cache status`              | キャッシュの統計情報を表示する                               |
+| `tdsl cache clear [OPTIONS]`     | キャッシュエントリを削除する                                 |
+| `--older-than <DAYS>`（`clear`） | 指定日数より古いエントリのみ削除する（デフォルトは全件削除） |
 
-キャッシュの保存場所はOSのデータディレクトリ（`dirs` クレートの `data_dir`）以下です。`--no-cache` を渡すとキャッシュを使わずにWikidataを再取得します。
+キャッシュの保存場所はOSのキャッシュディレクトリ（`dirs` クレートの `cache_dir`、例: `~/.cache/tdsl/`）以下です。`--no-cache` を渡すとキャッシュを使わずにWikidataを再取得します。
 
 ## よく使うオプション
 
