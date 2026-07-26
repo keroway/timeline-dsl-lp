@@ -181,17 +181,18 @@ tdsl export-csv manual.tdsl --offline --output manual.csv
 `tdsl build` / `tdsl render` cache Wikidata fetch results locally. Use the `tdsl cache` subcommand to manage the cache (v1.1.0+).
 
 ```sh
-tdsl cache list            # List cached entries
-tdsl cache clear           # Delete all cached entries
-tdsl cache clear --dry-run # Preview what would be deleted (without actually deleting)
+tdsl cache status               # Show cache statistics (entry count, total size, oldest/newest entry)
+tdsl cache clear                # Delete all cached entries
+tdsl cache clear --older-than 7 # Delete only entries older than 7 days
 ```
 
-| Command            | Description                         |
-| ------------------ | ----------------------------------- |
-| `tdsl cache list`  | Show cached entries and their sizes |
-| `tdsl cache clear` | Delete all cache entries            |
+| Command                         | Description                                                          |
+| ------------------------------- | -------------------------------------------------------------------- |
+| `tdsl cache status`             | Show cache statistics                                                |
+| `tdsl cache clear [OPTIONS]`    | Delete cache entries                                                 |
+| `--older-than <DAYS>` (`clear`) | Only delete entries older than this many days (default: deletes all) |
 
-The cache is stored under the OS data directory (`data_dir` from the `dirs` crate). Pass `--no-cache` to bypass the cache and re-fetch from Wikidata.
+The cache is stored under the OS cache directory (`cache_dir` from the `dirs` crate), e.g. `~/.cache/tdsl/`. Pass `--no-cache` to bypass the cache and re-fetch from Wikidata.
 
 ## Common Options
 
