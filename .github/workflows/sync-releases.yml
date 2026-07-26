@@ -10,6 +10,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write # site-build.yml を workflow_dispatch でトリガーするため
 
 jobs:
   sync:
@@ -47,6 +48,7 @@ jobs:
           fi
 
       - name: Create pull request
+        id: cpr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           branch: chore/sync-releases
@@ -60,6 +62,10 @@ jobs:
             - マージ前に ja / en の changelog ページに最新リリースが表示されることを Cloudflare Pages の preview デプロイで確認してください。
             - 新しいリリースに WASM 表層の変更が含まれる場合は、vendored WASM の更新 issue を別途起票してください（CLAUDE.md「WASM bundling」参照）。
 
-            > [!NOTE]
-            > `GITHUB_TOKEN` で作成された PR では `pull_request` トリガーの CI (Site build) が自動起動しません。
-            > 必要に応じて PR 画面から workflow を手動実行するか、ブランチを push し直してください。
+      # GITHUB_TOKEN で push された PR は pull_request イベントを発火しない (無限ループ防止のため)。
+      # workflow_dispatch は例外的に GITHUB_TOKEN からでもトリガー可能なので、required check "build" を明示的に起動する。
+      - name: Trigger site build on the PR branch
+        if: steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated'
+        run: gh workflow run site-build.yml --ref "${{ steps.cpr.outputs.pull-request-branch }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
