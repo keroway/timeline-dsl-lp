@@ -128,6 +128,11 @@ export default defineConfig({
               slug: "docs/properties",
             },
             {
+              label: "日付・時刻表現リファレンス",
+              translations: { en: "Date & Time Reference" },
+              slug: "docs/date-time",
+            },
+            {
               label: "スタイリング",
               translations: { en: "Styling" },
               slug: "docs/styling",
