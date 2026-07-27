@@ -52,6 +52,7 @@ fi
 # Only attempt if gh is logged in and a PR exists for the branch.
 if [ -n "$branch" ] && [ "$branch" != "main" ] && command -v gh >/dev/null 2>&1; then
   if pr_json="$(gh pr view --json number,url,statusCheckRollup 2>/dev/null)"; then
+    # shellcheck disable=SC2016 # node script は node の template literal を使うため展開不要
     failing="$(printf '%s' "$pr_json" | node -e '
       let s=""; process.stdin.on("data",d=>s+=d).on("end",()=>{
         try {

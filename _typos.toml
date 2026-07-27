@@ -1,0 +1,5 @@
+# typos (https://github.com/crate-ci/typos) の誤検知除外。
+
+[files]
+# CC BY-NC-ND ライセンス名の "ND"（No Derivatives）は英単語ではない
+extend-exclude = ["LICENSE-CONTENT"]
