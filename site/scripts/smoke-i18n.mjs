@@ -319,6 +319,17 @@ async function smokeHttpSurface(rootUrl) {
   console.log(
     "HTTP smoke: /en/ header nav and footer links stay within /en/. ✓"
   );
+
+  // Regression guard (#539): en docs ページの Starlight サイドバー（「サイト」/"Site"
+  // グループの Playground/Gallery/Showcase/Changelog リンクを含む）は /en/ 配下
+  // （外部リンクを除く）を指さなければならない。
+  const enDocsRes = await get(`${rootUrl}/en/docs/`);
+  assertStatus(enDocsRes, "/en/docs/");
+  const enDocsHtml = await enDocsRes.text();
+  assertLocaleScopedSidebarLinks(enDocsHtml, "/en/");
+  console.log(
+    "HTTP smoke: /en/docs/ Starlight sidebar links stay within /en/. ✓"
+  );
 }
 
 // header <nav class="nav"> と footer <footer class="site-footer"> 内の href を抽出し、
@@ -364,6 +375,38 @@ function assertLocaleScopedLinks(html, expectedPrefix) {
           `assertLocaleScopedLinks: ${label} link "${href}" does not start with "${expectedPrefix}"`
         );
       }
+    }
+  }
+}
+
+// Starlight の左サイドバー（<nav class="sidebar ..." aria-label="Main">）内の href を
+// 抽出し、外部リンク（http(s)://）を除いた内部リンクがすべて指定 prefix 配下であることを
+// 検証する。「サイト」/"Site" グループの手動 link 項目（astro.config.mjs の sidebar 設定）
+// が locale 解決されずに ja 側ページへ誤遷移する回帰（#539）を検知する。
+function assertLocaleScopedSidebarLinks(html, expectedPrefix) {
+  const sidebarMatch = html.match(
+    /<nav class="sidebar[^"]*" aria-label="Main">[\s\S]*?<\/nav>/
+  );
+  if (!sidebarMatch) {
+    throw new Error(
+      'assertLocaleScopedSidebarLinks: <nav class="sidebar" aria-label="Main"> block not found'
+    );
+  }
+
+  const hrefs = [...sidebarMatch[0].matchAll(/href="([^"]+)"/g)].map(
+    (m) => m[1]
+  );
+  if (hrefs.length === 0) {
+    throw new Error(
+      "assertLocaleScopedSidebarLinks: no href found in sidebar block"
+    );
+  }
+  for (const href of hrefs) {
+    if (href.startsWith("http://") || href.startsWith("https://")) continue;
+    if (!href.startsWith(expectedPrefix)) {
+      throw new Error(
+        `assertLocaleScopedSidebarLinks: sidebar link "${href}" does not start with "${expectedPrefix}"`
+      );
     }
   }
 }
