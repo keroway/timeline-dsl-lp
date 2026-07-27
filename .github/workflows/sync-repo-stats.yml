@@ -15,6 +15,9 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      # secrets context は if: では参照できないため env 経由で渡す (#544)
+      HAS_RELEASE_SYNC_PAT: ${{ secrets.RELEASE_SYNC_PAT != '' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -47,10 +50,15 @@ jobs:
             echo "Repo stats content changed."
           fi
 
+      # RELEASE_SYNC_PAT (fine-grained PAT, contents:write + pull-requests:write) が
+      # secrets に登録されていればそれを使う。PR が PAT で push されると通常の pull_request
+      # イベントとして発火し、required check "build" が自動実行される (#544)。
+      # 未登録の間は従来通り GITHUB_TOKEN にフォールバックする。
       - name: Create pull request
         id: cpr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
+          token: ${{ secrets.RELEASE_SYNC_PAT || secrets.GITHUB_TOKEN }}
           branch: chore/sync-repo-stats
           delete-branch: true
           commit-message: "chore(data): repo-stats.generated.json を最新の stars/license/contributors に同期する"
@@ -62,9 +70,10 @@ jobs:
             - マージ前に ja / en の LP で数値が表示されることを Cloudflare Pages の preview デプロイで確認してください。
 
       # GITHUB_TOKEN で push された PR は pull_request イベントを発火しない (無限ループ防止のため)。
-      # workflow_dispatch は例外的に GITHUB_TOKEN からでもトリガー可能なので、required check "build" を明示的に起動する。
-      - name: Trigger site build on the PR branch
-        if: steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated'
+      # RELEASE_SYNC_PAT 未登録時のみ、workflow_dispatch で required check "build" を明示的に起動するフォールバック。
+      # RELEASE_SYNC_PAT 登録後は pull_request イベントが正常に発火するため本ステップは実行されない (#544)。
+      - name: "Trigger site build on the PR branch (GITHUB_TOKEN フォールバック)"
+        if: (steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated') && env.HAS_RELEASE_SYNC_PAT != 'true'
         run: gh workflow run site-build.yml --ref "${{ steps.cpr.outputs.pull-request-branch }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
