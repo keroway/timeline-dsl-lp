@@ -20,6 +20,8 @@ jobs:
       HAS_RELEASE_SYNC_PAT: ${{ secrets.RELEASE_SYNC_PAT != '' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -74,6 +76,7 @@ jobs:
       # RELEASE_SYNC_PAT 登録後は pull_request イベントが正常に発火するため本ステップは実行されない (#544)。
       - name: "Trigger site build on the PR branch (GITHUB_TOKEN フォールバック)"
         if: (steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated') && env.HAS_RELEASE_SYNC_PAT != 'true'
-        run: gh workflow run site-build.yml --ref "${{ steps.cpr.outputs.pull-request-branch }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BRANCH: ${{ steps.cpr.outputs.pull-request-branch }}
+        run: gh workflow run site-build.yml --ref "$PR_BRANCH"
