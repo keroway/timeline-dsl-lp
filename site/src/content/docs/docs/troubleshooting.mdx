@@ -94,6 +94,26 @@ tdsl check sample.tdsl
 
 `unit` のタイプミスは `year` / `month` / `day` / `hour` / `minute` のいずれかに修正してください。`kind` は独自分類であることを明示したい場合 `kind custom;` を使います。
 
+## `--chart-pagination` でエラー・警告が出る
+
+v1.28.0 で追加された `--chart-pagination <N>`（[CLI Reference](/docs/cli-reference/#--chart-pagination) 参照）は、以下の条件でエラーになります。
+
+- `--chart-pagination is not supported with --watch` — `--watch` と併用している
+- `--chart-pagination must be >= 1` — `N` に `0` を指定している
+- `--chart-pagination only supports --format svg or --format pdf` — `--format html` / `png` と併用している
+- `--chart-pagination requires --output <file> (stdout cannot hold multiple pages)` — `--output` を指定していない（標準出力は複数ファイル・複数ページを表現できないため）
+- `--pdf-pagination requires --show-table (nothing to paginate otherwise)` — `--show-table` を指定せずに `--pdf-pagination` だけを指定している
+
+エラーではなく警告になるケースとして、lane の `group` がページ境界をまたいで分断される場合に stderr へ以下が出力されます（出力自体は生成され、コマンドは成功します）。
+
+```
+Warning: group band "..." is split across chart pages; each page redraws a truncated band. Increase --chart-pagination or reorder lanes to keep the group on one page.
+```
+
+同じ `group` を持つ lane が複数ページに分かれないよう、`--chart-pagination` の値を大きくするか、lane の並び順（`order`）を見直してください。
+
+`--chart-pagination` は CLI 専用の機能で、Playground（ブラウザ内 WASM）ではページ分割ロジックを公開していないため再現できません。挙動を確認したい場合は [CLI](/docs/installation/)（`tdsl render`）を使用してください。
+
 ## Playground で WASM が読み込めない
 
 [Playground](/docs/playground/) はブラウザ内で WASM を実行します。「Loading…」のまま動かない、または描画されない場合は、まずブラウザの開発者ツールの Console / Network タブを開きます。
