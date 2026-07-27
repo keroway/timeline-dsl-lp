@@ -11,6 +11,7 @@ dist/
 !.claude/hooks/
 !.claude/rules/
 !.claude/agents/
+!.claude/README.md
 !.claude/skills/
 .claude/skills/*
 !.claude/skills/starlight-authoring/
