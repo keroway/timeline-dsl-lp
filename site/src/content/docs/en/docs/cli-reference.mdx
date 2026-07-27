@@ -474,31 +474,32 @@ tdsl render [OPTIONS] <FILE>
 
 See [Commands](/en/docs/commands/#render) for `--format` / `--dpi` / `--png-scale` / `--orientation` / `--grid` / `--show-event-labels` / `--lane-height` / `--layout-style` / `--show-legend` / `--watch` / `--show-table`. See [Styling](/en/docs/styling/) for `--theme` / `--custom-css`.
 
-| Option                          | Value                                                                                     | Default                | Introduced                            | Details                                        |
-| ------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------- | ---------------------------------------------- |
-| `-o, --output <OUTPUT>`         | Path to the output file                                                                   | stdout                 | —                                     | —                                              |
-| `--format <FORMAT>`             | `html` / `svg` / `png` / `pdf`                                                            | `html`                 | — (`png`/`pdf` since v1.10.0/v1.11.0) | [Commands](/en/docs/commands/#render)          |
-| `--scale <SCALE>`               | Horizontal pixels per year                                                                | `2`                    | —                                     | [Below](#--scale----left-gutter----top-margin) |
-| `--lane-height <LANE_HEIGHT>`   | Height of each lane in pixels                                                             | `60`                   | —                                     | [Commands](/en/docs/commands/#render)          |
-| `--left-gutter <LEFT_GUTTER>`   | Width of the left gutter for lane labels                                                  | `120`                  | —                                     | [Below](#--scale----left-gutter----top-margin) |
-| `--top-margin <TOP_MARGIN>`     | Top margin above the time axis                                                            | `40`                   | —                                     | [Below](#--scale----left-gutter----top-margin) |
-| `--theme <THEME>`               | `default` / `dark` / `print` / `pastel`                                                   | `default`              | —                                     | [Styling](/en/docs/styling/)                   |
-| `--custom-css <CUSTOM_CSS>`     | Path to a custom CSS file injected after the theme CSS                                    | —                      | —                                     | [Styling](/en/docs/styling/)                   |
-| `--dpi <DPI>`                   | PNG output resolution (mutually exclusive with `--png-scale`)                             | `96`                   | —                                     | [Commands](/en/docs/commands/#render)          |
-| `--png-scale <PNG_SCALE>`       | Fixed pixel scale for PNG output (mutually exclusive with `--dpi`)                        | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
-| `--interactive`                 | Enable zoom, pan, search, legend, and detail panel                                        | —                      | since v1.1.0                          | [Below](#--interactive)                        |
-| `--color-map <COLOR_MAP>`       | Tag-to-color mapping (e.g. `war=#cc0000,dynasty=#3366cc`)                                 | —                      | since v1.1.0                          | [Below](#--color-map)                          |
-| `--orientation <ORIENTATION>`   | `horizontal` / `vertical`                                                                 | `horizontal`           | since v1.13.0                         | [Commands](/en/docs/commands/#render)          |
-| `--grid <GRID>`                 | `none` / `decade` / `year` / `month`                                                      | `none`                 | since v1.14.0                         | [Commands](/en/docs/commands/#render)          |
-| `--layout-style <LAYOUT_STYLE>` | `timeline` / `group-bands` / `gantt` / `zigzag`                                           | `timeline`             | —                                     | [Commands](/en/docs/commands/#render)          |
-| `--watch`                       | Re-render automatically on file change (`html`/`svg` only)                                | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
-| `--show-table`                  | Append a table listing all items                                                          | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
-| `--show-event-labels`           | Always draw labels near event dots/bars                                                   | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
-| `--pdf-size <SIZE>`             | `a4` / `a3` / `letter` (`--format pdf` only)                                              | `a4`                   | since v1.17.0                         | [Below](#pdf-options)                          |
-| `--pdf-landscape`               | Output the PDF in landscape orientation (`--format pdf` only)                             | —                      | since v1.17.0                         | [Below](#pdf-options)                          |
-| `--pdf-margin <MM>`             | Paper margin in mm (`--format pdf` only)                                                  | `10`                   | since v1.17.0                         | [Below](#pdf-options)                          |
-| `--pdf-title <TITLE>`           | Override the PDF document Title metadata (`--format pdf` only)                            | timeline title         | since v1.17.0                         | [Below](#pdf-options)                          |
-| `--pdf-pagination`              | Split the item table across multiple pages (requires `--show-table`, `--format pdf` only) | disabled (single page) | since v1.27.0                         | [Below](#pdf-options)                          |
+| Option                          | Value                                                                                                                     | Default                | Introduced                            | Details                                        |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------- | ---------------------------------------------- |
+| `-o, --output <OUTPUT>`         | Path to the output file                                                                                                   | stdout                 | —                                     | —                                              |
+| `--format <FORMAT>`             | `html` / `svg` / `png` / `pdf`                                                                                            | `html`                 | — (`png`/`pdf` since v1.10.0/v1.11.0) | [Commands](/en/docs/commands/#render)          |
+| `--scale <SCALE>`               | Horizontal pixels per year                                                                                                | `2`                    | —                                     | [Below](#--scale----left-gutter----top-margin) |
+| `--lane-height <LANE_HEIGHT>`   | Height of each lane in pixels                                                                                             | `60`                   | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--left-gutter <LEFT_GUTTER>`   | Width of the left gutter for lane labels                                                                                  | `120`                  | —                                     | [Below](#--scale----left-gutter----top-margin) |
+| `--top-margin <TOP_MARGIN>`     | Top margin above the time axis                                                                                            | `40`                   | —                                     | [Below](#--scale----left-gutter----top-margin) |
+| `--theme <THEME>`               | `default` / `dark` / `print` / `pastel`                                                                                   | `default`              | —                                     | [Styling](/en/docs/styling/)                   |
+| `--custom-css <CUSTOM_CSS>`     | Path to a custom CSS file injected after the theme CSS                                                                    | —                      | —                                     | [Styling](/en/docs/styling/)                   |
+| `--dpi <DPI>`                   | PNG output resolution (mutually exclusive with `--png-scale`)                                                             | `96`                   | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--png-scale <PNG_SCALE>`       | Fixed pixel scale for PNG output (mutually exclusive with `--dpi`)                                                        | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--interactive`                 | Enable zoom, pan, search, legend, and detail panel                                                                        | —                      | since v1.1.0                          | [Below](#--interactive)                        |
+| `--color-map <COLOR_MAP>`       | Tag-to-color mapping (e.g. `war=#cc0000,dynasty=#3366cc`)                                                                 | —                      | since v1.1.0                          | [Below](#--color-map)                          |
+| `--orientation <ORIENTATION>`   | `horizontal` / `vertical`                                                                                                 | `horizontal`           | since v1.13.0                         | [Commands](/en/docs/commands/#render)          |
+| `--grid <GRID>`                 | `none` / `decade` / `year` / `month`                                                                                      | `none`                 | since v1.14.0                         | [Commands](/en/docs/commands/#render)          |
+| `--layout-style <LAYOUT_STYLE>` | `timeline` / `group-bands` / `gantt` / `zigzag`                                                                           | `timeline`             | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--watch`                       | Re-render automatically on file change (`html`/`svg` only)                                                                | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--show-table`                  | Append a table listing all items                                                                                          | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--show-event-labels`           | Always draw labels near event dots/bars                                                                                   | —                      | —                                     | [Commands](/en/docs/commands/#render)          |
+| `--pdf-size <SIZE>`             | `a4` / `a3` / `letter` (`--format pdf` only)                                                                              | `a4`                   | since v1.17.0                         | [Below](#pdf-options)                          |
+| `--pdf-landscape`               | Output the PDF in landscape orientation (`--format pdf` only)                                                             | —                      | since v1.17.0                         | [Below](#pdf-options)                          |
+| `--pdf-margin <MM>`             | Paper margin in mm (`--format pdf` only)                                                                                  | `10`                   | since v1.17.0                         | [Below](#pdf-options)                          |
+| `--pdf-title <TITLE>`           | Override the PDF document Title metadata (`--format pdf` only)                                                            | timeline title         | since v1.17.0                         | [Below](#pdf-options)                          |
+| `--pdf-pagination`              | Split the item table across multiple pages (requires `--show-table`, `--format pdf` only)                                 | disabled (single page) | since v1.27.0                         | [Below](#pdf-options)                          |
+| `--chart-pagination <N>`        | Split the chart body into multiple pages by lane group, N lanes per page (requires `--output`, `--format svg`/`pdf` only) | disabled (single page) | since v1.28.0                         | [Below](#chart-pagination)                     |
 
 ### `--scale` / `--left-gutter` / `--top-margin`
 
@@ -544,6 +545,33 @@ tdsl render examples/china_dynasties.tdsl \
 tdsl render examples/china_dynasties.tdsl \
   --format pdf --show-table --pdf-pagination \
   --output china_paginated.pdf
+```
+
+### Chart pagination
+
+`--chart-pagination <N>` splits the chart body (the timeline itself) into multiple pages by lane group (since v1.28.0). Lanes are sorted by `(order, id)` and then chunked into groups of N. The time axis (`meta.range`) stays common across all pages, and since every item belongs to exactly one lane, spans / event ranges are never clipped at a page boundary.
+
+With `--format svg`, output is split into multiple files named `<stem>.pageN.<ext>` (`N` zero-padded to the digit width of the total page count). Combined with `--show-table`, a dedicated table page listing the entire IR is appended after the chart pages (its footer is fixed at `1 / 1`; splitting the table itself across multiple pages is not supported in SVG output).
+
+With `--format pdf`, output is not split into separate files. Instead, a single PDF contains multiple pages in the order "chart pages (by lane group) → table pages". With `--show-table` alone, the entire IR is appended as one unsplit table page; combined with `--pdf-pagination`, the existing row-splitting logic produces the table pages instead. Either way, table page footers count only the table pages, not the preceding chart pages.
+
+`--show-legend` is drawn independently on each chart page, so the legend content can differ from page to page (each page's legend reflects that page's lanes and items — this is intentional).
+
+`--output` is required (stdout cannot represent multiple files or pages), and `--chart-pagination` cannot be combined with `--watch`. If a lane `group` is split across a page boundary, a warning is printed to stderr, but the output is still generated (see [Troubleshooting](/en/docs/troubleshooting/) for details). The Playground runs entirely on WASM in the browser and does not expose `tdsl-render`'s pagination logic, so `--chart-pagination` cannot be reproduced there — use the CLI (`tdsl render`) instead.
+
+```sh
+# Split the timeline body into multiple SVG pages by lane group
+# Produces china.page1.svg / china.page2.svg ...
+tdsl render examples/china_dynasties.tdsl --format svg --chart-pagination 2 --output china.svg
+
+# Split the timeline body into multiple PDF pages by lane group
+# Produces a single china_chart.pdf with multiple pages (no table)
+tdsl render examples/china_dynasties.tdsl --format pdf --chart-pagination 2 --output china_chart.pdf
+
+# Combine chart pagination with table pagination (chart pages, then table pages)
+tdsl render examples/china_dynasties.tdsl \
+  --format pdf --chart-pagination 2 --show-table --pdf-pagination \
+  --output china_full_paginated.pdf
 ```
 
 ## init

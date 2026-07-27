@@ -474,31 +474,32 @@ tdsl render [OPTIONS] <FILE>
 
 `--format` / `--dpi` / `--png-scale` / `--orientation` / `--grid` / `--show-event-labels` / `--lane-height` / `--layout-style` / `--show-legend` / `--watch` / `--show-table` の使い方は [Commands](/docs/commands/#render) を参照してください。`--theme` / `--custom-css` は [スタイルカスタマイズ](/docs/styling/) を参照してください。
 
-| オプション                      | 値                                                                             | デフォルト         | 導入バージョン                      | 詳細                                                                              |
-| ------------------------------- | ------------------------------------------------------------------------------ | ------------------ | ----------------------------------- | --------------------------------------------------------------------------------- |
-| `-o, --output <OUTPUT>`         | 出力ファイルのパス                                                             | 標準出力           | —                                   | —                                                                                 |
-| `--format <FORMAT>`             | `html` / `svg` / `png` / `pdf`                                                 | `html`             | —（`png`/`pdf`はv1.10.0/v1.11.0〜） | [Commands](/docs/commands/#render)                                                |
-| `--scale <SCALE>`               | 横軸の 1 年あたりピクセル数                                                    | `2`                | —                                   | [下記](#--scale----left-gutter----top-margin)                                     |
-| `--lane-height <LANE_HEIGHT>`   | 各レーンの高さ（px）                                                           | `60`               | —                                   | [Commands](/docs/commands/#render)                                                |
-| `--left-gutter <LEFT_GUTTER>`   | レーンラベル用の左ガター幅                                                     | `120`              | —                                   | [下記](#--scale----left-gutter----top-margin)                                     |
-| `--top-margin <TOP_MARGIN>`     | 時間軸のトップマージン                                                         | `40`               | —                                   | [下記](#--scale----left-gutter----top-margin)                                     |
-| `--theme <THEME>`               | `default` / `dark` / `print` / `pastel`                                        | `default`          | —                                   | [スタイルカスタマイズ](/docs/styling/)                                            |
-| `--custom-css <CUSTOM_CSS>`     | テーマ CSS の後に注入するカスタム CSS ファイルのパス                           | —                  | —                                   | [スタイルカスタマイズ](/docs/styling/)                                            |
-| `--dpi <DPI>`                   | PNG 出力の解像度（`--png-scale` と排他）                                       | `96`               | —                                   | [Commands](/docs/commands/#render)                                                |
-| `--png-scale <PNG_SCALE>`       | PNG 出力の固定ピクセル倍率（`--dpi` と排他）                                   | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
-| `--interactive`                 | ズーム・パン・検索・凡例・詳細パネルを有効化                                   | —                  | v1.1.0〜                            | [下記](#--interactive)                                                            |
-| `--color-map <COLOR_MAP>`       | タグ→色マッピング（例: `war=#cc0000,dynasty=#3366cc`）                         | —                  | v1.1.0〜                            | [下記](#--color-map)                                                              |
-| `--orientation <ORIENTATION>`   | `horizontal` / `vertical`                                                      | `horizontal`       | v1.13.0〜                           | [Commands](/docs/commands/#render)                                                |
-| `--grid <GRID>`                 | `none` / `decade` / `year` / `month`                                           | `none`             | v1.14.0〜                           | [Commands](/docs/commands/#render)                                                |
-| `--layout-style <LAYOUT_STYLE>` | `timeline` / `group-bands` / `gantt` / `zigzag`                                | `timeline`         | —                                   | [Commands](/docs/commands/#render)                                                |
-| `--watch`                       | 変更検出のたびに自動再レンダリング（`html`/`svg`のみ）                         | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
-| `--show-table`                  | 内容一覧の表を追加する                                                         | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
-| `--show-event-labels`           | イベントのドット・バー近傍にラベルを常時描画                                   | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
-| `--pdf-size <SIZE>`             | `a4` / `a3` / `letter`（`--format pdf` のみ）                                  | `a4`               | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
-| `--pdf-landscape`               | PDF を横向きで出力（`--format pdf` のみ）                                      | —                  | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
-| `--pdf-margin <MM>`             | PDF の用紙マージン（mm、`--format pdf` のみ）                                  | `10`               | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
-| `--pdf-title <TITLE>`           | PDF ドキュメントの Title メタデータ上書き（`--format pdf` のみ）               | 年表タイトル       | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
-| `--pdf-pagination`              | アイテムテーブルを複数ページに分割（`--show-table` 必須、`--format pdf` のみ） | 無効（単一ページ） | v1.27.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+| オプション                      | 値                                                                                                            | デフォルト         | 導入バージョン                      | 詳細                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------ | ----------------------------------- | --------------------------------------------------------------------------------- |
+| `-o, --output <OUTPUT>`         | 出力ファイルのパス                                                                                            | 標準出力           | —                                   | —                                                                                 |
+| `--format <FORMAT>`             | `html` / `svg` / `png` / `pdf`                                                                                | `html`             | —（`png`/`pdf`はv1.10.0/v1.11.0〜） | [Commands](/docs/commands/#render)                                                |
+| `--scale <SCALE>`               | 横軸の 1 年あたりピクセル数                                                                                   | `2`                | —                                   | [下記](#--scale----left-gutter----top-margin)                                     |
+| `--lane-height <LANE_HEIGHT>`   | 各レーンの高さ（px）                                                                                          | `60`               | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--left-gutter <LEFT_GUTTER>`   | レーンラベル用の左ガター幅                                                                                    | `120`              | —                                   | [下記](#--scale----left-gutter----top-margin)                                     |
+| `--top-margin <TOP_MARGIN>`     | 時間軸のトップマージン                                                                                        | `40`               | —                                   | [下記](#--scale----left-gutter----top-margin)                                     |
+| `--theme <THEME>`               | `default` / `dark` / `print` / `pastel`                                                                       | `default`          | —                                   | [スタイルカスタマイズ](/docs/styling/)                                            |
+| `--custom-css <CUSTOM_CSS>`     | テーマ CSS の後に注入するカスタム CSS ファイルのパス                                                          | —                  | —                                   | [スタイルカスタマイズ](/docs/styling/)                                            |
+| `--dpi <DPI>`                   | PNG 出力の解像度（`--png-scale` と排他）                                                                      | `96`               | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--png-scale <PNG_SCALE>`       | PNG 出力の固定ピクセル倍率（`--dpi` と排他）                                                                  | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--interactive`                 | ズーム・パン・検索・凡例・詳細パネルを有効化                                                                  | —                  | v1.1.0〜                            | [下記](#--interactive)                                                            |
+| `--color-map <COLOR_MAP>`       | タグ→色マッピング（例: `war=#cc0000,dynasty=#3366cc`）                                                        | —                  | v1.1.0〜                            | [下記](#--color-map)                                                              |
+| `--orientation <ORIENTATION>`   | `horizontal` / `vertical`                                                                                     | `horizontal`       | v1.13.0〜                           | [Commands](/docs/commands/#render)                                                |
+| `--grid <GRID>`                 | `none` / `decade` / `year` / `month`                                                                          | `none`             | v1.14.0〜                           | [Commands](/docs/commands/#render)                                                |
+| `--layout-style <LAYOUT_STYLE>` | `timeline` / `group-bands` / `gantt` / `zigzag`                                                               | `timeline`         | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--watch`                       | 変更検出のたびに自動再レンダリング（`html`/`svg`のみ）                                                        | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--show-table`                  | 内容一覧の表を追加する                                                                                        | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--show-event-labels`           | イベントのドット・バー近傍にラベルを常時描画                                                                  | —                  | —                                   | [Commands](/docs/commands/#render)                                                |
+| `--pdf-size <SIZE>`             | `a4` / `a3` / `letter`（`--format pdf` のみ）                                                                 | `a4`               | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+| `--pdf-landscape`               | PDF を横向きで出力（`--format pdf` のみ）                                                                     | —                  | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+| `--pdf-margin <MM>`             | PDF の用紙マージン（mm、`--format pdf` のみ）                                                                 | `10`               | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+| `--pdf-title <TITLE>`           | PDF ドキュメントの Title メタデータ上書き（`--format pdf` のみ）                                              | 年表タイトル       | v1.17.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+| `--pdf-pagination`              | アイテムテーブルを複数ページに分割（`--show-table` 必須、`--format pdf` のみ）                                | 無効（単一ページ） | v1.27.0〜                           | [下記](#--pdf-size----pdf-landscape----pdf-margin----pdf-title----pdf-pagination) |
+| `--chart-pagination <N>`        | チャート本体を lane グループ単位で N レーンずつ複数ページに分割（`--output` 必須、`--format svg`/`pdf` のみ） | 無効（単一ページ） | v1.28.0〜                           | [下記](#--chart-pagination)                                                       |
 
 ### `--scale` / `--left-gutter` / `--top-margin`
 
@@ -544,6 +545,33 @@ tdsl render examples/china_dynasties.tdsl \
 tdsl render examples/china_dynasties.tdsl \
   --format pdf --show-table --pdf-pagination \
   --output china_paginated.pdf
+```
+
+### `--chart-pagination`
+
+`--chart-pagination <N>` はチャート本体（タイムライン部分）を lane グループ単位で複数ページに分割します（v1.28.0〜）。lane は `(order, id)` の順に並べ替えたうえで N レーンずつチャンク化されます。時間軸（`meta.range`）は全ページ共通で、各アイテムは必ず 1 つの lane に属するため、span / event_range がページ境界でクリップされることはありません。
+
+`--format svg` の場合、`<stem>.pageN.<ext>` という命名で複数ファイルに出力されます（`N` は総ページ数の桁数に合わせて 0 埋め）。`--show-table` を併用すると、チャートページ群の後ろに IR 全体の内容一覧を載せた専用テーブルページを 1 枚追加します（このページのフッタは `1 / 1` 固定で、テーブル自体の複数ページ分割は SVG では未対応です）。
+
+`--format pdf` の場合は別ファイルに分割されず、単一 PDF ファイル内に「チャートページ群（lane グループ順）→ テーブルページ群」の順で複数ページとして出力されます。`--show-table` のみを指定した場合は IR 全体を 1 枚の未分割テーブルページとして末尾に追加し、`--pdf-pagination` を併用した場合は既存の行分割ロジックでテーブルページ群を生成します。いずれの場合もテーブルページのフッタはテーブルページ数のみを数え、先行するチャートページ数は含めません。
+
+`--show-legend` は各チャートページに個別描画されるため、ページごとに凡例の内容が異なり得ます（そのページの lane・アイテムに対応した凡例が描画される、意図した挙動です）。
+
+`--output` の指定が必須で（stdout は複数ファイル・複数ページを表現できないため）、`--watch` との併用はできません。lane の `group` がページ境界をまたいで分断される場合は stderr に警告が出ますが、出力自体は生成されます（詳細は [トラブルシューティング](/docs/troubleshooting/) を参照）。Playground はブラウザ内 WASM で完結しており `tdsl-render` のページ分割ロジックは公開していないため、`--chart-pagination` の挙動は Playground では再現できません。試すには CLI（`tdsl render`）を使用してください。
+
+```sh
+# タイムライン本体を lane グループ単位で複数の SVG ページに分割
+# china.page1.svg / china.page2.svg ... が生成される
+tdsl render examples/china_dynasties.tdsl --format svg --chart-pagination 2 --output china.svg
+
+# タイムライン本体を lane グループ単位で複数の PDF ページに分割
+# 単一の china_chart.pdf 内に複数ページとして出力される（テーブルなし）
+tdsl render examples/china_dynasties.tdsl --format pdf --chart-pagination 2 --output china_chart.pdf
+
+# チャートページ分割 + テーブルページ分割を併用（チャートページ群 → テーブルページ群の順）
+tdsl render examples/china_dynasties.tdsl \
+  --format pdf --chart-pagination 2 --show-table --pdf-pagination \
+  --output china_full_paginated.pdf
 ```
 
 ## init

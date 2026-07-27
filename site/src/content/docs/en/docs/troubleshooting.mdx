@@ -94,6 +94,26 @@ tdsl check sample.tdsl
 
 Fix `unit` to one of `year` / `month` / `day` / `hour` / `minute`. Use `kind custom;` if you want to make a custom classification explicit.
 
+## Errors/warnings from `--chart-pagination`
+
+`--chart-pagination <N>` (added in v1.28.0; see [CLI Reference](/en/docs/cli-reference/#chart-pagination)) fails under these conditions:
+
+- `--chart-pagination is not supported with --watch` — combined with `--watch`
+- `--chart-pagination must be >= 1` — `N` is `0`
+- `--chart-pagination only supports --format svg or --format pdf` — combined with `--format html` / `png`
+- `--chart-pagination requires --output <file> (stdout cannot hold multiple pages)` — `--output` is missing (stdout cannot represent multiple files or pages)
+- `--pdf-pagination requires --show-table (nothing to paginate otherwise)` — `--pdf-pagination` is specified without `--show-table`
+
+Rather than an error, if a lane `group` is split across a page boundary, this warning is printed to stderr (the output is still generated and the command still succeeds):
+
+```
+Warning: group band "..." is split across chart pages; each page redraws a truncated band. Increase --chart-pagination or reorder lanes to keep the group on one page.
+```
+
+Increase the `--chart-pagination` value, or reorder lanes (`order`), so that lanes sharing a `group` stay on the same page.
+
+`--chart-pagination` is CLI-only — the Playground (WASM in the browser) does not expose the pagination logic, so it cannot be reproduced there. Use the [CLI](/en/docs/installation/) (`tdsl render`) to try it.
+
 ## The Playground fails to load WASM
 
 The [Playground](/en/docs/playground/) runs WASM in the browser. If it stays on "Loading…" or nothing renders, first open the Console / Network tab in your browser's developer tools.
