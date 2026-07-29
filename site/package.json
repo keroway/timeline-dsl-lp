@@ -25,7 +25,7 @@
     "test:unit:watch": "vitest",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
-    "build": "pnpm smoke:wasm && astro check && astro build",
+    "build": "pnpm smoke:wasm && astro check && astro build && vitest run src/lib/smoke-catalog.test.ts",
     "check": "pnpm lint && pnpm format:check && pnpm test:unit && pnpm build && pnpm bundle-size",
     "check:full": "node scripts/check-full.mjs",
     "preview": "astro preview",
