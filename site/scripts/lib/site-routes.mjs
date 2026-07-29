@@ -416,6 +416,43 @@ const _CATALOG = [
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
+  // Docs: properties / date-time / wikidata-mapping（#536）
+  {
+    path: "/docs/properties/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/properties/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/docs/date-time/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/date-time/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/docs/wikidata-mapping/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
+  {
+    path: "/en/docs/wikidata-mapping/",
+    hreflang: true,
+    jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
+    a11y: true,
+  },
   // Docs: data-and-licensing（データ利用とライセンス, #502）
   {
     path: "/docs/data-and-licensing/",
