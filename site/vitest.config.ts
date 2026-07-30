@@ -18,6 +18,9 @@ const libTestConfig = defineConfig({
   test: {
     name: "lib",
     environment: "jsdom",
+    // Node 26's experimental global localStorage shadows jsdom's implementation.
+    // Keep jsdom as the browser-storage source used by library tests.
+    execArgv: ["--no-experimental-webstorage"],
     include: [
       "src/lib/**/*.test.ts",
       "src/data/**/*.test.ts",
