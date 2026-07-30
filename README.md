@@ -6,7 +6,7 @@
 [![Starlight](https://img.shields.io/badge/Starlight-0.41.3-5A45FF)](https://starlight.astro.build/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-11.0.8-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
-[![Node.js](https://img.shields.io/badge/Node.js-24-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-26-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare%20Pages-deployed-F38020?logo=cloudflare&logoColor=white)](https://pages.cloudflare.com/)
 [![Vitest](https://img.shields.io/badge/Vitest-4.1-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 [![Lighthouse CI](https://img.shields.io/badge/Lighthouse%20CI-enabled-F44B21?logo=lighthouse&logoColor=white)](https://github.com/GoogleChrome/lighthouse-ci)
@@ -24,7 +24,7 @@ LP / documentation site for the public [Timeline DSL](https://github.com/keroway
 | Area | Stack | Notes |
 | --- | --- | --- |
 | Site framework | Astro 7 + Starlight 0.41 | Static LP, docs, changelog, gallery, showcase, and playground routes. |
-| Language/runtime | TypeScript 6, Node.js 24, pnpm 11 | All commands run under `site/`. |
+| Language/runtime | TypeScript 6, Node.js 26, pnpm 11 | All commands run under `site/`. |
 | Styling | Astro components + CSS tokens | Global design tokens live in `site/src/styles/global.css`; avoid ad-hoc colors. |
 | Playground | Vendored `@keroway/tdsl-wasm` 1.25.0 | Browser validation and SVG rendering go through `site/src/lib/tdsl-wasm.ts`. |
 | Search | Pagefind generated at build time | Used by the site-wide search dialog. |
