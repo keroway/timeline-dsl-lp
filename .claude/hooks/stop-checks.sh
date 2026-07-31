@@ -8,6 +8,25 @@
 
 set -uo pipefail
 
+INPUT="$(cat || true)"
+
+if command -v jq >/dev/null 2>&1; then
+  STOP_HOOK_ACTIVE="$(printf '%s' "$INPUT" | jq -r '.stop_hook_active // false' 2>/dev/null || echo false)"
+else
+  # jq 非依存フォールバック: 空白を除いた生 JSON を直接照合する
+  COMPACT_INPUT="$(printf '%s' "$INPUT" | tr -d ' \t\n\r')"
+  case "$COMPACT_INPUT" in
+    *'"stop_hook_active":true'*) STOP_HOOK_ACTIVE="true" ;;
+    *) STOP_HOOK_ACTIVE="false" ;;
+  esac
+fi
+
+# 無限ループ防止: 現状は常に exit 0 (非ブロッキング) なので実害はないが、
+# 将来 exit 2 に変える判断をしたときに備えてガードだけ先に入れておく。
+if [ "$STOP_HOOK_ACTIVE" = "true" ]; then
+  exit 0
+fi
+
 # Claude Code sets $CLAUDE_PROJECT_DIR when invoking hooks.
 # Fallback resolves the repo root from this script's location (.claude/hooks/).
 REPO_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../.." && pwd)}"

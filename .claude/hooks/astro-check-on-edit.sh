@@ -29,7 +29,7 @@ case "$file_path" in
     ;;
 esac
 
-cd "$REPO_ROOT/site"
+cd "$REPO_ROOT/site" || exit 0
 
 # Run astro check quietly; surface errors only.
 # Exit code 2 makes Claude see the failure as feedback.
