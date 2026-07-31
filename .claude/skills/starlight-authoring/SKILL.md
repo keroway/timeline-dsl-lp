@@ -92,8 +92,10 @@ LP/Playground/Gallery/Showcase/Changelog（`src/pages/` 直下の非 docs ペー
   除外・並び替えできる（下書きや長すぎるページを `llms-small.txt` から外したい場合に使う）。
   設定は <https://delucis.github.io/starlight-llms-txt/configuration/> を参照。
 - `pnpm build` 後、`dist/llms.txt` `dist/llms-full.txt` `dist/docs/**/*.md` が
-  生成されていることを目視確認する（CI では明示アサートしていないため、大きな
-  ドキュメント構成変更をした PR ではローカルで一度確認する）。
+  生成されていることは `scripts/smoke-seo.mjs` がアサートする（`/llms.txt` /
+  `/llms-full.txt` / `/docs/quick-start.md` の配信 + frontmatter title を確認）。
+  大きなドキュメント構成変更をした PR では、他のページでも欠落がないか念のため
+  目視確認するとより安全。
 - 新しいプラグインを追加で足す場合（例: `starlight-page-actions` の
   「Copy Markdown / Open in AI chat」ボタン UI や `starlight-biel` の Ask AI
   チャットボット）は、UI に見える変更になるため implementation-policy.md §3

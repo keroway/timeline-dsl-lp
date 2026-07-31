@@ -118,6 +118,23 @@ async function smokeSeo(rootUrl) {
     `og:locale / og:locale:alternate: reciprocal pair confirmed on ${OG_IMAGE_TARGETS.length} pages. ✓`
   );
 
+  // llms.txt / llms-full.txt / 各ページの .md 出力（starlight-llms-txt）が
+  // 実際に配信されていることを確認する（starlight-authoring skill §4 が
+  // 「CI では明示アサートしていないため目視確認」と自己申告していた項目）。
+  const llmsTxtRes = await get(`${rootUrl}/llms.txt`);
+  assertStatus(llmsTxtRes, "/llms.txt");
+  const llmsFullRes = await get(`${rootUrl}/llms-full.txt`);
+  assertStatus(llmsFullRes, "/llms-full.txt");
+  const docsMdRes = await get(`${rootUrl}/docs/quick-start.md`);
+  assertStatus(docsMdRes, "/docs/quick-start.md");
+  const docsMdBody = await docsMdRes.text();
+  assertIncludes(
+    docsMdBody,
+    "title:",
+    "/docs/quick-start.md must include frontmatter title"
+  );
+  console.log("llms.txt / llms-full.txt / docs *.md: served. ✓");
+
   const robotsRes = await get(`${rootUrl}/robots.txt`);
   assertStatus(robotsRes, "/robots.txt");
   const robotsBody = await robotsRes.text();
