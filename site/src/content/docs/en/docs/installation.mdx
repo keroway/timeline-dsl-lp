@@ -70,17 +70,17 @@ The VS Code extension provides syntax highlighting and snippets, and when the `t
 
 Since v1.11.0, you can start the Timeline DSL language server (LSP) with `tdsl lsp`. The server communicates over standard input/output (stdio), so any editor with an LSP client (VS Code, Neovim, Helix, Emacs, etc.) can connect to it and get interactive assistance while editing `.tdsl` files. Since v1.19.0, the VS Code extension includes an LSP client that starts `tdsl lsp` automatically.
 
-| Feature         | Description                                                      | Version  |
-| --------------- | ---------------------------------------------------------------- | -------- |
-| Diagnostics     | Reports syntax and semantic errors in real time while editing    | v1.11.0+ |
-| Completion      | Completes DSL keywords                                           | v1.12.0+ |
-| Hover           | Shows hover information for lane IDs / QIDs                      | v1.12.0+ |
-| Goto Definition | Jumps from a lane reference to its lane declaration              | v1.12.0+ |
-| References      | Returns the declaration and all reference locations of a lane ID | v1.13.0+ |
-| Rename          | Renames a lane ID across its declaration and all references      | v1.13.0+ |
-| Code Action     | Provides lint auto-fixes as quick fixes                          | v1.13.0+ |
-| Document Symbol | Returns hierarchical symbols (timeline > lane > items)           | v1.13.0+ |
-| Formatting      | Formats the whole document to the canonical style                | v1.14.0+ |
+| Feature         | Description                                                                               | Version                            |
+| --------------- | ----------------------------------------------------------------------------------------- | ---------------------------------- |
+| Diagnostics     | Reports syntax and semantic errors in real time while editing                             | v1.11.0+                           |
+| Completion      | Completes DSL keywords                                                                    | v1.12.0+                           |
+| Hover           | Shows hover information for lane IDs / QIDs. Time literals show precision and offset info | v1.12.0+ (time literals: v1.27.0+) |
+| Goto Definition | Jumps from a lane reference to its lane declaration                                       | v1.12.0+                           |
+| References      | Returns the declaration and all reference locations of a lane ID                          | v1.13.0+                           |
+| Rename          | Renames a lane ID across its declaration and all references                               | v1.13.0+                           |
+| Code Action     | Provides lint auto-fixes as quick fixes                                                   | v1.13.0+                           |
+| Document Symbol | Returns hierarchical symbols (timeline > lane > items)                                    | v1.13.0+                           |
+| Formatting      | Formats the whole document to the canonical style                                         | v1.14.0+                           |
 
 The launch command takes no arguments.
 
