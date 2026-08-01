@@ -311,7 +311,7 @@ Date literals are placed at their exact positions on the timeline axis. When you
 
 For the full list of date/time literal formats, timezone offsets, and how BCE years are handled, see the [Date & Time Reference](/en/docs/date-time/).
 
-### Hour and minute precision (`unit hour` / `unit minute`)
+### Hour, minute, and second precision (`unit hour` / `unit minute` / `unit second`)
 
 Setting `unit hour;` or `unit minute;` draws a sub-day time axis finer than day precision. Write `start` / `end` / `time` as **`YYYY-MM-DDTHH:MM`** date-time literals. From v1.23.0 onwards, axis ticks thin out automatically based on density (1h/3h/6h/12h for hour units, 1min/5min/15min/30min for minute units), with `HH:MM` / `MM-DD HH:MM` labels. For whether second precision or a timezone offset (`Z` / `±HH:MM`) can be added, see the [Date & Time Reference](/en/docs/date-time/).
 
@@ -328,6 +328,22 @@ event mission 1969-07-20T20:17 "Moon Landing" { tags ["highlight"]; id "event:la
 ```
 
 [Open in Playground](</playground/?source=timeline+%22%E3%82%A2%E3%83%9D%E3%83%AD11%E5%8F%B7+%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%E6%97%A5%22+%7B%0A++++title+%22Apollo+11+%E2%80%94+Landing+Day+(UTC)%22%3B%0A++++unit+hour%3B%0A++++range+1969-07-20T00%3A00..1969-07-21T06%3A00%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9F%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%22+as+mission+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+mission+1969-07-20T20%3A17+%22%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%22+%7B+tags+%5B%22highlight%22%5D%3B+id+%22event%3Alanding%22%3B+%7D%3B>)
+
+Since v1.27.0, `unit second;` is also supported, and second-level axis ticks are likewise thinned out automatically based on density (1s/5s/15s/30s). Write `start` / `end` / `time` as **`YYYY-MM-DDTHH:MM:SS`** date-time literals.
+
+```tdsl
+timeline "Apollo 11 Touchdown Signal" {
+    title "Apollo 11 — Touchdown Signal (UTC)";
+    unit second;
+    range 1969-07-20T20:17:00..1969-07-20T20:18:00;
+    calendar proleptic_gregorian;
+}
+
+lane "Landing" as landing { kind custom; order 10; }
+event landing 1969-07-20T20:17:40 "Touchdown Signal Received" { tags ["highlight"]; id "event:touchdown"; };
+```
+
+[Open in Playground](</playground/?source=timeline+%22Apollo+11+Touchdown+Signal%22+%7B%0A++++title+%22Apollo+11+%E2%80%94+Touchdown+Signal+(UTC)%22%3B%0A++++unit+second%3B%0A++++range+1969-07-20T20%3A17%3A00..1969-07-20T20%3A18%3A00%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22Landing%22+as+landing+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+landing+1969-07-20T20%3A17%3A40+%22Touchdown+Signal+Received%22+%7B+tags+%5B%22highlight%22%5D%3B+id+%22event%3Atouchdown%22%3B+%7D%3B>)
 
 ## `??` (Fallback) Operator in map
 

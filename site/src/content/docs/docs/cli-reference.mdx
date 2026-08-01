@@ -760,21 +760,21 @@ tdsl lsp
 
 ### 対応機能
 
-| 機能                              | 説明                                                                          |
-| --------------------------------- | ----------------------------------------------------------------------------- |
-| `textDocument/publishDiagnostics` | パースエラー・検証警告・静的参照エラーをリアルタイムで通知                    |
-| `textDocument/didOpen`            | ドキュメントを開いたときに診断を実行                                          |
-| `textDocument/didChange`          | ドキュメント変更時に診断を再実行（FULL sync）                                 |
-| `textDocument/didClose`           | ドキュメントを閉じたときに診断をクリア                                        |
-| `textDocument/completion`         | DSL キーワード補完候補を返す（文脈非依存・全キーワード）                      |
-| `textDocument/hover`              | lane ID → lane 情報 / QID → キャッシュ済みエンティティ情報（offline）         |
-| `textDocument/definition`         | lane 参照位置 → lane 宣言位置へのジャンプ                                     |
-| `textDocument/codeAction`         | `tdsl lint --fix` 相当の自動修正を quick fix として提示（全文置換・offline）  |
-| `textDocument/documentSymbol`     | timeline / lane / アイテムの階層シンボルを返す                                |
-| `textDocument/references`         | lane ID の全参照位置を返す（`includeDeclaration` で宣言含む／含まないを制御） |
-| `textDocument/rename`             | lane ID の宣言＋全参照を新名称に一括置換（明示的 `as <alias>` 限定）          |
-| `textDocument/prepareRename`      | リネーム対象の妥当性検証（`as` 省略 lane は拒否）                             |
-| `textDocument/formatting`         | DSL ソースを正準形に整形する全文置換 TextEdit を返す                          |
+| 機能                              | 説明                                                                                                                 |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `textDocument/publishDiagnostics` | パースエラー・検証警告・静的参照エラーをリアルタイムで通知                                                           |
+| `textDocument/didOpen`            | ドキュメントを開いたときに診断を実行                                                                                 |
+| `textDocument/didChange`          | ドキュメント変更時に診断を再実行（FULL sync）                                                                        |
+| `textDocument/didClose`           | ドキュメントを閉じたときに診断をクリア                                                                               |
+| `textDocument/completion`         | DSL キーワード補完候補を返す（文脈非依存・全キーワード）                                                             |
+| `textDocument/hover`              | lane ID → lane 情報 / QID → キャッシュ済みエンティティ情報（offline）/ 時刻リテラル → 精度・offset 情報（v1.27.0〜） |
+| `textDocument/definition`         | lane 参照位置 → lane 宣言位置へのジャンプ                                                                            |
+| `textDocument/codeAction`         | `tdsl lint --fix` 相当の自動修正を quick fix として提示（全文置換・offline）                                         |
+| `textDocument/documentSymbol`     | timeline / lane / アイテムの階層シンボルを返す                                                                       |
+| `textDocument/references`         | lane ID の全参照位置を返す（`includeDeclaration` で宣言含む／含まないを制御）                                        |
+| `textDocument/rename`             | lane ID の宣言＋全参照を新名称に一括置換（明示的 `as <alias>` 限定）                                                 |
+| `textDocument/prepareRename`      | リネーム対象の妥当性検証（`as` 省略 lane は拒否）                                                                    |
+| `textDocument/formatting`         | DSL ソースを正準形に整形する全文置換 TextEdit を返す                                                                 |
 
 `import` / `map` / `apply` ブロックはネットワークアクセスを伴わない静的解析（offline）で診断されるため、Wikidata 取得が前提のエンティティ解決は行われません。エディタ設定（VS Code / Neovim / Helix）と各機能の詳しい使い方は [インストール](/docs/installation/#言語サーバ-lsp) を参照してください。
 

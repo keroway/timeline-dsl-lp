@@ -311,7 +311,7 @@ event events 1914-07 "第一次世界大戦勃発" {};
 
 書ける日付・時刻リテラルの全形式、タイムゾーンオフセット、紀元前の扱いは [日付・時刻表現リファレンス](/docs/date-time/) を参照してください。
 
-### 時・分精度（`unit hour` / `unit minute`）
+### 時・分・秒精度（`unit hour` / `unit minute` / `unit second`）
 
 `unit hour;` / `unit minute;` を指定すると、日単位よりさらに細かい時刻軸として描画できます。`start` / `end` / `time` には **`YYYY-MM-DDTHH:MM`** 形式の日時リテラルを書きます。v1.23.0 以降、軸目盛りは密度に応じて自動間引きされ（時単位は 1h/3h/6h/12h、分単位は 1min/5min/15min/30min）、`HH:MM` / `MM-DD HH:MM` ラベルが付きます。秒精度やタイムゾーンオフセット（`Z` / `±HH:MM`）を付与できるかどうかは [日付・時刻表現リファレンス](/docs/date-time/) を参照してください。
 
@@ -328,6 +328,22 @@ event mission 1969-07-20T20:17 "月面着陸" { tags ["highlight"]; id "event:la
 ```
 
 [Playgroundで開く](</playground/?source=timeline+%22%E3%82%A2%E3%83%9D%E3%83%AD11%E5%8F%B7+%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%E6%97%A5%22+%7B%0A++++title+%22Apollo+11+%E2%80%94+Landing+Day+(UTC)%22%3B%0A++++unit+hour%3B%0A++++range+1969-07-20T00%3A00..1969-07-21T06%3A00%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9F%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%22+as+mission+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+mission+1969-07-20T20%3A17+%22%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%22+%7B+tags+%5B%22highlight%22%5D%3B+id+%22event%3Alanding%22%3B+%7D%3B>)
+
+v1.27.0 以降は `unit second;` も指定でき、秒単位の軸目盛りも同様に密度に応じて自動間引きされます（1s/5s/15s/30s）。`start` / `end` / `time` に **`YYYY-MM-DDTHH:MM:SS`** 形式の日時リテラルを書きます。
+
+```tdsl
+timeline "アポロ11号 着陸信号受信" {
+    title "Apollo 11 — Touchdown Signal (UTC)";
+    unit second;
+    range 1969-07-20T20:17:00..1969-07-20T20:18:00;
+    calendar proleptic_gregorian;
+}
+
+lane "着陸" as landing { kind custom; order 10; }
+event landing 1969-07-20T20:17:40 "着陸信号受信" { tags ["highlight"]; id "event:touchdown"; };
+```
+
+[Playgroundで開く](</playground/?source=timeline+%22%E3%82%A2%E3%83%9D%E3%83%AD11%E5%8F%B7+%E7%9D%80%E9%99%B8%E4%BF%A1%E5%8F%B7%E5%8F%97%E4%BF%A1%22+%7B%0A++++title+%22Apollo+11+%E2%80%94+Touchdown+Signal+(UTC)%22%3B%0A++++unit+second%3B%0A++++range+1969-07-20T20%3A17%3A00..1969-07-20T20%3A18%3A00%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E7%9D%80%E9%99%B8%22+as+landing+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+landing+1969-07-20T20%3A17%3A40+%22%E7%9D%80%E9%99%B8%E4%BF%A1%E5%8F%B7%E5%8F%97%E4%BF%A1%22+%7B+tags+%5B%22highlight%22%5D%3B+id+%22event%3Atouchdown%22%3B+%7D%3B>)
 
 ## map の `??`（フォールバック）演算子
 

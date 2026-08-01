@@ -760,21 +760,21 @@ tdsl lsp
 
 ### Supported Features
 
-| Feature                           | Description                                                                                  |
-| --------------------------------- | -------------------------------------------------------------------------------------------- |
-| `textDocument/publishDiagnostics` | Reports parse errors, validation warnings, and static reference errors in real time          |
-| `textDocument/didOpen`            | Runs diagnostics when a document is opened                                                   |
-| `textDocument/didChange`          | Re-runs diagnostics on document change (full sync)                                           |
-| `textDocument/didClose`           | Clears diagnostics when a document is closed                                                 |
-| `textDocument/completion`         | Returns DSL keyword completion candidates (context-free, all keywords)                       |
-| `textDocument/hover`              | lane ID → lane info / QID → cached entity info (offline)                                     |
-| `textDocument/definition`         | Jumps from a lane reference to its declaration                                               |
-| `textDocument/codeAction`         | Offers `tdsl lint --fix`-equivalent automatic fixes as quick fixes (full-text, offline)      |
-| `textDocument/documentSymbol`     | Returns a hierarchical symbol tree for timeline / lane / items                               |
-| `textDocument/references`         | Returns all reference locations for a lane ID (`includeDeclaration` toggles the declaration) |
-| `textDocument/rename`             | Renames a lane's declaration and all references at once (explicit `as <alias>` only)         |
-| `textDocument/prepareRename`      | Validates whether a rename target is renameable (rejects lanes without `as`)                 |
-| `textDocument/formatting`         | Returns a full-text TextEdit that formats the DSL source to the canonical style              |
+| Feature                           | Description                                                                                                    |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `textDocument/publishDiagnostics` | Reports parse errors, validation warnings, and static reference errors in real time                            |
+| `textDocument/didOpen`            | Runs diagnostics when a document is opened                                                                     |
+| `textDocument/didChange`          | Re-runs diagnostics on document change (full sync)                                                             |
+| `textDocument/didClose`           | Clears diagnostics when a document is closed                                                                   |
+| `textDocument/completion`         | Returns DSL keyword completion candidates (context-free, all keywords)                                         |
+| `textDocument/hover`              | lane ID → lane info / QID → cached entity info (offline) / time literal → precision and offset info (v1.27.0+) |
+| `textDocument/definition`         | Jumps from a lane reference to its declaration                                                                 |
+| `textDocument/codeAction`         | Offers `tdsl lint --fix`-equivalent automatic fixes as quick fixes (full-text, offline)                        |
+| `textDocument/documentSymbol`     | Returns a hierarchical symbol tree for timeline / lane / items                                                 |
+| `textDocument/references`         | Returns all reference locations for a lane ID (`includeDeclaration` toggles the declaration)                   |
+| `textDocument/rename`             | Renames a lane's declaration and all references at once (explicit `as <alias>` only)                           |
+| `textDocument/prepareRename`      | Validates whether a rename target is renameable (rejects lanes without `as`)                                   |
+| `textDocument/formatting`         | Returns a full-text TextEdit that formats the DSL source to the canonical style                                |
 
 `import` / `map` / `apply` blocks are diagnosed via static analysis (offline, no network access), so entity resolution that requires Wikidata fetching is not performed. See [Installation](/en/docs/installation/#language-server-lsp) for editor setup (VS Code / Neovim / Helix) and detailed usage of each feature.
 

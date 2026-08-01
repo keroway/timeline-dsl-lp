@@ -99,7 +99,7 @@ tdsl completions fish > ~/.config/fish/completions/tdsl.fish
 
 ### lsp
 
-Starts the Timeline DSL language server (LSP) over stdio (v1.11.0+). Once connected from your editor's LSP client, you get real-time diagnostics, context-aware completion, hover, goto-definition, references, rename, code actions, document symbols, and formatting while editing `.tdsl` files. The VS Code extension connects automatically from v1.19.0 onwards.
+Starts the Timeline DSL language server (LSP) over stdio (v1.11.0+). Once connected from your editor's LSP client, you get real-time diagnostics, context-aware completion, hover, goto-definition, references, rename, code actions, document symbols, and formatting while editing `.tdsl` files. The VS Code extension connects automatically from v1.19.0 onwards. From v1.27.0 onwards, hovering over a time literal also shows its precision (e.g. `date-time (second)`) and whether it carries a timezone offset.
 
 ```sh
 tdsl lsp
