@@ -125,6 +125,94 @@ if (
   );
 }
 
+// 秒精度 + unit second（v1.27.0〜, #612-#614, ADR 0003）: `unit second;` と
+// `YYYY-MM-DDTHH:MM:SSZ` 形式の時刻リテラルがパースエラーなく SVG に描画されることを検証する。
+const secondSample = `timeline "Docking" {
+    title "Docking";
+    unit second;
+    range 2024-03-04T12:00:00Z..2024-03-04T13:00:00Z;
+    calendar proleptic_gregorian;
+}
+
+lane "Docking" as docking { kind custom; order 10; }
+
+event docking 2024-03-04T12:34:56Z "Soft Capture" { id "event:soft-capture"; };
+`;
+
+const secondDiagnostics = JSON.parse(check_source(secondSample));
+const secondErrors = secondDiagnostics.filter(
+  (diagnostic) => diagnostic.severity === "error"
+);
+if (secondErrors.length > 0) {
+  throw new Error(
+    `check_source returned errors for unit-second sample: ${JSON.stringify(secondErrors)}`
+  );
+}
+
+const secondSvg = render_svg_from_source(secondSample, 0);
+if (!secondSvg.includes("<svg") || !secondSvg.includes("Soft Capture")) {
+  throw new Error(
+    "render_svg_from_source did not render the unit-second sample."
+  );
+}
+
+// UTC オフセット（v1.27.0〜, #612-#616, ADR 0003）: `+HH:MM` / `-HH:MM` 形式の
+// オフセット付き時刻リテラルがパースエラーなく SVG に描画されることを検証する。
+const offsetSample = `timeline "Global Conference" {
+    title "Global Conference";
+    unit hour;
+    range 2024-06-10T00:00Z..2024-06-11T00:00Z;
+    calendar proleptic_gregorian;
+}
+
+lane "Tokyo" as tokyo { kind custom; order 10; }
+lane "New York" as new_york { kind custom; order 20; }
+
+event tokyo 2024-06-10T10:00+09:00 "Tokyo Opening" { id "event:tokyo:opening"; };
+event new_york 2024-06-10T09:00-05:00 "NY Opening" { id "event:ny:opening"; };
+`;
+
+const offsetDiagnostics = JSON.parse(check_source(offsetSample));
+const offsetErrors = offsetDiagnostics.filter(
+  (diagnostic) => diagnostic.severity === "error"
+);
+if (offsetErrors.length > 0) {
+  throw new Error(
+    `check_source returned errors for UTC-offset sample: ${JSON.stringify(offsetErrors)}`
+  );
+}
+
+const offsetSvg = render_svg_from_source(offsetSample, 0);
+if (!offsetSvg.includes("<svg") || !offsetSvg.includes("Tokyo Opening")) {
+  throw new Error(
+    "render_svg_from_source did not render the UTC-offset sample."
+  );
+}
+
+// offset 付き/なし混在（ADR 0003 D2）: 同一 span の start/end で offset の有無を
+// 混在させると MixedOffsetComparison エラーになることを検証する。
+const mixedOffsetSample = `timeline "Mixed Offset" {
+    title "Mixed Offset";
+    unit hour;
+    range 2024-06-10T00:00Z..2024-06-11T00:00Z;
+    calendar proleptic_gregorian;
+}
+
+lane "Ops" as ops { kind custom; order 10; }
+
+span ops 2024-06-10T00:00+09:00..2024-06-10T12:00 "Mixed" { id "span:mixed"; };
+`;
+
+const mixedOffsetDiagnostics = JSON.parse(check_source(mixedOffsetSample));
+const mixedOffsetErrors = mixedOffsetDiagnostics.filter(
+  (diagnostic) => diagnostic.severity === "error"
+);
+if (mixedOffsetErrors.length === 0) {
+  throw new Error(
+    "check_source did not report MixedOffsetComparison for a span mixing offset and offset-less time values."
+  );
+}
+
 console.log(
-  "WASM smoke passed: check_source, render_svg_from_source, group block, now keyword, show_event_labels option"
+  "WASM smoke passed: check_source, render_svg_from_source, group block, now keyword, show_event_labels option, unit second, UTC offset, mixed-offset error"
 );

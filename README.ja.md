@@ -17,7 +17,7 @@
 - Main repository: <https://github.com/keroway/timeline-dsl>
 - Playground（このサイト、日本語/英語対応、HTML / SVG / `.tdsl` ダウンロード対応）: <https://timeline-dsl-lp.pages.dev/playground/>
 - 代替 WebUI（本体プロジェクト、多言語未対応）: <https://keroway.github.io/timeline-dsl/>
-- このサイトが追従している最新リリース: `v1.25.0`（`site/public/wasm/package.json`、生成 changelog）
+- このサイトが追従している最新リリース: `v1.28.0`（`site/public/wasm/package.json`、生成 changelog）
 
 ## 技術スタック
 
@@ -26,7 +26,7 @@
 | サイトフレームワーク | Astro 7 + Starlight 0.41 | LP、Docs、Changelog、Gallery、Showcase、Playground を静的生成します。 |
 | 言語 / ランタイム | TypeScript 6、Node.js 26、pnpm 11 | すべてのコマンドは `site/` 配下で実行します。 |
 | スタイリング | Astro コンポーネント + CSS トークン | デザイントークンは `site/src/styles/global.css` に集約。色の直書きは避けます。 |
-| Playground | vendoring した `@keroway/tdsl-wasm` 1.25.0 | ブラウザ内検証と SVG レンダリングは `site/src/lib/tdsl-wasm.ts` 経由に統一します。 |
+| Playground | vendoring した `@keroway/tdsl-wasm` 1.28.0 | ブラウザ内検証と SVG レンダリングは `site/src/lib/tdsl-wasm.ts` 経由に統一します。 |
 | 検索 | build 時に生成する Pagefind | サイト全体検索ダイアログで利用します。 |
 | 品質管理 | `astro check`、Vitest、ESLint、Prettier、axe-core、Playwright、Lighthouse CI | `pnpm build` が最低限の CI ゲート。SEO / i18n / a11y / Playground の smoke も用意しています。 |
 | ホスティング | Cloudflare Pages | GitHub integration が `site/` を root として `dist/` を公開します。 |
