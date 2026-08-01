@@ -15,7 +15,7 @@ faqs:
   - question: "lane（レーン）を複数定義できますか？"
     answer: "lane 宣言を複数並べるだけです。order でレーンの表示順を制御できます（数値が小さいほど上に表示）。kind は分類ラベルで、dynasty・person・nation などを自由に指定できます。"
   - question: "CSV から取り込めますか？"
-    answer: "tdsl import-csv が使えます。CSV は UTF-8 で、lane,type,start,end,time,label,tags,id のヘッダー行が必要です。"
+    answer: "tdsl import-csv が使えます。CSV は UTF-8 で、lane,type,start,end,time,label,tags,id のヘッダー行が必要です。任意で source / origin 列も追加でき、tdsl export-csv が出力する10列CSVをそのまま取り込めます。"
   - question: "CI では何を実行すべきですか？"
     answer: "基本は tdsl check と tdsl lint です。成果物の生成まで確認する場合は tdsl build --pretty --output timeline.json を追加します。Wikidata 取得を避けたい場合は --offline を使います。"
   - question: "Wikidata の取得キャッシュをリセットできますか？"
@@ -78,7 +78,7 @@ lane "三国" as sanguo { kind dynasty; order 30; }
 
 ## CSVから取り込めますか？
 
-`tdsl import-csv` が使えます。CSVはUTF-8で、`lane,type,start,end,time,label,tags,id` のヘッダー行が必要です。
+`tdsl import-csv` が使えます。CSVはUTF-8で、`lane,type,start,end,time,label,tags,id` のヘッダー行が必要です。任意で `source` / `origin` 列も追加でき、`tdsl export-csv` が出力する10列CSVをそのまま取り込めます。
 
 ```sh
 tdsl import-csv items.csv

@@ -15,7 +15,7 @@ faqs:
   - question: "Can I define multiple lanes?"
     answer: "Simply list multiple lane declarations. Use order to control the display order (lower numbers appear higher). kind is a classification label; you can freely specify values like dynasty, person, or nation."
   - question: "Can I import from CSV?"
-    answer: "Yes, tdsl import-csv is available. The CSV must be UTF-8 and requires a header row of lane,type,start,end,time,label,tags,id."
+    answer: "Yes, tdsl import-csv is available. The CSV must be UTF-8 and requires a header row of lane,type,start,end,time,label,tags,id. The source / origin columns are optional additions, and it accepts the 10-column CSV produced by tdsl export-csv as-is."
   - question: "What should I run in CI?"
     answer: "The basics are tdsl check and tdsl lint. If you want to verify artifact generation as well, add tdsl build --pretty --output timeline.json. Use --offline if you want to avoid Wikidata fetching."
   - question: "Can I reset the Wikidata fetch cache?"
@@ -78,7 +78,7 @@ lane "Three Kingdoms" as sanguo { kind dynasty; order 30; }
 
 ## Can I import from CSV?
 
-Yes, `tdsl import-csv` is available. The CSV must be UTF-8 and requires a header row of `lane,type,start,end,time,label,tags,id`.
+Yes, `tdsl import-csv` is available. The CSV must be UTF-8 and requires a header row of `lane,type,start,end,time,label,tags,id`. The `source` / `origin` columns are optional additions, and it accepts the 10-column CSV produced by `tdsl export-csv` as-is.
 
 ```sh
 tdsl import-csv items.csv

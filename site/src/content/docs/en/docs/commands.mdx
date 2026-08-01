@@ -42,7 +42,7 @@ tdsl render sample.tdsl --offline --output sample.html
 
 ### decompile
 
-Reverse-generates `.tdsl` source from a JSON IR. This is the inverse of `build`, useful when you want to recover DSL source from an existing IR (v1.1.0+).
+Reverse-generates `.tdsl` source from a JSON IR. This is the inverse of `build`, useful when you want to recover DSL source from an existing IR (v1.1.0+). Second precision and UTC offsets (`Z` / `±HH:MM`) in `start` / `end` / `time` also round-trip without loss (v1.27.0+; earlier versions silently dropped them).
 
 ```sh
 tdsl decompile sample.json --output sample.tdsl
@@ -165,11 +165,11 @@ tdsl lint manual.tdsl --fix
 tdsl render manual.tdsl --output manual.html
 ```
 
-`import-csv` takes a UTF-8 CSV with a header row of `lane,type,start,end,time,label,tags,id`. The `start` / `end` / `time` columns accept three precisions — `YYYY`, `YYYY-MM`, and `YYYY-MM-DD` (month/day precision is supported from v1.10.0+). It also optionally accepts `source` / `origin` columns, so it round-trips the 10-column CSV produced by `export-csv` as-is (v1.26.0+).
+`import-csv` takes a UTF-8 CSV with a header row of `lane,type,start,end,time,label,tags,id`. The `start` / `end` / `time` columns accept the date-only precisions `YYYY`, `YYYY-MM`, and `YYYY-MM-DD`, plus the datetime precisions `YYYY-MM-DDTHH:MM` and `YYYY-MM-DDTHH:MM:SS`, and UTC offsets (`Z` / `±HH:MM`) (month/day precision from v1.10.0+; time/second/offset follow the DSL's own time-literal parser). The `source` / `origin` columns are independently optional, so a 9-column CSV with only one of them is accepted too, and the 10-column CSV produced by `export-csv` (with both) round-trips as-is (v1.26.0+).
 
 ### export-csv
 
-Exports an IR (from `.tdsl` or `.json`) to CSV (v1.23.0+). Writes the 8 columns accepted by `import-csv` (`lane,type,start,end,time,label,tags,id`) plus `source` / `origin`, for a total of 10 columns. All 10 columns, including `source` / `origin`, round-trip with `import-csv` (v1.26.0+). Rows with `origin=wikidata` require `source` to be in the `wd:Q<id>` form; a mismatch produces a CSV row-numbered error.
+Exports an IR (from `.tdsl` or `.json`) to CSV (v1.23.0+). Writes the 8 columns accepted by `import-csv` (`lane,type,start,end,time,label,tags,id`) plus `source` / `origin`, for a total of 10 columns. All 10 columns, including `source` / `origin`, round-trip with `import-csv` (v1.26.0+). Second precision and UTC offsets (`Z` / `±HH:MM`) in `start` / `end` / `time` also round-trip without loss (v1.27.0+; earlier versions silently dropped them). Rows with `origin=wikidata` require `source` to be in the `wd:Q<id>` form; a mismatch produces a CSV row-numbered error.
 
 ```sh
 tdsl export-csv manual.tdsl --output manual.csv
@@ -219,5 +219,6 @@ The cache is stored under the OS cache directory (`cache_dir` from the `dirs` cr
 | `--check`                                          | `fmt`                                   | Exit non-zero when there is a diff (for CI; v1.14.0+)                                                                                                                                                                                                                                                                                                                                  |
 | `--watch`                                          | `render`                                | Watch the input file and re-render automatically on change (html / svg only; v1.16.0+)                                                                                                                                                                                                                                                                                                 |
 | `--show-table`                                     | `render`                                | Append a chronological item listing table. An HTML `<table>` with `--format html`, or an equivalent SVG-drawn table below the timeline with `svg` / `png` / `pdf` (v1.16.0+)                                                                                                                                                                                                           |
+| `--pdf-pagination`                                 | `render`                                | Split the `--show-table` item table onto separate PDF pages (requires `--show-table`; `--format pdf` only; when combined with `--chart-pagination`, the table pages follow all chart pages; v1.27.0+)                                                                                                                                                                                  |
 | `--chart-pagination <N>`                           | `render`                                | Split the chart body into multiple pages by lane group, N lanes per page (requires `--output`; `svg` produces multiple `<stem>.pageN.svg` files, `pdf` produces multiple pages within a single PDF; v1.28.0+)                                                                                                                                                                          |
 | `--json-schema`                                    | `build`                                 | Write the JSON Schema for TimelineIr to stdout (or `--output`); no input file required (v1.16.0+)                                                                                                                                                                                                                                                                                      |

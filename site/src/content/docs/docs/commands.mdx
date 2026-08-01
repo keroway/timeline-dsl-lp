@@ -42,7 +42,7 @@ tdsl render sample.tdsl --offline --output sample.html
 
 ### decompile
 
-JSON IRから `.tdsl` ソースを逆生成します。`build` の逆方向の変換で、既存IRからDSLソースを復元したい場合に使います（v1.1.0〜）。
+JSON IRから `.tdsl` ソースを逆生成します。`build` の逆方向の変換で、既存IRからDSLソースを復元したい場合に使います（v1.1.0〜）。`start` / `end` / `time` の秒精度・UTCオフセット（`Z` / `±HH:MM`）も欠落なくラウンドトリップします（v1.27.0〜。それ以前は無声で破棄されていました）。
 
 ```sh
 tdsl decompile sample.json --output sample.tdsl
@@ -165,11 +165,11 @@ tdsl lint manual.tdsl --fix
 tdsl render manual.tdsl --output manual.html
 ```
 
-`import-csv` は `lane,type,start,end,time,label,tags,id` のヘッダー行を持つUTF-8 CSVを入力にします。`start` / `end` / `time` 列は `YYYY` / `YYYY-MM` / `YYYY-MM-DD` の 3 精度を受理します（月・日精度は v1.10.0〜）。任意で `source` / `origin` 列も受理し、`export-csv` が出力する10列のCSVをそのまま往復できます（v1.26.0〜）。
+`import-csv` は `lane,type,start,end,time,label,tags,id` のヘッダー行を持つUTF-8 CSVを入力にします。`start` / `end` / `time` 列は `YYYY` / `YYYY-MM` / `YYYY-MM-DD` の日付精度に加え、`YYYY-MM-DDTHH:MM` / `YYYY-MM-DDTHH:MM:SS` の時刻精度と `Z` / `±HH:MM` のUTCオフセットを受理します（月・日精度は v1.10.0〜、時刻・秒・オフセットはDSL本体の時刻リテラルパーサに準拠）。`source` / `origin` 列は任意かつ独立に判定されるため、どちらか一方のみを含む9列CSVもそのまま受理し、両方を含む `export-csv` 出力の10列CSVも往復できます（v1.26.0〜）。
 
 ### export-csv
 
-IR（`.tdsl` または `.json`）をCSVへ書き出します（v1.23.0〜）。`import-csv` が受理する8列（`lane,type,start,end,time,label,tags,id`）に `source` / `origin` を加えた10列を出力し、`source` / `origin` を含めて全10列が `import-csv` とラウンドトリップします（v1.26.0〜）。`origin=wikidata` の行は `source` が `wd:Q<id>` 形式であることが必須で、不整合はCSV行番号付きエラーになります。
+IR（`.tdsl` または `.json`）をCSVへ書き出します（v1.23.0〜）。`import-csv` が受理する8列（`lane,type,start,end,time,label,tags,id`）に `source` / `origin` を加えた10列を出力し、`source` / `origin` を含めて全10列が `import-csv` とラウンドトリップします（v1.26.0〜）。`start` / `end` / `time` の秒精度・UTCオフセット（`Z` / `±HH:MM`）も欠落せずラウンドトリップします（v1.27.0〜。それ以前は無声で破棄されていました）。`origin=wikidata` の行は `source` が `wd:Q<id>` 形式であることが必須で、不整合はCSV行番号付きエラーになります。
 
 ```sh
 tdsl export-csv manual.tdsl --output manual.csv
@@ -219,5 +219,6 @@ tdsl cache clear --older-than 7 # 7日より古いエントリのみ削除する
 | `--check`                                          | `fmt`                                   | 差分があれば非ゼロ終了する（CI 向け、v1.14.0〜）                                                                                                                                                                                                                                                                                      |
 | `--watch`                                          | `render`                                | 入力ファイルを監視して変更時に自動で再レンダリングする（html / svg のみ、v1.16.0〜）                                                                                                                                                                                                                                                  |
 | `--show-table`                                     | `render`                                | 時系列順の内容一覧表を追加する。`--format html` ではHTML `<table>`、`svg` / `png` / `pdf` ではタイムライン本体の下にSVG描画で同等の表を追加する（v1.16.0〜）                                                                                                                                                                          |
+| `--pdf-pagination`                                 | `render`                                | `--show-table` のアイテムテーブルをPDFの複数ページに分割する（`--show-table` 必須、`--format pdf` のみ。`--chart-pagination` 併用時はテーブルページがチャートページ群の後に続く、v1.27.0〜）                                                                                                                                          |
 | `--chart-pagination <N>`                           | `render`                                | チャート本体を lane グループ単位で N レーンずつ複数ページに分割する（`--output` 必須。`svg` は `<stem>.pageN.svg` の複数ファイル、`pdf` は単一PDF内の複数ページ、v1.28.0〜）                                                                                                                                                          |
 | `--json-schema`                                    | `build`                                 | TimelineIr の JSON Schema を標準出力（または `--output`）へ書き出す（入力ファイル不要、v1.16.0〜）                                                                                                                                                                                                                                    |

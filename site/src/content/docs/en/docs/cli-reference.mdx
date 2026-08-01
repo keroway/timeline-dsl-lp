@@ -183,7 +183,7 @@ tdsl merge base.tdsl extension.tdsl --output combined.json --pretty
 
 ## decompile
 
-Reverse-generates `.tdsl` source code from a JSON IR file. Useful when the JSON was produced by another tool, or when you want to recover source from an existing IR.
+Reverse-generates `.tdsl` source code from a JSON IR file. Useful when the JSON was produced by another tool, or when you want to recover source from an existing IR. Second precision and UTC offsets (`Z` / `±HH:MM`) in `start` / `end` / `time` also round-trip without loss (v1.27.0+; earlier versions silently dropped them).
 
 ```
 tdsl decompile [OPTIONS] [INPUT]
