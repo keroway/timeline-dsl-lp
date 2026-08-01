@@ -12,8 +12,9 @@
     { "include": "#secondary-keywords" },
     { "include": "#as-keyword" },
     { "include": "#operators" },
-    { "include": "#year-range" },
-    { "include": "#year-literal" },
+    { "include": "#datetime-range" },
+    { "include": "#datetime-literal" },
+    { "include": "#wikidata-ref" },
     { "include": "#qid" },
     { "include": "#field-keys" },
     { "include": "#functions" },
@@ -30,6 +31,11 @@
         {
           "name": "comment.line.double-slash.tdsl",
           "match": "//.*$"
+        },
+        {
+          "name": "comment.block.tdsl",
+          "begin": "/\\*",
+          "end": "\\*/"
         }
       ]
     },
@@ -61,11 +67,11 @@
     },
     "top-keywords": {
       "name": "keyword.control.tdsl",
-      "match": "\\b(timeline|lane|event_range|event|span|import|map|expand)\\b"
+      "match": "\\b(timeline|lane|group|event_range|event|span|import|map|expand|template|apply|color_map)\\b"
     },
     "secondary-keywords": {
       "name": "keyword.other.tdsl",
-      "match": "\\b(to|wikidata|entity|policy)\\b"
+      "match": "\\b(to|wikidata|entity|policy|query)\\b"
     },
     "as-keyword": {
       "name": "keyword.operator.as.tdsl",
@@ -91,13 +97,17 @@
         }
       ]
     },
-    "year-range": {
+    "datetime-range": {
       "name": "constant.numeric.range.tdsl",
-      "match": "-?\\b\\d+\\.\\.-?\\b\\d+\\b"
+      "match": "(?<![A-Za-z0-9_])-?\\d+(?:-\\d{2}(?:-\\d{2}(?:T\\d{2}:\\d{2}(?::\\d{2})?(?:Z|[+-]\\d{2}:\\d{2})?)?)?)?\\.\\.-?\\d+(?:-\\d{2}(?:-\\d{2}(?:T\\d{2}:\\d{2}(?::\\d{2})?(?:Z|[+-]\\d{2}:\\d{2})?)?)?)?\\b"
     },
-    "year-literal": {
-      "name": "constant.numeric.year.tdsl",
-      "match": "(?<![A-Za-z_])-?\\d+\\b"
+    "datetime-literal": {
+      "name": "constant.numeric.datetime.tdsl",
+      "match": "(?<![A-Za-z0-9_])-?\\d+(?:-\\d{2}(?:-\\d{2}(?:T\\d{2}:\\d{2}(?::\\d{2})?(?:Z|[+-]\\d{2}:\\d{2})?)?)?)?\\b"
+    },
+    "wikidata-ref": {
+      "name": "constant.other.reference.wikidata.tdsl",
+      "match": "\\bwd:[QP]\\d+\\b"
     },
     "qid": {
       "name": "constant.other.qid.tdsl",
@@ -105,7 +115,7 @@
     },
     "field-keys": {
       "name": "variable.other.attribute.tdsl",
-      "match": "\\b(title|unit|range|calendar|kind|order|id|tags|source|origin|start|end|label|lane|claim|merge_by_source)\\b"
+      "match": "\\b(title|unit|range|calendar|kind|order|id|tags|source|origin|start|end|label|lane|claim|merge_by_source|time|target_type|target_lane|overwrite_imported|keep_manual|proleptic_gregorian|year|month|day|hour|minute|second|now|dynasty|person|country|custom|era|field_priority|note|link|color|qualifier)\\b"
     },
     "functions": {
       "name": "entity.name.function.tdsl",
