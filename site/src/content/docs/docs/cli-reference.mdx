@@ -183,7 +183,7 @@ tdsl merge base.tdsl extension.tdsl --output combined.json --pretty
 
 ## decompile
 
-JSON IR ファイルを `.tdsl` ソースコードに逆変換します。JSON を他ツールで生成した場合や、IR からソースを復元したい場合に使います。
+JSON IR ファイルを `.tdsl` ソースコードに逆変換します。JSON を他ツールで生成した場合や、IR からソースを復元したい場合に使います。`start` / `end` / `time` の秒精度・UTCオフセット（`Z` / `±HH:MM`）も欠落なくラウンドトリップします（v1.27.0〜。それ以前は無声で破棄されていました）。
 
 ```
 tdsl decompile [OPTIONS] [INPUT]
