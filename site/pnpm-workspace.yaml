@@ -3,19 +3,29 @@
 overrides:
   esbuild: 0.28.1
   fast-uri: 3.1.5
-  js-yaml: 4.3.0
+  js-yaml: 4.3.1
   tmp: 0.2.7
-  undici: 7.28.0
+  undici: 7.29.0
   uuid: 11.1.1
   yaml: 2.8.4
   # osv-scanner で検出した脆弱性のパッチレベル修正（GHSA-r28c-9q8g-f849 / GHSA-v422-hmwv-36x6）。
   # いずれも破壊的変更なし
-  postcss: 8.5.18
+  postcss: 8.5.25
   body-parser: 1.20.6
+  # osv-scanner 検出分（2026-08-09、#573）。いずれも devDependency 経由でビルド成果物には載らない。
+  # GHSA-mh99-v99m-4gvg / GHSA-rgw5-rvv9-x895 (brace-expansion ReDoS)
+  #   — @lhci/cli > chrome-launcher > rimraf > glob > minimatch 経由。
+  brace-expansion: 1.1.18
+  # GHSA-22jq-vg5j-6vgg / GHSA-4xrf-jv44-h6hh / GHSA-mwp4-54f8-5fhr (ip-address)
+  #   — @lhci/cli / lighthouse > puppeteer-core > proxy-agent > socks 経由。
+  ip-address: 10.3.1
+  # GHSA-2v37-7h3g-55p8 (nanoid <3.3.17) — size=0 で customAlphabet / customRandom が
+  #   無限ループする。postcss（ソースマップ用 ID 生成、size は固定）経由。
+  nanoid: 3.3.18
 
 patchedDependencies:
   "@lhci/utils@0.15.1": patches/@lhci__utils@0.15.1.patch
-  "undici@7.28.0": patches/undici@7.28.0.patch
+  undici@7.29.0: patches/undici@7.29.0.patch
 
 # pnpm 11 のセキュリティ寄りデフォルト (minimumReleaseAge=1440 / strictDepBuilds /
 # blockExoticSubdeps) は既定値のまま使う。
