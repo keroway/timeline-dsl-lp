@@ -21,7 +21,11 @@ pre-commit:
       run: pnpm exec prettier --write --ignore-unknown {staged_files}
       stage_fixed: true
 
+    # glob は `root` を適用した後のパス(`./src/foo.ts` の形)に対して判定される。
+    # `site/src/**/*` や `src/**/*` のようにディレクトリ名で始まるパターンは
+    # この形に一致せず、ジョブが一度も発火しない(#575)。上の2ジョブと同じく
+    # 拡張子だけで書くこと。深い階層も拾い、`site/` 外のファイルは root が弾く。
     - name: astro check (typecheck)
       root: site/
-      glob: "site/src/**/*"
+      glob: "*.{astro,ts,mts,tsx,mdx}"
       run: pnpm astro check
