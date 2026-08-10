@@ -101,7 +101,7 @@ Starlight の `plugins` に `starlight-llms-txt` と `starlight-md-txt` を導�
 |---------|------|------|
 | biome check | ステージ済み `.ts` / `.js` / `.mjs` / `.json` | Biome lint + format 自動修正 |
 | prettier | ステージ済み `.astro` / `.md` / `.mdx` | Prettier フォーマット |
-| astro check | `site/src/**` に変更がある場合 | 型チェック |
+| astro check | ステージ済み `.astro` / `.ts` / `.mts` / `.tsx` / `.mdx`（`site/` 配下のみ） | 型チェック |
 
 フックの再インストールが必要な場合:
 
