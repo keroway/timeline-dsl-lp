@@ -30,8 +30,19 @@ const libTestConfig = defineConfig({
   },
 });
 
+// scripts/ は node 組み込みモジュールのみで動く生成スクリプト群。実プロセスを
+// spawn して終了コードを検証するため、Astro の統合も DOM も要らない (#577)。
+const scriptsTestConfig = defineConfig({
+  test: {
+    name: "scripts",
+    environment: "node",
+    include: ["scripts/**/*.test.mjs"],
+    globals: false,
+  },
+});
+
 export default defineConfig({
   test: {
-    projects: [componentTestConfig, libTestConfig],
+    projects: [componentTestConfig, libTestConfig, scriptsTestConfig],
   },
 });
