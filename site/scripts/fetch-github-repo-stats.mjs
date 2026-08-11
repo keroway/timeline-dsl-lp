@@ -1,14 +1,18 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  GITHUB_API_BASE,
+  handleFetchFailure,
+  writeJsonPayload,
+} from "./lib/generated-data.mjs";
 
 const REPOSITORY = "keroway/timeline-dsl";
 const OUTPUT_PATH = resolve(
   dirname(fileURLToPath(import.meta.url)),
   "../src/data/repo-stats.generated.json"
 );
-const REPO_API_URL = `https://api.github.com/repos/${REPOSITORY}`;
-const CONTRIBUTORS_API_URL = `https://api.github.com/repos/${REPOSITORY}/contributors?per_page=1&anon=true`;
+const REPO_API_URL = `${GITHUB_API_BASE}/repos/${REPOSITORY}`;
+const CONTRIBUTORS_API_URL = `${GITHUB_API_BASE}/repos/${REPOSITORY}/contributors?per_page=1&anon=true`;
 
 function createPayload({
   fetchedAt = null,
@@ -91,8 +95,7 @@ async function fetchContributorsCount(headers) {
 }
 
 async function writePayload(payload) {
-  await mkdir(dirname(OUTPUT_PATH), { recursive: true });
-  await writeFile(OUTPUT_PATH, `${JSON.stringify(payload, null, 2)}\n`);
+  await writeJsonPayload(OUTPUT_PATH, payload);
 }
 
 try {
@@ -112,7 +115,11 @@ try {
   );
   console.log(`Wrote repo stats to ${OUTPUT_PATH}`);
 } catch (error) {
-  await writePayload(createPayload());
-  console.warn(error instanceof Error ? error.message : error);
-  console.warn(`Wrote fallback repo stats data to ${OUTPUT_PATH}`);
+  // 空データで既存ファイルを上書きしない。失敗した週は「更新されない」で済ませる (#577)。
+  await handleFetchFailure({
+    outputPath: OUTPUT_PATH,
+    error,
+    createEmptyPayload: createPayload,
+  });
+  process.exitCode = 1;
 }
