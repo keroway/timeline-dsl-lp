@@ -85,7 +85,8 @@ describe.each(TARGETS)("$script", ({ script, dataFile }) => {
     try {
       const { code, stderr } = await runScript(script, api.base);
 
-      expect(code, `stderr: ${stderr}`).not.toBe(0);
+      // not.toBe(0) だと終了コード 2 やシグナル終了の null も通ってしまう。
+      expect(code, `stderr: ${stderr}`).toBe(1);
       expect(stderr).toMatch(/403/);
       expect(await readFile(dataFile, "utf8")).toBe(before);
     } finally {
