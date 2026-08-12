@@ -11,6 +11,12 @@ import {
   parseArgs,
 } from "./lib/smoke-helpers.mjs";
 
+// 検索の初回は wasm + インデックス取得を含むため、他の待ちより長く見る(#579)。
+// 「該当なし」が確定した場合に入力し直す回数も含めて、最悪でも
+// SEARCH_ATTEMPTS * SEARCH_SETTLE_TIMEOUT_MS で必ず終わる。
+const SEARCH_SETTLE_TIMEOUT_MS = 15000;
+const SEARCH_ATTEMPTS = 3;
+
 const args = parseArgs(process.argv.slice(2), { booleanFlags: ["browser"] });
 const baseUrl = normalizeBaseUrl(
   args.baseUrl ?? process.env.I18N_BASE_URL ?? DEFAULT_BASE_URL
@@ -497,13 +503,57 @@ async function checkSearch(browser, rootUrl, path, buttonId, uiId, label) {
     );
   }
 
-  await page.locator(`#${uiId} .pagefind-ui__search-input`).fill("install");
-  await page
-    .locator(`#${uiId} .pagefind-ui__result`)
-    .first()
-    .waitFor({ state: "visible", timeout: 5000 });
+  // Pagefind の検索は「入力 → デバウンス → インデックス取得 → 描画」で、
+  // 初回だけ wasm + インデックスチャンクの取得が挟まる。CI の冷えた runner では
+  // ここが数秒かかり、固定 5000ms では足りずに落ちていた(#579)。
+  //
+  // 待ち時間を伸ばすだけでは直さない。**入力がインデックス取得前に処理されて
+  // 検索が空振りする**と、いくら待っても結果は出ない。結果が出ないまま
+  // 落ち着いた(=「該当なし」表示が確定した)場合は入力し直して再検索させる。
+  const input = page.locator(`#${uiId} .pagefind-ui__search-input`);
+  const results = page.locator(`#${uiId} .pagefind-ui__result`);
+  const message = page.locator(`#${uiId} .pagefind-ui__message`);
 
+  let lastState = "";
+  for (let attempt = 1; attempt <= SEARCH_ATTEMPTS; attempt += 1) {
+    await input.fill("");
+    await input.fill("install");
+
+    try {
+      // 結果か「該当なし」のどちらかが出るまで待つ。どちらも出ないうちは
+      // まだ初回ロード中なので、待つこと自体が正しい。
+      await results
+        .first()
+        .or(message)
+        .first()
+        .waitFor({ state: "visible", timeout: SEARCH_SETTLE_TIMEOUT_MS });
+    } catch {
+      lastState = "検索 UI が結果も該当なし表示も出さないまま時間切れ";
+      continue;
+    }
+
+    if ((await results.count()) > 0) {
+      await context.close();
+      return;
+    }
+
+    // 「該当なし」が確定した = 空のインデックスに対して検索した可能性が高い。
+    lastState = `「該当なし」表示のみ: ${((await message.textContent()) ?? "").trim()}`;
+  }
+
+  // 失敗を数字と画像で残す。ログに TimeoutError しか出ないと、
+  // 「遅い」のか「0 件」なのかを後から切り分けられない(#579 でそうなった)。
+  const diagnostics = [
+    `${label}: 検索結果が ${SEARCH_ATTEMPTS} 回試しても出ませんでした`,
+    `  最後の状態: ${lastState}`,
+    `  結果件数: ${await results.count()}`,
+    `  UI テキスト: ${((await searchUi.textContent()) ?? "").trim().slice(0, 200)}`,
+  ].join("\n");
+
+  const shot = `test-results/smoke-i18n-search-${uiId}.png`;
+  await page.screenshot({ path: shot, fullPage: true }).catch(() => {});
   await context.close();
+  throw new Error(`${diagnostics}\n  スクリーンショット: ${shot}`);
 }
 
 async function checkGalleryFilter(browser, rootUrl) {
