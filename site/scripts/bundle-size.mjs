@@ -9,7 +9,7 @@ if (!existsSync(distDir)) {
 }
 
 const THRESHOLDS = {
-  wasm: { warn: 690_000, fail: 730_000 },
+  wasm: { warn: 810_000, fail: 860_000 },
   totalJs: { warn: 550_000, fail: 650_000 },
   maxJs: { warn: 370_000, fail: 420_000 },
 };

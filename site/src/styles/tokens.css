@@ -29,7 +29,7 @@
      （--color-warm/gold/plum/sky）をプロキシするだけで、新色は追加しない。
      プロキシ先の --color-* が light / dark / high-contrast の 4 ブロックで再定義済みのため、
      この :root の 1 定義で全テーマに自動追従する（var() は use 時に各テーマ値へ解決される）。
-     本体 WASM v1.20.0 は SVG <style> に index ベースの --tdsl-lane-0..7 を吐くため（semantic
+     本体 WASM は SVG <style> に index ベースの --tdsl-lane-0..7 を吐くため（semantic
      名ではない）、index→semantic のブリッジは下の .tdsl-root ブロックで行う。 */
   --tdsl-lane-warm: var(--color-warm);
   --tdsl-lane-gold: var(--color-gold);
@@ -296,12 +296,13 @@
   --color-status-error: #ff8a75;
 }
 
-/* span / event 着色の index→semantic ブリッジ（DESIGN.md §8 / #303）。
-   本体 WASM v1.20.0 は span/event を style="fill:var(--tdsl-lane-N, #fallback)" （N=lane 出現順
-   0..7）で着色し、同時に SVG 内の <style> で :root にデフォルト hex を定義する。
-   その :root デフォルトを LP テーマで上書きするため、dot/span の最近祖先である
-   .tdsl-root に index トークンを再定義する（:root 同士の競合では WASM の inline <style> が
-   後勝ちするため :root では効かず、より近い .tdsl-root の継承で確実に上書きする）。
+/* span / event 着色の index→semantic ブリッジ（DESIGN.md §8 / #303、#561 で v2.0.0 同期時に更新）。
+   本体 WASM は span/event を style="fill:var(--tdsl-lane-N, #fallback)" （N=lane 出現順
+   0..7）で着色し、同時に SVG 内の <style> で :where(.tdsl-root) にデフォルト hex を定義する
+   （v2.0.0 で :root から変更。:where() は詳細度 0 のため、詳細度 0-1-0 の LP 側 .tdsl-root
+   ブロックが cascade layer 相当で確実に勝つ。旧 :root 同士の競合では source order 依存の
+   後勝ちに頼っていたが、この変更でその依存は解消済み）。
+   dot/span の最近祖先である .tdsl-root に index トークンを再定義することで上書きする。
    LP パレット（warm/gold/plum/sky）を 8 スロットにサイクル適用。プロキシ先の
    --tdsl-lane-* → --color-* が light/dark/HC に追従するため、テーマ追従は自動。
    WCAG: マッピング先は検証済み LP パレット（lane-palette.test.ts / DESIGN §2）。gold lane 上の
