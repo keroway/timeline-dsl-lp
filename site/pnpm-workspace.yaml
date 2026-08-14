@@ -66,5 +66,11 @@ trustPolicy: no-downgrade
 # semver: lighthouse (@lhci/cli の依存, dev 専用) が古い 5.x / 6.x を間接利用する。
 #   いずれも 2023 年以前の公開で provenance attestation を持たないため downgrade 判定されるが、
 #   semver はエコシステム標準の versioning ライブラリで実害はない。本番バンドルには含まれない。
+# chokidar@4.0.3: astro が依存するファイル監視ライブラリ。4.0.2/4.0.3 で provenance
+#   attestation が付かなくなった (メンテナ側の publish パイプライン変更によるものと見られ、
+#   実際の侵害の証拠は無い)。同時期に shadcn-vue / react-router / c12 等の他プロジェクトでも
+#   同じ downgrade 検知が報告されている (pnpm/pnpm#10622)。chokidar が v5 で provenance を
+#   再度付けるようになったら、この行を削除して trustPolicy を機能させる。
 trustPolicyExclude:
   - "semver@5.7.2 || 6.3.1"
+  - "chokidar@4.0.3"
