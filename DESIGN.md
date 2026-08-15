@@ -550,23 +550,30 @@ LP 側の `--color-gold`（周年・節目）に相当する色は WASM 側に�
 
 中期案 (a) は **実装済み**。本体 [keroway/timeline-dsl#485](https://github.com/keroway/timeline-dsl/issues/485)（PR #486）が v1.20.0 で出荷し、LP は WASM を v1.20.0 に同期した。
 
-**実 API は index ベース**だった点に注意（当初提案した semantic 名 `--tdsl-lane-warm/gold/plum/sky` ではない）。WASM 出力 SVG の `<style>` は次の形式:
+**実 API は index ベース**だった点に注意（当初提案した semantic 名 `--tdsl-lane-warm/gold/plum/sky` ではない）。WASM 出力 SVG の `<style>` は次の形式（v2.0.0 時点。セレクタは v1.x の `:root` から `:where(.tdsl-root)` に変更済み、後述）:
 
 ```css
-:root { --tdsl-lane-0: #4682B4; --tdsl-lane-1: #E67E22; ... --tdsl-lane-7: #2980B9; }
+:where(.tdsl-root) { --tdsl-lane-0: #4682B4; --tdsl-lane-1: #E67E22; ... --tdsl-lane-7: #2980B9; }
 .tdsl-event-dot { fill: var(--tdsl-lane-0, #4682B4); }  /* N = lane 出現順 0..7 */
 ```
 
 LP 側の追従は `global.css` で 2 段に分けて実装している:
 
 1. **semantic トークン**（`:root`）: `--tdsl-lane-warm/gold/plum/sky` が `--color-*` をプロキシし light/dark/HC に追従。
-2. **index→semantic ブリッジ**（`.tdsl-root`）: WASM の `--tdsl-lane-0..7` を LP パレットに cycle 適用（0→warm / 1→gold / 2→plum / 3→sky、以降反復）。WASM の inline `:root` より近い祖先で再定義することで継承で確実に上書きする。
+2. **index→semantic ブリッジ**（`.tdsl-root`）: WASM の `--tdsl-lane-0..7` を LP パレットに cycle 適用（0→warm / 1→gold / 2→plum / 3→sky、以降反復）。WASM の inline デフォルトより近い祖先で再定義することで上書きする。
 
 回帰ガード: `src/lib/tdsl-lane-bridge.test.ts`（ブリッジの存在と対応関係）/ `src/lib/lane-palette.test.ts`（パレット値）。
 
 ### 据え置き期間中のレビュー観点
 
 本体レンダラーのデフォルト配色を変更する PR は、LP 側の `.tdsl-root` ブリッジ（index→semantic）が生きているため表示は LP パレットに追従するが、`var()` の fallback hex（変数未定義環境用）は本体デフォルトに依存する点に注意する。
+
+### v2.0.0 同期時の変更（#561）
+
+本体 [keroway/timeline-dsl#701](https://github.com/keroway/timeline-dsl/issues/701) が v2.0.0 で出荷し、2 点の破壊的変更が入った。
+
+1. **lane 色セレクタが `:root` → `:where(.tdsl-root)` に変更**。`:where()` は詳細度 0 のため、詳細度 0-1-0 の LP 側 `.tdsl-root` ブロックが常に勝つ（旧 `:root` 同士の競合では CSS の source order 依存の「後勝ち」に頼っていた）。LP 側の CSS 変更は不要。
+2. **SVG `<g>` 要素の `aria-label` の構造プレフィックス（`Event:` / `Span:` / `Lane:` 等）が日本語から英語に変更**。実測では `aria-label="Event: 北方遠征, 1042, id: event:realm:1042, Lane: 王国"` のように、プレフィックスのみ英語化されタイトル・レーン名・年・id はソース由来のまま。LP は `render_svg_from_source` の出力を改変しない方針（上記「短期」参照）のため、**この英語プレフィックスは ja ページでも許容し、LP 側での後処理（DOM 書き換え等）は行わない**。露出面は Playground preview の `tabindex="0"` な `<g>` へのキーボードフォーカス時のみで、`TimelineEmbed` / `GalleryCard` は `role="img"` + i18n 済み `aria-label` で外側から包むため内部ラベルはアクセシブルネームに寄与しない。ロケール指定 API（`JsRenderOptions.locale` 相当）が本体に入るまでのトレードオフとして記録する。
 
 ---
 
