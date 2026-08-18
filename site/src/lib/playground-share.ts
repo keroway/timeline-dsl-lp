@@ -45,20 +45,28 @@ export async function decodeShareSource(encoded: string): Promise<string> {
   return new TextDecoder().decode(buffer);
 }
 
+export type ExtractSourceResult =
+  | { status: "ok"; source: string }
+  | { status: "invalid" }
+  | { status: "none" };
+
 export async function extractSourceFromLocation(
   search: string
-): Promise<string | null> {
+): Promise<ExtractSourceResult> {
   const params = new URLSearchParams(search);
   const compressed = params.get(SHARE_QUERY_PARAM);
   if (compressed) {
     try {
-      return await decodeShareSource(compressed);
+      return { status: "ok", source: await decodeShareSource(compressed) };
     } catch {
-      return null;
+      return { status: "invalid" };
     }
   }
   const legacy = params.get(LEGACY_SOURCE_QUERY_PARAM);
-  return legacy ?? null;
+  if (legacy !== null) {
+    return { status: "ok", source: legacy };
+  }
+  return { status: "none" };
 }
 
 export type BuildShareUrlResult =

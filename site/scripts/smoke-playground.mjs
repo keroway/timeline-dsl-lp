@@ -169,13 +169,38 @@ async function smokeBrowserFlow(rootUrl) {
     await smokeLocaleToggle(rootUrl, browser);
     await smokeShowEventLabelsToggle(rootUrl, browser);
     await smokePanZoom(rootUrl, browser);
+    await smokeBrokenShareUrl(rootUrl, browser);
   } finally {
     await browser.close();
   }
 
   console.log(
-    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, show-event-labels toggle, and pan/zoom wheel+reset."
+    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, show-event-labels toggle, pan/zoom wheel+reset, and broken share-URL notification."
   );
+}
+
+async function smokeBrokenShareUrl(rootUrl, browser) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await page.goto(`${rootUrl}${PLAYGROUND_PATH}?src=@@@not-valid@@@`, {
+    waitUntil: "networkidle",
+  });
+
+  // 壊れた ?src= はデフォルトサンプルへフォールバックしつつ、共有ライブリージョンで通知する（#592）。
+  await page
+    .locator('[data-smoke="playground-preview"] svg')
+    .first()
+    .waitFor({ state: "visible" });
+  await page.waitForFunction(
+    () =>
+      (document.querySelector("[data-share-live]")?.textContent ?? "").length >
+      0,
+    undefined,
+    { timeout: 5000 }
+  );
+
+  await context.close();
 }
 
 async function smokePanZoom(rootUrl, browser) {
