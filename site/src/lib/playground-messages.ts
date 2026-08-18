@@ -23,6 +23,7 @@ export function buildPlaygroundMsgs(t: ReturnType<typeof getT>) {
     shareCopySuccess: t("playground.share.copy_success"),
     shareCopyError: t("playground.share.copy_error"),
     shareTooLong: t("playground.share.too_long"),
+    htmlDownloadError: t("playground.download.html_error"),
     severityError: t("playground.diagnostics.severity_error"),
     severityWarn: t("playground.diagnostics.severity_warn"),
     severityInfo: t("playground.diagnostics.severity_info"),

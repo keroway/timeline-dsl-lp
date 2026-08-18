@@ -292,6 +292,7 @@ export const en = {
   "playground.share.copy_error": "Could not copy the shareable link",
   "playground.share.too_long":
     "Source is too long to share as a link (limit {limit} chars)",
+  "playground.download.html_error": "Could not download the HTML file",
   "playground.diagnostics.panel": "Diagnostics",
   "playground.diagnostics.aria_label": "Diagnostics",
   "playground.diagnostics.waiting": "Diagnostics will appear here.",
