@@ -475,16 +475,17 @@ export function initPlayground(): void {
   });
 
   void (async () => {
-    const sharedSource = await extractSourceFromLocation(
-      window.location.search
-    );
-    if (sharedSource !== null) {
-      applySource(sharedSource);
+    const result = await extractSourceFromLocation(window.location.search);
+    if (result.status === "ok") {
+      applySource(result.source);
       if (sampleSelect) sampleSelect.value = "";
-    } else {
-      updateEditorMeta();
-      runPlayground();
+      return;
     }
+    if (result.status === "invalid") {
+      announceToLiveRegion(shareLive, msgs.shareLoadFailed);
+    }
+    updateEditorMeta();
+    runPlayground();
   })();
 
   sampleSelect?.addEventListener("change", () => {

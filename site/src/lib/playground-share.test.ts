@@ -68,22 +68,28 @@ describe("buildShareUrl", () => {
 });
 
 describe("extractSourceFromLocation", () => {
-  it("src クエリを復号して返す", async () => {
+  it("src クエリを復号して status=ok で返す", async () => {
     const encoded = await encodeShareSource("event x");
-    expect(await extractSourceFromLocation(`?src=${encoded}`)).toBe("event x");
+    expect(await extractSourceFromLocation(`?src=${encoded}`)).toEqual({
+      status: "ok",
+      source: "event x",
+    });
   });
 
-  it("legacy の source クエリはそのまま返す", async () => {
-    expect(await extractSourceFromLocation("?source=event%20legacy")).toBe(
-      "event legacy"
-    );
+  it("legacy の source クエリは status=ok でそのまま返す", async () => {
+    expect(await extractSourceFromLocation("?source=event%20legacy")).toEqual({
+      status: "ok",
+      source: "event legacy",
+    });
   });
 
-  it("復号できない src は null を返す", async () => {
-    expect(await extractSourceFromLocation("?src=@@@not-valid@@@")).toBeNull();
+  it("復号できない src は status=invalid を返す", async () => {
+    expect(await extractSourceFromLocation("?src=@@@not-valid@@@")).toEqual({
+      status: "invalid",
+    });
   });
 
-  it("クエリが無ければ null を返す", async () => {
-    expect(await extractSourceFromLocation("")).toBeNull();
+  it("クエリが無ければ status=none を返す", async () => {
+    expect(await extractSourceFromLocation("")).toEqual({ status: "none" });
   });
 });

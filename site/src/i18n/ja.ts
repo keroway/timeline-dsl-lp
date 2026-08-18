@@ -288,6 +288,8 @@ export const ja = {
   "playground.share.copy_error": "共有リンクのコピーに失敗しました",
   "playground.share.too_long":
     "ソースが長すぎて共有リンクを作成できません（上限 {limit} 文字）",
+  "playground.share.load_failed":
+    "共有リンクを読み込めませんでした。デフォルトのサンプルを表示しています",
   "playground.download.html_error": "HTML のダウンロードに失敗しました",
   "playground.diagnostics.panel": "検証結果",
   "playground.diagnostics.aria_label": "診断結果",

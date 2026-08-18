@@ -20,9 +20,12 @@ vi.mock("./playground-pan-zoom", () => ({
   createPanZoom: () => ({ applySvg: () => {} }),
 }));
 
+const extractSourceFromLocation = vi.fn();
+
 vi.mock("./playground-share", () => ({
   buildShareUrl: vi.fn(),
-  extractSourceFromLocation: () => Promise.resolve(null),
+  extractSourceFromLocation: (...args: unknown[]) =>
+    extractSourceFromLocation(...args),
   MAX_SHARE_URL_LENGTH: 8192,
 }));
 
@@ -62,6 +65,7 @@ const MSGS = {
   shareCopySuccess: "copied",
   shareCopyError: "copy error",
   shareTooLong: "too long {limit}",
+  shareLoadFailed: "共有リンクを読み込めませんでした",
   severityError: "エラー",
   severityWarn: "警告",
   severityInfo: "情報",
@@ -79,6 +83,7 @@ function setupDom() {
         <div data-pan-zoom-stage></div>
       </div>
       <div data-diagnostics></div>
+      <div data-share-live></div>
       <script type="application/json" id="playground-samples">[{"id":"a","source":"event x"}]</script>
       <script type="application/json" id="playground-i18n">${JSON.stringify(MSGS)}</script>
     </div>
@@ -87,6 +92,7 @@ function setupDom() {
     root: document.querySelector("[data-playground-root]")!,
     status: document.querySelector("[data-status]")!,
     diagnosticsMeta: document.querySelector("[data-diagnostics-meta]")!,
+    shareLive: document.querySelector("[data-share-live]")!,
   };
 }
 
@@ -95,6 +101,8 @@ beforeEach(() => {
   renderTdslSvgWithOptions.mockReset();
   renderTdslHtml.mockReset();
   setTdslWasmMessages.mockReset();
+  extractSourceFromLocation.mockReset();
+  extractSourceFromLocation.mockResolvedValue({ status: "none" });
 });
 
 afterEach(() => {
@@ -199,6 +207,24 @@ describe("initPlayground runPlayground の状態分岐", () => {
       expect(dom.status.textContent).toBe(MSGS.statusWasmFailed);
     });
     expect(dom.root.getAttribute("data-playground-state")).toBe("error");
+  });
+
+  it("壊れた共有URL（status=invalid）はデフォルトサンプルへフォールバックしつつ shareLive に通知する", async () => {
+    const dom = setupDom();
+    extractSourceFromLocation.mockResolvedValue({ status: "invalid" });
+    checkTdslSource.mockResolvedValue([]);
+    renderTdslSvgWithOptions.mockResolvedValue(
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    );
+
+    initPlayground();
+
+    await vi.waitFor(() => {
+      expect(dom.shareLive.textContent).toBe(MSGS.shareLoadFailed);
+    });
+    await vi.waitFor(() => {
+      expect(dom.root.getAttribute("data-playground-state")).toBe("ready");
+    });
   });
 });
 
