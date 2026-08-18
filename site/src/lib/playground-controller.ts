@@ -95,10 +95,23 @@ export function createRunLoop(opts: { debounceMs: number; run: () => void }): {
   return { queueRun };
 }
 
+function announceToLiveRegion(
+  liveRegion: HTMLElement | null,
+  message: string
+): void {
+  if (!liveRegion) return;
+  liveRegion.textContent = "";
+  window.requestAnimationFrame(() => {
+    liveRegion.textContent = message;
+  });
+}
+
 export function wireDownloads(opts: {
   tdslBtn: HTMLButtonElement | null;
   svgBtn: HTMLButtonElement | null;
   htmlBtn: HTMLButtonElement | null;
+  liveRegion: HTMLElement | null;
+  msgs: Pick<PlaygroundMsgs, "htmlDownloadError">;
   getSource: () => string;
   getLastSvg: () => string;
   getLastSource: () => string;
@@ -116,7 +129,9 @@ export function wireDownloads(opts: {
     try {
       const html = await renderTdslHtml(source);
       downloadText("timeline.html", "text/html;charset=utf-8", html);
-    } catch {}
+    } catch {
+      announceToLiveRegion(opts.liveRegion, opts.msgs.htmlDownloadError);
+    }
   });
 }
 
@@ -131,13 +146,8 @@ export function wireShare(opts: {
 }): void {
   const { copyLinkButton, shareLive, msgs } = opts;
 
-  const announceShare = (message: string) => {
-    if (!shareLive) return;
-    shareLive.textContent = "";
-    window.requestAnimationFrame(() => {
-      shareLive.textContent = message;
-    });
-  };
+  const announceShare = (message: string) =>
+    announceToLiveRegion(shareLive, message);
 
   copyLinkButton?.addEventListener("click", async () => {
     if (!copyLinkButton) return;
@@ -488,6 +498,8 @@ export function initPlayground(): void {
     tdslBtn: downloadTdslButton,
     svgBtn: downloadSvgButton,
     htmlBtn: downloadHtmlButton,
+    liveRegion: shareLive,
+    msgs,
     getSource: () => view.state.doc.toString(),
     getLastSvg: () => lastSvg,
     getLastSource: () => lastSource,

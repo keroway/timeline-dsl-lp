@@ -292,6 +292,8 @@ describe("wireDownloads", () => {
       tdslBtn,
       svgBtn,
       htmlBtn,
+      liveRegion: null,
+      msgs: { htmlDownloadError: "html download error" },
       getSource,
       getLastSvg,
       getLastSource,
@@ -321,6 +323,8 @@ describe("wireDownloads", () => {
       tdslBtn,
       svgBtn,
       htmlBtn,
+      liveRegion: null,
+      msgs: { htmlDownloadError: "html download error" },
       getSource,
       getLastSvg,
       getLastSource,
@@ -328,6 +332,34 @@ describe("wireDownloads", () => {
     svgBtn.click();
 
     expect(createObjectURL).not.toHaveBeenCalled();
+  });
+
+  it("htmlBtn クリックで renderTdslHtml が失敗すると liveRegion にエラーメッセージを通知する", async () => {
+    const tdslBtn = document.createElement("button");
+    const svgBtn = document.createElement("button");
+    const htmlBtn = document.createElement("button");
+    const liveRegion = document.createElement("div");
+    const getSource = vi.fn().mockReturnValue("");
+    const getLastSvg = vi.fn().mockReturnValue("");
+    const getLastSource = vi.fn().mockReturnValue("source content");
+
+    renderTdslHtml.mockRejectedValueOnce(new Error("wasm not loaded"));
+
+    wireDownloads({
+      tdslBtn,
+      svgBtn,
+      htmlBtn,
+      liveRegion,
+      msgs: { htmlDownloadError: "html download error" },
+      getSource,
+      getLastSvg,
+      getLastSource,
+    });
+    htmlBtn.click();
+
+    await vi.waitFor(() => {
+      expect(liveRegion.textContent).toBe("html download error");
+    });
   });
 });
 
