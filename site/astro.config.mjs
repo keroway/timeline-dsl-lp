@@ -1,8 +1,10 @@
+import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightLlmsTxt from "starlight-llms-txt";
 import starlightMdTxt from "starlight-md-txt";
+import { rehypeScrollableTables } from "./src/lib/rehype-scrollable-tables.ts";
 import tdslGrammar from "./src/lib/tdsl.tmLanguage.json" with { type: "json" };
 
 // dev / preview のリッスンポート。PORT env があればそれを使い (portless が割り当てる
@@ -38,6 +40,9 @@ export default defineConfig({
       defaultColor: false,
       langs: [tdslGrammar],
     },
+    processor: unified({
+      rehypePlugins: [rehypeScrollableTables],
+    }),
   },
   integrations: [
     sitemap({
