@@ -29,9 +29,10 @@ description: Author and modify Astro Starlight docs pages in this repository (ti
 5. **新しい Starlight integration/plugin を追加する前に、公式プラグインリファレンス
    <https://starlight.astro.build/reference/plugins/> と対象プラグインの README を
    実際に取得して peerDependencies（`astro` / `@astrojs/starlight` のバージョン範囲）を
-   確認する。** このリポジトリは `astro@6.4.6` / `@astrojs/starlight@0.39.2` に固定気味
-   なので、`astro@7` 系を要求するプラグインは非互換。ハルシネーションでバージョンを
-   決め打ちしない。
+   確認する。** このリポジトリの実バージョンは固定値をここに書かず、都度
+   `site/package.json` の `astro` / `@astrojs/starlight` を確認すること
+   （このファイルに書いた固定バージョンは更新されずドリフトする）。
+   peerDependencies の範囲外であればハルシネーションでバージョンを決め打ちしない。
 
 ## 1. i18n ペア（Starlight 特有の落とし穴）
 
