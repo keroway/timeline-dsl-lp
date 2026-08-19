@@ -53,6 +53,15 @@ event milestones 2026 "公開ベータ" {};
 
 `order` は表示順です。小さい値ほど上に並びます。`kind` は分類用のメタデータとして扱います。
 
+`color` で lane 自体の表示色を固定できます（v2.0.0〜）。
+
+```tdsl
+lane "マイルストーン" as milestones { kind custom; order 10; color "#4a9eff"; }
+event milestones 2026 "公開ベータ" {};
+```
+
+省略した場合、lane の色は並び順（`order` 適用後のインデックス）からパレットを機械的に割り当てます。そのため lane を1つ追加したり `order` を変更すると既存 lane の色が全部ずれる非決定性があります。バージョン管理下で長期運用する `.tdsl` では図の差分が意図せず膨らむ原因になるため、色を固定したい lane には `color` を明示してください。書式は後述する `event`/`span`/`event_range` の `color`（note、link、color（補足メタデータ）セクション）と同じ `"#rrggbb"` 形式です。優先順位は item の `color` > タグ単位の `color_map` > lane の `color` の順で、item 側の指定がある場合はそちらが優先されます。
+
 ## group
 
 `group` は複数の `lane` をまとめ、グループラベルと境界線で視覚的に階層化します（v1.13.0〜）。`group "<名前>" { ... }` の中に `lane` を並べます。

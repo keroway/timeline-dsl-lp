@@ -53,6 +53,15 @@ event milestones 2026 "Public Beta" {};
 
 `order` controls display order — smaller values appear higher. `kind` is treated as classification metadata.
 
+`color` pins the lane's own display color (v2.0.0+).
+
+```tdsl
+lane "milestones" as milestones { kind custom; order 10; color "#4a9eff"; }
+event milestones 2026 "Public Beta" {};
+```
+
+When omitted, the lane's color is assigned mechanically from a palette based on display order (the index after `order` is applied). This means adding a lane or changing `order` shifts the colors of every existing lane. For `.tdsl` files maintained long-term under version control, this can cause unintended diff churn in the generated diagrams — pin `color` explicitly for any lane whose color must stay stable. The format is the same `"#rrggbb"` form used by the `color` on `event`/`span`/`event_range` (see the "note, link, and color (supplementary metadata)" section below). Precedence is item `color` > tag-based `color_map` > lane `color` — an item-level color always wins if set.
+
 ## group
 
 `group` bundles multiple `lane`s and visually organizes them with a group label and separator lines (v1.13.0+). Place `lane`s inside `group "<name>" { ... }`.
