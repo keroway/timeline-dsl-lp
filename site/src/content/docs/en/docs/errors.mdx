@@ -531,6 +531,7 @@ Quality issues detected by `tdsl lint`. Codes that can be auto-fixed with `--fix
 | ERROR: `start_gt_end`         | Reversed start/end     |
 | WARN: `missing_id`            | Missing ID             |
 | WARN: `invalid_calendar_date` | Invalid calendar date  |
+| WARN: `unused_lane`           | Unused lane            |
 
 ### ERROR: unknown_lane — Unknown lane reference
 
@@ -608,6 +609,14 @@ event events 2024-03-01 "3月1日"
 ```
 
 **Note**: The parser only validates the value ranges of dates (month 1–12, day 1–31). Verifying calendar existence (leap-year handling, end-of-month days) is lint's responsibility. Month-precision values (e.g. `2024-02`) are not checked.
+
+### WARN: unused_lane — Unused lane
+
+**Message**: `lane '{id}' is declared but never referenced (it renders as an empty band)`
+
+**Cause**: A `lane` block (including one inside a `group`) is declared but never referenced by any `span`, `event`, `template`, `apply`, or `map`. An unreferenced lane renders as an empty band.
+
+**Fix**: Not auto-fixed by `tdsl lint --fix` (to avoid breaking the case where the lane was declared ahead of items that will be added later). Remove the `lane` declaration if it's unnecessary, or add an item that references it.
 
 ## Related documentation
 
