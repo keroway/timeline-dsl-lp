@@ -531,6 +531,7 @@ tdsl fetch Q7209 --lang ja
 | ERROR: `start_gt_end`         | 開始・終了が逆転     |
 | WARN: `missing_id`            | ID なし              |
 | WARN: `invalid_calendar_date` | 無効なカレンダー日付 |
+| WARN: `unused_lane`           | 未使用の lane        |
 
 ### ERROR: unknown_lane — 未定義の lane 参照
 
@@ -608,6 +609,14 @@ event events 2024-03-01 "3月1日"
 ```
 
 **備考**: パーサは日付の値域（月は 1〜12、日は 1〜31）のみを検証します。カレンダー上の実在確認（うるう年判定・月末日確認）は lint の責務です。月精度のみの指定（例: `2024-02`）は検証対象外です。
+
+### WARN: unused_lane — 未使用の lane
+
+**メッセージ**: `lane '{id}' is declared but never referenced (it renders as an empty band)`
+
+**原因**: `lane` ブロック（`group` 内も含む）で宣言された lane が、`span` / `event` / `template` / `apply` / `map` のいずれからも参照されていません。参照されない lane はレンダリング結果で空の帯になります。
+
+**修正方法**: `tdsl lint --fix` では自動修正されません（これから item を追加する予定で先に宣言したケースを壊さないため）。不要であれば `lane` 宣言を削除し、必要であれば参照するアイテムを追加してください。
 
 ## 関連ドキュメント
 
