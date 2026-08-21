@@ -19,19 +19,19 @@ tdsl build sample.tdsl --pretty --output sample.json
 tdsl render sample.tdsl --output sample.html
 ```
 
-| コマンド                   | 用途                                             |
-| -------------------------- | ------------------------------------------------ |
-| `tdsl check <FILE>`        | 構文・意味チェックを実行する                     |
-| `tdsl lint <FILE>`         | 品質チェックを実行する                           |
-| `tdsl build <FILE>`        | `.tdsl` をIR JSONにコンパイルする                |
-| `tdsl render <FILE>`       | スタンドアロンHTMLに描画する                     |
-| `tdsl ast <FILE>`          | デバッグ用にASTを出力する                        |
-| `tdsl decompile <FILE>`    | JSON IRを `.tdsl` に逆コンパイルする（v1.1.0〜） |
-| `tdsl merge <FILES...>`    | 複数の `.tdsl` ファイルを結合する（v1.2.0〜）    |
-| `tdsl completions <SHELL>` | シェル補完スクリプトを生成する（v1.9.0〜）       |
-| `tdsl lsp`                 | 言語サーバ（LSP）を起動する（v1.11.0〜）         |
-| `tdsl fmt <FILE>`          | `.tdsl` を正準スタイルに整形する（v1.14.0〜）    |
-| `tdsl export-csv <FILE>`   | IRをCSVに書き出す（v1.23.0〜）                   |
+| コマンド                   | 用途                                                                                     |
+| -------------------------- | ---------------------------------------------------------------------------------------- |
+| `tdsl check <FILE>...`     | 構文・意味チェックを実行する（複数ファイル・ディレクトリ対応、v2.0.0〜）                 |
+| `tdsl lint <FILE>...`      | 品質チェックを実行する（複数ファイル・ディレクトリ対応、v2.0.0〜）                       |
+| `tdsl build <FILE>`        | `.tdsl` をIR JSONにコンパイルする                                                        |
+| `tdsl render <FILE>`       | スタンドアロンHTMLに描画する                                                             |
+| `tdsl ast <FILE>`          | デバッグ用にASTを出力する                                                                |
+| `tdsl decompile <FILE>`    | JSON IRを `.tdsl` に逆コンパイルする（v1.1.0〜）                                         |
+| `tdsl merge <FILES...>`    | 複数の `.tdsl` ファイルを結合する（v1.2.0〜）                                            |
+| `tdsl completions <SHELL>` | シェル補完スクリプトを生成する（v1.9.0〜）                                               |
+| `tdsl lsp`                 | 言語サーバ（LSP）を起動する（v1.11.0〜）                                                 |
+| `tdsl fmt <FILE>...`       | `.tdsl` を正準スタイルに整形する（v1.14.0〜。複数ファイル・ディレクトリ対応は v2.0.0〜） |
+| `tdsl export-csv <FILE>`   | IRをCSVに書き出す（v1.23.0〜）                                                           |
 
 `build` と `render` は Wikidata import を含むファイルでネットワークアクセスを行うことがあります。ローカル定義だけを処理したい場合は `--offline` を指定します。
 
@@ -111,7 +111,7 @@ tdsl lsp
 
 ### fmt
 
-`.tdsl` を正準スタイル（2 スペースインデント・ブロック間 1 行空け）に整形します（v1.14.0〜）。デフォルトは整形結果を標準出力へ書き出します。`--write` でファイルを直接上書きし、`--check` で差分があれば非ゼロ終了します（CI 向け）。
+`.tdsl` を正準スタイル（2 スペースインデント・ブロック間 1 行空け）に整形します（v1.14.0〜）。デフォルトは整形結果を標準出力へ書き出します。`--write` でファイルを直接上書きし、`--check` で差分があれば非ゼロ終了します（CI 向け）。複数ファイル・ディレクトリ入力にも対応します（詳細は [CLIリファレンス](/docs/cli-reference/#fmt) を参照、v2.0.0〜）。
 
 ```sh
 tdsl fmt sample.tdsl           # 整形結果を標準出力へ
@@ -213,7 +213,8 @@ tdsl cache clear --older-than 7 # 7日より古いエントリのみ削除する
 | `--lane-height <px>`                               | `render`                                | lane の高さと縦密度を指定する（デフォルト 60、v1.21.0〜）                                                                                                                                                                                                                                                                             |
 | `--layout-style timeline,group-bands,gantt,zigzag` | `render`                                | レイアウト方式を指定する。`group-bands` は era/group の背景帯、`gantt` は月グリッド強調と期間ラベル常時表示、`zigzag` はレーン内アイテムの上下交互配置を行う(`zigzag` は lane数が2以下の場合のみ有効。それ以外は `timeline` にフォールバックする)(デフォルト `timeline`、`group-bands` は v1.23.0〜、`gantt` / `zigzag` は v1.24.0〜) |
 | `--show-legend`                                    | `render`                                | lane ・タグの色を示す静的な凡例パネルを追加する（v1.23.0〜）                                                                                                                                                                                                                                                                          |
-| `--format text,json`                               | `lint`                                  | lint結果の出力形式を指定する                                                                                                                                                                                                                                                                                                          |
+| `--format text,json`                               | `check`, `lint`                         | 診断結果の出力形式を指定する（`check` は v2.0.0〜）                                                                                                                                                                                                                                                                                   |
+| `--deny-warnings`                                  | `check`                                 | 警告が1件でもあれば非ゼロ終了する（デフォルトでは警告のみなら成功、v2.0.0〜）                                                                                                                                                                                                                                                         |
 | `--fix`                                            | `lint`                                  | 安全な修正をファイルへ適用する                                                                                                                                                                                                                                                                                                        |
 | `--write`                                          | `fmt`                                   | 整形結果をファイルへ上書きする（v1.14.0〜）                                                                                                                                                                                                                                                                                           |
 | `--check`                                          | `fmt`                                   | 差分があれば非ゼロ終了する（CI 向け、v1.14.0〜）                                                                                                                                                                                                                                                                                      |

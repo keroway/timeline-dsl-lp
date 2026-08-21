@@ -19,19 +19,19 @@ tdsl build sample.tdsl --pretty --output sample.json
 tdsl render sample.tdsl --output sample.html
 ```
 
-| Command                    | Description                                      |
-| -------------------------- | ------------------------------------------------ |
-| `tdsl check <FILE>`        | Run a syntax and semantic check                  |
-| `tdsl lint <FILE>`         | Run a quality check                              |
-| `tdsl build <FILE>`        | Compile `.tdsl` to IR JSON                       |
-| `tdsl render <FILE>`       | Render to a standalone HTML file                 |
-| `tdsl ast <FILE>`          | Output the AST for debugging                     |
-| `tdsl decompile <FILE>`    | Decompile JSON IR back to `.tdsl` (v1.1.0+)      |
-| `tdsl merge <FILES...>`    | Merge multiple `.tdsl` files into one (v1.2.0+)  |
-| `tdsl completions <SHELL>` | Generate shell completion scripts (v1.9.0+)      |
-| `tdsl lsp`                 | Start the language server (LSP) (v1.11.0+)       |
-| `tdsl fmt <FILE>`          | Format `.tdsl` to the canonical style (v1.14.0+) |
-| `tdsl export-csv <FILE>`   | Export IR to CSV (v1.23.0+)                      |
+| Command                    | Description                                                                               |
+| -------------------------- | ----------------------------------------------------------------------------------------- |
+| `tdsl check <FILE>...`     | Run a syntax and semantic check (multiple files/directories, v2.0.0+)                     |
+| `tdsl lint <FILE>...`      | Run a quality check (multiple files/directories, v2.0.0+)                                 |
+| `tdsl build <FILE>`        | Compile `.tdsl` to IR JSON                                                                |
+| `tdsl render <FILE>`       | Render to a standalone HTML file                                                          |
+| `tdsl ast <FILE>`          | Output the AST for debugging                                                              |
+| `tdsl decompile <FILE>`    | Decompile JSON IR back to `.tdsl` (v1.1.0+)                                               |
+| `tdsl merge <FILES...>`    | Merge multiple `.tdsl` files into one (v1.2.0+)                                           |
+| `tdsl completions <SHELL>` | Generate shell completion scripts (v1.9.0+)                                               |
+| `tdsl lsp`                 | Start the language server (LSP) (v1.11.0+)                                                |
+| `tdsl fmt <FILE>...`       | Format `.tdsl` to the canonical style (v1.14.0+; multiple files/directories from v2.0.0+) |
+| `tdsl export-csv <FILE>`   | Export IR to CSV (v1.23.0+)                                                               |
 
 `build` and `render` may perform network access when processing files that include Wikidata imports. Use `--offline` if you only want to process locally-defined items.
 
@@ -111,7 +111,7 @@ Code actions (quick fixes) auto-fix with the same output as `tdsl lint --fix`. O
 
 ### fmt
 
-Formats `.tdsl` to the canonical style (2-space indentation, one blank line between blocks) (v1.14.0+). By default it writes the formatted result to standard output. Use `--write` to overwrite the file in place, or `--check` to exit non-zero when there is a diff (for CI).
+Formats `.tdsl` to the canonical style (2-space indentation, one blank line between blocks) (v1.14.0+). By default it writes the formatted result to standard output. Use `--write` to overwrite the file in place, or `--check` to exit non-zero when there is a diff (for CI). Also accepts multiple files and directories (see [CLI Reference](/en/docs/cli-reference/#fmt) for details, v2.0.0+).
 
 ```sh
 tdsl fmt sample.tdsl           # Write the formatted result to stdout
@@ -213,7 +213,8 @@ The cache is stored under the OS cache directory (`cache_dir` from the `dirs` cr
 | `--lane-height <px>`                               | `render`                                | Set lane height and vertical density (default 60; v1.21.0+)                                                                                                                                                                                                                                                                                                                            |
 | `--layout-style timeline,group-bands,gantt,zigzag` | `render`                                | Set the layout style. `group-bands` draws era/group background bands, `gantt` emphasizes the month grid and always shows period labels, `zigzag` alternates item placement above/below the lane axis (`zigzag` only applies when there are at most 2 lanes; otherwise it falls back to `timeline`) (default `timeline`; `group-bands` from v1.23.0+, `gantt` / `zigzag` from v1.24.0+) |
 | `--show-legend`                                    | `render`                                | Add a static legend panel showing lane and tag colors (v1.23.0+)                                                                                                                                                                                                                                                                                                                       |
-| `--format text,json`                               | `lint`                                  | Specify the output format for lint results                                                                                                                                                                                                                                                                                                                                             |
+| `--format text,json`                               | `check`, `lint`                         | Specify the output format for diagnostics (`check` from v2.0.0+)                                                                                                                                                                                                                                                                                                                       |
+| `--deny-warnings`                                  | `check`                                 | Exit non-zero when any warning is reported (by default, warnings alone still succeed; v2.0.0+)                                                                                                                                                                                                                                                                                         |
 | `--fix`                                            | `lint`                                  | Apply safe fixes to the file                                                                                                                                                                                                                                                                                                                                                           |
 | `--write`                                          | `fmt`                                   | Overwrite the file with the formatted result (v1.14.0+)                                                                                                                                                                                                                                                                                                                                |
 | `--check`                                          | `fmt`                                   | Exit non-zero when there is a diff (for CI; v1.14.0+)                                                                                                                                                                                                                                                                                                                                  |
