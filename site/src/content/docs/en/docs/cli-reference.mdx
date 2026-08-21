@@ -104,14 +104,32 @@ tdsl build --json-schema --pretty --output timeline-ir.schema.json
 Checks a `.tdsl` file for syntax errors and semantic errors (undefined lane references, inconsistent date ranges, etc.). Returns exit code `0` when there are no errors.
 
 ```
-tdsl check [OPTIONS] <FILE>
+tdsl check [OPTIONS] <FILE>...
 ```
 
 ### Arguments
 
-| Argument | Description                    |
-| -------- | ------------------------------ |
-| `<FILE>` | Path to the input `.tdsl` file |
+| Argument    | Description                                                                                                                     |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `<FILE>...` | Path(s) to input `.tdsl` file(s) or directories (directories are searched recursively for `*.tdsl`). Multiple allowed (v2.0.0+) |
+
+### Options
+
+| Option              | Description                                                                                                                              | Default |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `--offline`         | Make it explicit that Wikidata resolution is skipped (currently the only behavior either way)                                            | —       |
+| `--format <FORMAT>` | Output format (`text` / `json`). `json` prints machine-readable diagnostics including `code` / `severity` / `line` / `message` (v2.0.0+) | `text`  |
+| `--deny-warnings`   | Exit non-zero when any warning is reported. By default, warnings alone still succeed (v2.0.0+)                                           | —       |
+
+For the list of diagnostic codes (e.g. `W204`), see [Errors](/en/docs/errors/). In `text` output, each diagnostic is prefixed with its code and line number, e.g. `Warning [W204] line 2: ...` (v2.0.0+).
+
+Behavior for multiple files/directories is shared with `lint` and `fmt` (v2.0.0+):
+
+- A directory is processed recursively for `*.tdsl` files
+- If any input fails, the command exits non-zero, but it doesn't stop at the first failure — it processes every input and then prints a `N of M file(s) failed: ...` summary
+- When 2 or more targets are given, each is preceded by a `=== <path> ===` heading (single-file output stays unchanged)
+- Inputs are processed in path-sorted order
+- Zero matched files is an error (so a mistyped path is never silently reported as "no problems")
 
 ### Examples
 
@@ -121,6 +139,18 @@ tdsl check examples/china_dynasties.tdsl
 
 # Use it in CI (returns a non-zero exit code on error)
 tdsl check my_timeline.tdsl && echo "OK"
+
+# Recursively check a directory
+tdsl check examples
+
+# Check multiple files
+tdsl check a.tdsl b.tdsl
+
+# Fail on warnings too (for CI)
+tdsl check my_timeline.tdsl --deny-warnings
+
+# JSON output for CI
+tdsl check my_timeline.tdsl --format json
 ```
 
 ## ast
@@ -223,14 +253,14 @@ Formats `.tdsl` files to the canonical style (2-space indentation, one blank lin
 Comments (`//` and `/* */`) are preserved. Top-level leading/trailing comments keep their position; comments inside a block keep their content but may be moved to the canonical position.
 
 ```
-tdsl fmt [OPTIONS] <FILE>
+tdsl fmt [OPTIONS] <FILE>...
 ```
 
 ### Arguments
 
-| Argument | Description                    |
-| -------- | ------------------------------ |
-| `<FILE>` | Path to the input `.tdsl` file |
+| Argument    | Description                                                                                                                                                                            |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<FILE>...` | Path(s) to input `.tdsl` file(s) or directories (directories are searched recursively for `*.tdsl`). Multiple allowed (v2.0.0+). Multi-input behavior is shared with [`check`](#check) |
 
 ### Options
 
@@ -250,6 +280,9 @@ tdsl fmt examples/china_dynasties.tdsl --write
 
 # Check for formatting diffs in CI (exits 1 if there is a diff)
 tdsl fmt examples/china_dynasties.tdsl --check
+
+# Recursively check a directory
+tdsl fmt examples --check
 ```
 
 ## lint
@@ -257,14 +290,14 @@ tdsl fmt examples/china_dynasties.tdsl --check
 Runs a quality check on a `.tdsl` file and applies automatic fixes for fixable issues with `--fix`.
 
 ```
-tdsl lint [OPTIONS] <FILE>
+tdsl lint [OPTIONS] <FILE>...
 ```
 
 ### Arguments
 
-| Argument | Description                    |
-| -------- | ------------------------------ |
-| `<FILE>` | Path to the input `.tdsl` file |
+| Argument    | Description                                                                                                                                                                            |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<FILE>...` | Path(s) to input `.tdsl` file(s) or directories (directories are searched recursively for `*.tdsl`). Multiple allowed (v2.0.0+). Multi-input behavior is shared with [`check`](#check) |
 
 ### Options
 
@@ -284,6 +317,9 @@ tdsl lint examples/china_dynasties.tdsl --fix
 
 # JSON output for CI
 tdsl lint examples/china_dynasties.tdsl --format json
+
+# Recursively check a directory
+tdsl lint examples
 ```
 
 ## fetch
