@@ -1,0 +1,9 @@
+[[IgnoredVulns]]
+id = "GHSA-jmr9-qjv8-65gv"
+ignoreUntil = 2026-11-22
+reason = """
+extract-zip@2.0.1 is the latest version on npm; no fixed version exists
+upstream. Transitive dev dependency of @puppeteer/browsers (Lighthouse CI),
+not shipped in the deployed site. Re-check for a fix at the ignoreUntil date.
+See https://github.com/keroway/timeline-dsl-lp/issues/590
+"""
