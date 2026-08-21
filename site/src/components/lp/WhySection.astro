@@ -72,7 +72,12 @@ const faqHref = locale === "ja" ? "/docs/faq/" : "/en/docs/faq/";
   </div>
   <div class="why-compare">
     <h3 id="why-compare-heading">{t("lp.why.compare.heading")}</h3>
-    <div class="why-compare-scroll">
+    <div
+      class="why-compare-scroll"
+      role="region"
+      aria-labelledby="why-compare-heading"
+      tabindex="0"
+    >
       <table aria-labelledby="why-compare-heading">
         <thead>
           <tr>
