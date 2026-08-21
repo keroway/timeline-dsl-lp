@@ -19,7 +19,32 @@ const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
 
 // 既知の許容例外。理由を必ず添える。空配列なら例外なし。
 // 形式: { page: "/path/", ruleId: "color-contrast", reason: "..." }
-const ALLOWED_EXCEPTIONS = [];
+const ALLOWED_EXCEPTIONS = [
+  {
+    page: "/playground/",
+    ruleId: "scrollable-region-focusable",
+    reason:
+      "CodeMirror 6 の .cm-scroller (axe が検知するスクロール領域) 自体は " +
+      "フォーカス対象ではないが、内側の .cm-content は contenteditable かつ " +
+      "常時 tabindex を持つため Tab で到達でき、矢印キーでのスクロールも可能。",
+  },
+  {
+    page: "/en/playground/",
+    ruleId: "scrollable-region-focusable",
+    reason:
+      "CodeMirror 6 の .cm-scroller (axe が検知するスクロール領域) 自体は " +
+      "フォーカス対象ではないが、内側の .cm-content は contenteditable かつ " +
+      "常時 tabindex を持つため Tab で到達でき、矢印キーでのスクロールも可能。",
+  },
+];
+
+// #587: デスクトップ幅 (Playwright 既定, 1280x720 相当) だけでは横スクロール発生時の
+// キーボード操作性違反 (例: scrollable-region-focusable) を検知できない。狭幅でも
+// 同じ axe スキャンを回す。
+const VIEWPORTS = [
+  { name: "desktop", viewport: null },
+  { name: "375px", viewport: { width: 375, height: 812 } },
+];
 
 const args = parseArgs(process.argv.slice(2), { booleanFlags: [] });
 const baseUrl = normalizeBaseUrl(
@@ -37,36 +62,40 @@ async function smokeA11y(rootUrl) {
   const failures = [];
 
   try {
-    for (const path of A11Y_PAGES) {
-      const context = await browser.newContext();
-      const page = await context.newPage();
+    for (const { name: viewportName, viewport } of VIEWPORTS) {
+      for (const path of A11Y_PAGES) {
+        const context = await browser.newContext(viewport ? { viewport } : {});
+        const page = await context.newPage();
 
-      try {
-        await page.goto(`${rootUrl}${path}`, { waitUntil: "networkidle" });
+        try {
+          await page.goto(`${rootUrl}${path}`, { waitUntil: "networkidle" });
 
-        const results = await new AxeBuilder({ page })
-          .withTags(WCAG_TAGS)
-          .analyze();
+          const results = await new AxeBuilder({ page })
+            .withTags(WCAG_TAGS)
+            .analyze();
 
-        const violations = results.violations.filter(
-          (violation) => !isAllowed(path, violation.id)
-        );
+          const violations = results.violations.filter(
+            (violation) => !isAllowed(path, violation.id)
+          );
 
-        if (violations.length) {
-          for (const violation of violations) {
-            const targets = violation.nodes
-              .map((node) => node.target.join(" "))
-              .slice(0, 5)
-              .join(", ");
-            failures.push(
-              `${path} — [${violation.impact ?? "n/a"}] ${violation.id}: ${violation.help} (${violation.nodes.length} node(s): ${targets})`
+          if (violations.length) {
+            for (const violation of violations) {
+              const targets = violation.nodes
+                .map((node) => node.target.join(" "))
+                .slice(0, 5)
+                .join(", ");
+              failures.push(
+                `${path} [${viewportName}] — [${violation.impact ?? "n/a"}] ${violation.id}: ${violation.help} (${violation.nodes.length} node(s): ${targets})`
+              );
+            }
+          } else {
+            console.log(
+              `a11y smoke: ${path} [${viewportName}] has no WCAG 2.1 AA violations. ✓`
             );
           }
-        } else {
-          console.log(`a11y smoke: ${path} has no WCAG 2.1 AA violations. ✓`);
+        } finally {
+          await context.close();
         }
-      } finally {
-        await context.close();
       }
     }
   } finally {
@@ -84,7 +113,7 @@ async function smokeA11y(rootUrl) {
   }
 
   console.log(
-    `\na11y smoke: all ${A11Y_PAGES.length} pages pass WCAG 2.1 AA (axe-core ${WCAG_TAGS.join(", ")}). ✓`
+    `\na11y smoke: all ${A11Y_PAGES.length} pages pass WCAG 2.1 AA at ${VIEWPORTS.length} viewport(s) (axe-core ${WCAG_TAGS.join(", ")}). ✓`
   );
   if (ALLOWED_EXCEPTIONS.length) {
     console.log(
