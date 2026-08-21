@@ -416,13 +416,32 @@ span dynasty -206..9 "秦"
 
 **Fix**: No action needed if intentional. If it is a typo, fix `timeline.range` or the item's dates.
 
-## Lowering warnings (W210)
+## Lowering warnings (W208–W211)
 
-Warnings raised when a Wikidata entity declared via `map` / `apply` could not resolve a required field and produced no item at all. Since this is not an error, the build continues, but it is reported to catch the silent gap of "imported but nothing was output". `tdsl build` / `tdsl check` emit it as `Warning:` on stderr.
+Warnings raised during lowering / validation. Since these are not errors, the build continues, but they are reported to catch cases where mismatched UTC-offset usage makes the start/end order indeterminate, or issues related to how `map` / `apply` are resolved. `tdsl build` / `tdsl check` emit them as `Warning:` on stderr.
 
 | Code | Description                                                      |
 | ---- | ---------------------------------------------------------------- |
+| W208 | Item time mixes a value with a UTC offset and one without        |
+| W209 | timeline.range mixes a value with a UTC offset and one without   |
 | W210 | Mapped entity produced no item due to unresolved required fields |
+| W211 | import / map / apply left unresolved during offline lowering     |
+
+### W208: Item time mixes a value with a UTC offset and one without
+
+**Message**: `{Span|EventRange|Event} "{id}" mixes a UTC-offset time value with a value that has no offset; cannot determine start/end order (ADR 0003 D2, make both sides consistent)`
+
+**Cause**: Within a single item, a UTC-offset time value and a value without an offset are mixed. Because there is no defined timezone for a value without an offset (it is not implicitly treated as UTC), the order and range containment cannot be determined.
+
+**Fix**: Add an offset to both sides, or remove it from both sides so the notation is consistent. The corresponding lowering-side error is E113.
+
+### W209: timeline.range mixes a value with a UTC offset and one without
+
+**Message**: `Timeline range mixes a UTC-offset time value with a value that has no offset; cannot determine range coherence (ADR 0003 D2, make both sides consistent)`
+
+**Cause**: The start and end of the `timeline`'s `range` disagree on whether a UTC offset is present.
+
+**Fix**: As with W208, make the notation on both ends consistent.
 
 ### W210: Mapped entity produced no item due to unresolved required fields
 
@@ -439,6 +458,14 @@ When `expand` is used, `{id}` is suffixed with `(property#index)` to indicate wh
 **Cause**: A required value became `None` because, for example, the specified `claim(...)` does not exist on the entity, the entity has no `label` in the target language, or the `lane` property is not specified.
 
 **Fix**: Check the property number in the mapping expression (`claim(P...).year`, etc.), provide a fallback with `??`, or add a fetch language such as `label@en`. If the target entity genuinely lacks the information, exclude it from the `map` targets.
+
+### W211: import / map / apply left unresolved during offline lowering
+
+**Message**: `{N} import block(s) and {M} map block(s) were not resolved (offline lowering); run 'tdsl build' without --offline to fetch Wikidata and validate imported items`
+
+**Cause**: `tdsl check` (and `tdsl build --offline`) only run Pass 1/2 of lowering, and do not perform import resolution (Pass 3) or map application (Pass 4). As a result, items that would be generated from `import` / `map` / `apply` blocks number zero.
+
+**Fix**: This is not an error. If you want to validate items originating from Wikidata as well, run `tdsl build` without `--offline`.
 
 ## Wikidata errors (E301–E307)
 
@@ -522,16 +549,17 @@ tdsl fetch Q7209 --lang ja
 
 Quality issues detected by `tdsl lint`. Codes that can be auto-fixed with `--fix` are noted in the body of each entry.
 
-| Code                          | Description            |
-| ----------------------------- | ---------------------- |
-| ERROR: `unknown_lane`         | Unknown lane reference |
-| ERROR: `empty_label`          | Empty label            |
-| ERROR: `invalid_tags`         | Invalid tags           |
-| ERROR: `duplicate_id`         | Duplicate ID           |
-| ERROR: `start_gt_end`         | Reversed start/end     |
-| WARN: `missing_id`            | Missing ID             |
-| WARN: `invalid_calendar_date` | Invalid calendar date  |
-| WARN: `unused_lane`           | Unused lane            |
+| Code                          | Description                                    |
+| ----------------------------- | ---------------------------------------------- |
+| ERROR: `unknown_lane`         | Unknown lane reference                         |
+| ERROR: `empty_label`          | Empty label                                    |
+| ERROR: `invalid_tags`         | Invalid tags                                   |
+| ERROR: `duplicate_id`         | Duplicate ID                                   |
+| ERROR: `start_gt_end`         | Reversed start/end                             |
+| ERROR: `mixed_offset_range`   | One side has a UTC offset, order indeterminate |
+| WARN: `missing_id`            | Missing ID                                     |
+| WARN: `invalid_calendar_date` | Invalid calendar date                          |
+| WARN: `unused_lane`           | Unused lane                                    |
 
 ### ERROR: unknown_lane — Unknown lane reference
 
@@ -572,6 +600,14 @@ Quality issues detected by `tdsl lint`. Codes that can be auto-fixed with `--fix
 **Cause**: The start and end years are reversed.
 
 **Fix**: Auto-fixed by `tdsl lint --fix`.
+
+### ERROR: mixed_offset_range — One side has a UTC offset, order indeterminate
+
+**Message**: `span range mixes a UTC-offset time value with one that has no offset; start/end order cannot be determined (ADR 0003 D2, make both sides consistent): {start}..{end}`
+
+**Cause**: Only one side of the range has a UTC offset. Because there is no defined timezone for the value without an offset (it is not implicitly treated as UTC), the order of start and end cannot be determined.
+
+**Fix**: Cannot be fixed by `tdsl lint --fix` (`fixable: false`). Swapping values whose order is indeterminate would not make them correct, so the author must make the notation on both sides consistent. `tdsl check` (validation) reports the same situation as W208/W209.
 
 ### WARN: missing_id — Missing ID
 
