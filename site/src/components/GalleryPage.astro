@@ -37,6 +37,7 @@ const msgs = {
   resultCount: t("gallery.filter.result_count"),
   previewZoomBtnAriaLabel: t("gallery.preview.zoom_btn_aria_label"),
   previewModalAriaLabel: t("gallery.preview_modal.aria_label"),
+  locale,
 };
 
 const siteUrl = getSiteUrl(Astro);
@@ -101,6 +102,7 @@ const sampleList = itemListLd({
     resultCount: string;
     previewZoomBtnAriaLabel: string;
     previewModalAriaLabel: string;
+    locale: "ja" | "en";
   };
 
   const dataEl = document.getElementById("gallery-samples-data");
@@ -128,6 +130,7 @@ const sampleList = itemListLd({
       // SVG は自社 WASM ライブラリが生成する信頼済みコンテンツ（playground.astro と同パターン）
       const svg = await renderTdslSvgWithOptions(sample.source, undefined, {
         showEventLabels: showEventLabelsToggle?.checked ?? false,
+        locale: msgs.locale,
       });
       el.innerHTML = svg;
       el.classList.add("has-svg");

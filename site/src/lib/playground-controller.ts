@@ -1,5 +1,5 @@
 import type { PlaygroundSample } from "../data/playground-samples";
-import { interpolate } from "../i18n/index";
+import { interpolate, resolveLocaleFromLocation } from "../i18n/index";
 import { createPlaygroundEditor } from "./playground-editor";
 import type { PlaygroundMsgs } from "./playground-messages";
 import { createPanZoom } from "./playground-pan-zoom";
@@ -424,6 +424,7 @@ export function initPlayground(): void {
       const renderScale = parseFloat(scaleSelect?.value ?? "0");
       const svg = await renderTdslSvgWithOptions(source, renderScale, {
         showEventLabels: showEventLabels.getShowEventLabels(),
+        locale: resolveLocaleFromLocation(),
       });
       if (runId !== latestRunId) return;
 

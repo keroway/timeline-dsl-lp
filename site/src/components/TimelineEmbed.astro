@@ -1,5 +1,5 @@
 ---
-import { renderSvgFromSource, renderSvgFromSourceWithOptions } from "../lib/tdsl-wasm-node.mts";
+import { renderSvgFromSourceWithOptions } from "../lib/tdsl-wasm-node.mts";
 import { resolveLocale, getT, interpolate } from "../i18n/index";
 
 interface Props {
@@ -18,10 +18,10 @@ const t = getT(locale);
 let svg = "";
 let renderError = "";
 try {
-  svg =
-    grid && grid !== "none"
-      ? await renderSvgFromSourceWithOptions(source, scale ?? 0, { grid })
-      : await renderSvgFromSource(source, scale ?? 0);
+  svg = await renderSvgFromSourceWithOptions(source, scale ?? 0, {
+    ...(grid && grid !== "none" ? { grid } : {}),
+    locale,
+  });
 } catch (e) {
   renderError = e instanceof Error ? e.message : String(e);
 }

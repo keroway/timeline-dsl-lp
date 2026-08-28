@@ -213,6 +213,36 @@ if (mixedOffsetErrors.length === 0) {
   );
 }
 
+// locale オプション（v2.1.0〜, #815/#817, LP側 #584）: 構造 aria-label プレフィックスが
+// "en"（既定）/"ja" で切り替わることを検証する。source 由来のタイトル等は不変。
+const localeDefaultOptions = new JsRenderOptions();
+const svgLocaleDefault = render_svg_from_source_with_options(
+  sample,
+  0,
+  localeDefaultOptions
+);
+if (!svgLocaleDefault.includes('aria-label="Event:')) {
+  throw new Error(
+    "render_svg_from_source_with_options with default locale did not emit the English 'Event:' aria-label prefix."
+  );
+}
+
+const localeJaOptions = new JsRenderOptions();
+localeJaOptions.locale = "ja";
+const svgLocaleJa = render_svg_from_source_with_options(
+  sample,
+  0,
+  localeJaOptions
+);
+if (
+  !svgLocaleJa.includes("Kickoff") ||
+  svgLocaleJa.includes('aria-label="Event:')
+) {
+  throw new Error(
+    "render_svg_from_source_with_options with locale=\"ja\" still emitted the English 'Event:' aria-label prefix."
+  );
+}
+
 console.log(
-  "WASM smoke passed: check_source, render_svg_from_source, group block, now keyword, show_event_labels option, unit second, UTC offset, mixed-offset error"
+  "WASM smoke passed: check_source, render_svg_from_source, group block, now keyword, show_event_labels option, unit second, UTC offset, mixed-offset error, locale option"
 );
