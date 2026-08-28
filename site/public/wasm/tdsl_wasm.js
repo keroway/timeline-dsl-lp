@@ -17,6 +17,13 @@
  * | `show_legend` | `true`, `false` | `false` |
  * | `show_event_labels` | `true`, `false` | `false` |
  * | `lane_height` | px per lane; `0` = renderer default (60) | `0` |
+ * | `locale` | `"en"`, `"ja"` | `"en"` |
+ *
+ * `locale` only affects structural ARIA label text (`Event:` / `Span:` /
+ * `Event range:` / `Lane:` prefixes in SVG `<g aria-label="…">`
+ * attributes). Source-derived text (titles, lane labels, years, ids) is
+ * emitted verbatim regardless of locale. Unknown values fall back to
+ * `"en"`, matching the other string fields' fallback behavior.
  *
  * `lane_height` controls vertical density: the SVG height, each lane band, the
  * bar thickness and intra-lane padding all follow it. Leave it at `0` (the
@@ -109,6 +116,28 @@ export class JsRenderOptions {
             wasm.__wbindgen_export(deferred1_0, deferred1_1, 1);
         }
     }
+    /**
+     * Locale for structural ARIA label text (#815): `"en"` (default) or
+     * `"ja"`. Only affects the `Event:` / `Span:` / `Event range:` /
+     * `Lane:` prefixes; source-derived text is unaffected.
+     * @returns {string}
+     */
+    get locale() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.jsrenderoptions_locale(retptr, this.__wbg_ptr);
+            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+            deferred1_0 = r0;
+            deferred1_1 = r1;
+            return getStringFromWasm0(r0, r1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_export(deferred1_0, deferred1_1, 1);
+        }
+    }
     constructor() {
         const ret = wasm.jsrenderoptions_new();
         this.__wbg_ptr = ret;
@@ -149,6 +178,14 @@ export class JsRenderOptions {
         const ptr0 = passStringToWasm0(val, wasm.__wbindgen_export2, wasm.__wbindgen_export3);
         const len0 = WASM_VECTOR_LEN;
         wasm.jsrenderoptions_set_layout_style(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+     * @param {string} val
+     */
+    set locale(val) {
+        const ptr0 = passStringToWasm0(val, wasm.__wbindgen_export2, wasm.__wbindgen_export3);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.jsrenderoptions_set_locale(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @param {string} val

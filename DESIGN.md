@@ -573,7 +573,7 @@ LP 側の追従は `global.css` で 2 段に分けて実装している:
 本体 [keroway/timeline-dsl#701](https://github.com/keroway/timeline-dsl/issues/701) が v2.0.0 で出荷し、2 点の破壊的変更が入った。
 
 1. **lane 色セレクタが `:root` → `:where(.tdsl-root)` に変更**。`:where()` は詳細度 0 のため、詳細度 0-1-0 の LP 側 `.tdsl-root` ブロックが常に勝つ（旧 `:root` 同士の競合では CSS の source order 依存の「後勝ち」に頼っていた）。LP 側の CSS 変更は不要。
-2. **SVG `<g>` 要素の `aria-label` の構造プレフィックス（`Event:` / `Span:` / `Lane:` 等）が日本語から英語に変更**。実測では `aria-label="Event: 北方遠征, 1042, id: event:realm:1042, Lane: 王国"` のように、プレフィックスのみ英語化されタイトル・レーン名・年・id はソース由来のまま。LP は `render_svg_from_source` の出力を改変しない方針（上記「短期」参照）のため、**この英語プレフィックスは ja ページでも許容し、LP 側での後処理（DOM 書き換え等）は行わない**。露出面は Playground preview の `tabindex="0"` な `<g>` へのキーボードフォーカス時のみで、`TimelineEmbed` / `GalleryCard` は `role="img"` + i18n 済み `aria-label` で外側から包むため内部ラベルはアクセシブルネームに寄与しない。ロケール指定 API（`JsRenderOptions.locale` 相当）が本体に入るまでのトレードオフとして記録する。
+2. **SVG `<g>` 要素の `aria-label` の構造プレフィックス（`Event:` / `Span:` / `Lane:` 等）が日本語から英語に変更**。実測では `aria-label="Event: 北方遠征, 1042, id: event:realm:1042, Lane: 王国"` のように、プレフィックスのみ英語化されタイトル・レーン名・年・id はソース由来のまま。露出面は Playground preview の `tabindex="0"` な `<g>` へのキーボードフォーカス時のみで、`TimelineEmbed` / `GalleryCard` は `role="img"` + i18n 済み `aria-label` で外側から包むため内部ラベルはアクセシブルネームに寄与しない。**このトレードオフは本体 [keroway/timeline-dsl#817](https://github.com/keroway/timeline-dsl/pull/817)（v2.1.0〜）で解消済み**。`JsRenderOptions.locale`（`"en"` 既定 / `"ja"`）が追加され、LP 側は `renderTdslSvgWithOptions` / `renderSvgFromSourceWithOptions` の `locale` オプションに現在ページのロケールを渡すことで、構造プレフィックスも ja ページでは日本語化される（#584）。
 
 ---
 

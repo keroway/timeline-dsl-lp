@@ -8,6 +8,13 @@ import type { SyncInitInput } from "../../public/wasm/tdsl_wasm";
 export interface SvgRenderOptions {
   /** Background grid density. @default "none" */
   grid?: "none" | "decade" | "year" | "month";
+  /**
+   * Locale for structural ARIA label text (#815, v2.1.0〜): `"en"` or `"ja"`.
+   * Only affects the `Event:` / `Span:` / `Event range:` / `Lane:` prefixes in
+   * SVG `<g aria-label="…">` attributes; source-derived text is unaffected.
+   * @default "en"
+   */
+  locale?: "en" | "ja";
 }
 
 type WasmModule = {
@@ -27,6 +34,7 @@ type WasmRenderOptions = {
   theme: string;
   show_table: boolean;
   show_event_labels: boolean;
+  locale: string;
   free: () => void;
 };
 
@@ -71,5 +79,6 @@ export async function renderSvgFromSourceWithOptions(
   // NOTE: render_svg_from_source_with_options internally calls opts.__destroy_into_raw(),
   // consuming the opts object (ptr becomes 0). Do NOT call opts.free() afterwards.
   if (options.grid !== undefined) opts.grid = options.grid;
+  if (options.locale !== undefined) opts.locale = options.locale;
   return mod.render_svg_from_source_with_options(source, scale, opts);
 }

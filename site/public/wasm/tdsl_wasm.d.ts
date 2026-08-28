@@ -18,6 +18,13 @@
  * | `show_legend` | `true`, `false` | `false` |
  * | `show_event_labels` | `true`, `false` | `false` |
  * | `lane_height` | px per lane; `0` = renderer default (60) | `0` |
+ * | `locale` | `"en"`, `"ja"` | `"en"` |
+ *
+ * `locale` only affects structural ARIA label text (`Event:` / `Span:` /
+ * `Event range:` / `Lane:` prefixes in SVG `<g aria-label="…">`
+ * attributes). Source-derived text (titles, lane labels, years, ids) is
+ * emitted verbatim regardless of locale. Unknown values fall back to
+ * `"en"`, matching the other string fields' fallback behavior.
  *
  * `lane_height` controls vertical density: the SVG height, each lane band, the
  * bar thickness and intra-lane padding all follow it. Leave it at `0` (the
@@ -53,6 +60,12 @@ export class JsRenderOptions {
      * error instead of falling back to `"timeline"` positioning.
      */
     layout_style: string;
+    /**
+     * Locale for structural ARIA label text (#815): `"en"` (default) or
+     * `"ja"`. Only affects the `Event:` / `Span:` / `Event range:` /
+     * `Lane:` prefixes; source-derived text is unaffected.
+     */
+    locale: string;
     orientation: string;
     theme: string;
 }
@@ -171,10 +184,12 @@ export interface InitOutput {
     readonly format_source: (a: number, b: number, c: number) => void;
     readonly jsrenderoptions_grid: (a: number, b: number) => void;
     readonly jsrenderoptions_layout_style: (a: number, b: number) => void;
+    readonly jsrenderoptions_locale: (a: number, b: number) => void;
     readonly jsrenderoptions_new: () => number;
     readonly jsrenderoptions_orientation: (a: number, b: number) => void;
     readonly jsrenderoptions_set_grid: (a: number, b: number, c: number) => void;
     readonly jsrenderoptions_set_layout_style: (a: number, b: number, c: number) => void;
+    readonly jsrenderoptions_set_locale: (a: number, b: number, c: number) => void;
     readonly jsrenderoptions_set_orientation: (a: number, b: number, c: number) => void;
     readonly jsrenderoptions_set_theme: (a: number, b: number, c: number) => void;
     readonly jsrenderoptions_theme: (a: number, b: number) => void;

@@ -142,7 +142,29 @@ describe("initPlayground runPlayground の状態分岐", () => {
     );
     expect(renderTdslSvgWithOptions).toHaveBeenCalledWith("event x", 0, {
       showEventLabels: false,
+      locale: "ja",
     });
+  });
+
+  it('URL パスが /en/ なら renderTdslSvgWithOptions に locale: "en" を渡す', async () => {
+    const dom = setupDom();
+    window.history.pushState({}, "", "/en/playground/");
+    checkTdslSource.mockResolvedValue([]);
+    renderTdslSvgWithOptions.mockResolvedValue(
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    );
+
+    initPlayground();
+
+    await vi.waitFor(() => {
+      expect(dom.root.getAttribute("data-playground-state")).toBe("ready");
+    });
+    expect(renderTdslSvgWithOptions).toHaveBeenCalledWith("event x", 0, {
+      showEventLabels: false,
+      locale: "en",
+    });
+
+    window.history.pushState({}, "", "/");
   });
 
   it("warning のみなら warn 状態になり描画は実行する", async () => {

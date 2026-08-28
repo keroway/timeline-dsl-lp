@@ -11,6 +11,13 @@ export interface TdslDiagnostic {
 export interface TdslSvgRenderOptions {
   /** When true, always draw labels next to Event/EventRange items (v1.17.0〜). @default false */
   showEventLabels?: boolean;
+  /**
+   * Locale for structural ARIA label text (#815, v2.1.0〜): `"en"` or `"ja"`.
+   * Only affects the `Event:` / `Span:` / `Event range:` / `Lane:` prefixes in
+   * SVG `<g aria-label="…">` attributes; source-derived text (titles, lane
+   * names, years, ids) is unaffected. @default "en"
+   */
+  locale?: "en" | "ja";
 }
 
 export interface TdslWasmApi {
@@ -33,6 +40,7 @@ import type { InitInput } from "../../public/wasm/tdsl_wasm";
 
 interface RawJsRenderOptions {
   show_event_labels: boolean;
+  locale: string;
   free: () => void;
 }
 
@@ -177,6 +185,9 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
           // (__destroy_into_raw); do not call opts.free() afterwards.
           if (options.showEventLabels !== undefined) {
             opts.show_event_labels = options.showEventLabels;
+          }
+          if (options.locale !== undefined) {
+            opts.locale = options.locale;
           }
           return rawModule.render_svg_from_source_with_options(
             source,
