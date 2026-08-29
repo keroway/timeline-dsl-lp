@@ -21,6 +21,7 @@ pnpm dev                        # 開発サーバー（localhost:4321）
 pnpm build                      # smoke:wasm → astro check → astro build
 pnpm preview                    # ビルド成果物をローカルプレビュー
 pnpm fetch:releases             # GitHub releases を site/src/data/ に取得
+pnpm fetch:repo-stats           # GitHub repo stats を site/src/data/repo-stats.generated.json に取得（HeroSection.astro が使用）
 pnpm lint                       # Biome lint（.ts/.js/.mjs/.json）
 pnpm lint:fix                   # Biome lint + format 自動修正
 pnpm format                     # Biome（.ts/.js/.mjs/.json）+ Prettier（.astro/.md/.mdx）で整形
@@ -135,4 +136,5 @@ cd site && pnpm prepare
 - **Hooks** (`.claude/hooks/`):
   - `astro-check-on-edit.sh` — PostToolUse (Edit/Write/MultiEdit) で `site/src/` 配下の `.astro` / `.ts` / `.tsx` / `.mdx` / `.mjs` 編集後に `astro check` を実行。型エラー時は exit 2 で feedback。
   - `stop-checks.sh` — Stop 時に (1) i18n ペアドリフト (ja/en の片方しか変更されていない) を検知して通知、(2) 現在ブランチの PR で失敗している GitHub checks があれば一覧表示。
+  - `detect-stale-dev-servers.sh` — Stop 時に残留した dev/preview サーバプロセスを検知して警告（自動 kill はしない）。
 - 設定本体: `.claude/settings.json`
