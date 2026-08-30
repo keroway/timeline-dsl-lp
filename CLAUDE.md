@@ -19,6 +19,8 @@ cd site
 pnpm install --frozen-lockfile  # 依存インストール
 pnpm dev                        # 開発サーバー（localhost:4321）
 pnpm build                      # smoke:wasm → astro check → astro build
+pnpm check                      # lint → format:check → test:unit → build → bundle-size（CI 主要ゲートのローカル再現）
+pnpm check:full                 # check に加え smoke:seo/i18n/playground/a11y も含む完全版（要 preview server, Chromium）
 pnpm preview                    # ビルド成果物をローカルプレビュー
 pnpm fetch:releases             # GitHub releases を site/src/data/ に取得
 pnpm fetch:repo-stats           # GitHub repo stats を site/src/data/repo-stats.generated.json に取得（HeroSection.astro が使用）
@@ -26,9 +28,17 @@ pnpm lint                       # Biome lint（.ts/.js/.mjs/.json）
 pnpm lint:fix                   # Biome lint + format 自動修正
 pnpm format                     # Biome（.ts/.js/.mjs/.json）+ Prettier（.astro/.md/.mdx）で整形
 pnpm format:check               # フォーマットチェック（CI 用）
+pnpm test:unit                  # vitest 実行
+pnpm test:unit:watch            # vitest watch モード
+pnpm test:visual                # Playwright ビジュアルリグレッションテスト
+pnpm test:visual:update         # ビジュアルリグレッションのスナップショット更新
+pnpm bundle-size                # バンドルサイズチェック（pnpm check の一部, CI 実行）
 pnpm smoke:wasm                 # WASM 単体 smoke テスト
 pnpm smoke:playground           # Playground の HTTP smoke テスト
 pnpm smoke:playground:browser   # Playwright ブラウザ smoke テスト
+pnpm smoke:i18n                 # i18n（hreflang 等）の HTTP smoke テスト（CI 実行）
+pnpm smoke:i18n:browser         # i18n の Playwright ブラウザ smoke テスト
+pnpm smoke:seo                  # SEO（title/meta/JSON-LD 等）の smoke テスト（CI 実行）
 pnpm smoke:a11y                 # 主要ページの WCAG 2.1 AA 自動監査（axe-core, 要 Chromium）
 pnpm lhci                       # Lighthouse CI（perf/a11y/SEO/best-practices baseline, 要 preview server）
 ```
