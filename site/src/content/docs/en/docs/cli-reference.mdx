@@ -551,6 +551,8 @@ tdsl render examples/china_dynasties.tdsl --scale 4 --left-gutter 160 --output c
 
 Generates interactive HTML with zoom, pan, item search, a legend, and a detail panel. Only meaningful with `--format html` (since v1.1.0).
 
+In addition to the lane toggles, the legend panel shows a "Tags" section with a checkbox for each tag registered in `color_map` (declared in the `timeline` block, or overridden via `--color-map`) (since v2.0.0, all tags checked by default). Tag filtering uses OR semantics: an item is hidden when it has none of the checked tags. Unchecking all tags disables tag filtering entirely, showing all items again. Lane toggles and tag toggles combine with AND, so only items matching both conditions are shown. If `color_map` is not set, the Tags section is not rendered.
+
 ```sh
 tdsl render examples/china_dynasties.tdsl --interactive --output china_interactive.html
 ```

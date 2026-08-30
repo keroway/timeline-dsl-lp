@@ -551,6 +551,8 @@ tdsl render examples/china_dynasties.tdsl --scale 4 --left-gutter 160 --output c
 
 ズーム・パン・アイテム検索・凡例・詳細パネルを搭載したインタラクティブ HTML を生成します。`--format html` でのみ意味を持ちます（v1.1.0〜）。
 
+凡例パネルには lane トグルに加えて、`color_map`（`timeline` ブロック内の宣言、または `--color-map` での上書き）に登録されたタグごとのチェックボックスが「タグ」セクションとして表示されます（v2.0.0〜、初期状態は全タグチェック済み）。タグ絞り込みは OR セマンティクスで動作し、チェックされたタグを1つも持たない item が非表示になります。すべてのチェックを外すとタグ絞り込み自体が無効化され、全 item が表示に戻ります。lane トグルとタグトグルは AND で合成されるため、両方の条件を満たす item だけが表示されます。`color_map` が未設定の場合、タグセクションは描画されません。
+
 ```sh
 tdsl render examples/china_dynasties.tdsl --interactive --output china_interactive.html
 ```
