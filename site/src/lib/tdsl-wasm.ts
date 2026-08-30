@@ -65,14 +65,6 @@ interface RawTdslWasmModule {
 
 const RENDER_SVG_AUTO_SCALE = 0;
 
-export const TDSL_WASM_IMPORT_STRATEGY = {
-  kind: "vendored-wasm-pack",
-  source: "timeline-dsl/apps/webui/src/wasm",
-  assetBasePath: "/wasm/",
-  updateCommand:
-    "wasm-pack build crates/tdsl-wasm --target web --out-dir apps/webui/src/wasm --no-opt",
-} as const;
-
 export interface TdslWasmMessages {
   fallback: string;
 }
