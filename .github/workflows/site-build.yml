@@ -36,6 +36,7 @@ permissions:
 jobs:
   changes:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       site: ${{ steps.filter.outputs.site }}
     steps:
@@ -59,6 +60,7 @@ jobs:
   build:
     needs: changes
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       RUN_FULL: ${{ needs.changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch' }}
