@@ -28,7 +28,7 @@ CI（`.github/workflows/site-build.yml`）と同一のゲートをローカル�
 
 `pnpm check:full` は `smoke:i18n:browser` や `smoke:playground:browser` を含め、**CI でも実行されます**（ブラウザ系のゲートは CI でスキップされません）。個々のコマンド（`pnpm smoke:wasm` / `smoke:playground` / `smoke:i18n` / `smoke:seo` など）も引き続き単独で実行できます。
 
-LP のレイアウト・配色・タイポグラフィを変更した場合は `pnpm test:visual` を単独実行し、差分が意図した変更であることを確認してから `pnpm test:visual:update` でベースラインを更新してください。ベースライン画像の変更は目視レビューが必要な差分として PR に含めます（このコマンドは CI からは実行しません）。
+LP のレイアウト・配色・タイポグラフィを変更した場合は `pnpm test:visual` を単独実行し、差分が意図した変更であることを確認してから `pnpm test:visual:update` でベースラインを更新してください。ベースライン画像の変更は目視レビューが必要な差分として PR に含めます（`pnpm test:visual` 自体は `RUN_FULL` 条件下で CI でも実行されます）。
 
 ## pull request の規約
 
