@@ -28,7 +28,7 @@ Two aggregate commands reproduce the same gates CI runs (`.github/workflows/site
 
 `pnpm check:full` includes `smoke:i18n:browser` and `smoke:playground:browser`, and **these do run in CI** (browser gates are never skipped there). Individual commands (`pnpm smoke:wasm` / `smoke:playground` / `smoke:i18n` / `smoke:seo`, etc.) remain runnable on their own.
 
-If you change the LP's layout, colors, or typography, run `pnpm test:visual` on its own, confirm the diff is an intended change, then update the baselines with `pnpm test:visual:update`. Baseline image changes need visual review and should be included in the PR (this command is never run from CI).
+If you change the LP's layout, colors, or typography, run `pnpm test:visual` on its own, confirm the diff is an intended change, then update the baselines with `pnpm test:visual:update`. Baseline image changes need visual review and should be included in the PR (`pnpm test:visual` itself also runs in CI under the `RUN_FULL` condition).
 
 ## Pull request conventions
 
