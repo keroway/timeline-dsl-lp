@@ -12,25 +12,17 @@ const repoStatsPayloadSchema = z.object({
 
 export type RepoStatsPayload = z.infer<typeof repoStatsPayloadSchema>;
 
-const parsed = repoStatsPayloadSchema.safeParse(rawRepoStatsData);
-
-if (!parsed.success) {
-  console.warn(
-    "[repo-stats] repo-stats.generated.json failed schema validation:",
-    parsed.error.issues,
-  );
+export function parseRepoStatsPayload(raw: unknown): RepoStatsPayload {
+  const parsed = repoStatsPayloadSchema.safeParse(raw);
+  if (!parsed.success) {
+    throw new Error(
+      `[repo-stats] repo-stats.generated.json failed schema validation: ${JSON.stringify(parsed.error.issues)}`,
+    );
+  }
+  return parsed.data;
 }
 
-const payload: RepoStatsPayload = parsed.success
-  ? parsed.data
-  : {
-      repository: "",
-      source: "",
-      fetchedAt: null,
-      stargazersCount: null,
-      licenseSpdxId: null,
-      contributorsCount: null,
-    };
+const payload: RepoStatsPayload = parseRepoStatsPayload(rawRepoStatsData);
 
 export const repoStatsPayload = payload;
 export const stargazersCount: number | null = payload.stargazersCount;
