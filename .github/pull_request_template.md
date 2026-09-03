@@ -14,9 +14,9 @@
 
 <!-- すべて `site/` 配下で実行（`cd site` 後）。該当するものにチェック。 -->
 
-- [ ] `pnpm build` — smoke:wasm → astro check → astro build が green
-- [ ] `pnpm lint` — ESLint
-- [ ] `pnpm format:check` — Prettier フォーマットチェック
+- [ ] `pnpm build` — smoke:wasm → astro check → astro build → smoke-catalog（vitest）が green
+- [ ] `pnpm lint` — Biome lint
+- [ ] `pnpm format:check` — Biome format + Prettier フォーマットチェック
 - [ ] `pnpm smoke:playground` / `pnpm smoke:wasm` — Playground / WASM 変更時
 - [ ] `pnpm smoke:seo` / `pnpm smoke:i18n` — ページ追加・i18n 変更時
 - [ ] Cloudflare Pages の preview デプロイが Green
