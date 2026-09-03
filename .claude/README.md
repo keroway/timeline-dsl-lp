@@ -12,7 +12,6 @@
 ├── rules/
 │   └── implementation-policy.md # 変更の最小性、デザイン規約、i18n 同期、SEO、Issue 運用などの詳細ルール
 ├── skills/
-│   ├── playwright-cli/        # ~/.agents/skills/ への symlink（timeline-dsl と共有）
 │   └── starlight-authoring/   # Starlight 執筆スキル（ドキュメント追加・サイドバー・AI/LLM 向け公開）
 ├── settings.json              # 共有設定（hook 登録・許可プラグイン等、コミット対象）
 ├── settings.local.json        # 個人設定（.gitignore で除外）
@@ -65,8 +64,9 @@
 - hook スクリプトは `#!/usr/bin/env bash`
 - 絶対パスは `$CLAUDE_PROJECT_DIR` で解決する
 - `.claude/agent-memory/` は `.gitignore` で除外（個人のメモ）
-- `skills/playwright-cli` は `~/.agents/skills/` への symlink（マシン固有の絶対パス）。
-  他マシンへ移植する場合は改めて symlink を張るか、実体をコピーする
+- `playwright-cli` skill はリポジトリ層の symlink を撤去し、`~/.claude/skills/`
+  （ユーザー層。agent-assets の `install.sh` が張る）だけで足りるようにした
+  （agent-assets#276、2026-09-03）
 
 新しい開発者がリポジトリをクローンした場合、追加でやることはありません。Claude Code が
 `settings.json` を読み込めば hook が有効になります。
