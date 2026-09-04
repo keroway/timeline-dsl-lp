@@ -1,15 +1,9 @@
-# pnpm 11 では overrides / patchedDependencies は pnpm-workspace.yaml に置く
-# (package.json#pnpm からの移動)。
-
-# サプライチェーン保護水準をワークスペース全体で統一 (agent-assets#171、2026-08-14決定)。
-# pnpm 11 既定の minimumReleaseAge (1440分=1日) を 3日 (4320分) に固定し、
-# 制約を満たすバージョンが無いときに resolve を失敗させる minimumReleaseAgeStrict も有効化する。
 minimumReleaseAge: 4320
 minimumReleaseAgeStrict: true
 
 overrides:
   esbuild: 0.28.1
-  fast-uri: 3.1.5
+  fast-uri: 3.1.6
   js-yaml: 4.3.1
   tmp: 0.2.7
   undici: 7.29.0
@@ -40,7 +34,11 @@ patchedDependencies:
 
 # 緊急修正等で cooldown (minimumReleaseAge) を待たずに導入したい
 # パッケージはここで例外指定する。
-minimumReleaseAgeExclude: []
+minimumReleaseAgeExclude:
+  [
+    # Renovate security update: fast-uri@3.1.6
+    fast-uri@3.1.6
+  ]
 
 # pnpm 11 はデフォルトで依存の build スクリプト実行を遮断する (strictDepBuilds)。
 # 実行を許可するものだけ allowBuilds で明示する。
