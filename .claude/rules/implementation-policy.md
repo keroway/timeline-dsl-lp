@@ -45,7 +45,7 @@
 
 - 新規ページ / 新規 i18n キー / 新規 SEO ルールを追加したら、対応する smoke スクリプト (`site/scripts/smoke-*.mjs`) に検証を追加する。
 - Playground / WASM 周りの変更は `pnpm smoke:wasm` と `pnpm smoke:playground` の両方が通ることを確認する。
-- ブラウザ smoke (`pnpm smoke:playground:browser`) は CI では走らないので、UI 変更時はローカルで一度通す。
+- ブラウザ smoke (`pnpm smoke:playground:browser` / `pnpm smoke:i18n:browser`) は `RUN_FULL` 条件下で CI でも実行される（スキップされない）。UI 変更時はローカルでも一度通しておく。
 
 ## 7. WASM の更新フロー
 
