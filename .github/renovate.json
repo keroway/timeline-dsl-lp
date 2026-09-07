@@ -4,6 +4,10 @@
   "schedule": ["before 4am on monday"],
   "labels": ["dependencies"],
   "prConcurrentLimit": 5,
+  "ignorePaths": [
+    "**/node_modules/**",
+    "site/public/wasm/**"
+  ],
   "packageRules": [
     {
       "matchManagers": ["npm"],
