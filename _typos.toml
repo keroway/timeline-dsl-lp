@@ -2,4 +2,7 @@
 
 [files]
 # CC BY-NC-ND ライセンス名の "ND"（No Derivatives）は英単語ではない
-extend-exclude = ["LICENSE-CONTENT"]
+# site/src/data/*.generated.json は GitHub API から機械取得した本文をそのまま含む
+# （リリースノートの PR タイトル等）。上流の意図的なテスト文字列（例: typos lint 誤検知
+# 回避テストの "yaer"）がそのまま入ることがあり、このリポジトリ側で修正できないため除外する。
+extend-exclude = ["LICENSE-CONTENT", "site/src/data/*.generated.json"]
