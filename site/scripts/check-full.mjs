@@ -66,8 +66,9 @@ async function main() {
   const [checkStep, ...browserSteps] = STEPS;
   await runStep(checkStep);
 
-  const preview = await startPreview();
+  const preview = startPreview();
   try {
+    await waitForReady(preview);
     for (const step of browserSteps) {
       await runStep(step);
     }
@@ -107,7 +108,7 @@ function startPreview() {
     }
   );
 
-  return waitForReady(child).then(() => child);
+  return child;
 }
 
 async function waitForReady(previewProcess) {
