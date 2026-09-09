@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   type A11ySettings,
   applySettings,
+  initA11yMenu,
   loadSettings,
   SETTINGS_KEY,
   saveSettings,
@@ -175,5 +176,113 @@ describe("applySettings", () => {
     expect(root.hasAttribute("data-a11y-contrast")).toBe(false);
     expect(root.hasAttribute("data-a11y-text-spacing")).toBe(false);
     expect(root.getAttribute("data-a11y-text-size")).toBe("normal");
+  });
+});
+
+describe("loadSettings / saveSettings storage exceptions", () => {
+  it("getItem が例外を投げると OS 既定値にフォールバックする", () => {
+    stubMatchMedia({ [REDUCE]: true });
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new DOMException("blocked", "SecurityError");
+    });
+
+    expect(loadSettings()).toEqual({
+      reducedMotion: true,
+      highContrast: false,
+      textSize: "normal",
+      textSpacing: false,
+    });
+  });
+
+  it("setItem が例外を投げても saveSettings は伝播させない", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("full", "QuotaExceededError");
+    });
+
+    expect(() =>
+      saveSettings({
+        reducedMotion: false,
+        highContrast: false,
+        textSize: "large",
+        textSpacing: false,
+      })
+    ).not.toThrow();
+  });
+});
+
+describe("initA11yMenu", () => {
+  function setupMenu() {
+    document.body.innerHTML = `
+      <button class="a11y-toggle" aria-expanded="false" data-menu-id="a11y-menu"></button>
+      <div id="a11y-menu" hidden>
+        <input type="checkbox" data-a11y-reduced-motion />
+        <input type="checkbox" data-a11y-high-contrast />
+        <input type="checkbox" data-a11y-text-spacing-input />
+        <select data-a11y-text-size>
+          <option value="normal">normal</option>
+          <option value="large">large</option>
+        </select>
+        <div data-a11y-live></div>
+      </div>
+    `;
+    const toggle = document.querySelector<HTMLButtonElement>(".a11y-toggle")!;
+    const menu = document.getElementById("a11y-menu")!;
+    const textSizeInput = menu.querySelector<HTMLSelectElement>(
+      "[data-a11y-text-size]"
+    )!;
+    return { toggle, menu, textSizeInput };
+  }
+
+  afterEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  it("getItem が例外を投げても初期化を継続し、トグルでメニューが開く", () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new DOMException("blocked", "SecurityError");
+    });
+    const { toggle, menu } = setupMenu();
+
+    initA11yMenu({ toggleSelector: ".a11y-toggle", menuId: "a11y-menu" });
+    toggle.click();
+
+    expect(menu.hidden).toBe(false);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("setItem が例外を投げても現在ページへの設定適用は続行する", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("full", "QuotaExceededError");
+    });
+    const { textSizeInput } = setupMenu();
+
+    initA11yMenu({ toggleSelector: ".a11y-toggle", menuId: "a11y-menu" });
+    textSizeInput.value = "large";
+    textSizeInput.dispatchEvent(new Event("change"));
+
+    expect(document.documentElement.getAttribute("data-a11y-text-size")).toBe(
+      "large"
+    );
+  });
+
+  it("保存が失敗し続けても、後続の設定変更で先の変更が失われない", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("full", "QuotaExceededError");
+    });
+    const { menu, textSizeInput } = setupMenu();
+    const highContrastInput = menu.querySelector<HTMLInputElement>(
+      "[data-a11y-high-contrast]"
+    )!;
+
+    initA11yMenu({ toggleSelector: ".a11y-toggle", menuId: "a11y-menu" });
+
+    textSizeInput.value = "large";
+    textSizeInput.dispatchEvent(new Event("change"));
+    highContrastInput.checked = true;
+    highContrastInput.dispatchEvent(new Event("change"));
+
+    const root = document.documentElement;
+    expect(root.getAttribute("data-a11y-text-size")).toBe("large");
+    expect(root.getAttribute("data-a11y-contrast")).toBe("high");
   });
 });

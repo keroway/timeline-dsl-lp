@@ -35,7 +35,12 @@ export function loadSettings(): A11ySettings {
     textSize: "normal",
     textSpacing: false,
   };
-  const saved = localStorage.getItem(SETTINGS_KEY);
+  let saved: string | null;
+  try {
+    saved = localStorage.getItem(SETTINGS_KEY);
+  } catch {
+    return osDefaults;
+  }
   if (!saved) return osDefaults;
   try {
     const parsed: unknown = JSON.parse(saved);
@@ -59,7 +64,12 @@ export function loadSettings(): A11ySettings {
 }
 
 export function saveSettings(settings: A11ySettings): void {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  } catch {
+    // ストレージが利用不可・容量超過でも、呼び出し元は in-memory の設定で
+    // メニュー操作を継続できるようにする（永続化だけを諦める）。
+  }
 }
 
 export function applySettings(settings: A11ySettings): void {
@@ -180,9 +190,9 @@ export function initA11yMenu({
     getFirstFocusable()?.focus();
   }
 
-  const initial = loadSettings();
-  applySettings(initial);
-  syncForm(initial);
+  let currentSettings = loadSettings();
+  applySettings(currentSettings);
+  syncForm(currentSettings);
 
   toggle.addEventListener("click", () => {
     const expanded = toggle.getAttribute("aria-expanded") === "true";
@@ -240,8 +250,9 @@ export function initA11yMenu({
     getMessage: (s: A11ySettings) => string
   ): void => {
     input?.addEventListener("change", () => {
-      const prev = loadSettings();
+      const prev = currentSettings;
       const next: A11ySettings = { ...prev, [key]: input.checked };
+      currentSettings = next;
       saveSettings(next);
       applySettings(next);
       if (prev[key] !== next[key]) {
@@ -267,11 +278,12 @@ export function initA11yMenu({
   );
 
   textSizeInput?.addEventListener("change", () => {
-    const prev = loadSettings();
+    const prev = currentSettings;
     const newSize = isValidTextSize(textSizeInput.value)
       ? textSizeInput.value
       : "normal";
     const next = { ...prev, textSize: newSize };
+    currentSettings = next;
     saveSettings(next);
     applySettings(next);
     if (prev.textSize !== next.textSize) {
