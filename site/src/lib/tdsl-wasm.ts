@@ -29,6 +29,10 @@ export interface TdslWasmApi {
     options: TdslSvgRenderOptions
   ): string;
   renderHtmlFromSource(source: string): string;
+  renderHtmlFromSourceWithOptions(
+    source: string,
+    options: TdslSvgRenderOptions
+  ): string;
   checkSource(source: string): TdslDiagnostic[];
 }
 
@@ -59,6 +63,10 @@ interface RawTdslWasmModule {
     opts: RawJsRenderOptions
   ): string;
   render_html_from_source(source: string): string;
+  render_html_from_source_with_options(
+    source: string,
+    opts: RawJsRenderOptions
+  ): string;
   check_source(source: string): string;
   JsRenderOptions: new () => RawJsRenderOptions;
 }
@@ -142,6 +150,22 @@ export async function renderTdslHtml(source: string): Promise<string> {
   return loaded.api.renderHtmlFromSource(source);
 }
 
+/**
+ * Render standalone HTML from TDSL source with explicit render options, mirroring
+ * `renderTdslSvgWithOptions` so downloads can match the last successful preview.
+ */
+export async function renderTdslHtmlWithOptions(
+  source: string,
+  options: TdslSvgRenderOptions
+): Promise<string> {
+  const loaded = await loadTdslWasm();
+  if (loaded.status !== "ready") {
+    throw new Error(loaded.message, { cause: loaded.cause });
+  }
+
+  return loaded.api.renderHtmlFromSourceWithOptions(source, options);
+}
+
 export async function compileTdslToIr(source: string): Promise<string> {
   const loaded = await loadTdslWasm();
   if (loaded.status !== "ready") {
@@ -188,6 +212,18 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
           );
         },
         renderHtmlFromSource: rawModule.render_html_from_source,
+        renderHtmlFromSourceWithOptions: (source, options) => {
+          const opts = new rawModule.JsRenderOptions();
+          // NOTE: render_html_from_source_with_options consumes `opts` internally
+          // (__destroy_into_raw); do not call opts.free() afterwards.
+          if (options.showEventLabels !== undefined) {
+            opts.show_event_labels = options.showEventLabels;
+          }
+          if (options.locale !== undefined) {
+            opts.locale = options.locale;
+          }
+          return rawModule.render_html_from_source_with_options(source, opts);
+        },
         checkSource(source) {
           return parseDiagnostics(rawModule.check_source(source));
         },

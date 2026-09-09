@@ -10,10 +10,11 @@ import {
 } from "./playground-share";
 import {
   checkTdslSource,
-  renderTdslHtml,
+  renderTdslHtmlWithOptions,
   renderTdslSvgWithOptions,
   setTdslWasmMessages,
   type TdslDiagnostic,
+  type TdslSvgRenderOptions,
 } from "./tdsl-wasm";
 
 export function downloadText(
@@ -115,6 +116,7 @@ export function wireDownloads(opts: {
   getSource: () => string;
   getLastSvg: () => string;
   getLastSource: () => string;
+  getLastRenderOptions: () => TdslSvgRenderOptions;
 }): void {
   opts.tdslBtn?.addEventListener("click", () => {
     downloadText("timeline.tdsl", "text/plain;charset=utf-8", opts.getSource());
@@ -127,7 +129,10 @@ export function wireDownloads(opts: {
     const source = opts.getLastSource();
     if (!source) return;
     try {
-      const html = await renderTdslHtml(source);
+      const html = await renderTdslHtmlWithOptions(
+        source,
+        opts.getLastRenderOptions()
+      );
       downloadText("timeline.html", "text/html;charset=utf-8", html);
     } catch {
       announceToLiveRegion(opts.liveRegion, opts.msgs.htmlDownloadError);
@@ -361,6 +366,7 @@ export function initPlayground(): void {
   let latestRunId = 0;
   let lastSvg = "";
   let lastSource = "";
+  let lastRenderOptions: TdslSvgRenderOptions = { showEventLabels: false };
 
   const setText = (element: HTMLElement | null, value: string) => {
     if (element) element.textContent = value;
@@ -422,14 +428,20 @@ export function initPlayground(): void {
         (item: TdslDiagnostic) => item.severity === "warning"
       );
       const renderScale = parseFloat(scaleSelect?.value ?? "0");
-      const svg = await renderTdslSvgWithOptions(source, renderScale, {
+      const renderOptions: TdslSvgRenderOptions = {
         showEventLabels: showEventLabels.getShowEventLabels(),
         locale: resolveLocaleFromLocation(),
-      });
+      };
+      const svg = await renderTdslSvgWithOptions(
+        source,
+        renderScale,
+        renderOptions
+      );
       if (runId !== latestRunId) return;
 
       lastSvg = svg;
       lastSource = source;
+      lastRenderOptions = renderOptions;
       setSvgContent(stage, svg);
       panZoom?.applySvg();
       downloadSvgButton?.removeAttribute("disabled");
@@ -505,6 +517,7 @@ export function initPlayground(): void {
     getSource: () => view.state.doc.toString(),
     getLastSvg: () => lastSvg,
     getLastSource: () => lastSource,
+    getLastRenderOptions: () => lastRenderOptions,
   });
 
   wireShare({
