@@ -3,6 +3,8 @@ import init, {
   check_source,
   initSync,
   JsRenderOptions,
+  render_html_from_source,
+  render_html_from_source_with_options,
   render_svg_from_source,
   render_svg_from_source_with_options,
 } from "../public/wasm/tdsl_wasm.js";
@@ -243,6 +245,31 @@ if (
   );
 }
 
+// render_html_from_source_with_options（#646）: HTML ダウンロード経路が
+// render_svg_from_source_with_options と同じ描画設定（ラベル常時表示・locale）を
+// 反映することを検証する。render_html_from_source（設定なし）はラベル OFF のまま。
+const htmlWithoutOptions = render_html_from_source(sample);
+const htmlLabelsOnJaOptions = new JsRenderOptions();
+htmlLabelsOnJaOptions.show_event_labels = true;
+htmlLabelsOnJaOptions.locale = "ja";
+const htmlWithOptions = render_html_from_source_with_options(
+  sample,
+  htmlLabelsOnJaOptions
+);
+if (
+  countOccurrences(htmlWithOptions, "Kickoff") <=
+  countOccurrences(htmlWithoutOptions, "Kickoff")
+) {
+  throw new Error(
+    "render_html_from_source_with_options({ show_event_labels: true }) did not add an always-on label."
+  );
+}
+if (!htmlWithOptions.includes('aria-label="イベント:')) {
+  throw new Error(
+    'render_html_from_source_with_options with locale="ja" did not emit the Japanese "イベント:" aria-label prefix.'
+  );
+}
+
 console.log(
-  "WASM smoke passed: check_source, render_svg_from_source, group block, now keyword, show_event_labels option, unit second, UTC offset, mixed-offset error, locale option"
+  "WASM smoke passed: check_source, render_svg_from_source, group block, now keyword, show_event_labels option, unit second, UTC offset, mixed-offset error, locale option, render_html_from_source_with_options"
 );

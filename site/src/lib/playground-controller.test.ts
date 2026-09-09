@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // initPlayground 本体の状態オーケストレーション分岐だけを検証する。
 const checkTdslSource = vi.fn();
 const renderTdslSvgWithOptions = vi.fn();
-const renderTdslHtml = vi.fn();
+const renderTdslHtmlWithOptions = vi.fn();
 
 const setTdslWasmMessages = vi.fn();
 
@@ -12,7 +12,8 @@ vi.mock("./tdsl-wasm", () => ({
   checkTdslSource: (...args: unknown[]) => checkTdslSource(...args),
   renderTdslSvgWithOptions: (...args: unknown[]) =>
     renderTdslSvgWithOptions(...args),
-  renderTdslHtml: (...args: unknown[]) => renderTdslHtml(...args),
+  renderTdslHtmlWithOptions: (...args: unknown[]) =>
+    renderTdslHtmlWithOptions(...args),
   setTdslWasmMessages: (...args: unknown[]) => setTdslWasmMessages(...args),
 }));
 
@@ -99,7 +100,7 @@ function setupDom() {
 beforeEach(() => {
   checkTdslSource.mockReset();
   renderTdslSvgWithOptions.mockReset();
-  renderTdslHtml.mockReset();
+  renderTdslHtmlWithOptions.mockReset();
   setTdslWasmMessages.mockReset();
   extractSourceFromLocation.mockReset();
   extractSourceFromLocation.mockResolvedValue({ status: "none" });
@@ -345,6 +346,7 @@ describe("wireDownloads", () => {
       getSource,
       getLastSvg,
       getLastSource,
+      getLastRenderOptions: vi.fn().mockReturnValue({}),
     });
     tdslBtn.click();
 
@@ -376,6 +378,7 @@ describe("wireDownloads", () => {
       getSource,
       getLastSvg,
       getLastSource,
+      getLastRenderOptions: vi.fn().mockReturnValue({}),
     });
     svgBtn.click();
 
@@ -391,7 +394,9 @@ describe("wireDownloads", () => {
     const getLastSvg = vi.fn().mockReturnValue("");
     const getLastSource = vi.fn().mockReturnValue("source content");
 
-    renderTdslHtml.mockRejectedValueOnce(new Error("wasm not loaded"));
+    renderTdslHtmlWithOptions.mockRejectedValueOnce(
+      new Error("wasm not loaded")
+    );
 
     wireDownloads({
       tdslBtn,
@@ -402,11 +407,53 @@ describe("wireDownloads", () => {
       getSource,
       getLastSvg,
       getLastSource,
+      getLastRenderOptions: vi.fn().mockReturnValue({}),
     });
     htmlBtn.click();
 
     await vi.waitFor(() => {
       expect(liveRegion.textContent).toBe("html download error");
+    });
+  });
+
+  it("htmlBtn クリックで getLastRenderOptions の値が renderTdslHtmlWithOptions に渡される", async () => {
+    const tdslBtn = document.createElement("button");
+    const svgBtn = document.createElement("button");
+    const htmlBtn = document.createElement("button");
+    const getSource = vi.fn().mockReturnValue("");
+    const getLastSvg = vi.fn().mockReturnValue("");
+    const getLastSource = vi.fn().mockReturnValue("source content");
+    const getLastRenderOptions = vi
+      .fn()
+      .mockReturnValue({ showEventLabels: true, locale: "ja" });
+
+    const createObjectURL = vi.fn().mockReturnValue("blob:mock");
+    const revokeObjectURL = vi.fn();
+    Object.defineProperty(window, "URL", {
+      value: { createObjectURL, revokeObjectURL },
+      writable: true,
+    });
+
+    renderTdslHtmlWithOptions.mockResolvedValueOnce("<html></html>");
+
+    wireDownloads({
+      tdslBtn,
+      svgBtn,
+      htmlBtn,
+      liveRegion: null,
+      msgs: { htmlDownloadError: "html download error" },
+      getSource,
+      getLastSvg,
+      getLastSource,
+      getLastRenderOptions,
+    });
+    htmlBtn.click();
+
+    await vi.waitFor(() => {
+      expect(renderTdslHtmlWithOptions).toHaveBeenCalledWith("source content", {
+        showEventLabels: true,
+        locale: "ja",
+      });
     });
   });
 });
