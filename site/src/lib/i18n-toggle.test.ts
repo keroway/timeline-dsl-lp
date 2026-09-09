@@ -6,11 +6,11 @@ import { initLangToggle, LOCALE_KEY } from "./i18n-toggle";
 const originalLocation = window.location;
 let assignMock: ReturnType<typeof vi.fn>;
 
-function setLocation(pathname: string): void {
+function setLocation(pathname: string, search = "", hash = ""): void {
   assignMock = vi.fn();
   Object.defineProperty(window, "location", {
     configurable: true,
-    value: { pathname, assign: assignMock },
+    value: { pathname, search, hash, assign: assignMock },
   });
 }
 
@@ -78,5 +78,27 @@ describe("initLangToggle", () => {
     button.click();
 
     expect(assignMock).toHaveBeenCalledWith("/");
+  });
+
+  it("ja→en: 共有 URL のクエリと hash を引き継ぐ", () => {
+    setLocation("/playground/", "?src=abc123", "#preview");
+    const button = mountButton();
+
+    initLangToggle({ buttonSelector: "#lang-toggle", currentLocale: "ja" });
+    button.click();
+
+    expect(assignMock).toHaveBeenCalledWith(
+      "/en/playground/?src=abc123#preview"
+    );
+  });
+
+  it("en→ja: 共有 URL のクエリと hash を引き継ぐ", () => {
+    setLocation("/en/playground/", "?src=abc123", "#preview");
+    const button = mountButton();
+
+    initLangToggle({ buttonSelector: "#lang-toggle", currentLocale: "en" });
+    button.click();
+
+    expect(assignMock).toHaveBeenCalledWith("/playground/?src=abc123#preview");
   });
 });
