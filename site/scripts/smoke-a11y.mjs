@@ -7,6 +7,10 @@
 //   A11Y_BASE_URL=http://127.0.0.1:4321 pnpm smoke:a11y
 //   pnpm smoke:a11y -- --base-url https://example.localhost
 
+import {
+  ALLOWED_EXCEPTIONS,
+  excludeExceptedNodes,
+} from "./lib/a11y-exceptions.mjs";
 import { A11Y_PAGES } from "./lib/site-routes.mjs";
 import {
   DEFAULT_BASE_URL,
@@ -16,27 +20,6 @@ import {
 
 // WCAG 2.0/2.1 の A / AA を対象タグとする (axe-core のルールタグ)。
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
-
-// 既知の許容例外。理由を必ず添える。空配列なら例外なし。
-// 形式: { page: "/path/", ruleId: "color-contrast", reason: "..." }
-const ALLOWED_EXCEPTIONS = [
-  {
-    page: "/playground/",
-    ruleId: "scrollable-region-focusable",
-    reason:
-      "CodeMirror 6 の .cm-scroller (axe が検知するスクロール領域) 自体は " +
-      "フォーカス対象ではないが、内側の .cm-content は contenteditable かつ " +
-      "常時 tabindex を持つため Tab で到達でき、矢印キーでのスクロールも可能。",
-  },
-  {
-    page: "/en/playground/",
-    ruleId: "scrollable-region-focusable",
-    reason:
-      "CodeMirror 6 の .cm-scroller (axe が検知するスクロール領域) 自体は " +
-      "フォーカス対象ではないが、内側の .cm-content は contenteditable かつ " +
-      "常時 tabindex を持つため Tab で到達でき、矢印キーでのスクロールも可能。",
-  },
-];
 
 // #587: デスクトップ幅 (Playwright 既定, 1280x720 相当) だけでは横スクロール発生時の
 // キーボード操作性違反 (例: scrollable-region-focusable) を検知できない。狭幅でも
@@ -74,9 +57,9 @@ async function smokeA11y(rootUrl) {
             .withTags(WCAG_TAGS)
             .analyze();
 
-          const violations = results.violations.filter(
-            (violation) => !isAllowed(path, violation.id)
-          );
+          const violations = results.violations
+            .map((violation) => excludeExceptedNodes(path, violation))
+            .filter((violation) => violation.nodes.length > 0);
 
           if (violations.length) {
             for (const violation of violations) {
@@ -233,12 +216,6 @@ async function smokeMobileNav(rootUrl) {
   } finally {
     await browser.close();
   }
-}
-
-function isAllowed(path, ruleId) {
-  return ALLOWED_EXCEPTIONS.some(
-    (exception) => exception.page === path && exception.ruleId === ruleId
-  );
 }
 
 async function importPlaywright() {
