@@ -16,18 +16,19 @@ export function initLangToggle({
 
   button.addEventListener("click", () => {
     const currentPath = window.location.pathname;
+    const { search, hash } = window.location;
     localStorage.setItem(LOCALE_KEY, targetLocale);
 
-    let targetUrl: string;
+    let targetPath: string;
     if (targetLocale === "en") {
-      targetUrl = `/en${currentPath}`;
+      targetPath = `/en${currentPath}`;
     } else {
       const stripped = currentPath.startsWith("/en")
         ? currentPath.slice(3)
         : currentPath;
-      targetUrl = stripped || "/";
+      targetPath = stripped || "/";
     }
 
-    window.location.assign(targetUrl);
+    window.location.assign(`${targetPath}${search}${hash}`);
   });
 }
