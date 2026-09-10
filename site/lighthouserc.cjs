@@ -3,8 +3,10 @@
 // portless 等で別 origin を使う場合は LHCI_BASE_URL を渡す (smoke の *_BASE_URL と同じ流儀)。
 //
 // 閾値の根拠 (baseline の考え方) は README / README.ja の "Quality gates" 節に記録している。
-// 段階導入: performance は CI ランナーの負荷ゆらぎで不安定なため warn 始まり。
-// a11y / best-practices / SEO は静的サイトとして安定して取れるため error (閾値割れで CI fail)。
+// performance は 2026-06-04 の導入 (#296) 時点では CI ランナーの負荷ゆらぎを懸念して warn 始まりだったが、
+// 3ヶ月以上・15計測以上の RUN_FULL 実行ログで閾値割れゼロを確認できたため error に昇格した (#663)。
+// 再び不安定化した場合は一旦 warn に戻し、安定を再確認してから改めて昇格させる。
+// a11y / best-practices / SEO も静的サイトとして安定して取れるため error (閾値割れで CI fail)。
 
 const BASE_URL = process.env.LHCI_BASE_URL ?? "http://127.0.0.1:4321";
 
@@ -31,7 +33,7 @@ module.exports = {
     },
     assert: {
       assertions: {
-        "categories:performance": ["warn", { minScore: 0.8 }],
+        "categories:performance": ["error", { minScore: 0.8 }],
         "categories:accessibility": ["error", { minScore: 0.9 }],
         "categories:best-practices": ["error", { minScore: 0.9 }],
         "categories:seo": ["error", { minScore: 0.9 }],
