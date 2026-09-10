@@ -42,7 +42,9 @@ patchedDependencies:
 minimumReleaseAgeExclude:
   [
     # Renovate security update: fast-uri@3.1.6
-    fast-uri@3.1.6
+    fast-uri@3.1.6,
+    # Renovate security update: vitest@4.1.11
+    vitest@4.1.11
   ]
 
 # pnpm 11 はデフォルトで依存の build スクリプト実行を遮断する (strictDepBuilds)。
