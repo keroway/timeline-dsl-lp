@@ -4,7 +4,7 @@ minimumReleaseAgeStrict: true
 overrides:
   esbuild: 0.28.1
   fast-uri: 3.1.6
-  js-yaml: 4.3.1
+  js-yaml: 4.3.2
   tmp: 0.2.7
   undici: 7.29.0
   uuid: 11.1.1
@@ -42,7 +42,9 @@ patchedDependencies:
 minimumReleaseAgeExclude:
   [
     # Renovate security update: fast-uri@3.1.6
-    fast-uri@3.1.6
+    fast-uri@3.1.6,
+    # Renovate security update: js-yaml@4.3.2
+    js-yaml@4.3.2
   ]
 
 # pnpm 11 はデフォルトで依存の build スクリプト実行を遮断する (strictDepBuilds)。
