@@ -97,7 +97,7 @@ Baseline thresholds and their rationale:
 
 | Category | Level | Min score | Rationale |
 | --- | --- | --- | --- |
-| Performance | `warn` | 0.80 | LCP/TBT vary with shared CI runner load. Starts as a non-blocking warning; tighten to `error` once the signal proves stable (staged rollout). |
+| Performance | `error` | 0.80 | LCP/TBT vary with shared CI runner load, which is why it originally started as a non-blocking warning; promoted to `error` after 3+ months and 15+ runs showed zero threshold breaches (#663). |
 | Accessibility | `error` | 0.90 | A static, token-driven site clears this reliably; complements the axe-core `smoke:a11y` audit. |
 | Best practices | `error` | 0.90 | Catches console errors, insecure resources, and deprecated APIs introduced by future changes. |
 | SEO | `error` | 0.90 | The site lives or dies by discoverability; metadata/hreflang/JSON-LD regressions must fail CI. |

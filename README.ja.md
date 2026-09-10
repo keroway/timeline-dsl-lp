@@ -97,7 +97,7 @@ baseline 閾値と根拠:
 
 | カテゴリ | レベル | 最低スコア | 根拠 |
 | --- | --- | --- | --- |
-| Performance | `warn` | 0.80 | LCP/TBT は共有 CI ランナーの負荷でゆらぐ。まずは非ブロッキングの warn で開始し、安定を確認してから `error` へ引き上げる (段階導入)。 |
+| Performance | `error` | 0.80 | LCP/TBT は共有 CI ランナーの負荷でゆらぐ懸念から当初は非ブロッキングの warn で開始したが、3ヶ月以上・15計測以上で閾値割れゼロだったため error へ昇格した (#663)。 |
 | Accessibility | `error` | 0.90 | トークン駆動の静的サイトでは安定して取れる。axe-core の `smoke:a11y` を補完する。 |
 | Best practices | `error` | 0.90 | console エラー・安全でないリソース・非推奨 API の混入を検知する。 |
 | SEO | `error` | 0.90 | 発見性がサイトの生命線。metadata / hreflang / JSON-LD の劣化は CI で fail させる。 |
