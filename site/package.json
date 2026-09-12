@@ -62,6 +62,6 @@
     "prettier-plugin-astro": "^0.14.1",
     "shiki": "^4.2.0",
     "typescript": "6.0.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.11"
   }
 }
