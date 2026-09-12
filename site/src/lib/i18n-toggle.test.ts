@@ -101,4 +101,17 @@ describe("initLangToggle", () => {
 
     expect(assignMock).toHaveBeenCalledWith("/playground/?src=abc123#preview");
   });
+
+  it("setItem が例外を投げても言語切り替えの遷移は続行する", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("blocked", "SecurityError");
+    });
+    setLocation("/");
+    const button = mountButton();
+
+    initLangToggle({ buttonSelector: "#lang-toggle", currentLocale: "ja" });
+
+    expect(() => button.click()).not.toThrow();
+    expect(assignMock).toHaveBeenCalledWith("/en/");
+  });
 });
