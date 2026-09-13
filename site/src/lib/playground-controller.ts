@@ -134,7 +134,8 @@ export function wireDownloads(opts: {
         opts.getLastRenderOptions()
       );
       downloadText("timeline.html", "text/html;charset=utf-8", html);
-    } catch {
+    } catch (error) {
+      console.error("Failed to export Playground HTML", error);
       announceToLiveRegion(opts.liveRegion, opts.msgs.htmlDownloadError);
     }
   });
@@ -174,7 +175,8 @@ export function wireShare(opts: {
       }
       await navigator.clipboard.writeText(result.url);
       announceShare(msgs.shareCopySuccess);
-    } catch {
+    } catch (error) {
+      console.error("Failed to copy Playground share link", error);
       announceShare(msgs.shareCopyError);
     } finally {
       copyLinkButton.disabled = false;

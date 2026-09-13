@@ -151,7 +151,8 @@ const t = getT(locale);
           showSubResults: true,
           resetStyles: false,
         });
-      } catch {
+      } catch (error) {
+        console.error("Failed to initialize Pagefind search UI", error);
         searchUi.textContent = searchUi.dataset.notBuiltMsg ?? "";
       }
     }
