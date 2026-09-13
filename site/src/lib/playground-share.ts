@@ -1,4 +1,7 @@
 export const MAX_SHARE_URL_LENGTH = 8192;
+// gzip 展開後のバイト数上限。高圧縮率データ(zip bomb)を想定し、
+// URL 長の制限とは独立に、展開ストリームを読みながら判定する。
+export const MAX_DECODED_SOURCE_BYTES = 1_000_000;
 export const SHARE_QUERY_PARAM = "src";
 export const LEGACY_SOURCE_QUERY_PARAM = "source";
 
@@ -41,7 +44,25 @@ export async function decodeShareSource(encoded: string): Promise<string> {
   const stream = new Blob([bytes])
     .stream()
     .pipeThrough(new DecompressionStream("gzip"));
-  const buffer = await new Response(stream).arrayBuffer();
+  const reader = stream.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > MAX_DECODED_SOURCE_BYTES) {
+      await reader.cancel();
+      throw new Error("decoded source exceeds MAX_DECODED_SOURCE_BYTES");
+    }
+    chunks.push(value);
+  }
+  const buffer = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    buffer.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
   return new TextDecoder().decode(buffer);
 }
 
@@ -56,6 +77,9 @@ export async function extractSourceFromLocation(
   const params = new URLSearchParams(search);
   const compressed = params.get(SHARE_QUERY_PARAM);
   if (compressed) {
+    if (compressed.length > MAX_SHARE_URL_LENGTH) {
+      return { status: "invalid" };
+    }
     try {
       return { status: "ok", source: await decodeShareSource(compressed) };
     } catch {
@@ -64,6 +88,9 @@ export async function extractSourceFromLocation(
   }
   const legacy = params.get(LEGACY_SOURCE_QUERY_PARAM);
   if (legacy !== null) {
+    if (legacy.length > MAX_SHARE_URL_LENGTH) {
+      return { status: "invalid" };
+    }
     return { status: "ok", source: legacy };
   }
   return { status: "none" };
