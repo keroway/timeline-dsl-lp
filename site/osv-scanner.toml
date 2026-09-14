@@ -7,3 +7,11 @@ upstream. Transitive dev dependency of @puppeteer/browsers (Lighthouse CI),
 not shipped in the deployed site. Re-check for a fix at the ignoreUntil date.
 See https://github.com/keroway/timeline-dsl-lp/issues/590
 """
+
+[[IgnoredVulns]]
+id = "GHSA-7pqw-9j4j-h8q3"
+ignoreUntil = 2026-11-22
+reason = """
+GHSA-jmr9-qjv8-65gv と同一の extract-zip@2.0.1 脆弱性（別 GHSA ID）。
+理由は同上。See https://github.com/keroway/timeline-dsl-lp/issues/590
+"""
