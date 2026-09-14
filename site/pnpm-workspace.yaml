@@ -86,3 +86,13 @@ trustPolicy: no-downgrade
 trustPolicyExclude:
   - "semver@5.7.2 || 6.3.1"
   - "chokidar@4.0.3"
+
+# pnpm 12 はデフォルトで packageManager フィールドの pnpm バージョンを
+# lockfile に packageManagerDependencies として記録し、pnpm-lock.yaml が
+# 2 ドキュメント構成の YAML になる。osv-scanner (2.4.0/2.5.1 で確認) は
+# 先頭ドキュメントしか読まず、実際の依存パッケージ(2つ目のドキュメント)を
+# 完全に読み飛ばしてしまう(検知件数が 934 → 15 に激減する)。
+# pmOnFail: ignore で pnpm バージョン強制を無効化し、lockfile を
+# 従来通り 1 ドキュメントに保つ。バージョン固定自体は package.json の
+# packageManager フィールドと CI の pnpm/action-setup の version で担保する。
+pmOnFail: ignore
