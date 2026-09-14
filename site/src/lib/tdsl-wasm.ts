@@ -21,7 +21,6 @@ export interface TdslSvgRenderOptions {
 }
 
 export interface TdslWasmApi {
-  compileToIr(source: string): string;
   renderSvgFromSource(source: string, scale?: number): string;
   renderSvgFromSourceWithOptions(
     source: string,
@@ -141,15 +140,6 @@ export async function renderTdslSvgWithOptions(
   return loaded.api.renderSvgFromSourceWithOptions(source, scale, options);
 }
 
-export async function renderTdslHtml(source: string): Promise<string> {
-  const loaded = await loadTdslWasm();
-  if (loaded.status !== "ready") {
-    throw new Error(loaded.message, { cause: loaded.cause });
-  }
-
-  return loaded.api.renderHtmlFromSource(source);
-}
-
 /**
  * Render standalone HTML from TDSL source with explicit render options, mirroring
  * `renderTdslSvgWithOptions` so downloads can match the last successful preview.
@@ -166,15 +156,6 @@ export async function renderTdslHtmlWithOptions(
   return loaded.api.renderHtmlFromSourceWithOptions(source, options);
 }
 
-export async function compileTdslToIr(source: string): Promise<string> {
-  const loaded = await loadTdslWasm();
-  if (loaded.status !== "ready") {
-    throw new Error(loaded.message, { cause: loaded.cause });
-  }
-
-  return loaded.api.compileToIr(source);
-}
-
 async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
   if (typeof window === "undefined" || typeof WebAssembly === "undefined") {
     return { status: "unavailable", message: tdslWasmMessages.fallback };
@@ -189,7 +170,6 @@ async function loadTdslWasmModule(): Promise<TdslWasmLoadResult> {
     return {
       status: "ready",
       api: {
-        compileToIr: rawModule.compile_to_ir,
         renderSvgFromSource: (source, scale) =>
           rawModule.render_svg_from_source(
             source,

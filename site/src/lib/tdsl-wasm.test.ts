@@ -116,16 +116,12 @@ describe("WASM が利用できない環境でのラッパー分岐", () => {
     ]);
   });
 
-  it("renderTdslSvg / renderTdslHtml / compileTdslToIr は注入された fallback メッセージで reject する", async () => {
+  it("renderTdslSvg は注入された fallback メッセージで reject する", async () => {
     const wasm = await import("./tdsl-wasm");
     wasm.setTdslWasmMessages({
       fallback: MOCK_FALLBACK,
     });
     await expect(wasm.renderTdslSvg("event x")).rejects.toThrow(MOCK_FALLBACK);
-    await expect(wasm.renderTdslHtml("event x")).rejects.toThrow(MOCK_FALLBACK);
-    await expect(wasm.compileTdslToIr("event x")).rejects.toThrow(
-      MOCK_FALLBACK
-    );
   });
 });
 
