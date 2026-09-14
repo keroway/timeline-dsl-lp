@@ -24,7 +24,7 @@ LP / documentation site for the public [Timeline DSL](https://github.com/keroway
 | Area | Stack | Notes |
 | --- | --- | --- |
 | Site framework | Astro 7 + Starlight 0.41 | Static LP, docs, changelog, gallery, showcase, and playground routes. |
-| Language/runtime | TypeScript 6, Node.js 26, pnpm 11 | All commands run under `site/`. |
+| Language/runtime | TypeScript 6, Node.js 26, pnpm 12 | All commands run under `site/`. |
 | Styling | Astro components + CSS tokens | Global design tokens live in `site/src/styles/global.css`; avoid ad-hoc colors. |
 | Playground | Vendored `@keroway/tdsl-wasm` 2.0.0 | Browser validation and SVG rendering go through `site/src/lib/tdsl-wasm.ts`. |
 | Search | Pagefind generated at build time | Used by the site-wide search dialog. |

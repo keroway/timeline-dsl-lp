@@ -24,7 +24,7 @@
 | 領域 | スタック | 補足 |
 | --- | --- | --- |
 | サイトフレームワーク | Astro 7 + Starlight 0.41 | LP、Docs、Changelog、Gallery、Showcase、Playground を静的生成します。 |
-| 言語 / ランタイム | TypeScript 6、Node.js 26、pnpm 11 | すべてのコマンドは `site/` 配下で実行します。 |
+| 言語 / ランタイム | TypeScript 6、Node.js 26、pnpm 12 | すべてのコマンドは `site/` 配下で実行します。 |
 | スタイリング | Astro コンポーネント + CSS トークン | デザイントークンは `site/src/styles/global.css` に集約。色の直書きは避けます。 |
 | Playground | vendoring した `@keroway/tdsl-wasm` 2.0.0 | ブラウザ内検証と SVG レンダリングは `site/src/lib/tdsl-wasm.ts` 経由に統一します。 |
 | 検索 | build 時に生成する Pagefind | サイト全体検索ダイアログで利用します。 |
