@@ -17,7 +17,12 @@ export function initLangToggle({
   button.addEventListener("click", () => {
     const currentPath = window.location.pathname;
     const { search, hash } = window.location;
-    localStorage.setItem(LOCALE_KEY, targetLocale);
+    try {
+      localStorage.setItem(LOCALE_KEY, targetLocale);
+    } catch {
+      // localStorage 無効環境（Safari private browsing 等）では永続化を諦め、
+      // 今回の遷移だけ言語を切り替える。
+    }
 
     let targetPath: string;
     if (targetLocale === "en") {
