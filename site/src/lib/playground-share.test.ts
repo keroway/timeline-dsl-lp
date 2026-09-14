@@ -7,6 +7,7 @@ import {
   decodeShareSource,
   encodeShareSource,
   extractSourceFromLocation,
+  MAX_DECODED_SOURCE_BYTES,
   MAX_SHARE_URL_LENGTH,
 } from "./playground-share";
 
@@ -91,5 +92,39 @@ describe("extractSourceFromLocation", () => {
 
   it("クエリが無ければ status=none を返す", async () => {
     expect(await extractSourceFromLocation("")).toEqual({ status: "none" });
+  });
+
+  it("高圧縮率データが展開後上限を超える場合は status=invalid を返す（zip bomb 対策）", async () => {
+    // 高圧縮率な繰り返し文字列: URL 長は短いが展開後は上限を大きく超える。
+    const source = "a".repeat(MAX_DECODED_SOURCE_BYTES + 50_000);
+    const encoded = await encodeShareSource(source);
+    expect(encoded.length).toBeLessThan(MAX_SHARE_URL_LENGTH);
+    expect(await extractSourceFromLocation(`?src=${encoded}`)).toEqual({
+      status: "invalid",
+    });
+  });
+
+  it("展開後サイズが上限ちょうど以下なら status=ok を返す", async () => {
+    const source = "b".repeat(MAX_DECODED_SOURCE_BYTES - 10);
+    const encoded = await encodeShareSource(source);
+    expect(await extractSourceFromLocation(`?src=${encoded}`)).toEqual({
+      status: "ok",
+      source,
+    });
+  });
+
+  it("legacy source クエリが URL 長上限を超える場合は status=invalid を返す", async () => {
+    const legacy = "a".repeat(MAX_SHARE_URL_LENGTH + 1);
+    expect(await extractSourceFromLocation(`?source=${legacy}`)).toEqual({
+      status: "invalid",
+    });
+  });
+});
+
+describe("decodeShareSource", () => {
+  it("展開後サイズが上限を超えると reject する", async () => {
+    const source = "c".repeat(MAX_DECODED_SOURCE_BYTES + 50_000);
+    const encoded = await encodeShareSource(source);
+    await expect(decodeShareSource(encoded)).rejects.toThrow();
   });
 });
