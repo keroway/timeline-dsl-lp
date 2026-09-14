@@ -12,6 +12,8 @@ const THRESHOLDS = {
   wasm: { warn: 810_000, fail: 860_000 },
   totalJs: { warn: 550_000, fail: 650_000 },
   maxJs: { warn: 370_000, fail: 420_000 },
+  totalCss: { warn: 180_000, fail: 220_000 },
+  maxCss: { warn: 70_000, fail: 90_000 },
 };
 
 function formatBytes(bytes) {
@@ -65,6 +67,29 @@ const maxJsFile = jsFiles.reduce((a, b) => (a.size >= b.size ? a : b), {
 });
 results.push(
   evaluate(`Max JS file (${maxJsFile.name})`, maxJsFile.size, THRESHOLDS.maxJs)
+);
+
+const cssFiles = existsSync(astroDir)
+  ? readdirSync(astroDir)
+      .filter((f) => f.endsWith(".css"))
+      .map((f) => ({ name: f, size: statSync(join(astroDir, f)).size }))
+  : [];
+
+const totalCss = cssFiles.reduce((sum, f) => sum + f.size, 0);
+results.push(
+  evaluate("Total CSS (dist/_astro/*.css)", totalCss, THRESHOLDS.totalCss)
+);
+
+const maxCssFile = cssFiles.reduce((a, b) => (a.size >= b.size ? a : b), {
+  name: "(none)",
+  size: 0,
+});
+results.push(
+  evaluate(
+    `Max CSS file (${maxCssFile.name})`,
+    maxCssFile.size,
+    THRESHOLDS.maxCss
+  )
 );
 
 const hasFail = results.includes("fail");
