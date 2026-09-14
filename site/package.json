@@ -36,21 +36,21 @@
     "format:check": "biome format . && prettier --check \"**/*.{astro,md,mdx}\""
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "7.2.1",
+    "@astrojs/markdown-remark": "7.3.1",
     "@astrojs/sitemap": "^3.7.3",
-    "@astrojs/starlight": "0.41.3",
+    "@astrojs/starlight": "0.42.0",
     "@codemirror/commands": "^6.10.3",
     "@codemirror/language": "^6.12.3",
     "@codemirror/state": "^6.6.0",
     "@codemirror/view": "^6.43.0",
-    "astro": "7.2.8",
+    "astro": "7.3.2",
     "rehype-sanitize": "6.0.0",
     "starlight-llms-txt": "^0.11.0",
     "starlight-md-txt": "^0.1.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.9",
+    "@astrojs/check": "0.9.10",
     "@axe-core/playwright": "^4.11.3",
     "@biomejs/biome": "^2.5.4",
     "@lhci/cli": "^0.15.1",
