@@ -40,7 +40,7 @@ patchedDependencies:
   "@lhci/utils@0.15.1": patches/@lhci__utils@0.15.1.patch
   undici@7.29.0: patches/undici@7.29.0.patch
 
-# pnpm 11 のセキュリティ寄りデフォルト (minimumReleaseAge=1440 / strictDepBuilds /
+# pnpm 12 のセキュリティ寄りデフォルト (minimumReleaseAge=1440 / strictDepBuilds /
 # blockExoticSubdeps) は既定値のまま使う。
 # 参考: https://pnpm.io/blog/2025/12/29/pnpm-in-2025
 
@@ -54,7 +54,7 @@ minimumReleaseAgeExclude:
     astro@7.2.8
   ]
 
-# pnpm 11 はデフォルトで依存の build スクリプト実行を遮断する (strictDepBuilds)。
+# pnpm 12 はデフォルトで依存の build スクリプト実行を遮断する (strictDepBuilds)。
 # 実行を許可するものだけ allowBuilds で明示する。
 allowBuilds:
   # Astro 6 が画像最適化に使うネイティブビルド依存。

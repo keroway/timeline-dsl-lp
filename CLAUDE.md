@@ -7,7 +7,7 @@ Timeline DSL の LP / ドキュメントサイトです。
 ## Tech stack
 
 - Framework: Astro 7 + Starlight
-- Package manager: pnpm 11（`packageManager` フィールドでピン。`cd site` 後に実行。mise.toml でも node 26 / pnpm 11 をピン）
+- Package manager: pnpm 12（`packageManager` フィールドでピン。`cd site` 後に実行。mise.toml でも node 26 / pnpm 12 をピン）
 - Node.js: 26
 - Deploy: Cloudflare Pages（GitHub integration 経由、push 自動デプロイ）
 - Site URL: <https://timeline-dsl-lp.pages.dev>
