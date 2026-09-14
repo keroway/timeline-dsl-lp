@@ -1,4 +1,8 @@
 import {
+  encodeShareSource,
+  MAX_DECODED_SOURCE_BYTES,
+} from "../src/lib/playground-share.ts";
+import {
   assertContentType,
   assertIncludes,
   assertStatus,
@@ -170,12 +174,13 @@ async function smokeBrowserFlow(rootUrl) {
     await smokeShowEventLabelsToggle(rootUrl, browser);
     await smokePanZoom(rootUrl, browser);
     await smokeBrokenShareUrl(rootUrl, browser);
+    await smokeOversizedShareUrl(rootUrl, browser);
   } finally {
     await browser.close();
   }
 
   console.log(
-    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, show-event-labels toggle, pan/zoom wheel+reset, and broken share-URL notification."
+    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, show-event-labels toggle, pan/zoom wheel+reset, broken share-URL notification, and oversized (zip bomb) share-URL notification."
   );
 }
 
@@ -188,6 +193,37 @@ async function smokeBrokenShareUrl(rootUrl, browser) {
   });
 
   // 壊れた ?src= はデフォルトサンプルへフォールバックしつつ、共有ライブリージョンで通知する（#592）。
+  await page
+    .locator('[data-smoke="playground-preview"] svg')
+    .first()
+    .waitFor({ state: "visible" });
+  await page.waitForFunction(
+    () =>
+      (document.querySelector("[data-share-live]")?.textContent ?? "").length >
+      0,
+    undefined,
+    { timeout: 5000 }
+  );
+
+  await context.close();
+}
+
+async function smokeOversizedShareUrl(rootUrl, browser) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  // 高圧縮率(繰り返し文字)なソースを実際に gzip+base64url encode すると、
+  // URL 長は短いまま展開後サイズが MAX_DECODED_SOURCE_BYTES を大きく超える(zip bomb 的挙動)。
+  // MAX_DECODED_SOURCE_BYTES の上限が実ブラウザの ?src= 読込経路に配線され続けていることを検証する(#670)。
+  const oversizedSource = "a".repeat(MAX_DECODED_SOURCE_BYTES + 50_000);
+  const encoded = await encodeShareSource(oversizedSource);
+
+  await page.goto(`${rootUrl}${PLAYGROUND_PATH}?src=${encoded}`, {
+    waitUntil: "networkidle",
+  });
+
+  // 展開後サイズ超過の ?src= もデフォルトサンプルへフォールバックしつつ、
+  // 共有ライブリージョンで通知する(壊れた src と同じ経路、#592 / #667)。
   await page
     .locator('[data-smoke="playground-preview"] svg')
     .first()
