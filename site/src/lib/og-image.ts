@@ -57,6 +57,16 @@ export const OG_CARDS = {
     subtitle: en["og.changelog.subtitle"],
     accent: "gold",
   },
+  showcase: {
+    eyebrow: en["og.showcase.eyebrow"],
+    subtitle: en["og.showcase.subtitle"],
+    accent: "plum",
+  },
+  docs: {
+    eyebrow: en["og.docs.eyebrow"],
+    subtitle: en["og.docs.subtitle"],
+    accent: "sky",
+  },
 } satisfies Record<string, OgCardSpec>;
 
 export type OgCardKey = keyof typeof OG_CARDS;

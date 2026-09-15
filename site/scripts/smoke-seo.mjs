@@ -3,6 +3,7 @@ import {
   HREFLANG_PATHS,
   JSONLD_TARGETS,
   OG_IMAGE_TARGETS,
+  STARLIGHT_OG_IMAGE_TARGETS,
 } from "./lib/site-routes.mjs";
 import {
   assertIncludes,
@@ -116,6 +117,51 @@ async function smokeSeo(rootUrl) {
   );
   console.log(
     `og:locale / og:locale:alternate: reciprocal pair confirmed on ${OG_IMAGE_TARGETS.length} pages. ✓`
+  );
+
+  // Starlight docs は SocialMeta.astro を使わず StarlightHead.astro が og:image を出力する
+  // 別パイプラインなので、og:locale の形式差（Starlight は "ja"/"en"、SocialMeta は
+  // "ja_JP"/"en_US"）を踏まえて og:image 系のみを確認する。
+  for (const { path, image } of STARLIGHT_OG_IMAGE_TARGETS) {
+    const res = await get(`${rootUrl}${path}`);
+    assertStatus(res, path);
+    const html = await res.text();
+    assertIncludes(
+      html,
+      'property="og:image"',
+      `${path} must include og:image`
+    );
+    assertIncludes(
+      html,
+      `${image}"`,
+      `${path} og:image must reference ${image}`
+    );
+    assertIncludes(
+      html,
+      'property="og:image:type" content="image/png"',
+      `${path} must declare og:image:type=image/png`
+    );
+    assertIncludes(
+      html,
+      'property="og:image:width" content="1200"',
+      `${path} must include og:image:width=1200`
+    );
+    assertIncludes(
+      html,
+      'property="og:image:height" content="630"',
+      `${path} must include og:image:height=630`
+    );
+    const imageRes = await get(`${rootUrl}${image}`);
+    assertStatus(imageRes, image);
+    const contentType = imageRes.headers.get("content-type") ?? "";
+    if (!contentType.includes("image/png")) {
+      throw new Error(
+        `${image} must be served as image/png (got "${contentType}")`
+      );
+    }
+  }
+  console.log(
+    `og:image (Starlight docs): per-page PNG + type + 1200x630 dimensions confirmed on ${STARLIGHT_OG_IMAGE_TARGETS.length} pages. ✓`
   );
 
   // llms.txt / llms-full.txt / 各ページの .md 出力（starlight-llms-txt）が

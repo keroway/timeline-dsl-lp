@@ -45,7 +45,19 @@ const jsonLd = graphLd([
   breadcrumbLd(breadcrumbItems, siteUrl),
   ...faqNodes,
 ]);
+
+// Starlight は og:title/og:description/og:url/og:type/og:site_name/og:locale を自前で
+// 出力するが og:image 系は出力しない（#683）。SocialMeta.astro とは別パイプラインのため
+// ここで docs 種別の OG 画像メタだけを追加する。
+const ogImageUrl = new URL("/og/docs.png", siteUrl).toString();
 ---
 
 <Default />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:alt" content={pageTitle} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:image" content={ogImageUrl} />
+<meta name="twitter:image:alt" content={pageTitle} />
 <script is:inline type="application/ld+json" set:html={jsonLd} />

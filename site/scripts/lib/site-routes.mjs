@@ -88,6 +88,7 @@ const _CATALOG = [
   {
     path: "/showcase/",
     hreflang: true,
+    ogImage: "/og/showcase.png",
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"WebPage"',
@@ -99,6 +100,7 @@ const _CATALOG = [
   {
     path: "/en/showcase/",
     hreflang: true,
+    ogImage: "/og/showcase.png",
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"WebPage"',
@@ -111,6 +113,7 @@ const _CATALOG = [
   {
     path: "/showcase/oda-nobunaga/",
     hreflang: true,
+    ogImage: "/og/showcase.png",
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"WebPage"',
@@ -121,6 +124,7 @@ const _CATALOG = [
   {
     path: "/en/showcase/oda-nobunaga/",
     hreflang: true,
+    ogImage: "/og/showcase.png",
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"WebPage"',
@@ -132,6 +136,7 @@ const _CATALOG = [
   {
     path: "/showcase/natsume-soseki/",
     hreflang: true,
+    ogImage: "/og/showcase.png",
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"WebPage"',
@@ -142,6 +147,7 @@ const _CATALOG = [
   {
     path: "/en/showcase/natsume-soseki/",
     hreflang: true,
+    ogImage: "/og/showcase.png",
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"WebPage"',
@@ -153,6 +159,7 @@ const _CATALOG = [
   {
     path: "/showcase/internet-history/",
     hreflang: true,
+    ogImage: "/og/showcase.png",
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"WebPage"',
@@ -163,6 +170,7 @@ const _CATALOG = [
   {
     path: "/en/showcase/internet-history/",
     hreflang: true,
+    ogImage: "/og/showcase.png",
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"WebPage"',
@@ -199,12 +207,16 @@ const _CATALOG = [
   {
     path: "/docs/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -215,12 +227,16 @@ const _CATALOG = [
   {
     path: "/docs/quick-start/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/quick-start/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -228,12 +244,16 @@ const _CATALOG = [
   {
     path: "/docs/installation/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/installation/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -241,12 +261,16 @@ const _CATALOG = [
   {
     path: "/docs/homebrew/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/homebrew/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -254,12 +278,16 @@ const _CATALOG = [
   {
     path: "/docs/commands/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/commands/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -267,12 +295,16 @@ const _CATALOG = [
   {
     path: "/docs/configuration/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/configuration/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -280,12 +312,16 @@ const _CATALOG = [
   {
     path: "/docs/grammar/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/grammar/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -293,12 +329,16 @@ const _CATALOG = [
   {
     path: "/docs/styling/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/styling/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -306,6 +346,8 @@ const _CATALOG = [
   {
     path: "/docs/faq/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"BreadcrumbList"',
@@ -317,6 +359,8 @@ const _CATALOG = [
   {
     path: "/en/docs/faq/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: [
       '"@type":"Organization"',
       '"@type":"BreadcrumbList"',
@@ -329,12 +373,16 @@ const _CATALOG = [
   {
     path: "/docs/deployment/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/deployment/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -342,12 +390,16 @@ const _CATALOG = [
   {
     path: "/docs/github-actions/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/github-actions/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -355,12 +407,16 @@ const _CATALOG = [
   {
     path: "/docs/playground/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/playground/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -368,12 +424,16 @@ const _CATALOG = [
   {
     path: "/docs/contributing/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/contributing/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -381,12 +441,16 @@ const _CATALOG = [
   {
     path: "/docs/troubleshooting/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/troubleshooting/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -394,12 +458,16 @@ const _CATALOG = [
   {
     path: "/docs/errors/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/errors/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -407,12 +475,16 @@ const _CATALOG = [
   {
     path: "/docs/cli-reference/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/cli-reference/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -420,36 +492,48 @@ const _CATALOG = [
   {
     path: "/docs/properties/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/properties/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/docs/date-time/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/date-time/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/docs/wikidata-mapping/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/wikidata-mapping/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -457,12 +541,16 @@ const _CATALOG = [
   {
     path: "/docs/data-and-licensing/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
   {
     path: "/en/docs/data-and-licensing/",
     hreflang: true,
+    ogImage: "/og/docs.png",
+    ogImageEngine: "starlight",
     jsonLd: ['"@type":"Organization"', '"@type":"BreadcrumbList"'],
     a11y: true,
   },
@@ -478,9 +566,25 @@ export const JSONLD_TARGETS = _CATALOG
   .filter((r) => r.jsonLd?.length)
   .map((r) => ({ path: r.path, required: r.jsonLd }));
 
-/** OG 画像確認対象（path + 画像パスのペア） */
+/**
+ * OG 画像確認対象（path + 画像パスのペア）。
+ * SocialMeta.astro 経由（LP/Playground/Gallery/Changelog/Showcase）のページのみ。
+ * og:locale / og:locale:alternate も SocialMeta.astro 固有の出力形式（ja_JP/en_US）
+ * で smoke-seo が併せて確認するため、別パイプラインの Starlight docs は含めない
+ * （下記 STARLIGHT_OG_IMAGE_TARGETS 参照）。
+ */
 export const OG_IMAGE_TARGETS = _CATALOG
-  .filter((r) => r.ogImage)
+  .filter((r) => r.ogImage && r.ogImageEngine !== "starlight")
+  .map((r) => ({ path: r.path, image: r.ogImage }));
+
+/**
+ * OG 画像確認対象（Starlight docs 専用）。
+ * Starlight は自前で og:locale を出力する（SocialMeta.astro とは形式が異なる:
+ * "ja" ではなく "ja_JP" 等ではない）ため、smoke-seo では og:image 系のみを確認し
+ * og:locale は確認しない。
+ */
+export const STARLIGHT_OG_IMAGE_TARGETS = _CATALOG
+  .filter((r) => r.ogImage && r.ogImageEngine === "starlight")
   .map((r) => ({ path: r.path, image: r.ogImage }));
 
 /** a11y WCAG 2.1 AA 巡回対象のパス一覧 */
