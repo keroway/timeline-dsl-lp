@@ -318,6 +318,10 @@ export const ja = {
   "og.gallery.subtitle": "Browse example timelines built with Timeline DSL.",
   "og.changelog.eyebrow": "Changelog",
   "og.changelog.subtitle": "Release notes and version history.",
+  "og.showcase.eyebrow": "Showcase",
+  "og.showcase.subtitle": "Real-world timelines built with Timeline DSL.",
+  "og.docs.eyebrow": "Docs",
+  "og.docs.subtitle": "Guides, grammar, and CLI reference.",
 } as const;
 
 export type DictionaryKeys = keyof typeof ja;
