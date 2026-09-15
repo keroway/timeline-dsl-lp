@@ -6,6 +6,8 @@ import {
   A11Y_PAGES,
   HREFLANG_PATHS,
   JSONLD_TARGETS,
+  OG_IMAGE_TARGETS,
+  STARLIGHT_OG_IMAGE_TARGETS,
 } from "../../scripts/lib/site-routes.mjs";
 
 const DIST_ROOT = join(process.cwd(), "dist");
@@ -71,6 +73,16 @@ describe.skipIf(!hasBuildOutput)("smoke catalog site coverage", () => {
       paths: JSONLD_TARGETS.map((target: { path: string }) => target.path),
     },
     { name: "a11y", paths: A11Y_PAGES },
+    {
+      // SocialMeta.astro（LP/Playground/Gallery/Changelog/Showcase）と Starlight
+      // docs は別パイプラインのため OG_IMAGE_TARGETS / STARLIGHT_OG_IMAGE_TARGETS に
+      // 分かれているが、「登録漏れ検知」の観点ではビルド済みルートがどちらか一方に
+      // 登録されていれば良いので合算して突き合わせる。
+      name: "OG image",
+      paths: [...OG_IMAGE_TARGETS, ...STARLIGHT_OG_IMAGE_TARGETS].map(
+        (target: { path: string }) => target.path
+      ),
+    },
   ];
 
   it("registers every built page in each smoke catalog", () => {
