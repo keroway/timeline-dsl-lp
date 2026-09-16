@@ -171,6 +171,22 @@ async function smokeSeo(rootUrl) {
   assertStatus(llmsTxtRes, "/llms.txt");
   const llmsFullRes = await get(`${rootUrl}/llms-full.txt`);
   assertStatus(llmsFullRes, "/llms-full.txt");
+  const llmsSmallRes = await get(`${rootUrl}/llms-small.txt`);
+  assertStatus(llmsSmallRes, "/llms-small.txt");
+  const llmsSmallBody = await llmsSmallRes.text();
+  // astro.config.mjs の starlightLlmsTxt({ exclude: [...] }) は llms-small.txt
+  // （要約版）にのみ適用される。deployment ページの見出しが漏れていないことを
+  // 確認し、exclude 設定のリグレッションを検知する。
+  if (llmsSmallBody.includes("# サイトのデプロイ")) {
+    throw new Error(
+      "/llms-small.txt must not include the excluded docs/deployment page (# サイトのデプロイ)"
+    );
+  }
+  if (llmsSmallBody.includes("# Site Deployment")) {
+    throw new Error(
+      "/llms-small.txt must not include the excluded en/docs/deployment page (# Site Deployment)"
+    );
+  }
   const docsMdRes = await get(`${rootUrl}/docs/quick-start.md`);
   assertStatus(docsMdRes, "/docs/quick-start.md");
   const docsMdBody = await docsMdRes.text();
@@ -179,7 +195,9 @@ async function smokeSeo(rootUrl) {
     "title:",
     "/docs/quick-start.md must include frontmatter title"
   );
-  console.log("llms.txt / llms-full.txt / docs *.md: served. ✓");
+  console.log(
+    "llms.txt / llms-full.txt / llms-small.txt / docs *.md: served. ✓"
+  );
 
   const robotsRes = await get(`${rootUrl}/robots.txt`);
   assertStatus(robotsRes, "/robots.txt");
