@@ -28,9 +28,12 @@ for (const theme of THEMES) {
 
     await page.waitForLoadState("networkidle");
 
+    // Changelog は全リリースノートを1ページに展開するため 30,000px 超まで伸びる。
+    // 既定の 5000ms では stable screenshot の判定が間に合わないため延長する。
     await expect(page).toHaveScreenshot(`changelog-${theme.name}.png`, {
       fullPage: true,
       maxDiffPixelRatio: 0.01,
+      timeout: 20000,
     });
   });
 }
