@@ -24,6 +24,7 @@ output/
 screenshot-*.png
 panzoom-*.png
 playground-*.png
+!site/.playwright-snapshots/**/*.png
 site/test-results/
 site/.lighthouseci/
 .serena/
