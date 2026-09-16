@@ -91,7 +91,7 @@ pnpm preview &          # or pnpm dev
 pnpm lhci               # set LHCI_BASE_URL to target a non-default origin
 ```
 
-Audited pages (one per archetype, across both locales): `/`, `/en/`, `/docs/`, `/playground/`, `/gallery/`. Each is measured 3 times and the median is asserted. Config: `site/lighthouserc.cjs`.
+Audited pages (one per archetype, across both locales): `/`, `/en/`, `/docs/`, `/playground/`, `/gallery/`, `/showcase/`, `/changelog/`. Each is measured 3 times and the median is asserted. Config: `site/lighthouserc.cjs`.
 
 Baseline thresholds and their rationale:
 
