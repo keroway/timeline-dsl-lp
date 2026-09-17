@@ -17,13 +17,15 @@
      light teal (#0d766f) 上では白で 5.47:1 (AA)。4 ブロックで個別定義する（DESIGN.md §2） */
   --color-on-accent: #ffffff;
   --color-warm: #a74718;
-  --color-gold: #d69a24;
+  /* #693: 旧値 #d69a24 は白前景 (--color-on-lane) に対し 2.47:1 で AA 未達だったため、
+     gold の色相・彩度比（R:G:B ≈ 214:154:36）を保ったまま暗めへ調整し 5.26:1 (AA) を確保 */
+  --color-gold: #8c6518;
   --color-plum: #7b4569;
   --color-sky: #2c6f9f;
   /* lane 色のバー（mini-span / usecase-bar / hero の WASM レンダリング SVG）に乗る固定前景。lane 背景は
      light / dark とも有色・暗色のため白が最適前景で、terminal 同様にテーマ非依存。HC でも
-     白が最大コントラストのため override しない。注意: gold lane 上の白は light 2.47:1 /
-     HC 5.85:1 で AA/AAA 未達だが、これは lane 背景（--color-gold）側の既存課題で後続 issue 扱い */
+     白が最大コントラストのため override しない。gold lane 上の白は light HC で 5.85:1（AA充足・
+     AAA未達、#210 の別issue範囲）で、base light は #693 で 5.26:1 (AA) まで是正済み */
   --color-on-lane: #ffffff;
   /* lane セマンティクスの named theme tokens（DESIGN.md §8）。既存 lane palette
      （--color-warm/gold/plum/sky）をプロキシするだけで、新色は追加しない。
@@ -35,8 +37,9 @@
   --tdsl-lane-gold: var(--color-gold);
   --tdsl-lane-plum: var(--color-plum);
   --tdsl-lane-sky: var(--color-sky);
-  /* playground の warn ステータス文字。gold は light 値が白背景でテキスト不適（約2:1）のため
-     専用トークン化する。warn サーフェス（--color-bg）はテーマ依存なので 4 ブロックで定義する */
+  /* playground の warn ステータス文字。gold は白背景でテキスト前景として使うには濃度が異なるため
+     専用トークン化する（#693 の lane 背景向け調整とは別用途）。warn サーフェス（--color-bg）は
+     テーマ依存なので 4 ブロックで定義する */
   --color-status-warn: #845d0c;
   /* playground の error ステータス文字。従来 --color-warm を流用していたが dark 背景で AA 未達
      （約3:1）のため専用トークン化する（DESIGN.md §2）。warn 同様サーフェス（--color-bg）依存で
@@ -237,7 +240,7 @@
   --color-accent-strong: #095c56;
   --color-on-accent: #ffffff;
   --color-warm: #a74718;
-  --color-gold: #d69a24;
+  --color-gold: #8c6518;
   --color-plum: #7b4569;
   --color-sky: #2c6f9f;
   --color-status-warn: #845d0c;
@@ -305,8 +308,7 @@
    dot/span の最近祖先である .tdsl-root に index トークンを再定義することで上書きする。
    LP パレット（warm/gold/plum/sky）を 8 スロットにサイクル適用。プロキシ先の
    --tdsl-lane-* → --color-* が light/dark/HC に追従するため、テーマ追従は自動。
-   WCAG: マッピング先は検証済み LP パレット（lane-palette.test.ts / DESIGN §2）。gold lane 上の
-   白ラベルは §2 記載の既知・後続扱い例外を踏襲。 */
+   WCAG: マッピング先は検証済み LP パレット（lane-palette.test.ts / DESIGN §2）。 */
 .tdsl-root {
   --tdsl-lane-0: var(--tdsl-lane-warm);
   --tdsl-lane-1: var(--tdsl-lane-gold);

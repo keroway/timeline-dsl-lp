@@ -43,11 +43,11 @@
 | Token | Value | セマンティクス |
 | --- | --- | --- |
 | `--color-warm` | `#a74718` | 起点・創設・始期（warm） |
-| `--color-gold` | `#d69a24` | 周年・節目・継続するもの（gold） |
+| `--color-gold` | `#8c6518` | 周年・節目・継続するもの（gold） |
 | `--color-plum` | `#7b4569` | 人物・主体・登場（plum） |
 | `--color-sky` | `#2c6f9f` | 外部要因・環境・地理（sky） |
 
-lane 色のバー（`.span-block` / `.mini-span` / `.usecase-bar`）に乗る前景は `--color-on-lane`（`#ffffff`）に集約します。lane 背景は light / dark とも有色・暗色のため白が最適前景で、terminal と同じく **テーマ非依存**（`:root` に 1 度だけ定義し、dark / high-contrast でも override しない＝白が最大コントラスト）。ただし **gold lane 上の白はコントラスト未達**（通常 light で `#d69a24` 背景に対し 2.47:1 = AA 未達、light HC で `#806000` に対し 5.85:1 = AAA 未達）です。これは前景（白）ではなく lane 背景（`--color-gold`）側の濃度に起因し、`--color-gold` の引き上げは lane セマンティクス（周年 = gold）の維持と両立させる必要があるため、後続 issue で別途扱います。
+lane 色のバー（`.span-block` / `.mini-span` / `.usecase-bar`）に乗る前景は `--color-on-lane`（`#ffffff`）に集約します。lane 背景は light / dark とも有色・暗色のため白が最適前景で、terminal と同じく **テーマ非依存**（`:root` に 1 度だけ定義し、dark / high-contrast でも override しない＝白が最大コントラスト）。gold lane は元 `#d69a24` が白前景に対し 2.47:1 で AA 未達だったため、色相・彩度比（R:G:B ≈ 214:154:36）を保ったまま `#8c6518`（5.26:1, AA 充足）へ調整済みです（#693）。light HC の `#806000`（5.85:1）は AA 充足・AAA 未達で、AAA への引き上げ可否は #210 の後続 sub-issue で扱います。
 
 ### Dark mode
 
@@ -150,7 +150,7 @@ ok / warn / error は HC で輝度が近接するため、**色相（緑 / 黄 /
 
 ### Status colors（playground）
 
-playground のステータス文字（`[data-playground-state="..."] .playground-status`）は `--color-bg` 上に乗る **テーマ依存** の前景です。ready は `--color-accent-strong` を再利用し、warn / error は専用トークン（`--color-status-warn` / `--color-status-error`）を持ちます。`--color-gold`（light `#d69a24`）は白背景で約 2:1、`--color-warm`（light `#a74718`）は dark 背景で約 3:1 とそれぞれテキスト不適のためトークン化しています。warn / ready / error は色相（amber / teal / 赤橙）で区別します。
+playground のステータス文字（`[data-playground-state="..."] .playground-status`）は `--color-bg` 上に乗る **テーマ依存** の前景です。ready は `--color-accent-strong` を再利用し、warn / error は専用トークン（`--color-status-warn` / `--color-status-error`）を持ちます。`--color-gold`（light `#8c6518`）は白背景で目立ちが弱く status 文字としては不向き、`--color-warm`（light `#a74718`）は dark 背景で約 3:1 とそれぞれテキスト不適のためトークン化しています。warn / ready / error は色相（amber / teal / 赤橙）で区別します。
 
 | テーマ | `--color-status-warn` | `--color-status-error` |
 | --- | --- | --- |
