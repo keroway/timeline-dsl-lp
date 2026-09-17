@@ -13,7 +13,7 @@ export type LaneTheme = "light" | "lightHc" | "dark" | "darkHc";
 export const LANE_PALETTE: Record<LaneTheme, Record<LaneColor, string>> = {
   light: {
     warm: "#a74718",
-    gold: "#d69a24",
+    gold: "#8c6518",
     plum: "#7b4569",
     sky: "#2c6f9f",
   },
