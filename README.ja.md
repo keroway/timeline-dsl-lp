@@ -91,7 +91,7 @@ pnpm preview &          # または pnpm dev
 pnpm lhci               # 別 origin を対象にする場合は LHCI_BASE_URL を渡す
 ```
 
-監査対象 (ja / en 両系統からアーキタイプを 1 ページずつ抽出): `/`、`/en/`、`/docs/`、`/playground/`、`/gallery/`。各ページを 3 回計測し中央値で assertion します。設定: `site/lighthouserc.cjs`。
+監査対象 (ja / en 両系統からアーキタイプを 1 ページずつ抽出): `/`、`/en/`、`/docs/`、`/playground/`、`/gallery/`、`/showcase/`、`/changelog/`。各ページを 3 回計測し中央値で assertion します。設定: `site/lighthouserc.cjs`。
 
 baseline 閾値と根拠:
 

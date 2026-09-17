@@ -16,7 +16,17 @@ const BASE_URL = process.env.LHCI_BASE_URL ?? "http://127.0.0.1:4321";
 //   /docs/     … Starlight ドキュメント
 //   /playground/ … WASM を伴うインタラクティブページ (最も重い)
 //   /gallery/  … 一覧系ページ
-const paths = ["/", "/en/", "/docs/", "/playground/", "/gallery/"];
+//   /showcase/ … 一覧+詳細の CollectionPage/BreadcrumbList 構造 (#689)
+//   /changelog/ … Article JSON-LD を持つ独自レイアウト (#689)
+const paths = [
+  "/",
+  "/en/",
+  "/docs/",
+  "/playground/",
+  "/gallery/",
+  "/showcase/",
+  "/changelog/",
+];
 
 module.exports = {
   ci: {
