@@ -79,7 +79,7 @@ export default defineConfig({
       customCss: ["./src/styles/starlight.css"],
       // AI エージェント / LLM がドキュメントを直接読める形で公開する。
       // - starlight-llms-txt: /llms.txt, /llms-full.txt (サイト全体のインデックス)
-      // - starlight-md-txt: 各ページの /<slug>.md.txt (生 Markdown)
+      // - starlight-md-txt: 各ページの /<slug>.md (生 Markdown)
       // どちらも docs コレクション配下のみが対象で、LP/Playground/Gallery/Showcase/
       // Changelog (src/pages 直下の非 docs ページ) には影響しない。
       plugins: [
