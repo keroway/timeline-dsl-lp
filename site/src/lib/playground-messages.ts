@@ -26,6 +26,7 @@ export function buildPlaygroundMsgs(t: ReturnType<typeof getT>) {
     shareSourceTooLarge: t("playground.share.source_too_large"),
     shareLoadFailed: t("playground.share.load_failed"),
     htmlDownloadError: t("playground.download.html_error"),
+    fileOpenError: t("playground.file.open_error"),
     severityError: t("playground.diagnostics.severity_error"),
     severityWarn: t("playground.diagnostics.severity_warn"),
     severityInfo: t("playground.diagnostics.severity_info"),
