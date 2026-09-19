@@ -1,5 +1,10 @@
 import { defineConfig, devices } from "playwright/test";
 
+// check:full が渡す PORT に追従する (astro.config.mjs の devServerPort と同じ規約)。
+// 未指定なら従来通り 4321。
+const previewPort = process.env.PORT ? Number(process.env.PORT) : 4321;
+const baseURL = `http://127.0.0.1:${previewPort}`;
+
 export default defineConfig({
   testDir: "./tests/visual",
   snapshotDir: ".playwright-snapshots",
@@ -9,7 +14,7 @@ export default defineConfig({
   workers: 1,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:4321",
+    baseURL,
     trace: "off",
     screenshot: "off",
   },
@@ -25,8 +30,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm preview",
-    url: "http://127.0.0.1:4321",
+    command: `pnpm preview --port ${previewPort}`,
+    url: baseURL,
     reuseExistingServer: true,
     timeout: 30000,
   },

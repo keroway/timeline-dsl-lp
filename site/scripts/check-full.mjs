@@ -53,6 +53,7 @@ const STEPS = [
   {
     name: "test:visual (LP screenshot regression)",
     cmd: ["pnpm", ["test:visual"]],
+    env: { PORT: String(PORT) },
   },
   {
     name: "lhci (Lighthouse CI)",

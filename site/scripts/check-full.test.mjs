@@ -21,9 +21,13 @@ const SCRIPTS_DIR = dirname(fileURLToPath(import.meta.url));
 const SCRIPT_PATH = resolve(SCRIPTS_DIR, "check-full.mjs");
 
 /**
- * @param {{ readyOnFirstFetch: boolean }} options
+ * @param {{ readyOnFirstFetch: boolean, env?: Record<string, string>, dateStepMs?: number }} options
  */
-async function runInSandbox({ readyOnFirstFetch }) {
+async function runInSandbox({
+  readyOnFirstFetch,
+  env = {},
+  dateStepMs = 31_000,
+}) {
   const raw = await readFile(SCRIPT_PATH, "utf-8");
   const source = raw.replace('import { spawn } from "node:child_process";', "");
 
@@ -32,6 +36,7 @@ async function runInSandbox({ readyOnFirstFetch }) {
   let exitCode;
   let now = 0;
   const logs = [];
+  const spawnCalls = [];
 
   const ctx = {
     console: {
@@ -39,13 +44,13 @@ async function runInSandbox({ readyOnFirstFetch }) {
       error: (...args) => logs.push(args.join(" ")),
     },
     process: {
-      env: {},
+      env,
       platform: "darwin",
       exit: (code) => {
         exitCode = code;
       },
     },
-    Date: { now: () => (now += 31_000) },
+    Date: { now: () => (now += dateStepMs) },
     setTimeout,
     fetch: async () => {
       if (readyOnFirstFetch) {
@@ -53,9 +58,10 @@ async function runInSandbox({ readyOnFirstFetch }) {
       }
       throw new Error("connection refused — not up yet");
     },
-    spawn: () => {
+    spawn: (command, args, opts) => {
       spawnCount += 1;
       const isPreviewServer = spawnCount === 2;
+      spawnCalls.push({ command, args, opts });
       const child = new EventEmitter();
       child.exitCode = null;
       child.signalCode = null;
@@ -78,7 +84,7 @@ async function runInSandbox({ readyOnFirstFetch }) {
 
   await vm.runInNewContext(`(async () => { ${source} })()`, ctx);
 
-  return { spawnCount, killCount, exitCode, logs };
+  return { spawnCount, killCount, exitCode, logs, spawnCalls };
 }
 
 describe("check-full.mjs の preview server ライフサイクル", () => {
@@ -97,5 +103,21 @@ describe("check-full.mjs の preview server ライフサイクル", () => {
     expect(result.spawnCount).toBeGreaterThanOrEqual(2);
     expect(result.killCount).toBeGreaterThanOrEqual(1);
     expect(result.logs.join("\n")).toContain("Stopping preview server");
+  });
+
+  it("非デフォルト PORT が test:visual の起動 env にも反映される (#705)", async () => {
+    const result = await runInSandbox({
+      readyOnFirstFetch: true,
+      env: { PORT: "54321" },
+      // readiness チェックが実際に成功して browserSteps 全体（test:visual 含む）
+      // まで進むよう、deadline を追い越さない程度の刻みにする。
+      dateStepMs: 1,
+    });
+
+    const visualCall = result.spawnCalls.find((call) =>
+      call.args?.includes("test:visual")
+    );
+    expect(visualCall).toBeDefined();
+    expect(visualCall.opts.env.PORT).toBe("54321");
   });
 });
