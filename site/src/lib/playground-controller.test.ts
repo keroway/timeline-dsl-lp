@@ -28,6 +28,7 @@ vi.mock("./playground-share", () => ({
   extractSourceFromLocation: (...args: unknown[]) =>
     extractSourceFromLocation(...args),
   MAX_SHARE_URL_LENGTH: 8192,
+  MAX_DECODED_SOURCE_BYTES: 1_000_000,
 }));
 
 vi.mock("./playground-editor", () => ({
@@ -66,6 +67,7 @@ const MSGS = {
   shareCopySuccess: "copied",
   shareCopyError: "copy error",
   shareTooLong: "too long {limit}",
+  shareSourceTooLarge: "source too large {limit}",
   shareLoadFailed: "共有リンクを読み込めませんでした",
   severityError: "エラー",
   severityWarn: "警告",
@@ -475,6 +477,7 @@ describe("wireShare", () => {
     const shareLive = document.createElement("div");
     const msgs = {
       shareTooLong: "too long {limit}",
+      shareSourceTooLarge: "source too large {limit}",
       shareCopySuccess: "copied",
       shareCopyError: "copy error",
     };
@@ -485,6 +488,35 @@ describe("wireShare", () => {
 
     await vi.waitFor(() => {
       expect(bsu).toHaveBeenCalled();
+    });
+  });
+
+  it("buildShareUrl が source_too_large を返すと shareSourceTooLarge を告知する", async () => {
+    const { buildShareUrl: mockBuildShareUrl } = await import(
+      "./playground-share"
+    );
+    const bsu = mockBuildShareUrl as ReturnType<typeof vi.fn>;
+    bsu.mockResolvedValue({
+      ok: false,
+      reason: "source_too_large",
+      length: 1_000_001,
+    });
+
+    const copyLinkButton = document.createElement("button");
+    const shareLive = document.createElement("div");
+    const msgs = {
+      shareTooLong: "too long {limit}",
+      shareSourceTooLarge: "source too large {limit}",
+      shareCopySuccess: "copied",
+      shareCopyError: "copy error",
+    };
+    const getSource = vi.fn().mockReturnValue("source");
+
+    wireShare({ copyLinkButton, shareLive, msgs, getSource });
+    copyLinkButton.click();
+
+    await vi.waitFor(() => {
+      expect(shareLive.textContent).toBe("source too large 1000000");
     });
   });
 });

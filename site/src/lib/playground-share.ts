@@ -98,13 +98,21 @@ export async function extractSourceFromLocation(
 
 export type BuildShareUrlResult =
   | { ok: true; url: string }
-  | { ok: false; reason: "too_long"; length: number };
+  | { ok: false; reason: "too_long"; length: number }
+  | { ok: false; reason: "source_too_large"; length: number };
 
 export async function buildShareUrl(options: {
   source: string;
   origin: string;
   pathname: string;
 }): Promise<BuildShareUrlResult> {
+  // 復元側（decodeShareSource）が拒否する展開後バイト数を、圧縮前に検査する。
+  // これが無いと、高圧縮率な入力で URL 長は上限内に収まるのに自サイトでは
+  // 復元できない「成功」URL を返してしまう。
+  const sourceBytes = new TextEncoder().encode(options.source).length;
+  if (sourceBytes > MAX_DECODED_SOURCE_BYTES) {
+    return { ok: false, reason: "source_too_large", length: sourceBytes };
+  }
   const encoded = await encodeShareSource(options.source);
   const url = `${options.origin}${options.pathname}?${SHARE_QUERY_PARAM}=${encoded}`;
   if (url.length > MAX_SHARE_URL_LENGTH) {

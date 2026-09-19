@@ -66,6 +66,40 @@ describe("buildShareUrl", () => {
       expect(result.length).toBeGreaterThan(MAX_SHARE_URL_LENGTH);
     }
   });
+
+  it("展開後サイズが上限を超える高圧縮率ソースは ok=false / source_too_large を返す（生成成功として返さない）", async () => {
+    // URL 長は上限内に収まるが、展開後は MAX_DECODED_SOURCE_BYTES を超える入力。
+    const source = "a".repeat(MAX_DECODED_SOURCE_BYTES + 50_000);
+    const result = await buildShareUrl({
+      source,
+      origin: "https://timeline-dsl-lp.pages.dev",
+      pathname: "/playground/",
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toBe("source_too_large");
+      expect(result.length).toBe(MAX_DECODED_SOURCE_BYTES + 50_000);
+    }
+  });
+
+  it("展開後サイズが上限ちょうど以下なら ok=true で、復元しても status=ok になる", async () => {
+    const source = "b".repeat(MAX_DECODED_SOURCE_BYTES - 10);
+    const result = await buildShareUrl({
+      source,
+      origin: "https://timeline-dsl-lp.pages.dev",
+      pathname: "/playground/",
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      const search = result.url.slice(result.url.indexOf("?"));
+      expect(await extractSourceFromLocation(search)).toEqual({
+        status: "ok",
+        source,
+      });
+    }
+  });
 });
 
 describe("extractSourceFromLocation", () => {
