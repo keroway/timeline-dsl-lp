@@ -6,6 +6,7 @@ import { createPanZoom } from "./playground-pan-zoom";
 import {
   buildShareUrl,
   extractSourceFromLocation,
+  MAX_DECODED_SOURCE_BYTES,
   MAX_SHARE_URL_LENGTH,
 } from "./playground-share";
 import {
@@ -146,7 +147,10 @@ export function wireShare(opts: {
   shareLive: HTMLElement | null;
   msgs: Pick<
     PlaygroundMsgs,
-    "shareTooLong" | "shareCopySuccess" | "shareCopyError"
+    | "shareTooLong"
+    | "shareSourceTooLarge"
+    | "shareCopySuccess"
+    | "shareCopyError"
   >;
   getSource: () => string;
 }): void {
@@ -167,9 +171,13 @@ export function wireShare(opts: {
       });
       if (!result.ok) {
         announceShare(
-          interpolate(msgs.shareTooLong, {
-            limit: String(MAX_SHARE_URL_LENGTH),
-          })
+          result.reason === "source_too_large"
+            ? interpolate(msgs.shareSourceTooLarge, {
+                limit: String(MAX_DECODED_SOURCE_BYTES),
+              })
+            : interpolate(msgs.shareTooLong, {
+                limit: String(MAX_SHARE_URL_LENGTH),
+              })
         );
         return;
       }
