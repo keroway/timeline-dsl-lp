@@ -17,7 +17,7 @@ LP / documentation site for the public [Timeline DSL](https://github.com/keroway
 - Main repository: <https://github.com/keroway/timeline-dsl>
 - Playground (this site, localized, HTML/SVG/`.tdsl` downloads): <https://timeline-dsl-lp.pages.dev/playground/>
 - Alternate WebUI (main project, unlocalized): <https://keroway.github.io/timeline-dsl/>
-- Latest tracked release in this site: `v2.0.0` (`site/public/wasm/package.json`, generated changelog)
+- Latest tracked release in this site: `v2.1.0` (`site/public/wasm/package.json`, generated changelog)
 
 ## Tech stack
 
