@@ -28,7 +28,7 @@
 | スタイリング | Astro コンポーネント + CSS トークン | デザイントークンは `site/src/styles/global.css` に集約。色の直書きは避けます。 |
 | Playground | vendoring した `@keroway/tdsl-wasm` 2.0.0 | ブラウザ内検証と SVG レンダリングは `site/src/lib/tdsl-wasm.ts` 経由に統一します。 |
 | 検索 | build 時に生成する Pagefind | サイト全体検索ダイアログで利用します。 |
-| 品質管理 | `astro check`、Vitest、ESLint、Prettier、axe-core、Playwright、Lighthouse CI | `pnpm build` が最低限の CI ゲート。SEO / i18n / a11y / Playground の smoke も用意しています。 |
+| 品質管理 | `astro check`、Vitest、Biome、Prettier、axe-core、Playwright、Lighthouse CI | `pnpm build` が最低限の CI ゲート。SEO / i18n / a11y / Playground の smoke も用意しています。 |
 | ホスティング | Cloudflare Pages | GitHub integration が `site/` を root として `dist/` を公開します。 |
 
 ## ローカル開発
