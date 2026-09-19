@@ -127,7 +127,7 @@ cd site && pnpm prepare
   lint / format:check / test:unit / build / bundle-size / smoke:seo / smoke:i18n / smoke:i18n:browser /
   smoke:playground / smoke:playground:browser / smoke:a11y / test:visual / lhci をすべて通す必要がある
   （非ブラウザ系のローカル再現は `pnpm check`、ブラウザ系ゲート込みの完全版は `pnpm check:full`。
-  詳細は `site/CLAUDE.md` の Commands 節、または `site-build.yml` 冒頭コメント参照）
+  詳細はこのファイルの Commands 節、または `site-build.yml` 冒頭コメント参照）
 - デプロイ再実行は Cloudflare Pages dashboard の Retry deployment を使う
 
 ## Design
