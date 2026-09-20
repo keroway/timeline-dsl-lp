@@ -140,9 +140,13 @@ export function initA11yMenu({
   menuId,
   messages,
 }: InitOpts): void {
-  const toggle = document.querySelector<HTMLButtonElement>(toggleSelector);
-  const menu = document.getElementById(menuId);
-  if (!toggle || !menu) return;
+  const toggleEl = document.querySelector<HTMLButtonElement>(toggleSelector);
+  const menuEl = document.getElementById(menuId);
+  if (!toggleEl || !menuEl) return;
+  // toggleEl/menuEl はガード後も再代入されないため、以降のクロージャ内でも
+  // 非 null であることが型を通じて保証される（`!` を使わずに済む）。
+  const toggle: HTMLButtonElement = toggleEl;
+  const menu: HTMLElement = menuEl;
 
   const msgs = messages ?? MESSAGES;
 
@@ -168,7 +172,7 @@ export function initA11yMenu({
 
   function getFocusableElements(): HTMLElement[] {
     return Array.from(
-      menu!.querySelectorAll<HTMLElement>(
+      menu.querySelectorAll<HTMLElement>(
         "input:not([disabled]), select:not([disabled]), button:not([disabled])"
       )
     );
@@ -179,14 +183,14 @@ export function initA11yMenu({
   }
 
   function closeMenu(restoreFocus = true) {
-    toggle!.setAttribute("aria-expanded", "false");
-    menu!.hidden = true;
-    if (restoreFocus) toggle!.focus();
+    toggle.setAttribute("aria-expanded", "false");
+    menu.hidden = true;
+    if (restoreFocus) toggle.focus();
   }
 
   function openMenu() {
-    toggle!.setAttribute("aria-expanded", "true");
-    menu!.hidden = false;
+    toggle.setAttribute("aria-expanded", "true");
+    menu.hidden = false;
     getFirstFocusable()?.focus();
   }
 

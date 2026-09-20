@@ -94,9 +94,9 @@ export function buildOgSvg(spec: OgCardSpec): string {
   const wordmarkY = hasEyebrow ? 392 : 364;
   const subtitleY = hasEyebrow ? 452 : 424;
 
-  const eyebrowMarkup = hasEyebrow
+  const eyebrowMarkup = spec.eyebrow
     ? `<text x="130" y="320" fill="${accentHex}" font-family="Inter" font-size="30" font-weight="600" letter-spacing="6">${escapeXml(
-        spec.eyebrow!.toUpperCase()
+        spec.eyebrow.toUpperCase()
       )}</text>`
     : "";
 

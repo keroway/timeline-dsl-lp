@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { mustQuery } from "./test-dom-helpers";
 
 // WASM・CodeMirror・pan-zoom・共有 URL は collaborator として mock し、
 // initPlayground 本体の状態オーケストレーション分岐だけを検証する。
@@ -92,10 +93,10 @@ function setupDom() {
     </div>
   `;
   return {
-    root: document.querySelector("[data-playground-root]")!,
-    status: document.querySelector("[data-status]")!,
-    diagnosticsMeta: document.querySelector("[data-diagnostics-meta]")!,
-    shareLive: document.querySelector("[data-share-live]")!,
+    root: mustQuery(document, "[data-playground-root]"),
+    status: mustQuery(document, "[data-status]"),
+    diagnosticsMeta: mustQuery(document, "[data-diagnostics-meta]"),
+    shareLive: mustQuery(document, "[data-share-live]"),
   };
 }
 

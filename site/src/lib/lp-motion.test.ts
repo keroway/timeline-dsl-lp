@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { initCopyButtons, initMotion } from "./lp-motion";
+import { mustGetById, mustQuery } from "./test-dom-helpers";
 
 const REDUCE = "(prefers-reduced-motion: reduce)";
 
@@ -52,8 +53,8 @@ function mountCopyButton(opts?: {
     </div>
     <pre id="snippet">${text}</pre>`;
   return {
-    button: document.querySelector<HTMLButtonElement>("[data-copy-target]")!,
-    status: document.querySelector<HTMLElement>(".copy-status")!,
+    button: mustQuery<HTMLButtonElement>(document, "[data-copy-target]"),
+    status: mustQuery<HTMLElement>(document, ".copy-status"),
   };
 }
 
@@ -203,8 +204,8 @@ describe("initMotion", () => {
 
     initMotion();
 
-    const a = document.getElementById("a")!;
-    const b = document.getElementById("b")!;
+    const a = mustGetById("a");
+    const b = mustGetById("b");
     expect(document.body.classList.contains("scroll-reveal-enabled")).toBe(
       true
     );
