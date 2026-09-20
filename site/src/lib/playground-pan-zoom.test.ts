@@ -76,7 +76,7 @@ function makeEnv({
 function parseMatrix(el: HTMLElement) {
   const t = el.style.transform;
   const m = /matrix\(([^,]+),0,0,([^,]+),([^,]+),([^)]+)\)/.exec(t);
-  if (!m) return null;
+  if (!m) throw new Error(`transform did not match matrix(): ${t}`);
   return {
     scale: parseFloat(m[1]),
     scaleY: parseFloat(m[2]),
@@ -131,7 +131,7 @@ describe("createPanZoom — fit / scaling", () => {
     const pz = createPanZoom({ surface, stage });
     pz.reset();
 
-    const m = parseMatrix(stage)!;
+    const m = parseMatrix(stage);
     // fitPad=32: avail = 736x536. min(736/400, 536/200, 1) = 1 (never upsizes)
     expect(m.scale).toBe(1);
     expect(m.tx).toBeCloseTo((800 - 400 * 1) / 2);
@@ -148,7 +148,7 @@ describe("createPanZoom — fit / scaling", () => {
     const pz = createPanZoom({ surface, stage });
     pz.reset();
 
-    const m = parseMatrix(stage)!;
+    const m = parseMatrix(stage);
     // avail = 736x536. min(736/2000=0.368, 536/1000=0.536, 1) = 0.368
     expect(m.scale).toBeCloseTo(736 / 2000, 3);
   });
@@ -163,7 +163,7 @@ describe("createPanZoom — fit / scaling", () => {
     const pz = createPanZoom({ surface, stage, minScale: 0.25 });
     pz.reset();
 
-    const m = parseMatrix(stage)!;
+    const m = parseMatrix(stage);
     // raw fit scale would be (100-64)/5000 = 0.0072, clamped up to minScale
     expect(m.scale).toBe(0.25);
   });
@@ -197,7 +197,7 @@ describe("createPanZoom — fit / scaling", () => {
       })
     );
 
-    const m = parseMatrix(stage)!;
+    const m = parseMatrix(stage);
     const expectedScale = 1 * (1 + 100 * 0.0015);
     expect(m.scale).toBeCloseTo(expectedScale, 6);
     expect(m.tx).toBeCloseTo(400 * (1 - expectedScale), 6);
@@ -218,7 +218,7 @@ describe("createPanZoom — fit / scaling", () => {
       })
     );
 
-    expect(parseMatrix(stage)!.scale).toBe(8);
+    expect(parseMatrix(stage).scale).toBe(8);
   });
 
   it("ホイールズームは minScale を下回らない", () => {
@@ -235,7 +235,7 @@ describe("createPanZoom — fit / scaling", () => {
       })
     );
 
-    expect(parseMatrix(stage)!.scale).toBe(0.25);
+    expect(parseMatrix(stage).scale).toBe(0.25);
   });
 
   it("ダブルクリックでフィット表示に戻る", () => {
@@ -256,11 +256,11 @@ describe("createPanZoom — fit / scaling", () => {
         cancelable: true,
       })
     );
-    expect(parseMatrix(stage)!.scale).not.toBe(1);
+    expect(parseMatrix(stage).scale).not.toBe(1);
 
     surface.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
 
-    const m = parseMatrix(stage)!;
+    const m = parseMatrix(stage);
     expect(m.scale).toBe(1);
     expect(m.tx).toBeCloseTo((800 - 400) / 2);
     expect(m.ty).toBeCloseTo((600 - 200) / 2);
@@ -285,11 +285,11 @@ describe("createPanZoom — fit / scaling", () => {
         cancelable: true,
       })
     );
-    expect(parseMatrix(stage)!.scale).not.toBe(1);
+    expect(parseMatrix(stage).scale).not.toBe(1);
 
     resetButton.click();
 
-    expect(parseMatrix(stage)!.scale).toBe(1);
+    expect(parseMatrix(stage).scale).toBe(1);
   });
 });
 
@@ -339,7 +339,7 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(tooltipEl.getAttribute("aria-hidden")).toBe("true");
 
     vi.advanceTimersByTime(20);
-    expect(parseMatrix(stage)!.tx).toBeCloseTo(20);
+    expect(parseMatrix(stage).tx).toBeCloseTo(20);
   });
 
   it("フラッシュ前の連続 pointermove は RAF を 1 回だけ予約する（座標は最新値を反映）", () => {
@@ -367,7 +367,7 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(rafSpy).toHaveBeenCalledTimes(1);
 
     vi.advanceTimersByTime(20);
-    expect(parseMatrix(stage)!.tx).toBeCloseTo(30);
+    expect(parseMatrix(stage).tx).toBeCloseTo(30);
 
     // 次の move は RAF がクリアされているので再スケジュールする
     firePointer(surface, "pointermove", {
@@ -401,7 +401,7 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(stage.classList.contains("is-panning")).toBe(false);
     expect(surface.classList.contains("is-panning")).toBe(false);
     expect(surface.releasePointerCapture).toHaveBeenCalledWith(7);
-    expect(parseMatrix(stage)!.tx).toBeCloseTo(15);
+    expect(parseMatrix(stage).tx).toBeCloseTo(15);
   });
 
   it("pointercancel も pointerup と同様に後始末する", () => {

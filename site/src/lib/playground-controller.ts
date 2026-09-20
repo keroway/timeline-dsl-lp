@@ -499,8 +499,10 @@ export function initPlayground(): void {
     queueRun();
   };
 
+  if (!editorHost) return;
+
   const view = createPlaygroundEditor({
-    host: editorHost!,
+    host: editorHost,
     doc: samples[0].source,
     onDocChange: queueRun,
   });

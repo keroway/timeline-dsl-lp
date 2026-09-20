@@ -22,9 +22,9 @@ describe("initInstallTabs", () => {
     mountTabs();
     initInstallTabs();
 
-    expect(document.getElementById("install-panel-a")!.hidden).toBe(false);
-    expect(document.getElementById("install-panel-b")!.hidden).toBe(true);
-    expect(document.getElementById("install-panel-c")!.hidden).toBe(true);
+    expect(document.getElementById("install-panel-a")?.hidden).toBe(false);
+    expect(document.getElementById("install-panel-b")?.hidden).toBe(true);
+    expect(document.getElementById("install-panel-c")?.hidden).toBe(true);
   });
 
   it("クリックでタブを切り替える（aria-selected / hidden が連動する）", () => {
@@ -36,10 +36,10 @@ describe("initInstallTabs", () => {
 
     expect(tabB.getAttribute("aria-selected")).toBe("true");
     expect(
-      document.getElementById("install-tab-a")!.getAttribute("aria-selected")
+      document.getElementById("install-tab-a")?.getAttribute("aria-selected")
     ).toBe("false");
-    expect(document.getElementById("install-panel-b")!.hidden).toBe(false);
-    expect(document.getElementById("install-panel-a")!.hidden).toBe(true);
+    expect(document.getElementById("install-panel-b")?.hidden).toBe(false);
+    expect(document.getElementById("install-panel-a")?.hidden).toBe(true);
   });
 
   it("ArrowRight / ArrowLeft で次 / 前のタブへ移動し、端はループする", () => {

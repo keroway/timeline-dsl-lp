@@ -7,6 +7,7 @@ import {
   SETTINGS_KEY,
   saveSettings,
 } from "./a11y-settings";
+import { mustGetById, mustQuery } from "./test-dom-helpers";
 
 // jsdom は matchMedia を実装しないので、prefers-* クエリごとの結果を差し込めるよう stub する。
 function stubMatchMedia(matches: Record<string, boolean>) {
@@ -225,11 +226,12 @@ describe("initA11yMenu", () => {
         <div data-a11y-live></div>
       </div>
     `;
-    const toggle = document.querySelector<HTMLButtonElement>(".a11y-toggle")!;
-    const menu = document.getElementById("a11y-menu")!;
-    const textSizeInput = menu.querySelector<HTMLSelectElement>(
+    const toggle = mustQuery<HTMLButtonElement>(document, ".a11y-toggle");
+    const menu = mustGetById("a11y-menu");
+    const textSizeInput = mustQuery<HTMLSelectElement>(
+      menu,
       "[data-a11y-text-size]"
-    )!;
+    );
     return { toggle, menu, textSizeInput };
   }
 
@@ -270,9 +272,10 @@ describe("initA11yMenu", () => {
       throw new DOMException("full", "QuotaExceededError");
     });
     const { menu, textSizeInput } = setupMenu();
-    const highContrastInput = menu.querySelector<HTMLInputElement>(
+    const highContrastInput = mustQuery<HTMLInputElement>(
+      menu,
       "[data-a11y-high-contrast]"
-    )!;
+    );
 
     initA11yMenu({ toggleSelector: ".a11y-toggle", menuId: "a11y-menu" });
 

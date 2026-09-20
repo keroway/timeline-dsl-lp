@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { initLangToggle, LOCALE_KEY } from "./i18n-toggle";
+import { mustQuery } from "./test-dom-helpers";
 
 // jsdom の window.location.assign は非 configurable で spy できないため、
 // location 自体を pathname + assign mock を持つスタブへ差し替える。
@@ -16,7 +17,7 @@ function setLocation(pathname: string, search = "", hash = ""): void {
 
 function mountButton(): HTMLButtonElement {
   document.body.innerHTML = `<button id="lang-toggle"></button>`;
-  return document.querySelector<HTMLButtonElement>("#lang-toggle")!;
+  return mustQuery<HTMLButtonElement>(document, "#lang-toggle");
 }
 
 beforeEach(() => {
