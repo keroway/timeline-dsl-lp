@@ -196,6 +196,8 @@ export function wireFileOpen(opts: {
   openFileButton: HTMLButtonElement | null;
   openFileInput: HTMLInputElement | null;
   sampleSelect: HTMLSelectElement | null;
+  liveRegion: HTMLElement | null;
+  msgs: Pick<PlaygroundMsgs, "fileOpenError">;
   onApplySource: (source: string) => void;
 }): void {
   const { openFileButton, openFileInput, sampleSelect } = opts;
@@ -211,6 +213,12 @@ export function wireFileOpen(opts: {
         opts.onApplySource(reader.result);
         if (sampleSelect) sampleSelect.value = "";
       }
+    };
+    reader.onerror = () => {
+      announceToLiveRegion(opts.liveRegion, opts.msgs.fileOpenError);
+    };
+    reader.onabort = () => {
+      announceToLiveRegion(opts.liveRegion, opts.msgs.fileOpenError);
     };
     reader.readAsText(file, "utf-8");
     openFileInput.value = "";
@@ -541,6 +549,8 @@ export function initPlayground(): void {
     openFileButton,
     openFileInput,
     sampleSelect,
+    liveRegion: shareLive,
+    msgs,
     onApplySource: applySource,
   });
 

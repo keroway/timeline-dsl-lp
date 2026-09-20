@@ -297,6 +297,8 @@ export const en = {
   "playground.share.load_failed":
     "Could not load the shared link. Showing the default sample instead",
   "playground.download.html_error": "Could not download the HTML file",
+  "playground.file.open_error":
+    "Could not read the file. Your current editor content is unchanged",
   "playground.diagnostics.panel": "Diagnostics",
   "playground.diagnostics.aria_label": "Diagnostics",
   "playground.diagnostics.waiting": "Diagnostics will appear here.",

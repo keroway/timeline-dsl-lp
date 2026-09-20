@@ -293,6 +293,8 @@ export const ja = {
   "playground.share.load_failed":
     "共有リンクを読み込めませんでした。デフォルトのサンプルを表示しています",
   "playground.download.html_error": "HTML のダウンロードに失敗しました",
+  "playground.file.open_error":
+    "ファイルを読み込めませんでした。編集中の内容は保持されています",
   "playground.diagnostics.panel": "検証結果",
   "playground.diagnostics.aria_label": "診断結果",
   "playground.diagnostics.waiting": "診断結果がここに表示されます。",

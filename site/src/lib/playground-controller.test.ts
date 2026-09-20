@@ -522,6 +522,8 @@ describe("wireShare", () => {
 });
 
 describe("wireFileOpen", () => {
+  const msgs = { fileOpenError: "file open error" };
+
   it("openFileButton クリックで openFileInput の click が呼ばれる", () => {
     const openFileButton = document.createElement("button");
     const openFileInput = document.createElement("input");
@@ -533,11 +535,73 @@ describe("wireFileOpen", () => {
       openFileButton,
       openFileInput,
       sampleSelect: null,
+      liveRegion: null,
+      msgs,
       onApplySource,
     });
     openFileButton.click();
 
     expect(inputClick).toHaveBeenCalled();
+  });
+
+  it("読込に成功すると onApplySource にファイル内容が渡される", async () => {
+    const openFileInput = document.createElement("input");
+    openFileInput.type = "file";
+    const liveRegion = document.createElement("div");
+    const onApplySource = vi.fn();
+    const file = new File(["event x"], "sample.tdsl", {
+      type: "text/plain",
+    });
+    Object.defineProperty(openFileInput, "files", { value: [file] });
+
+    wireFileOpen({
+      openFileButton: null,
+      openFileInput,
+      sampleSelect: null,
+      liveRegion,
+      msgs,
+      onApplySource,
+    });
+    openFileInput.dispatchEvent(new Event("change"));
+
+    await vi.waitFor(() => {
+      expect(onApplySource).toHaveBeenCalledWith("event x");
+    });
+    expect(liveRegion.textContent).toBe("");
+  });
+
+  it("FileReader が失敗すると liveRegion に通知し、onApplySource は呼ばれない", async () => {
+    const openFileInput = document.createElement("input");
+    openFileInput.type = "file";
+    const liveRegion = document.createElement("div");
+    const onApplySource = vi.fn();
+    const file = new File(["unreadable"], "broken.tdsl", {
+      type: "text/plain",
+    });
+    Object.defineProperty(openFileInput, "files", { value: [file] });
+
+    const readAsText = vi
+      .spyOn(FileReader.prototype, "readAsText")
+      .mockImplementation(function (this: FileReader) {
+        this.onerror?.(new ProgressEvent("error") as ProgressEvent<FileReader>);
+      });
+
+    wireFileOpen({
+      openFileButton: null,
+      openFileInput,
+      sampleSelect: null,
+      liveRegion,
+      msgs,
+      onApplySource,
+    });
+    openFileInput.dispatchEvent(new Event("change"));
+
+    await vi.waitFor(() => {
+      expect(liveRegion.textContent).toBe("file open error");
+    });
+    expect(onApplySource).not.toHaveBeenCalled();
+
+    readAsText.mockRestore();
   });
 });
 
