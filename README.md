@@ -56,7 +56,7 @@ pnpm preview
 
 ## Deploy
 
-Deployment is handled by Cloudflare Pages via GitHub integration. GitHub Actions runs `pnpm build` as CI only; publishing and Preview URL creation are delegated to Cloudflare Pages.
+Deployment is handled by Cloudflare Pages via GitHub integration. GitHub Actions runs the `Site build` workflow's full required-status-check gate (lint, format:check, test:unit, build, bundle-size, smoke:seo, smoke:i18n, smoke:i18n:browser, smoke:playground, smoke:playground:browser, smoke:a11y, test:visual, lhci) as CI only; publishing and Preview URL creation are delegated to Cloudflare Pages. `pnpm check` mirrors the non-browser steps locally, and `pnpm check:full` additionally covers the browser-dependent gates.
 
 Cloudflare Pages project:
 
@@ -69,7 +69,7 @@ Cloudflare Pages project:
 
 Workflows:
 
-- `Site build`: Runs `pnpm build` on PR, `main` push, and manual dispatch as CI.
+- `Site build`: Runs the full CI gate (lint / format:check / test:unit / build / bundle-size / smoke:seo / smoke:i18n / smoke:i18n:browser / smoke:playground / smoke:playground:browser / smoke:a11y / test:visual / lhci) on PR, `main` push, and manual dispatch.
 - `Remove in-progress label on close`: When a PR is merged, removes the `in-progress` label from issues referenced by `Closes #N` / `Fixes #N` / `Resolves #N` in the PR body. Also removes the label when an issue is directly closed. On manual dispatch, specify `issue_number` to remove the label from any issue.
 
 Event policy:
