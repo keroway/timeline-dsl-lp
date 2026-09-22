@@ -629,11 +629,11 @@ LP コンポーネントには、辞書（`site/src/i18n/{ja,en}.ts`）を経由
 - `site/src/components/DocsA11yMenu.astro` — Docs ヘッダーへの a11y メニュー追加（Starlight `SocialIcons` override）
 - `site/astro.config.mjs` — Starlight の `components.SocialIcons` 登録を含む設定
 - `site/src/components/SocialMeta.astro` — OGP / Twitter Card メタの一次定義（`og:image:type` は拡張子から導出）
-- `site/src/pages/index.astro` — ヒーロー / feature / workflow / usecase / install の構造
-- `site/src/pages/playground.astro` — Playground の 3 ペイン構造と `?source=` プリロード
-- `site/src/pages/gallery.astro` — Gallery ページ（2 ペインカード + クライアントサイド SVG レンダリング）
+- `site/src/components/LpPage.astro` — ヒーロー / feature / workflow / usecase / install の構造（`site/src/pages/index.astro` 等は locale を渡すだけの薄いラッパー）
+- `site/src/components/PlaygroundPage.astro` — Playground の 3 ペイン構造と `?source=` プリロード（`site/src/pages/playground.astro` 等は薄いラッパー）
+- `site/src/components/GalleryPage.astro` — Gallery ページ（2 ペインカード + クライアントサイド SVG レンダリング。`site/src/pages/gallery.astro` 等は薄いラッパー）
 - `site/src/data/gallery-samples.json` — Gallery サンプルデータ
-- `site/src/pages/changelog.astro` — リリース表示のテンプレート
+- `site/src/components/ChangelogPage.astro` — リリース表示のテンプレート（`site/src/pages/changelog.astro` 等は薄いラッパー）
 - `site/src/lib/tdsl-wasm.ts` — Playground と Docs から WASM を呼ぶ唯一の経路
 
 ---
