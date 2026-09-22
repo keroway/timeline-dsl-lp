@@ -1,8 +1,8 @@
 # DESIGN.md
 
-> **English summary**: This document records the design decisions for the `timeline-dsl-lp` site (LP + Docs). Three core principles guide every decision: **Source as truth** (the site reflects Timeline DSL's text-driven philosophy — code, commands, and rendered output appear side-by-side); **Editor first** (primary audience is developers and educators, so readability and CLI output fidelity take priority over decoration); **Calm density** (sections stack in a fixed order — hero → features → workflow → use cases → examples → why → install → closing CTA — with one message per section). Colors are defined as CSS custom properties in `site/src/styles/global.css`; always reuse existing tokens before adding new ones. Typography relies on the Starlight system font stack with `--font-code` for monospace. When in doubt, choose honesty over spectacle and code legibility over visual flourish.
+> **English summary**: This document records the design decisions for the `timeline-dsl-lp` site (LP + Docs). Three core principles guide every decision: **Source as truth** (the site reflects Timeline DSL's text-driven philosophy — code, commands, and rendered output appear side-by-side); **Editor first** (primary audience is developers and educators, so readability and CLI output fidelity take priority over decoration); **Calm density** (sections stack in a fixed order — hero → features → workflow → use cases → examples → why → install → closing CTA — with one message per section). Colors are defined as CSS custom properties in `site/src/styles/tokens.css`; always reuse existing tokens before adding new ones. Typography relies on the Starlight system font stack with `--font-code` for monospace. When in doubt, choose honesty over spectacle and code legibility over visual flourish.
 
-このドキュメントは `timeline-dsl-lp`（LP / Docs サイト）の現行デザイン決定を言語化したものです。新規ブランドの再定義ではなく、`site/src/styles/global.css` と各ページに既に組み込まれている決定を、後続の改善が同じ方向を向けるように整理することを目的としています。
+このドキュメントは `timeline-dsl-lp`（LP / Docs サイト）の現行デザイン決定を言語化したものです。新規ブランドの再定義ではなく、`site/src/styles/tokens.css` と各ページに既に組み込まれている決定を、後続の改善が同じ方向を向けるように整理することを目的としています。
 
 対象は LP `site/` のデザイン指針です。Timeline DSL 本体（CLI / WASM レンダラー / DSL 仕様）の機能設計は対象外です。本体側の出力 SVG と LP の見た目を整合させる **マッピング規則** だけは含めます。
 
@@ -22,7 +22,7 @@
 
 ## 2. Color Palette
 
-色は `site/src/styles/global.css` の `:root` 変数を起点にします。新規の色を導入する前に、既存トークンで賄えないか先に確認してください。
+色は `site/src/styles/tokens.css` の `:root` 変数を起点にします。新規の色を導入する前に、既存トークンで賄えないか先に確認してください。
 
 ### Base tokens（light）
 
@@ -245,7 +245,7 @@ OS フォントへのフォールバックを前提にしています。Web フ�
 
 ### Spacing
 
-`gap` / `margin` / `padding` は次の段階値トークンを基本とします。中間値の濫用は避けます。トークンは `global.css` の `:root` に定義され、テーマ（light / dark / high-contrast）非依存です。
+`gap` / `margin` / `padding` は次の段階値トークンを基本とします。中間値の濫用は避けます。トークンは `tokens.css` の `:root` に定義され、テーマ（light / dark / high-contrast）非依存です。
 
 | Token | Value |
 | --- | --- |
@@ -261,7 +261,7 @@ OS フォントへのフォールバックを前提にしています。Web フ�
 
 ### Radius
 
-`global.css` の `:root` に定義する 5 段階トークン。状況に応じて選びます。
+`tokens.css` の `:root` に定義する 5 段階トークン。状況に応じて選びます。
 
 | Token | Value | 用途 |
 | --- | --- | --- |
@@ -515,7 +515,7 @@ LP 内には「色付きの年表ビジュアル」を見せる場所が 2 系�
 
 | 場所 | 描画経路 | 配色源 |
 | --- | --- | --- |
-| ヒーロー右側のミニタイムライン / ユースケースカード | LP 側で HTML + CSS により再現 | `global.css` の lane palette（`--color-warm` / `--color-gold` / `--color-plum` / `--color-sky`） |
+| ヒーロー右側のミニタイムライン / ユースケースカード | LP 側で HTML + CSS により再現 | `tokens.css` の lane palette（`--color-warm` / `--color-gold` / `--color-plum` / `--color-sky`） |
 | Playground のレンダリング SVG | `tdsl_wasm.render_svg_from_source(source, scale)` | 本体 WASM レンダラー内蔵のデフォルトテーマ（後述） |
 
 ### 現状の WASM デフォルト配色（実測）
@@ -543,7 +543,7 @@ LP 側の `--color-gold`（周年・節目）に相当する色は WASM 側に�
 
 - 出力 SVG の `<style>` に `--tdsl-lane-*`（warm / gold / plum / sky など lane セマンティクス相当）の CSS variables を定義し、デフォルト値として現行の hex を保持する。
 - `tdsl-event-dot` / `tdsl-event-stem` / `tdsl-lane-band-*` 等の class が `var(--tdsl-lane-*, #fallback)` を参照する形に置き換える。
-- LP 側 `global.css` で同名トークンを公開し、`prefers-color-scheme: dark` と `data-a11y-contrast="high"` でも追従させる。
+- LP 側 `tokens.css` で同名トークンを公開し、`prefers-color-scheme: dark` と `data-a11y-contrast="high"` でも追従させる。
 - 4 色循環 → セマンティクス対応への移行については別議論（lane に `tags` で意味を渡す / lane id 命名規約に乗せる等の選択肢あり）。
 
 ### 実装状態（v1.20.0 同期後 · #303）
@@ -557,7 +557,7 @@ LP 側の `--color-gold`（周年・節目）に相当する色は WASM 側に�
 .tdsl-event-dot { fill: var(--tdsl-lane-0, #4682B4); }  /* N = lane 出現順 0..7 */
 ```
 
-LP 側の追従は `global.css` で 2 段に分けて実装している:
+LP 側の追従は `tokens.css` で 2 段に分けて実装している:
 
 1. **semantic トークン**（`:root`）: `--tdsl-lane-warm/gold/plum/sky` が `--color-*` をプロキシし light/dark/HC に追従。
 2. **index→semantic ブリッジ**（`.tdsl-root`）: WASM の `--tdsl-lane-0..7` を LP パレットに cycle 適用（0→warm / 1→gold / 2→plum / 3→sky、以降反復）。WASM の inline デフォルトより近い祖先で再定義することで上書きする。
@@ -624,16 +624,17 @@ LP コンポーネントには、辞書（`site/src/i18n/{ja,en}.ts`）を経由
 
 決定の根拠となるファイルは以下です。DESIGN.md と乖離が出た場合、まずはこちらが現行の真実です。発見次第どちらかを更新してください。
 
-- `site/src/styles/global.css` — トークンとレイアウトの一次定義
+- `site/src/styles/tokens.css` — デザイントークンの一次定義（`global.css` は `@import` するだけ）
+- `site/src/styles/global.css` — ベーススタイル / レイアウトの一次定義
 - `site/src/components/SiteHeader.astro` — LP / Playground / Gallery / Changelog のヘッダーと a11y メニューの実装
 - `site/src/components/DocsA11yMenu.astro` — Docs ヘッダーへの a11y メニュー追加（Starlight `SocialIcons` override）
 - `site/astro.config.mjs` — Starlight の `components.SocialIcons` 登録を含む設定
 - `site/src/components/SocialMeta.astro` — OGP / Twitter Card メタの一次定義（`og:image:type` は拡張子から導出）
-- `site/src/pages/index.astro` — ヒーロー / feature / workflow / usecase / install の構造
-- `site/src/pages/playground.astro` — Playground の 3 ペイン構造と `?source=` プリロード
-- `site/src/pages/gallery.astro` — Gallery ページ（2 ペインカード + クライアントサイド SVG レンダリング）
+- `site/src/components/LpPage.astro` — ヒーロー / feature / workflow / usecase / install の構造（`site/src/pages/index.astro` 等は locale を渡すだけの薄いラッパー）
+- `site/src/components/PlaygroundPage.astro` — Playground の 3 ペイン構造と `?source=` プリロード（`site/src/pages/playground.astro` 等は薄いラッパー）
+- `site/src/components/GalleryPage.astro` — Gallery ページ（2 ペインカード + クライアントサイド SVG レンダリング。`site/src/pages/gallery.astro` 等は薄いラッパー）
 - `site/src/data/gallery-samples.json` — Gallery サンプルデータ
-- `site/src/pages/changelog.astro` — リリース表示のテンプレート
+- `site/src/components/ChangelogPage.astro` — リリース表示のテンプレート（`site/src/pages/changelog.astro` 等は薄いラッパー）
 - `site/src/lib/tdsl-wasm.ts` — Playground と Docs から WASM を呼ぶ唯一の経路
 
 ---
