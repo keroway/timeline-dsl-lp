@@ -35,6 +35,9 @@ overrides:
   smol-toml: 1.7.1
   # GHSA-4vpr-x523-8j87 / GHSA-w27v-7q3p-w38r (svgo) — Astro のアセット最適化経由。
   svgo: 4.1.0
+  # osv-scanner 検出分（2026-09-20、#724）。
+  # GHSA-9rgm-9g3h-6x36 (devalue) — astro 経由の transitive dependency。パッチレベル修正、破壊的変更なし。
+  devalue: ">=5.9.2 <6"
 
 patchedDependencies:
   "@lhci/utils@0.15.1": patches/@lhci__utils@0.15.1.patch
