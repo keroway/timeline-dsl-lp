@@ -152,3 +152,9 @@ cd site && pnpm prepare
   - `stop-checks.sh` — Stop 時に (1) i18n ペアドリフト (ja/en の片方しか変更されていない) を検知して通知、(2) 現在ブランチの PR で失敗している GitHub checks があれば一覧表示。
   - `detect-stale-dev-servers.sh` — Stop 時に残留した dev/preview サーバプロセスを検知して警告（自動 kill はしない）。
 - 設定本体: `.claude/settings.json`
+
+## Codex 向け運用ルール
+
+Codex 向けの横断運用ルールは `keroway/CLAUDE.md` ではなく
+[agent-assets `docs/codex-common-instructions.md`](https://github.com/keroway/agent-assets/blob/main/docs/codex-common-instructions.md)
+を正典とする（Codex は git ルートより上の AGENTS.md を読まないため）。
