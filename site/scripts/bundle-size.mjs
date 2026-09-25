@@ -50,11 +50,17 @@ const wasmSize = statSync(wasmPath).size;
 results.push(evaluate("WASM (tdsl_wasm_bg.wasm)", wasmSize, THRESHOLDS.wasm));
 
 const astroDir = join(distDir, "_astro");
-const jsFiles = existsSync(astroDir)
-  ? readdirSync(astroDir)
-      .filter((f) => f.endsWith(".js"))
-      .map((f) => ({ name: f, size: statSync(join(astroDir, f)).size }))
-  : [];
+if (!existsSync(astroDir)) {
+  console.error(
+    `dist/_astro directory not found: ${astroDir}\n` +
+      "Astro's build output structure may have changed; bundle-size cannot verify JS/CSS budgets."
+  );
+  process.exit(1);
+}
+
+const jsFiles = readdirSync(astroDir)
+  .filter((f) => f.endsWith(".js"))
+  .map((f) => ({ name: f, size: statSync(join(astroDir, f)).size }));
 
 const totalJs = jsFiles.reduce((sum, f) => sum + f.size, 0);
 results.push(
@@ -69,11 +75,9 @@ results.push(
   evaluate(`Max JS file (${maxJsFile.name})`, maxJsFile.size, THRESHOLDS.maxJs)
 );
 
-const cssFiles = existsSync(astroDir)
-  ? readdirSync(astroDir)
-      .filter((f) => f.endsWith(".css"))
-      .map((f) => ({ name: f, size: statSync(join(astroDir, f)).size }))
-  : [];
+const cssFiles = readdirSync(astroDir)
+  .filter((f) => f.endsWith(".css"))
+  .map((f) => ({ name: f, size: statSync(join(astroDir, f)).size }));
 
 const totalCss = cssFiles.reduce((sum, f) => sum + f.size, 0);
 results.push(
