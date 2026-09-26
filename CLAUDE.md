@@ -90,9 +90,13 @@ site/
 
 ## WASM bundling
 
-Playground / runnable docs は `site/src/lib/tdsl-wasm.ts` 経由で WASM を呼ぶ。
-バイナリは `site/public/wasm/` に vendoring 済み。更新時は本体リポジトリの
-`crates/tdsl-wasm` を `wasm-pack build --target web` し、生成物を `site/public/wasm/` に同期する。
+ブラウザの対話的 Playground（`playground-controller.ts`）は `site/src/lib/tdsl-wasm.ts` 経由、
+ビルド時に Node.js から WASM を初期化する runnable docs（`TimelineEmbed.astro` /
+`HeroSection.astro` / `ExamplesSection.astro` が使う Showcase/Gallery/Examples ページ）は
+`site/src/lib/tdsl-wasm-node.mts` 経由で WASM を呼ぶ。両者は初期化方式・エラーハンドリングが
+非対称な別モジュール（#732）。バイナリは `site/public/wasm/` に vendoring 済み。更新時は
+本体リポジトリの `crates/tdsl-wasm` を `wasm-pack build --target web` し、生成物を
+`site/public/wasm/` に同期する。
 
 ## AI エージェント / LLM 向け公開
 
