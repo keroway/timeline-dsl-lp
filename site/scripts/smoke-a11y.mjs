@@ -36,6 +36,7 @@ const baseUrl = normalizeBaseUrl(
 
 await smokeA11y(baseUrl);
 await smokeMobileNav(baseUrl);
+await smokeA11yMenu(baseUrl);
 
 async function smokeA11y(rootUrl) {
   const { chromium } = await importPlaywright();
@@ -213,6 +214,49 @@ async function smokeMobileNav(rootUrl) {
       "a11y smoke: mobile nav (375px) hamburger disclosure — focus trap / Escape close / aria-expanded all pass. ✓"
     );
     await context.close();
+  } finally {
+    await browser.close();
+  }
+}
+
+// #734: アクセシビリティ設定トグルは設定フォームを開く disclosure であり、menu ではない。
+// 開いた状態で aria-haspopup が対象要素の role と食い違わないことを回帰ガードする。
+async function smokeA11yMenu(rootUrl) {
+  const { chromium } = await importPlaywright();
+  const browser = await chromium.launch();
+
+  try {
+    const page = await browser.newPage();
+    await page.goto(`${rootUrl}/`, { waitUntil: "networkidle" });
+
+    const toggle = page.locator(".a11y-toggle").first();
+    await toggle.click();
+
+    if ((await toggle.getAttribute("aria-expanded")) !== "true") {
+      throw new Error(
+        "a11y menu: toggle should have aria-expanded=true after click"
+      );
+    }
+
+    const menuId = await toggle.getAttribute("aria-controls");
+    const panel = page.locator(`[id="${menuId}"]`);
+    if (!(await panel.isVisible())) {
+      throw new Error("a11y menu: aria-controls target should be visible");
+    }
+
+    const haspopup = await toggle.getAttribute("aria-haspopup");
+    const panelRole = await panel.getAttribute("role");
+    // aria-haspopup="true" は "menu" の別名 (WAI-ARIA 1.2)
+    const popupRole = haspopup === "true" ? "menu" : haspopup;
+    if (popupRole && popupRole !== panelRole) {
+      throw new Error(
+        `a11y menu: aria-haspopup="${haspopup}" does not match panel role="${panelRole}"`
+      );
+    }
+
+    console.log(
+      "a11y smoke: a11y settings toggle — aria-expanded / aria-controls / aria-haspopup consistency pass. ✓"
+    );
   } finally {
     await browser.close();
   }
