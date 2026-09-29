@@ -19,7 +19,7 @@ overrides:
   brace-expansion: 1.1.18
   # GHSA-22jq-vg5j-6vgg / GHSA-4xrf-jv44-h6hh / GHSA-mwp4-54f8-5fhr (ip-address)
   #   — @lhci/cli / lighthouse > puppeteer-core > proxy-agent > socks 経由。
-  ip-address: 10.3.1
+  ip-address: 10.5.1
   # GHSA-2v37-7h3g-55p8 (nanoid <3.3.17) — size=0 で customAlphabet / customRandom が
   #   無限ループする。postcss（ソースマップ用 ID 生成、size は固定）経由。
   nanoid: 3.3.18
@@ -54,7 +54,9 @@ minimumReleaseAgeExclude:
     # Renovate security update: fast-uri@3.1.6
     fast-uri@3.1.6,
     # Renovate security update: astro@7.2.8
-    astro@7.2.8
+    astro@7.2.8,
+    # Renovate security update: ip-address@10.5.1
+    ip-address@10.5.1
   ]
 
 # pnpm 12 はデフォルトで依存の build スクリプト実行を遮断する (strictDepBuilds)。
