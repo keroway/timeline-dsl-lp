@@ -14,6 +14,7 @@ import {
 } from "./lib/smoke-helpers.mjs";
 
 const PLAYGROUND_PATH = "/playground/";
+const GALLERY_PATHS = ["/gallery/", "/en/gallery/"];
 const WASM_JS_PATH = "/wasm/tdsl_wasm.js";
 const WASM_BINARY_PATH = "/wasm/tdsl_wasm_bg.wasm";
 
@@ -175,13 +176,149 @@ async function smokeBrowserFlow(rootUrl) {
     await smokePanZoom(rootUrl, browser);
     await smokeBrokenShareUrl(rootUrl, browser);
     await smokeOversizedShareUrl(rootUrl, browser);
+    for (const path of GALLERY_PATHS) {
+      await smokeGalleryInteraction(rootUrl, browser, path);
+    }
   } finally {
     await browser.close();
   }
 
   console.log(
-    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, show-event-labels toggle, pan/zoom wheel+reset, broken share-URL notification, and oversized (zip bomb) share-URL notification."
+    "Browser smoke passed: editor diagnostics, SVG preview recovery, visible WASM load failure, a11y menu, locale toggle, show-event-labels toggle, pan/zoom wheel+reset, broken share-URL notification, oversized (zip bomb) share-URL notification, and gallery tag filter + zoom dialog (ja/en)."
   );
+}
+
+async function smokeGalleryInteraction(rootUrl, browser, path) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  await page.goto(`${rootUrl}${path}`, { waitUntil: "networkidle" });
+
+  const filterBar = page.locator(".gallery-filter");
+  await filterBar.waitFor({ state: "visible" });
+
+  const allBtn = filterBar.locator("[data-filter-all]");
+  const tagBtns = filterBar.locator("[data-filter-tag]");
+  const status = page.locator("[data-filter-status]");
+  const cards = page.locator(".gallery-card");
+  const visibleCards = () =>
+    page.locator(".gallery-card:not([hidden])").count();
+
+  const totalCards = await cards.count();
+  if ((await tagBtns.count()) < 2) {
+    throw new Error(
+      `${path}: gallery needs at least 2 tag chips to test multi-select`
+    );
+  }
+  if ((await allBtn.getAttribute("aria-pressed")) !== "true") {
+    throw new Error(`${path}: 'all' chip should start pressed`);
+  }
+  if ((await status.getAttribute("aria-live")) !== "polite") {
+    throw new Error(`${path}: filter status should be aria-live=polite`);
+  }
+
+  // 1 タグ選択: そのタグを持つカードだけが残り、件数が live region に通知される
+  const firstTag = await tagBtns.nth(0).getAttribute("data-filter-tag");
+  await tagBtns.nth(0).click();
+  if ((await tagBtns.nth(0).getAttribute("aria-pressed")) !== "true") {
+    throw new Error(`${path}: selected tag chip should be aria-pressed=true`);
+  }
+  if ((await allBtn.getAttribute("aria-pressed")) !== "false") {
+    throw new Error(`${path}: 'all' chip should be unpressed while filtering`);
+  }
+  const expectedOne = await page
+    .locator(`.gallery-card[data-tags~="${firstTag}"]`)
+    .count();
+  if ((await visibleCards()) !== expectedOne) {
+    throw new Error(
+      `${path}: tag '${firstTag}' should show ${expectedOne} cards`
+    );
+  }
+  if (!(await status.textContent())?.includes(String(expectedOne))) {
+    throw new Error(
+      `${path}: filter status should announce ${expectedOne} results`
+    );
+  }
+
+  // 2 タグ目を追加選択: OR 条件で件数が増えない(減らない)こと
+  const secondTag = await tagBtns.nth(1).getAttribute("data-filter-tag");
+  await tagBtns.nth(1).click();
+  const expectedOr = await page
+    .locator(
+      `.gallery-card[data-tags~="${firstTag}"], .gallery-card[data-tags~="${secondTag}"]`
+    )
+    .count();
+  if ((await visibleCards()) !== expectedOr) {
+    throw new Error(
+      `${path}: multi-select should show ${expectedOr} cards (OR)`
+    );
+  }
+  if (!(await status.textContent())?.includes(String(expectedOr))) {
+    throw new Error(
+      `${path}: filter status should announce ${expectedOr} results`
+    );
+  }
+
+  // 1 タグ解除 → 1 タグ選択時の件数へ戻る
+  await tagBtns.nth(1).click();
+  if ((await visibleCards()) !== expectedOne) {
+    throw new Error(
+      `${path}: deselecting a tag should restore ${expectedOne} cards`
+    );
+  }
+
+  // 「すべて」で全解除: 全カード復帰、status は非表示・空
+  await allBtn.click();
+  if ((await visibleCards()) !== totalCards) {
+    throw new Error(`${path}: 'all' should restore all ${totalCards} cards`);
+  }
+  if ((await allBtn.getAttribute("aria-pressed")) !== "true") {
+    throw new Error(`${path}: 'all' chip should be pressed after reset`);
+  }
+  if (await status.isVisible()) {
+    throw new Error(`${path}: filter status should be hidden after reset`);
+  }
+
+  // 拡大ダイアログ: SVG 描画済みのカードのトリガーで開き、Escape / 閉じるボタンで閉じてフォーカスが戻る
+  const dialog = page.locator("#gallery-preview-dialog");
+  const trigger = page
+    .locator("[data-gallery-zoom-trigger]:not([hidden])")
+    .first();
+  await trigger.waitFor({ state: "visible", timeout: 10000 });
+
+  await trigger.click();
+  if (!(await dialog.evaluate((el) => el.open))) {
+    throw new Error(`${path}: zoom dialog should be open after trigger click`);
+  }
+  if (!(await dialog.locator("#gallery-preview-dialog-content svg").count())) {
+    throw new Error(`${path}: zoom dialog should contain the cloned SVG`);
+  }
+  if (!(await dialog.getAttribute("aria-label"))) {
+    throw new Error(`${path}: zoom dialog should have an aria-label`);
+  }
+
+  await page.keyboard.press("Escape");
+  await assertZoomClosedAndFocusRestored(page, path, "Escape");
+
+  await trigger.click();
+  await page.locator("#gallery-preview-dialog-close").click();
+  await assertZoomClosedAndFocusRestored(page, path, "close button");
+
+  await context.close();
+}
+
+async function assertZoomClosedAndFocusRestored(page, path, how) {
+  if (await page.locator("#gallery-preview-dialog").evaluate((el) => el.open)) {
+    throw new Error(`${path}: zoom dialog should close via ${how}`);
+  }
+  const restored = await page.evaluate(() =>
+    document.activeElement?.hasAttribute("data-gallery-zoom-trigger")
+  );
+  if (!restored) {
+    throw new Error(
+      `${path}: focus should return to the zoom trigger after ${how}`
+    );
+  }
 }
 
 async function smokeBrokenShareUrl(rootUrl, browser) {
