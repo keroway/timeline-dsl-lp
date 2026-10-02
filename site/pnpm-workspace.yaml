@@ -3,10 +3,10 @@ minimumReleaseAgeStrict: true
 
 overrides:
   esbuild: 0.28.1
-  fast-uri: 3.1.7
+  fast-uri: 3.1.8
   js-yaml: 4.3.2
   tmp: 0.2.7
-  undici: 7.29.0
+  undici: 7.29.1
   uuid: 11.1.1
   yaml: 2.8.4
   # osv-scanner で検出した脆弱性のパッチレベル修正（GHSA-r28c-9q8g-f849 / GHSA-v422-hmwv-36x6）。
@@ -16,7 +16,7 @@ overrides:
   # osv-scanner 検出分（2026-08-09、#573）。いずれも devDependency 経由でビルド成果物には載らない。
   # GHSA-mh99-v99m-4gvg / GHSA-rgw5-rvv9-x895 (brace-expansion ReDoS)
   #   — @lhci/cli > chrome-launcher > rimraf > glob > minimatch 経由。
-  brace-expansion: 1.1.18
+  brace-expansion: 1.1.21
   # GHSA-22jq-vg5j-6vgg / GHSA-4xrf-jv44-h6hh / GHSA-mwp4-54f8-5fhr (ip-address)
   #   — @lhci/cli / lighthouse > puppeteer-core > proxy-agent > socks 経由。
   ip-address: 10.7.1
@@ -41,7 +41,7 @@ overrides:
 
 patchedDependencies:
   "@lhci/utils@0.15.1": patches/@lhci__utils@0.15.1.patch
-  undici@7.29.0: patches/undici@7.29.0.patch
+  undici@7.29.1: patches/undici@7.29.1.patch
 
 # pnpm 12 のセキュリティ寄りデフォルト (minimumReleaseAge=1440 / strictDepBuilds /
 # blockExoticSubdeps) は既定値のまま使う。
@@ -52,11 +52,14 @@ patchedDependencies:
 minimumReleaseAgeExclude:
   [
     # Renovate security update: fast-uri@3.1.6 || 3.1.7
-    fast-uri@3.1.6 || 3.1.7,
+    fast-uri@3.1.6 || 3.1.7 || 3.1.8,
     # Renovate security update: astro@7.2.8
     astro@7.2.8,
     # Renovate security update: ip-address@10.5.1 || 10.7.1
-    ip-address@10.5.1 || 10.7.1
+    ip-address@10.5.1 || 10.7.1,
+    # osv-scanner 検出分の即時修正（#742）
+    brace-expansion@1.1.21,
+    undici@7.29.1
   ]
 
 # pnpm 12 はデフォルトで依存の build スクリプト実行を遮断する (strictDepBuilds)。
