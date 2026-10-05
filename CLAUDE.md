@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-> **English summary**: This is the LP / documentation site for Timeline DSL, built with Astro 7 + Starlight and deployed to Cloudflare Pages via GitHub integration. All commands run under `site/`. The build pipeline runs WASM smoke tests first, then `astro check`, then `astro build` — CI passes when `pnpm build` succeeds. WASM binaries for the Playground are vendored in `site/public/wasm/`; update them by rebuilding `crates/tdsl-wasm` in the main repo and syncing the output.
+> **English summary**: This is the LP / documentation site for Timeline DSL, built with Astro 7 + Starlight and deployed to Cloudflare Pages via GitHub integration. All commands run under `site/`. `pnpm build` runs WASM smoke tests first, then `astro check`, then `astro build`, but it is only the minimum gate — the required CI check `build` (`site-build.yml`) also runs lint, format:check, unit tests, bundle-size, SEO/i18n/Playground/a11y smoke tests, visual regression, and Lighthouse CI (see "Deploy policy"). WASM binaries for the Playground are vendored in `site/public/wasm/`; update them by rebuilding `crates/tdsl-wasm` in the main repo and syncing the output.
 
 Timeline DSL の LP / ドキュメントサイトです。
 
