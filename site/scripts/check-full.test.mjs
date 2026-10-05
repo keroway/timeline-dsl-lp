@@ -98,11 +98,23 @@ describe("check-full.mjs の preview server ライフサイクル", () => {
   });
 
   it("readiness に成功した通常経路でも preview を終了する", async () => {
-    const result = await runInSandbox({ readyOnFirstFetch: true });
+    // 既定の 31s 刻みだと最初の deadline 判定で readiness ループへ入れず
+    // timeout 経路になるため、ループに入れる程度の刻みにする（#748）。
+    const result = await runInSandbox({
+      readyOnFirstFetch: true,
+      dateStepMs: 1,
+    });
+    const log = result.logs.join("\n");
 
-    expect(result.spawnCount).toBeGreaterThanOrEqual(2);
+    expect(result.exitCode).toBe(0);
+    expect(log).toContain("Preview server ready.");
+    expect(log).toContain("check:full passed");
+    expect(log).not.toContain("check:full failed");
+    // pnpm check + preview server + browser ゲート 8 本（seo 〜 lhci）
+    expect(result.spawnCount).toBe(10);
+    expect(result.spawnCalls.at(-1).args).toContain("lhci");
     expect(result.killCount).toBeGreaterThanOrEqual(1);
-    expect(result.logs.join("\n")).toContain("Stopping preview server");
+    expect(log).toContain("Stopping preview server");
   });
 
   it("非デフォルト PORT が test:visual の起動 env にも反映される (#705)", async () => {
