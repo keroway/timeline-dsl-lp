@@ -121,6 +121,14 @@ describe("createPanZoom — fit / scaling", () => {
     expect(parseMatrix(stage)).toEqual({ scale: 1, scaleY: 1, tx: 0, ty: 0 });
   });
 
+  it("フィット表示は transition をインライン指定せず CSS（reduced motion ルール）に委ねる（回帰: #751）", () => {
+    const { surface, stage } = makeEnv();
+    stage.style.transition = "none";
+    const pz = createPanZoom({ surface, stage });
+    pz.reset();
+    expect(stage.style.transition).toBe("");
+  });
+
   it("通常時は SVG を中央にフィットさせ、拡大はしない（scale <= 1）", () => {
     const { surface, stage } = makeEnv({
       surfaceW: 800,
