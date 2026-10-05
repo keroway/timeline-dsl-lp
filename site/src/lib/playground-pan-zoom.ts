@@ -42,6 +42,12 @@ export function createPanZoom({
   let pendingTx = 0;
   let pendingTy = 0;
 
+  const cancelPendingFrame = () => {
+    if (rafId === null) return;
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  };
+
   const applyTransform = (
     s: number,
     x: number,
@@ -53,6 +59,7 @@ export function createPanZoom({
   };
 
   const fitToSurface = () => {
+    cancelPendingFrame();
     const svg = stage.querySelector<SVGSVGElement>("svg");
     if (!svg) {
       scale = 1;
@@ -145,6 +152,7 @@ export function createPanZoom({
 
   const endPan = (e: PointerEvent) => {
     if (!pendingPan || pendingPan.pointerId !== e.pointerId) return;
+    cancelPendingFrame();
     if (panActive) {
       tx = pendingTx;
       ty = pendingTy;
@@ -192,7 +200,7 @@ export function createPanZoom({
     },
     reset: fitToSurface,
     destroy() {
-      if (rafId !== null) cancelAnimationFrame(rafId);
+      cancelPendingFrame();
       surface.removeEventListener("pointerdown", onPointerDown);
       surface.removeEventListener("pointermove", onPointerMove);
       surface.removeEventListener("pointerup", endPan);
