@@ -54,7 +54,9 @@ export function createPanZoom({
     y: number,
     animated: boolean
   ) => {
-    stage.style.transition = animated ? "transform 0.18s ease" : "none";
+    // animated 時はインライン指定を外し、playground.css の transition
+    // （reduced motion の無効化ルール込み）に委ねる。
+    stage.style.transition = animated ? "" : "none";
     stage.style.transform = `matrix(${s},0,0,${s},${x},${y})`;
   };
 
