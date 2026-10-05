@@ -62,9 +62,39 @@ describe("parseDiagnostics", () => {
     ]);
   });
 
-  it("不正なエントリを除外する", () => {
+  it("不正なエントリがあれば有効分を残しつつ形式異常の error を追加する", () => {
     const raw = JSON.stringify([sampleError, { severity: "bogus" }, 123]);
-    expect(parseDiagnostics(raw)).toEqual([sampleError]);
+    const result = parseDiagnostics(raw);
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual(sampleError);
+    expect(result[1].severity).toBe("error");
+    expect(result[1].message).toMatch(/malformed entries/);
+  });
+
+  it("不正なエントリだけの配列でも error を返す（正常な空配列と区別する）", () => {
+    const raw = JSON.stringify([
+      { severity: "error", message: "blocked", line: "1", col: 1 },
+    ]);
+    const result = parseDiagnostics(raw);
+    expect(result).toHaveLength(1);
+    expect(result[0].severity).toBe("error");
+    expect(parseDiagnostics("[]")).toEqual([]);
+  });
+
+  it("warning と不正エントリの混在で error が消えない", () => {
+    const warning: TdslDiagnostic = {
+      severity: "warning",
+      message: "valid",
+      line: 1,
+      col: 1,
+    };
+    const raw = JSON.stringify([
+      warning,
+      { severity: "error", message: "blocked", line: 1 },
+    ]);
+    const result = parseDiagnostics(raw);
+    expect(result.some((d) => d.severity === "error")).toBe(true);
+    expect(result).toContainEqual(warning);
   });
 
   it("配列でない JSON はエラー diagnostic にする", () => {
