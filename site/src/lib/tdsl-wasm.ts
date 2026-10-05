@@ -221,7 +221,14 @@ export function parseDiagnostics(raw: string): TdslDiagnostic[] {
       return [toDiagnostic("WASM diagnostic response was not an array.")];
     }
 
-    return parsed.filter(isDiagnostic);
+    const valid = parsed.filter(isDiagnostic);
+    if (valid.length !== parsed.length) {
+      return [
+        ...valid,
+        toDiagnostic("WASM diagnostic response contained malformed entries."),
+      ];
+    }
+    return valid;
   } catch (cause) {
     return [
       toDiagnostic("WASM diagnostic response could not be parsed.", cause),
