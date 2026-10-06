@@ -62,6 +62,14 @@ export function createPanZoom({
 
   const fitToSurface = () => {
     cancelPendingFrame();
+    // 進行中のパンを終了する。残すと後続の pointermove/pointerup が古い座標を再適用する。
+    if (pendingPan) {
+      surface.releasePointerCapture(pendingPan.pointerId);
+      pendingPan = null;
+      panActive = false;
+      stage.classList.remove("is-panning");
+      surface.classList.remove("is-panning");
+    }
     const svg = stage.querySelector<SVGSVGElement>("svg");
     if (!svg) {
       scale = 1;

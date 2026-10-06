@@ -493,6 +493,48 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(stage.style.transform).toBe(fitted);
   });
 
+  it("パン中の reset でパンを終了し、後続の pointermove/pointerup がフィット表示を上書きしない（回帰: #762）", () => {
+    vi.useFakeTimers();
+    const { surface, stage } = makeEnv({
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 400,
+      svgH: 200,
+    });
+    const pz = createPanZoom({ surface, stage, panThreshold: 5 });
+    pz.reset();
+    const fitted = stage.style.transform;
+
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 3,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 80,
+      clientY: 20,
+      pointerId: 3,
+    });
+    pz.reset();
+
+    expect(stage.classList.contains("is-panning")).toBe(false);
+    expect(surface.classList.contains("is-panning")).toBe(false);
+    expect(surface.releasePointerCapture).toHaveBeenCalledWith(3);
+
+    firePointer(surface, "pointermove", {
+      clientX: 120,
+      clientY: 40,
+      pointerId: 3,
+    });
+    firePointer(surface, "pointerup", {
+      clientX: 120,
+      clientY: 40,
+      pointerId: 3,
+    });
+    vi.advanceTimersByTime(50);
+    expect(stage.style.transform).toBe(fitted);
+  });
+
   it("別の pointerId のイベントは無視する", () => {
     const { surface, stage } = makeEnv();
     createPanZoom({ surface, stage, panThreshold: 5 });
