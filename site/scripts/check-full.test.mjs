@@ -27,6 +27,7 @@ async function runInSandbox({
   readyOnFirstFetch,
   env = {},
   dateStepMs = 31_000,
+  interruptWith,
 }) {
   const raw = await readFile(SCRIPT_PATH, "utf-8");
   const source = raw.replace('import { spawn } from "node:child_process";', "");
@@ -37,6 +38,7 @@ async function runInSandbox({
   let now = 0;
   const logs = [];
   const spawnCalls = [];
+  const signalHandlers = {};
 
   const ctx = {
     console: {
@@ -46,8 +48,14 @@ async function runInSandbox({
     process: {
       env,
       platform: "darwin",
+      once: (signal, handler) => {
+        signalHandlers[signal] = handler;
+      },
+      // 実プロセスと違い exit() で止まらないので、最初の終了コードだけ採用し、
+      // readiness ループが締め切りへ達して抜けるよう時刻を進める。
       exit: (code) => {
-        exitCode = code;
+        exitCode ??= code;
+        now += 1_000_000;
       },
     },
     Date: { now: () => (now += dateStepMs) },
@@ -77,6 +85,9 @@ async function runInSandbox({
       // immediately, so the preview server is the only long-lived child.
       if (!isPreviewServer) {
         queueMicrotask(() => child.emit("exit", 0));
+      } else if (interruptWith) {
+        // preview 起動後（readiness 待機中）に終了シグナルを受けた状況を再現する。
+        setTimeout(() => signalHandlers[interruptWith]?.(), 10);
       }
       return child;
     },
@@ -84,7 +95,7 @@ async function runInSandbox({
 
   await vm.runInNewContext(`(async () => { ${source} })()`, ctx);
 
-  return { spawnCount, killCount, exitCode, logs, spawnCalls };
+  return { spawnCount, killCount, exitCode, logs, spawnCalls, signalHandlers };
 }
 
 describe("check-full.mjs の preview server ライフサイクル", () => {
@@ -116,6 +127,28 @@ describe("check-full.mjs の preview server ライフサイクル", () => {
     expect(result.killCount).toBeGreaterThanOrEqual(1);
     expect(log).toContain("Stopping preview server");
   });
+
+  it.each([
+    ["SIGINT", 130],
+    ["SIGTERM", 143],
+  ])(
+    "%s を受けたら preview へ終了要求を出し %i で終了する (#760)",
+    async (signal, code) => {
+      const result = await runInSandbox({
+        readyOnFirstFetch: false,
+        dateStepMs: 1,
+        interruptWith: signal,
+      });
+
+      expect(Object.keys(result.signalHandlers).sort()).toEqual([
+        "SIGINT",
+        "SIGTERM",
+      ]);
+      expect(result.exitCode).toBe(code);
+      expect(result.killCount).toBeGreaterThanOrEqual(1);
+      expect(result.logs.join("\n")).toContain(`interrupted (${signal})`);
+    }
+  );
 
   it("非デフォルト PORT が test:visual の起動 env にも反映される (#705)", async () => {
     const result = await runInSandbox({

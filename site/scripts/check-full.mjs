@@ -62,6 +62,28 @@ const STEPS = [
   },
 ];
 
+// Conventional exit codes for signal termination (128 + signal number).
+const SIGNAL_EXIT_CODES = { SIGINT: 130, SIGTERM: 143 };
+
+// Every live child (the running gate step and the preview server), so a
+// signal can tear them all down — the `finally` in main() never runs when the
+// process is interrupted.
+const children = new Set();
+
+function track(child) {
+  children.add(child);
+  child.once("exit", () => children.delete(child));
+  return child;
+}
+
+for (const signal of Object.keys(SIGNAL_EXIT_CODES)) {
+  process.once(signal, async () => {
+    console.error(`\n✖ check:full interrupted (${signal})`);
+    await Promise.all([...children].map(terminate));
+    process.exit(SIGNAL_EXIT_CODES[signal]);
+  });
+}
+
 async function main() {
   // `pnpm check` doesn't need the preview server, so run it before starting one.
   const [checkStep, ...browserSteps] = STEPS;
@@ -83,10 +105,12 @@ async function main() {
 function runStep({ name, cmd: [command, args], env }) {
   console.log(`\n▶ ${name}`);
   return new Promise((resolve, reject) => {
-    const child = spawn(resolveCommand(command), args, {
-      stdio: "inherit",
-      env: { ...process.env, ...env },
-    });
+    const child = track(
+      spawn(resolveCommand(command), args, {
+        stdio: "inherit",
+        env: { ...process.env, ...env },
+      })
+    );
     child.on("error", reject);
     child.on("exit", (code) => {
       if (code === 0) {
@@ -100,16 +124,12 @@ function runStep({ name, cmd: [command, args], env }) {
 
 function startPreview() {
   console.log(`\n▶ Starting preview server on ${BASE_URL}`);
-  const child = spawn(
-    resolveCommand("pnpm"),
-    ["preview", "--port", String(PORT)],
-    {
+  return track(
+    spawn(resolveCommand("pnpm"), ["preview", "--port", String(PORT)], {
       stdio: "inherit",
       env: { ...process.env, PORT: String(PORT) },
-    }
+    })
   );
-
-  return child;
 }
 
 async function waitForReady(previewProcess) {
@@ -138,6 +158,10 @@ async function waitForReady(previewProcess) {
 
 function stopPreview(child) {
   console.log("\n▶ Stopping preview server");
+  return terminate(child);
+}
+
+function terminate(child) {
   return new Promise((resolve) => {
     if (child.exitCode !== null || child.signalCode !== null) {
       resolve();
