@@ -204,20 +204,27 @@ export function wireFileOpen(opts: {
 
   openFileButton?.addEventListener("click", () => openFileInput?.click());
 
+  let generation = 0;
+
   openFileInput?.addEventListener("change", () => {
     const file = openFileInput?.files?.[0];
     if (!file) return;
+    const myGeneration = ++generation;
+    const isLatest = () => myGeneration === generation;
     const reader = new FileReader();
     reader.onload = () => {
+      if (!isLatest()) return;
       if (typeof reader.result === "string") {
         opts.onApplySource(reader.result);
         if (sampleSelect) sampleSelect.value = "";
       }
     };
     reader.onerror = () => {
+      if (!isLatest()) return;
       announceToLiveRegion(opts.liveRegion, opts.msgs.fileOpenError);
     };
     reader.onabort = () => {
+      if (!isLatest()) return;
       announceToLiveRegion(opts.liveRegion, opts.msgs.fileOpenError);
     };
     reader.readAsText(file, "utf-8");
