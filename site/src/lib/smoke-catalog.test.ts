@@ -28,6 +28,8 @@ function routesFromEntries(entries: string[]) {
 }
 
 function getBuiltRoutes() {
+  if (!existsSync(DIST_ROOT)) return [];
+
   return routesFromEntries(
     readdirSync(DIST_ROOT, { encoding: "utf8", recursive: true })
   );
