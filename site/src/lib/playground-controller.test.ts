@@ -604,6 +604,84 @@ describe("wireFileOpen", () => {
 
     readAsText.mockRestore();
   });
+
+  it("A→B と選択し B→A の順に読込が完了しても、最後に選んだ B の内容が適用される", () => {
+    const openFileInput = document.createElement("input");
+    openFileInput.type = "file";
+    const onApplySource = vi.fn();
+    const fileA = new File(["A source"], "A.tdsl", { type: "text/plain" });
+    const fileB = new File(["B source"], "B.tdsl", { type: "text/plain" });
+    let current = fileA;
+    Object.defineProperty(openFileInput, "files", {
+      get: () => [current],
+    });
+
+    const readers: FileReader[] = [];
+    const readAsText = vi
+      .spyOn(FileReader.prototype, "readAsText")
+      .mockImplementation(function (this: FileReader) {
+        readers.push(this);
+      });
+
+    wireFileOpen({
+      openFileButton: null,
+      openFileInput,
+      sampleSelect: null,
+      liveRegion: null,
+      msgs,
+      onApplySource,
+    });
+    openFileInput.dispatchEvent(new Event("change"));
+    current = fileB;
+    openFileInput.dispatchEvent(new Event("change"));
+
+    const [readerA, readerB] = readers;
+    const complete = (reader: FileReader, text: string) => {
+      Object.defineProperty(reader, "result", { value: text });
+      reader.onload?.(new ProgressEvent("load") as ProgressEvent<FileReader>);
+    };
+    complete(readerB, "B source");
+    complete(readerA, "A source");
+
+    expect(onApplySource).toHaveBeenCalledTimes(1);
+    expect(onApplySource).toHaveBeenCalledWith("B source");
+
+    readAsText.mockRestore();
+  });
+
+  it("旧選択の読込失敗は最新の選択が進行中なら通知しない", () => {
+    const openFileInput = document.createElement("input");
+    openFileInput.type = "file";
+    const liveRegion = document.createElement("div");
+    const file = new File(["x"], "A.tdsl", { type: "text/plain" });
+    Object.defineProperty(openFileInput, "files", { value: [file] });
+
+    const readers: FileReader[] = [];
+    const readAsText = vi
+      .spyOn(FileReader.prototype, "readAsText")
+      .mockImplementation(function (this: FileReader) {
+        readers.push(this);
+      });
+
+    wireFileOpen({
+      openFileButton: null,
+      openFileInput,
+      sampleSelect: null,
+      liveRegion,
+      msgs,
+      onApplySource: vi.fn(),
+    });
+    openFileInput.dispatchEvent(new Event("change"));
+    openFileInput.dispatchEvent(new Event("change"));
+
+    readers[0].onerror?.(
+      new ProgressEvent("error") as ProgressEvent<FileReader>
+    );
+
+    expect(liveRegion.textContent).toBe("");
+
+    readAsText.mockRestore();
+  });
 });
 
 describe("wireTooltip", () => {
