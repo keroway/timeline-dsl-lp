@@ -95,7 +95,16 @@ const TDSL_WASM_BINARY_URL = "/wasm/tdsl_wasm_bg.wasm";
 let loadPromise: Promise<TdslWasmLoadResult> | undefined;
 
 export function loadTdslWasm(): Promise<TdslWasmLoadResult> {
-  loadPromise ??= loadTdslWasmModule();
+  if (!loadPromise) {
+    const pending = loadTdslWasmModule().then((result) => {
+      // 失敗結果を固定しない: 次の呼び出し（再試行）で初期化をやり直せるようにする。
+      if (result.status !== "ready" && loadPromise === pending) {
+        loadPromise = undefined;
+      }
+      return result;
+    });
+    loadPromise = pending;
+  }
   return loadPromise;
 }
 

@@ -146,6 +146,15 @@ describe("WASM が利用できない環境でのラッパー分岐", () => {
     ]);
   });
 
+  it("loadTdslWasm は unavailable 結果を固定せず、次の呼び出しで初期化をやり直す", async () => {
+    const wasm = await import("./tdsl-wasm");
+    const first = await wasm.loadTdslWasm();
+    const second = await wasm.loadTdslWasm();
+    expect(first.status).toBe("unavailable");
+    expect(second.status).toBe("unavailable");
+    expect(second).not.toBe(first);
+  });
+
   it("renderTdslSvg は注入された fallback メッセージで reject する", async () => {
     const wasm = await import("./tdsl-wasm");
     wasm.setTdslWasmMessages({

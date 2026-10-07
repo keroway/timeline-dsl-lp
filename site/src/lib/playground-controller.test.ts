@@ -3,6 +3,7 @@ import { mustQuery } from "./test-dom-helpers";
 
 // WASM・CodeMirror・pan-zoom・共有 URL は collaborator として mock し、
 // initPlayground 本体の状態オーケストレーション分岐だけを検証する。
+const loadTdslWasm = vi.fn();
 const checkTdslSource = vi.fn();
 const renderTdslSvgWithOptions = vi.fn();
 const renderTdslHtmlWithOptions = vi.fn();
@@ -10,6 +11,7 @@ const renderTdslHtmlWithOptions = vi.fn();
 const setTdslWasmMessages = vi.fn();
 
 vi.mock("./tdsl-wasm", () => ({
+  loadTdslWasm: (...args: unknown[]) => loadTdslWasm(...args),
   checkTdslSource: (...args: unknown[]) => checkTdslSource(...args),
   renderTdslSvgWithOptions: (...args: unknown[]) =>
     renderTdslSvgWithOptions(...args),
@@ -112,6 +114,8 @@ function setupDom() {
 }
 
 beforeEach(() => {
+  loadTdslWasm.mockReset();
+  loadTdslWasm.mockResolvedValue({ status: "ready", api: {} });
   checkTdslSource.mockReset();
   renderTdslSvgWithOptions.mockReset();
   renderTdslHtmlWithOptions.mockReset();
@@ -246,6 +250,47 @@ describe("initPlayground runPlayground の状態分岐", () => {
       expect(dom.status.textContent).toBe(MSGS.statusWasmFailed);
     });
     expect(dom.root.getAttribute("data-playground-state")).toBe("error");
+  });
+
+  it("WASM 初期化失敗は再試行ボタンを表示し、押下で初期化をやり直して回復する", async () => {
+    const dom = setupDom();
+    loadTdslWasm.mockResolvedValueOnce({
+      status: "unavailable",
+      message: "init failed",
+    });
+    checkTdslSource.mockResolvedValue([]);
+    renderTdslSvgWithOptions.mockResolvedValue(
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    );
+
+    initPlayground();
+
+    await vi.waitFor(() => {
+      expect(dom.status.textContent).toBe(MSGS.statusWasmFailed);
+    });
+    expect(checkTdslSource).not.toHaveBeenCalled();
+    const retry = mustQuery<HTMLButtonElement>(document, ".preview-retry-btn");
+
+    retry.click();
+
+    await vi.waitFor(() => {
+      expect(dom.root.getAttribute("data-playground-state")).toBe("ready");
+    });
+    expect(loadTdslWasm).toHaveBeenCalledTimes(2);
+  });
+
+  it("DSL の構文エラーでは再試行ボタンを出さない", async () => {
+    const dom = setupDom();
+    checkTdslSource.mockResolvedValue([
+      { severity: "error", message: "e", line: 2, col: 3 },
+    ]);
+
+    initPlayground();
+
+    await vi.waitFor(() => {
+      expect(dom.status.textContent).toBe(MSGS.statusError);
+    });
+    expect(document.querySelector(".preview-retry-btn")).toBeNull();
   });
 
   it("壊れた共有URL（status=invalid）はデフォルトサンプルへフォールバックしつつ shareLive に通知する", async () => {

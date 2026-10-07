@@ -11,6 +11,7 @@ import {
 } from "./playground-share";
 import {
   checkTdslSource,
+  loadTdslWasm,
   renderTdslHtmlWithOptions,
   renderTdslSvgWithOptions,
   setTdslWasmMessages,
@@ -447,6 +448,13 @@ export function initPlayground(): void {
     setText(previewMeta, msgs.previewMetaChecking);
 
     try {
+      // 初期化失敗は DSL の診断エラーと区別し、再試行 UI のある catch 経路へ流す。
+      const loaded = await loadTdslWasm();
+      if (runId !== latestRunId) return;
+      if (loaded.status !== "ready") {
+        throw new Error(loaded.message, { cause: loaded.cause });
+      }
+
       const result = await checkTdslSource(source);
       if (runId !== latestRunId) return;
 
