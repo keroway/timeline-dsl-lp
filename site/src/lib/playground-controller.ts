@@ -288,6 +288,13 @@ export function wireTooltip(opts: {
   });
 
   preview?.addEventListener("pointerleave", hideTooltip);
+
+  // WCAG 1.4.13: ポインターを動かさずに Escape で閉じられること。
+  if (preview) {
+    document.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.key === "Escape") hideTooltip();
+    });
+  }
 }
 
 export function wireScale(opts: {
