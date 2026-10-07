@@ -302,6 +302,15 @@ export const ja = {
   "playground.diagnostics.severity_error": "エラー",
   "playground.diagnostics.severity_warn": "警告",
   "playground.diagnostics.severity_info": "情報",
+  "playground.diagnostics.counts":
+    "エラー {errors} 件 / 警告 {warnings} 件 / 情報 {info} 件",
+  "playground.diagnostics.global": "全体",
+  "playground.editor.lines": "{count} 行",
+  "playground.preview.meta_checking": "検証中",
+  "playground.preview.meta_kept": "直前のプレビューを保持",
+  "playground.preview.meta_none": "プレビューなし",
+  "playground.preview.meta_updated": "更新済み",
+  "playground.preview.meta_render_failed": "描画失敗",
   "playground.retry": "再試行",
   "playground.wasm.fallback":
     "ブラウザ版 Timeline DSL を読み込めませんでした。最新のブラウザで再読み込みするか、ローカルの `tdsl check` / `tdsl render` を使って確認してください。",
