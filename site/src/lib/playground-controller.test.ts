@@ -732,6 +732,31 @@ describe("wireTooltip", () => {
     expect(tooltipEl.hasAttribute("data-visible")).toBe(false);
     expect(tooltipEl.getAttribute("aria-hidden")).toBe("true");
   });
+
+  it("Escape キーで tooltipEl の data-visible が削除される", () => {
+    const preview = document.createElement("div");
+    const tooltipEl = document.createElement("div");
+    tooltipEl.setAttribute("data-visible", "true");
+    tooltipEl.setAttribute("aria-hidden", "false");
+
+    wireTooltip({ preview, tooltipEl });
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+
+    expect(tooltipEl.hasAttribute("data-visible")).toBe(false);
+    expect(tooltipEl.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("Escape 以外のキーでは tooltipEl を閉じない", () => {
+    const preview = document.createElement("div");
+    const tooltipEl = document.createElement("div");
+    tooltipEl.setAttribute("data-visible", "true");
+    tooltipEl.setAttribute("aria-hidden", "false");
+
+    wireTooltip({ preview, tooltipEl });
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
+
+    expect(tooltipEl.getAttribute("data-visible")).toBe("true");
+  });
 });
 
 describe("wireScale", () => {
