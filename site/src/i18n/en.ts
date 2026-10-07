@@ -306,6 +306,15 @@ export const en = {
   "playground.diagnostics.severity_error": "ERROR",
   "playground.diagnostics.severity_warn": "WARN",
   "playground.diagnostics.severity_info": "INFO",
+  "playground.diagnostics.counts":
+    "{errors} errors / {warnings} warnings / {info} info",
+  "playground.diagnostics.global": "global",
+  "playground.editor.lines": "{count} lines",
+  "playground.preview.meta_checking": "checking",
+  "playground.preview.meta_kept": "previous preview kept",
+  "playground.preview.meta_none": "no preview",
+  "playground.preview.meta_updated": "updated",
+  "playground.preview.meta_render_failed": "render failed",
   "playground.retry": "Retry",
   "playground.wasm.fallback":
     "Could not load the browser build of Timeline DSL. Reload in an up-to-date browser, or fall back to the local `tdsl check` / `tdsl render` CLI.",

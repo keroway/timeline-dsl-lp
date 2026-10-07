@@ -42,7 +42,12 @@ export function buildDiagnosticsFragment(
   items: TdslDiagnostic[],
   msgs: Pick<
     PlaygroundMsgs,
-    "diagnosticsEmpty" | "severityError" | "severityWarn" | "severityInfo"
+    | "diagnosticsEmpty"
+    | "diagnosticsCounts"
+    | "diagnosticsGlobal"
+    | "severityError"
+    | "severityWarn"
+    | "severityInfo"
   >
 ): { metaText: string; node: Node } {
   const errorCount = items.filter((item) => item.severity === "error").length;
@@ -50,7 +55,11 @@ export function buildDiagnosticsFragment(
     (item) => item.severity === "warning"
   ).length;
   const infoCount = items.filter((item) => item.severity === "info").length;
-  const metaText = `${errorCount} errors / ${warningCount} warnings / ${infoCount} info`;
+  const metaText = interpolate(msgs.diagnosticsCounts, {
+    errors: String(errorCount),
+    warnings: String(warningCount),
+    info: String(infoCount),
+  });
 
   if (items.length === 0) {
     const empty = document.createElement("p");
@@ -75,7 +84,7 @@ export function buildDiagnosticsFragment(
 
     const location = document.createElement("strong");
     location.textContent =
-      item.line > 0 ? `${item.line}:${item.col}` : "global";
+      item.line > 0 ? `${item.line}:${item.col}` : msgs.diagnosticsGlobal;
 
     const message = document.createElement("p");
     message.textContent = item.message;
@@ -406,7 +415,10 @@ export function initPlayground(): void {
   };
 
   const updateEditorMeta = () => {
-    setText(editorMeta, `${view.state.doc.lines} lines`);
+    setText(
+      editorMeta,
+      interpolate(msgs.editorLines, { count: String(view.state.doc.lines) })
+    );
   };
 
   const renderDiagnostics = (items: TdslDiagnostic[]) => {
@@ -425,7 +437,7 @@ export function initPlayground(): void {
     const source = view.state.doc.toString();
     updateEditorMeta();
     setStatus(msgs.statusChecking, "loading");
-    setText(previewMeta, "checking");
+    setText(previewMeta, msgs.previewMetaChecking);
 
     try {
       const result = await checkTdslSource(source);
@@ -438,7 +450,10 @@ export function initPlayground(): void {
 
       if (hasErrors) {
         setStatus(msgs.statusError, "error");
-        setText(previewMeta, lastSvg ? "previous preview kept" : "no preview");
+        setText(
+          previewMeta,
+          lastSvg ? msgs.previewMetaKept : msgs.previewMetaNone
+        );
         if (!lastSvg) {
           stage.replaceChildren(
             Object.assign(document.createElement("p"), {
@@ -471,7 +486,7 @@ export function initPlayground(): void {
       panZoom?.applySvg();
       downloadSvgButton?.removeAttribute("disabled");
       downloadHtmlButton?.removeAttribute("disabled");
-      setText(previewMeta, "updated");
+      setText(previewMeta, msgs.previewMetaUpdated);
       setStatus(
         hasWarnings ? msgs.statusWarn : msgs.statusOk,
         hasWarnings ? "warn" : "ready"
@@ -482,7 +497,10 @@ export function initPlayground(): void {
       const message = error instanceof Error ? error.message : String(error);
       renderDiagnostics([{ severity: "error", message, line: 0, col: 0 }]);
       setStatus(msgs.statusWasmFailed, "error");
-      setText(previewMeta, lastSvg ? "previous preview kept" : "render failed");
+      setText(
+        previewMeta,
+        lastSvg ? msgs.previewMetaKept : msgs.previewMetaRenderFailed
+      );
       if (!lastSvg) {
         const errMsg = document.createElement("p");
         errMsg.textContent = msgs.previewRenderFailed;

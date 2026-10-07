@@ -73,6 +73,14 @@ const MSGS = {
   severityError: "エラー",
   severityWarn: "警告",
   severityInfo: "情報",
+  diagnosticsCounts: "エラー {errors} 件 / 警告 {warnings} 件 / 情報 {info} 件",
+  diagnosticsGlobal: "全体",
+  editorLines: "{count} 行",
+  previewMetaChecking: "検証中",
+  previewMetaKept: "直前のプレビューを保持",
+  previewMetaNone: "プレビューなし",
+  previewMetaUpdated: "更新済み",
+  previewMetaRenderFailed: "描画失敗",
   wasmFallback: "WASM フォールバック",
 };
 
@@ -81,6 +89,7 @@ function setupDom() {
     <div data-playground-root>
       <div data-editor-host></div>
       <p data-status></p>
+      <p data-editor-meta></p>
       <p data-preview-meta></p>
       <p data-diagnostics-meta></p>
       <div data-preview>
@@ -96,6 +105,8 @@ function setupDom() {
     root: mustQuery(document, "[data-playground-root]"),
     status: mustQuery(document, "[data-status]"),
     diagnosticsMeta: mustQuery(document, "[data-diagnostics-meta]"),
+    editorMeta: mustQuery(document, "[data-editor-meta]"),
+    previewMeta: mustQuery(document, "[data-preview-meta]"),
     shareLive: mustQuery(document, "[data-share-live]"),
   };
 }
@@ -142,8 +153,10 @@ describe("initPlayground runPlayground の状態分岐", () => {
     });
     expect(dom.status.textContent).toBe(MSGS.statusOk);
     expect(dom.diagnosticsMeta.textContent).toBe(
-      "0 errors / 0 warnings / 0 info"
+      "エラー 0 件 / 警告 0 件 / 情報 0 件"
     );
+    expect(dom.editorMeta.textContent).toBe("1 行");
+    expect(dom.previewMeta.textContent).toBe(MSGS.previewMetaUpdated);
     expect(renderTdslSvgWithOptions).toHaveBeenCalledWith("event x", 0, {
       showEventLabels: false,
       locale: "ja",
@@ -257,6 +270,8 @@ describe("initPlayground runPlayground の状態分岐", () => {
 describe("buildDiagnosticsFragment", () => {
   const msgs = {
     diagnosticsEmpty: "問題なし",
+    diagnosticsCounts: MSGS.diagnosticsCounts,
+    diagnosticsGlobal: MSGS.diagnosticsGlobal,
     severityError: "エラー",
     severityWarn: "警告",
     severityInfo: "情報",
@@ -264,7 +279,7 @@ describe("buildDiagnosticsFragment", () => {
 
   it("items が空のとき diagnostics-empty な p を返し metaText は 0/0/0", () => {
     const { metaText, node } = buildDiagnosticsFragment([], msgs);
-    expect(metaText).toBe("0 errors / 0 warnings / 0 info");
+    expect(metaText).toBe("エラー 0 件 / 警告 0 件 / 情報 0 件");
     const p = node as HTMLParagraphElement;
     expect(p.tagName).toBe("P");
     expect(p.className).toBe("diagnostics-empty");
@@ -278,20 +293,36 @@ describe("buildDiagnosticsFragment", () => {
       { severity: "error" as const, message: "e2", line: 3, col: 3 },
     ];
     const { metaText, node } = buildDiagnosticsFragment(items, msgs);
-    expect(metaText).toBe("2 errors / 1 warnings / 0 info");
+    expect(metaText).toBe("エラー 2 件 / 警告 1 件 / 情報 0 件");
     const ol = node as HTMLOListElement;
     expect(ol.tagName).toBe("OL");
     expect(ol.children).toHaveLength(3);
   });
 
-  it("line が 0 のとき location テキストは 'global' になる", () => {
+  it("line が 0 のとき location テキストは辞書の全体診断ラベルになる", () => {
     const items = [
       { severity: "error" as const, message: "global err", line: 0, col: 0 },
     ];
     const { node } = buildDiagnosticsFragment(items, msgs);
     const ol = node as HTMLOListElement;
     const strong = ol.querySelector("strong");
-    expect(strong?.textContent).toBe("global");
+    expect(strong?.textContent).toBe("全体");
+  });
+
+  it("英語辞書を渡すと英語の件数・全体診断ラベルになる", () => {
+    const enMsgs = {
+      ...msgs,
+      diagnosticsCounts: "{errors} errors / {warnings} warnings / {info} info",
+      diagnosticsGlobal: "global",
+    };
+    const items = [
+      { severity: "error" as const, message: "e", line: 0, col: 0 },
+    ];
+    const { metaText, node } = buildDiagnosticsFragment(items, enMsgs);
+    expect(metaText).toBe("1 errors / 0 warnings / 0 info");
+    expect(
+      (node as HTMLOListElement).querySelector("strong")?.textContent
+    ).toBe("global");
   });
 });
 

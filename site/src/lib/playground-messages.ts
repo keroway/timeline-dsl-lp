@@ -30,6 +30,14 @@ export function buildPlaygroundMsgs(t: ReturnType<typeof getT>) {
     severityError: t("playground.diagnostics.severity_error"),
     severityWarn: t("playground.diagnostics.severity_warn"),
     severityInfo: t("playground.diagnostics.severity_info"),
+    diagnosticsCounts: t("playground.diagnostics.counts"),
+    diagnosticsGlobal: t("playground.diagnostics.global"),
+    editorLines: t("playground.editor.lines"),
+    previewMetaChecking: t("playground.preview.meta_checking"),
+    previewMetaKept: t("playground.preview.meta_kept"),
+    previewMetaNone: t("playground.preview.meta_none"),
+    previewMetaUpdated: t("playground.preview.meta_updated"),
+    previewMetaRenderFailed: t("playground.preview.meta_render_failed"),
     wasmFallback: t("playground.wasm.fallback"),
   };
 }
