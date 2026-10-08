@@ -563,6 +563,7 @@
 
 .tdsl-tooltip[data-visible="true"] {
   opacity: 1;
+  pointer-events: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {

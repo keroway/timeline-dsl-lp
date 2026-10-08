@@ -778,6 +778,84 @@ describe("wireTooltip", () => {
     expect(tooltipEl.getAttribute("aria-hidden")).toBe("true");
   });
 
+  describe("表示内容へのホバー移動 (WCAG 1.4.13 Hoverable)", () => {
+    const setup = () => {
+      const preview = document.createElement("div");
+      const target = document.createElement("span");
+      target.setAttribute("data-tdsl-tooltip", "Details");
+      preview.appendChild(target);
+      const tooltipEl = document.createElement("div");
+      document.body.append(preview, tooltipEl);
+      wireTooltip({ preview, tooltipEl });
+      target.dispatchEvent(
+        new PointerEvent("pointermove", {
+          bubbles: true,
+          clientX: 10,
+          clientY: 10,
+        })
+      );
+      return { preview, target, tooltipEl };
+    };
+
+    afterEach(() => {
+      vi.useRealTimers();
+      document.body.replaceChildren();
+    });
+
+    it("relatedTarget が tooltipEl の pointerleave では閉じない", () => {
+      const { preview, tooltipEl } = setup();
+      expect(tooltipEl.getAttribute("data-visible")).toBe("true");
+
+      preview.dispatchEvent(
+        new PointerEvent("pointerleave", { relatedTarget: tooltipEl })
+      );
+
+      expect(tooltipEl.getAttribute("data-visible")).toBe("true");
+    });
+
+    it("relatedTarget が領域外の pointerleave では閉じる", () => {
+      const { preview, tooltipEl } = setup();
+
+      preview.dispatchEvent(
+        new PointerEvent("pointerleave", { relatedTarget: document.body })
+      );
+
+      expect(tooltipEl.hasAttribute("data-visible")).toBe(false);
+    });
+
+    it("起点外の pointermove 後も猶予内に tooltipEl へ入れば維持される", () => {
+      vi.useFakeTimers();
+      const { preview, tooltipEl } = setup();
+
+      preview.dispatchEvent(new PointerEvent("pointermove"));
+      tooltipEl.dispatchEvent(new PointerEvent("pointerenter"));
+      vi.runAllTimers();
+
+      expect(tooltipEl.getAttribute("data-visible")).toBe("true");
+    });
+
+    it("起点外の pointermove で猶予後に閉じる", () => {
+      vi.useFakeTimers();
+      const { preview, tooltipEl } = setup();
+
+      preview.dispatchEvent(new PointerEvent("pointermove"));
+      expect(tooltipEl.getAttribute("data-visible")).toBe("true");
+      vi.runAllTimers();
+
+      expect(tooltipEl.hasAttribute("data-visible")).toBe(false);
+    });
+
+    it("tooltipEl の pointerleave で領域外へ出ると閉じる", () => {
+      const { tooltipEl } = setup();
+
+      tooltipEl.dispatchEvent(
+        new PointerEvent("pointerleave", { relatedTarget: document.body })
+      );
+
+      expect(tooltipEl.hasAttribute("data-visible")).toBe(false);
+    });
+  });
+
   it("Escape キーで tooltipEl の data-visible が削除される", () => {
     const preview = document.createElement("div");
     const tooltipEl = document.createElement("div");
