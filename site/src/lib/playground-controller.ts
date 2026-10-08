@@ -248,14 +248,34 @@ export function wireTooltip(opts: {
 }): void {
   const { preview, tooltipEl } = opts;
 
+  // 起点からツールチップへ移る間の隙間（margin 分）を渡れるようにする猶予。
+  const HIDE_GRACE_MS = 150;
+  let hideTimer: ReturnType<typeof setTimeout> | null = null;
+
+  const cancelPendingHide = () => {
+    if (hideTimer === null) return;
+    clearTimeout(hideTimer);
+    hideTimer = null;
+  };
+
   const hideTooltip = () => {
+    cancelPendingHide();
     if (!tooltipEl) return;
     tooltipEl.removeAttribute("data-visible");
     tooltipEl.setAttribute("aria-hidden", "true");
   };
 
+  const hideTooltipSoon = () => {
+    if (hideTimer !== null) return;
+    hideTimer = setTimeout(hideTooltip, HIDE_GRACE_MS);
+  };
+
+  const isInsideTooltip = (node: EventTarget | null) =>
+    node instanceof Node && !!tooltipEl?.contains(node);
+
   const showTooltip = (text: string, clientX: number, clientY: number) => {
     if (!tooltipEl) return;
+    cancelPendingHide();
     tooltipEl.textContent = text;
     tooltipEl.setAttribute("data-visible", "true");
     tooltipEl.setAttribute("aria-hidden", "false");
@@ -285,10 +305,27 @@ export function wireTooltip(opts: {
       }
       target = target.parentElement;
     }
+    hideTooltipSoon();
+  });
+
+  // WCAG 1.4.13 (Hoverable): 表示内容へポインターを移しても表示を維持する。
+  preview?.addEventListener("pointerleave", (event: PointerEvent) => {
+    if (isInsideTooltip(event.relatedTarget)) {
+      cancelPendingHide();
+      return;
+    }
     hideTooltip();
   });
 
-  preview?.addEventListener("pointerleave", hideTooltip);
+  tooltipEl?.addEventListener("pointerenter", cancelPendingHide);
+  tooltipEl?.addEventListener("pointerleave", (event: PointerEvent) => {
+    // preview へ戻る場合は、次の pointermove が表示/非表示を決める。
+    if (preview?.contains(event.relatedTarget as Node | null)) {
+      hideTooltipSoon();
+      return;
+    }
+    hideTooltip();
+  });
 
   // WCAG 1.4.13: ポインターを動かさずに Escape で閉じられること。
   if (preview) {
