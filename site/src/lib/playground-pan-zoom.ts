@@ -181,6 +181,16 @@ export function createPanZoom({
   const onWheel = (e: WheelEvent) => {
     e.preventDefault();
 
+    // 保留中のパン描画を先に確定する。残すと次フレームでズーム前の座標が上書きされる。
+    cancelPendingFrame();
+    if (pendingPan && panActive) {
+      // 最新のポインタ座標を、基準を付け替える前に復元しておく。
+      pendingPan.startX += pendingTx - pendingPan.startTx;
+      pendingPan.startY += pendingTy - pendingPan.startTy;
+      tx = pendingTx;
+      ty = pendingTy;
+    }
+
     const rect = surface.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
@@ -194,6 +204,15 @@ export function createPanZoom({
     scale = newScale;
 
     applyTransform(scale, tx, ty, false);
+
+    if (pendingPan) {
+      // 進行中のパンの基準をズーム後の位置へ付け替え、
+      // 後続の pointermove/pointerup が古い基準で位置を巻き戻さないようにする。
+      pendingPan.startTx = tx;
+      pendingPan.startTy = ty;
+      pendingTx = tx;
+      pendingTy = ty;
+    }
   };
 
   const onDblClick = () => fitToSurface();
