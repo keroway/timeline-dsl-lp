@@ -301,6 +301,73 @@ describe("createPanZoom — fit / scaling", () => {
   });
 });
 
+describe("createPanZoom — keyboard pan", () => {
+  const press = (target: HTMLElement, key: string, init: object = {}) => {
+    const ev = new KeyboardEvent("keydown", {
+      key,
+      bubbles: true,
+      cancelable: true,
+      ...init,
+    });
+    target.dispatchEvent(ev);
+    return ev;
+  };
+
+  it("矢印キーで表示位置が移動し、reset でフィット表示に戻る（回帰: #774）", () => {
+    const { surface, stage } = makeEnv({
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 400,
+      svgH: 200,
+    });
+    const pz = createPanZoom({ surface, stage, keyPanStep: 40 });
+    pz.reset();
+    const base = parseMatrix(stage);
+
+    expect(press(surface, "ArrowRight").defaultPrevented).toBe(true);
+    expect(parseMatrix(stage).tx).toBeCloseTo(base.tx - 40);
+    press(surface, "ArrowLeft");
+    press(surface, "ArrowLeft");
+    expect(parseMatrix(stage).tx).toBeCloseTo(base.tx + 40);
+    press(surface, "ArrowDown");
+    expect(parseMatrix(stage).ty).toBeCloseTo(base.ty - 40);
+    press(surface, "ArrowUp");
+    press(surface, "ArrowUp");
+    expect(parseMatrix(stage).ty).toBeCloseTo(base.ty + 40);
+
+    pz.reset();
+    const m = parseMatrix(stage);
+    expect(m.tx).toBeCloseTo(base.tx);
+    expect(m.ty).toBeCloseTo(base.ty);
+  });
+
+  it("修飾キー付き・矢印以外・子要素由来のキー入力は無視する", () => {
+    const { surface, stage } = makeEnv();
+    const child = document.createElement("button");
+    surface.appendChild(child);
+    const pz = createPanZoom({ surface, stage });
+    pz.reset();
+    const base = parseMatrix(stage);
+
+    expect(
+      press(surface, "ArrowRight", { shiftKey: true }).defaultPrevented
+    ).toBe(false);
+    expect(press(surface, "a").defaultPrevented).toBe(false);
+    expect(press(child, "ArrowRight").defaultPrevented).toBe(false);
+    expect(parseMatrix(stage)).toEqual(base);
+  });
+
+  it("destroy() 後はキー入力に反応しない", () => {
+    const { surface, stage } = makeEnv();
+    const pz = createPanZoom({ surface, stage });
+    pz.reset();
+    const base = parseMatrix(stage);
+    pz.destroy();
+    press(surface, "ArrowRight");
+    expect(parseMatrix(stage)).toEqual(base);
+  });
+});
+
 describe("createPanZoom — pointer state / RAF / teardown", () => {
   it("しきい値未満の移動はパンを開始しない（クラス付与なし）", () => {
     const { surface, stage } = makeEnv();

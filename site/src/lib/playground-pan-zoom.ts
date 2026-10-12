@@ -15,6 +15,8 @@ export interface PanZoomOptions {
   minScale?: number;
   maxScale?: number;
   panThreshold?: number;
+  /** 矢印キー 1 回あたりの移動量（px） */
+  keyPanStep?: number;
 }
 
 export function createPanZoom({
@@ -25,6 +27,7 @@ export function createPanZoom({
   minScale = 0.25,
   maxScale = 8,
   panThreshold = 5,
+  keyPanStep = 48,
 }: PanZoomOptions): PanZoomController {
   let scale = 1;
   let tx = 0;
@@ -195,6 +198,28 @@ export function createPanZoom({
 
   const onDblClick = () => fitToSurface();
 
+  // スクロールと同じ向き: ArrowRight は表示領域を右へ動かす（コンテンツは左へ）。
+  const keyPanDeltas: Record<string, [number, number]> = {
+    ArrowLeft: [keyPanStep, 0],
+    ArrowRight: [-keyPanStep, 0],
+    ArrowUp: [0, keyPanStep],
+    ArrowDown: [0, -keyPanStep],
+  };
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    // ボタン等に埋め込まれた操作対象のキー入力は奪わない。
+    if (e.target !== surface) return;
+    const delta = keyPanDeltas[e.key];
+    if (!delta) return;
+    e.preventDefault();
+    cancelPendingFrame();
+    tx += delta[0];
+    ty += delta[1];
+    applyTransform(scale, tx, ty, false);
+  };
+
+  surface.addEventListener("keydown", onKeyDown);
   surface.addEventListener("pointerdown", onPointerDown);
   surface.addEventListener("pointermove", onPointerMove);
   surface.addEventListener("pointerup", endPan);
@@ -211,6 +236,7 @@ export function createPanZoom({
     reset: fitToSurface,
     destroy() {
       cancelPendingFrame();
+      surface.removeEventListener("keydown", onKeyDown);
       surface.removeEventListener("pointerdown", onPointerDown);
       surface.removeEventListener("pointermove", onPointerMove);
       surface.removeEventListener("pointerup", endPan);

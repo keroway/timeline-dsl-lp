@@ -14,7 +14,14 @@ const t = getT(locale);
     <span>preview.svg</span>
     <span data-preview-meta>{t("playground.preview.waiting")}</span>
   </div>
-  <div class="preview-surface" data-smoke="playground-preview" data-preview>
+  <div
+    class="preview-surface"
+    data-smoke="playground-preview"
+    data-preview
+    tabindex="0"
+    role="group"
+    aria-label={t("playground.preview.surface_aria")}
+  >
     <div class="pan-zoom-stage" data-pan-zoom-stage>
       <p class="pan-zoom-placeholder">{t("playground.preview.placeholder")}</p>
     </div>

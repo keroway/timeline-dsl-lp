@@ -273,6 +273,8 @@ export const en = {
   "playground.preview.placeholder": "Preview will appear after WASM loads.",
   "playground.preview.fix_errors": "Fix the errors to see a preview.",
   "playground.preview.render_failed": "Could not render.",
+  "playground.preview.surface_aria":
+    "Preview (use the arrow keys to move the view)",
   "playground.preview.reset_aria": "Fit to view",
   "playground.preview.reset_title": "Fit to view (or double-click to reset)",
   "playground.toolbar.sample_label": "Sample",
