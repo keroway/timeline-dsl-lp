@@ -602,6 +602,59 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(stage.style.transform).toBe(fitted);
   });
 
+  it("パン中のホイールズームで、保留中のパン RAF がズーム後の位置を上書きしない（回帰: #778）", () => {
+    vi.useFakeTimers();
+    const { surface, stage } = makeEnv();
+    createPanZoom({ surface, stage, panThreshold: 5 });
+
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 1,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 100,
+      clientY: 0,
+      pointerId: 1,
+    });
+    surface.dispatchEvent(
+      new WheelEvent("wheel", {
+        deltaY: -100,
+        clientX: 400,
+        clientY: 300,
+        bubbles: true,
+        cancelable: true,
+      })
+    );
+    const zoomed = parseMatrix(stage);
+    // パンの 100px を確定したうえでカーソル中心にズームした位置になる。
+    const s = 1 + 100 * 0.0015;
+    expect(zoomed.scale).toBeCloseTo(s, 6);
+    expect(zoomed.tx).toBeCloseTo(400 - s * (400 - 100), 6);
+    expect(zoomed.ty).toBeCloseTo(300 - s * 300, 6);
+
+    vi.advanceTimersByTime(50);
+    expect(parseMatrix(stage)).toEqual(zoomed);
+
+    // ズーム後も同じドラッグが継続でき、位置が巻き戻らず追従する。
+    firePointer(surface, "pointermove", {
+      clientX: 130,
+      clientY: 20,
+      pointerId: 1,
+    });
+    vi.advanceTimersByTime(50);
+    const moved = parseMatrix(stage);
+    expect(moved.tx).toBeCloseTo(zoomed.tx + 30, 6);
+    expect(moved.ty).toBeCloseTo(zoomed.ty + 20, 6);
+
+    firePointer(surface, "pointerup", {
+      clientX: 130,
+      clientY: 20,
+      pointerId: 1,
+    });
+    expect(parseMatrix(stage)).toEqual(moved);
+  });
+
   it("別の pointerId のイベントは無視する", () => {
     const { surface, stage } = makeEnv();
     createPanZoom({ surface, stage, panThreshold: 5 });
