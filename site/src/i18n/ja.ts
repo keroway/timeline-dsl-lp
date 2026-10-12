@@ -269,6 +269,8 @@ export const ja = {
     "WASM の読み込み後にプレビューを表示します。",
   "playground.preview.fix_errors": "エラーを修正するとプレビューを表示します。",
   "playground.preview.render_failed": "レンダリングできませんでした。",
+  "playground.preview.surface_aria":
+    "プレビュー（矢印キーで表示位置を移動できます）",
   "playground.preview.reset_aria": "ビューをフィット",
   "playground.preview.reset_title":
     "ビューをフィット (ダブルクリックでもリセット)",
