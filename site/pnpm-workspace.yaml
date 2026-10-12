@@ -30,7 +30,7 @@ overrides:
   qs: 6.16.0
   # osv-scanner 検出分（2026-09-14）。いずれもパッチレベル修正、破壊的変更なし。
   # GHSA-rgj7-g3m4-5g8c (sharp) — Astro の画像最適化経由。
-  sharp: 0.35.4
+  sharp: 0.35.5
   # GHSA-7w5x-hrqm-74c2 (smol-toml) — Astro の設定パース経由。
   smol-toml: 1.9.0
   # GHSA-4vpr-x523-8j87 / GHSA-w27v-7q3p-w38r (svgo) — Astro のアセット最適化経由。
@@ -65,7 +65,9 @@ minimumReleaseAgeExclude:
     brace-expansion@1.1.21,
     undici@7.29.1,
     # Renovate security update: smol-toml@1.9.0
-    smol-toml@1.9.0
+    smol-toml@1.9.0,
+    # Renovate security update: sharp@0.35.5
+    sharp@0.35.5
   ]
 
 # pnpm 12 はデフォルトで依存の build スクリプト実行を遮断する (strictDepBuilds)。
