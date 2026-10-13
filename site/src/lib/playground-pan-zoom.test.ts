@@ -655,6 +655,54 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(parseMatrix(stage)).toEqual(moved);
   });
 
+  it("パン中の矢印キー移動が、後続の pointermove/pointerup に巻き戻されない（回帰: #784）", () => {
+    vi.useFakeTimers();
+    const { surface, stage } = makeEnv();
+    createPanZoom({ surface, stage, panThreshold: 5, keyPanStep: 48 });
+
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 1,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 10,
+      clientY: 0,
+      pointerId: 1,
+    });
+    surface.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "ArrowRight",
+        bubbles: true,
+        cancelable: true,
+      })
+    );
+    // パンの 10px を確定したうえで、キーの -48px を足した位置になる。
+    const keyed = parseMatrix(stage);
+    expect(keyed.tx).toBe(10 - 48);
+
+    vi.advanceTimersByTime(50);
+    expect(parseMatrix(stage)).toEqual(keyed);
+
+    // キー移動後も同じドラッグが継続でき、位置が巻き戻らず追従する。
+    firePointer(surface, "pointermove", {
+      clientX: 25,
+      clientY: 5,
+      pointerId: 1,
+    });
+    vi.advanceTimersByTime(50);
+    const moved = parseMatrix(stage);
+    expect(moved.tx).toBe(keyed.tx + 15);
+    expect(moved.ty).toBe(keyed.ty + 5);
+
+    firePointer(surface, "pointerup", {
+      clientX: 25,
+      clientY: 5,
+      pointerId: 1,
+    });
+    expect(parseMatrix(stage)).toEqual(moved);
+  });
+
   it("別の pointerId のイベントは無視する", () => {
     const { surface, stage } = makeEnv();
     createPanZoom({ surface, stage, panThreshold: 5 });
