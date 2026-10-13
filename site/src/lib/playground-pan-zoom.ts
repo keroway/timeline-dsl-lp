@@ -232,10 +232,24 @@ export function createPanZoom({
     const delta = keyPanDeltas[e.key];
     if (!delta) return;
     e.preventDefault();
+    // 保留中のパン描画を先に確定する。残すと後続の pointermove/pointerup が古い座標へ巻き戻す。
     cancelPendingFrame();
+    if (pendingPan && panActive) {
+      pendingPan.startX += pendingTx - pendingPan.startTx;
+      pendingPan.startY += pendingTy - pendingPan.startTy;
+      tx = pendingTx;
+      ty = pendingTy;
+    }
     tx += delta[0];
     ty += delta[1];
     applyTransform(scale, tx, ty, false);
+    if (pendingPan) {
+      // 進行中のパンの基準をキー移動後の位置へ付け替える。
+      pendingPan.startTx = tx;
+      pendingPan.startTy = ty;
+      pendingTx = tx;
+      pendingTy = ty;
+    }
   };
 
   surface.addEventListener("keydown", onKeyDown);
