@@ -216,6 +216,11 @@ export function wireFileOpen(opts: {
 
   let generation = 0;
 
+  // サンプル選択もエディタ内容を置き換える操作なので、保留中の読込を無効化する。
+  sampleSelect?.addEventListener("change", () => {
+    generation++;
+  });
+
   openFileInput?.addEventListener("change", () => {
     const file = openFileInput?.files?.[0];
     if (!file) return;
