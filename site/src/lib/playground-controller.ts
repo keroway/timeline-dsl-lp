@@ -209,7 +209,7 @@ export function wireFileOpen(opts: {
   liveRegion: HTMLElement | null;
   msgs: Pick<PlaygroundMsgs, "fileOpenError">;
   onApplySource: (source: string) => void;
-}): void {
+}): { cancelPendingLoad: () => void } {
   const { openFileButton, openFileInput, sampleSelect } = opts;
 
   openFileButton?.addEventListener("click", () => openFileInput?.click());
@@ -245,6 +245,13 @@ export function wireFileOpen(opts: {
     reader.readAsText(file, "utf-8");
     openFileInput.value = "";
   });
+
+  // 手入力もエディタ内容を置き換える操作なので、呼び出し側から保留中の読込を無効化できるようにする。
+  return {
+    cancelPendingLoad: () => {
+      generation++;
+    },
+  };
 }
 
 export function wireTooltip(opts: {
@@ -573,10 +580,19 @@ export function initPlayground(): void {
 
   const { queueRun } = createRunLoop({ debounceMs: 420, run: runPlayground });
 
+  // プログラムによる内容適用（読込・サンプル・共有 URL）と手入力を区別するためのフラグ。
+  let applyingSource = false;
+  let cancelPendingFileLoad = () => {};
+
   const applySource = (source: string) => {
-    view.dispatch({
-      changes: { from: 0, to: view.state.doc.length, insert: source },
-    });
+    applyingSource = true;
+    try {
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: source },
+      });
+    } finally {
+      applyingSource = false;
+    }
     updateEditorMeta();
     queueRun();
   };
@@ -586,7 +602,10 @@ export function initPlayground(): void {
   const view = createPlaygroundEditor({
     host: editorHost,
     doc: samples[0].source,
-    onDocChange: queueRun,
+    onDocChange: () => {
+      if (!applyingSource) cancelPendingFileLoad();
+      queueRun();
+    },
   });
 
   void (async () => {
@@ -629,14 +648,14 @@ export function initPlayground(): void {
     getSource: () => view.state.doc.toString(),
   });
 
-  wireFileOpen({
+  ({ cancelPendingLoad: cancelPendingFileLoad } = wireFileOpen({
     openFileButton,
     openFileInput,
     sampleSelect,
     liveRegion: shareLive,
     msgs,
     onApplySource: applySource,
-  });
+  }));
 
   wireTooltip({
     preview,
