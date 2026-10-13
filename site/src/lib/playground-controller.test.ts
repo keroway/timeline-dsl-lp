@@ -764,6 +764,77 @@ describe("wireFileOpen", () => {
     readAsText.mockRestore();
   });
 
+  it("ファイル読込待ちに cancelPendingLoad が呼ばれたら、遅れて完了した読込は適用も通知もされない", () => {
+    const openFileInput = document.createElement("input");
+    openFileInput.type = "file";
+    const liveRegion = document.createElement("div");
+    const onApplySource = vi.fn();
+    const file = new File(["A source"], "A.tdsl", { type: "text/plain" });
+    Object.defineProperty(openFileInput, "files", { value: [file] });
+
+    const readers: FileReader[] = [];
+    const readAsText = vi
+      .spyOn(FileReader.prototype, "readAsText")
+      .mockImplementation(function (this: FileReader) {
+        readers.push(this);
+      });
+
+    const { cancelPendingLoad } = wireFileOpen({
+      openFileButton: null,
+      openFileInput,
+      sampleSelect: null,
+      liveRegion,
+      msgs,
+      onApplySource,
+    });
+    openFileInput.dispatchEvent(new Event("change"));
+    cancelPendingLoad();
+
+    Object.defineProperty(readers[0], "result", { value: "A source" });
+    readers[0].onload?.(new ProgressEvent("load") as ProgressEvent<FileReader>);
+    readers[0].onerror?.(
+      new ProgressEvent("error") as ProgressEvent<FileReader>
+    );
+
+    expect(onApplySource).not.toHaveBeenCalled();
+    expect(liveRegion.textContent).toBe("");
+
+    readAsText.mockRestore();
+  });
+
+  it("cancelPendingLoad の後に新しく選択したファイルは適用される", () => {
+    const openFileInput = document.createElement("input");
+    openFileInput.type = "file";
+    const onApplySource = vi.fn();
+    const file = new File(["B source"], "B.tdsl", { type: "text/plain" });
+    Object.defineProperty(openFileInput, "files", { value: [file] });
+
+    const readers: FileReader[] = [];
+    const readAsText = vi
+      .spyOn(FileReader.prototype, "readAsText")
+      .mockImplementation(function (this: FileReader) {
+        readers.push(this);
+      });
+
+    const { cancelPendingLoad } = wireFileOpen({
+      openFileButton: null,
+      openFileInput,
+      sampleSelect: null,
+      liveRegion: null,
+      msgs,
+      onApplySource,
+    });
+    cancelPendingLoad();
+    openFileInput.dispatchEvent(new Event("change"));
+
+    Object.defineProperty(readers[0], "result", { value: "B source" });
+    readers[0].onload?.(new ProgressEvent("load") as ProgressEvent<FileReader>);
+
+    expect(onApplySource).toHaveBeenCalledWith("B source");
+
+    readAsText.mockRestore();
+  });
+
   it("旧選択の読込失敗は最新の選択が進行中なら通知しない", () => {
     const openFileInput = document.createElement("input");
     openFileInput.type = "file";
