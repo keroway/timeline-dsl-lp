@@ -747,6 +747,37 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(stage.classList.contains("is-panning")).toBe(false);
   });
 
+  it("パン中の別 pointerId の pointerdown は進行中のパンを上書きしない（回帰: #788）", () => {
+    vi.useFakeTimers();
+    const { surface, stage } = makeEnv();
+    createPanZoom({ surface, stage, panThreshold: 5 });
+
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 1,
+    });
+    firePointer(surface, "pointerdown", {
+      clientX: 100,
+      clientY: 0,
+      pointerId: 2,
+    });
+    firePointer(surface, "pointerup", {
+      clientX: 100,
+      clientY: 0,
+      pointerId: 2,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 50,
+      clientY: 0,
+      pointerId: 1,
+    });
+    vi.advanceTimersByTime(50);
+
+    expect(stage.classList.contains("is-panning")).toBe(true);
+    expect(parseMatrix(stage).tx).toBe(50);
+  });
+
   it("destroy() は保留中の RAF をキャンセルし、以降のイベントに反応しなくなる", () => {
     vi.useFakeTimers();
     const cancelSpy = vi.spyOn(window, "cancelAnimationFrame");

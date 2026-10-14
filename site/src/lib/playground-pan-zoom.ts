@@ -115,6 +115,8 @@ export function createPanZoom({
 
   const onPointerDown = (e: PointerEvent) => {
     if (e.button !== 0) return;
+    // パンは単一ポインターで扱う。進行中の別 ID の pointerdown で状態を上書きしない。
+    if (pendingPan) return;
     // reset ボタンなど surface 内の操作対象上での press はパン開始扱いにしない。
     // ここで pointer capture を取ってしまうと、ブラウザによっては pointerup のターゲットが
     // ボタンではなく surface にリダイレクトされ、応答するネイティブ click イベントが
