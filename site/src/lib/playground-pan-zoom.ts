@@ -19,6 +19,9 @@ export interface PanZoomOptions {
   keyPanStep?: number;
 }
 
+/** DOM_DELTA_LINE の 1 行をピクセルへ換算する係数 */
+const WHEEL_LINE_PX = 16;
+
 export function createPanZoom({
   surface,
   stage,
@@ -195,7 +198,14 @@ export function createPanZoom({
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
 
-    const delta = -e.deltaY * 0.0015;
+    // deltaMode に応じて行・ページ単位の値をピクセルへ正規化する。
+    const deltaPx =
+      e.deltaMode === WheelEvent.DOM_DELTA_LINE
+        ? e.deltaY * WHEEL_LINE_PX
+        : e.deltaMode === WheelEvent.DOM_DELTA_PAGE
+          ? e.deltaY * rect.height
+          : e.deltaY;
+    const delta = -deltaPx * 0.0015;
     const newScale = clamp(scale * (1 + delta), minScale, maxScale);
     const ratio = newScale / scale;
 
