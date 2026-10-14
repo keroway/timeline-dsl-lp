@@ -1,7 +1,10 @@
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-const distDir = new URL("../dist", import.meta.url).pathname;
+// テストが fixture の dist を指せるよう env で上書きできる。
+const distDir =
+  process.env.BUNDLE_SIZE_DIST_DIR ??
+  new URL("../dist", import.meta.url).pathname;
 
 if (!existsSync(distDir)) {
   console.error("dist/ directory not found. Run pnpm build first.");
@@ -58,9 +61,28 @@ if (!existsSync(astroDir)) {
   process.exit(1);
 }
 
-const jsFiles = readdirSync(astroDir)
-  .filter((f) => f.endsWith(".js"))
-  .map((f) => ({ name: f, size: statSync(join(astroDir, f)).size }));
+// サブディレクトリ配下のアセットも集計対象にする（相対パスで名前を持つ）。
+const assetFiles = readdirSync(astroDir, { recursive: true })
+  .map((f) => ({ name: f, size: statSync(join(astroDir, f)) }))
+  .filter((f) => f.size.isFile())
+  .map((f) => ({ name: f.name, size: f.size.size }));
+
+const jsFiles = assetFiles.filter((f) => f.name.endsWith(".js"));
+const cssFiles = assetFiles.filter((f) => f.name.endsWith(".css"));
+
+// 検査対象が 0 件のまま PASS にしない（ビルド出力構造の変化を検査不能として扱う）。
+for (const [label, files] of [
+  ["JS", jsFiles],
+  ["CSS", cssFiles],
+]) {
+  if (files.length === 0) {
+    console.error(
+      `No ${label} files found under ${astroDir}.\n` +
+        "Astro's build output structure may have changed; bundle-size cannot verify budgets."
+    );
+    process.exit(1);
+  }
+}
 
 const totalJs = jsFiles.reduce((sum, f) => sum + f.size, 0);
 results.push(
@@ -74,10 +96,6 @@ const maxJsFile = jsFiles.reduce((a, b) => (a.size >= b.size ? a : b), {
 results.push(
   evaluate(`Max JS file (${maxJsFile.name})`, maxJsFile.size, THRESHOLDS.maxJs)
 );
-
-const cssFiles = readdirSync(astroDir)
-  .filter((f) => f.endsWith(".css"))
-  .map((f) => ({ name: f, size: statSync(join(astroDir, f)).size }));
 
 const totalCss = cssFiles.reduce((sum, f) => sum + f.size, 0);
 results.push(
