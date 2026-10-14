@@ -126,6 +126,38 @@ describe("initCopyButtons", () => {
     expect(status.textContent).toBe("失敗しました");
   });
 
+  it("execCommand が未定義のときもエラーラベルを表示し、仮 textarea を残さない", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("navigator", {});
+    setExecCommand(undefined);
+    const { button, status } = mountCopyButton({ errorLabel: "失敗しました" });
+
+    initCopyButtons();
+    button.click();
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(status.textContent).toBe("失敗しました");
+    expect(document.querySelector("textarea")).toBeNull();
+  });
+
+  it("execCommand が例外を投げたときもエラーラベルを表示し、仮 textarea を残さない", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("navigator", {});
+    setExecCommand(
+      vi.fn().mockImplementation(() => {
+        throw new Error("copy denied");
+      })
+    );
+    const { button, status } = mountCopyButton({ errorLabel: "失敗しました" });
+
+    initCopyButtons();
+    button.click();
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(status.textContent).toBe("失敗しました");
+    expect(document.querySelector("textarea")).toBeNull();
+  });
+
   it("コピー対象が空のときは何もしない（early return）", async () => {
     vi.useFakeTimers();
     const writeText = vi.fn();

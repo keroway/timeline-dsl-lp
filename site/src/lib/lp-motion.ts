@@ -26,13 +26,17 @@ export function initCopyButtons(): void {
     field.style.top = "-999px";
     field.style.opacity = "0";
     document.body.appendChild(field);
-    field.select();
 
     try {
+      field.select();
       const legacyCopy = (
-        document as unknown as { execCommand: (command: string) => boolean }
+        document as unknown as {
+          execCommand?: (command: string) => boolean;
+        }
       ).execCommand;
-      return legacyCopy.call(document, "copy");
+      return legacyCopy ? legacyCopy.call(document, "copy") : false;
+    } catch {
+      return false;
     } finally {
       field.remove();
     }
