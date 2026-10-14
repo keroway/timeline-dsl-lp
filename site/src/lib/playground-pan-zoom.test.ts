@@ -212,6 +212,32 @@ describe("createPanZoom — fit / scaling", () => {
     expect(m.ty).toBeCloseTo(300 * (1 - expectedScale), 6);
   });
 
+  it.each([
+    ["ピクセル", 0, 3],
+    ["行", 1, 3 * 16],
+    ["ページ", 2, 3 * 600],
+  ])(
+    "ホイールの deltaMode（%s）をピクセルへ正規化してズームする",
+    (_n, deltaMode, px) => {
+      const { surface, stage } = makeEnv({ surfaceH: 600 });
+      createPanZoom({ surface, stage });
+
+      surface.dispatchEvent(
+        new WheelEvent("wheel", {
+          deltaY: 3,
+          deltaMode,
+          clientX: 0,
+          clientY: 0,
+          bubbles: true,
+          cancelable: true,
+        })
+      );
+
+      const expected = Math.max(0.25, 1 * (1 - px * 0.0015));
+      expect(parseMatrix(stage).scale).toBeCloseTo(expected, 6);
+    }
+  );
+
   it("ホイールズームは maxScale を超えない", () => {
     const { surface, stage } = makeEnv();
     createPanZoom({ surface, stage, maxScale: 8 });
