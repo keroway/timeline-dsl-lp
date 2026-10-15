@@ -122,40 +122,47 @@ const t = getT(locale);
 </style>
 
 <script>
+  import { createRetryableInit } from "../lib/retryable-init";
   import { getSearchShortcutHint, isSearchShortcut } from "../lib/search-shortcut";
 
   const searchBtn = document.getElementById("docs-search-btn") as HTMLButtonElement | null;
   const searchHint = document.getElementById("docs-search-hint") as HTMLElement | null;
   const searchDialog = document.getElementById("docs-search-dialog") as HTMLDialogElement | null;
   const searchUi = document.getElementById("docs-search-ui") as HTMLElement | null;
-  let searchInitialized = false;
+  let searchStyleLink: HTMLLinkElement | null = null;
 
   if (searchHint) searchHint.textContent = getSearchShortcutHint();
 
+  const initSearch = createRetryableInit(
+    async () => {
+      if (!searchUi) return;
+      if (!searchStyleLink) {
+        searchStyleLink = document.createElement("link");
+        searchStyleLink.rel = "stylesheet";
+        searchStyleLink.href = "/pagefind/pagefind-ui.css";
+        document.head.appendChild(searchStyleLink);
+      }
+      // @ts-expect-error pagefind-ui.js is generated at build time and not resolvable at type-check time
+      const pagefindUiModule = await import("/pagefind/pagefind-ui.js");
+      // pagefind-ui.js assigns to window.PagefindUI instead of exporting it as ESM
+      const PagefindUI =
+        pagefindUiModule.PagefindUI ?? (window as unknown as { PagefindUI: unknown }).PagefindUI;
+      searchUi.textContent = "";
+      new (PagefindUI as new (options: unknown) => unknown)({
+        element: searchUi,
+        showSubResults: true,
+        resetStyles: false,
+      });
+    },
+    (error) => {
+      console.error("Failed to initialize Pagefind search UI", error);
+      if (searchUi) searchUi.textContent = searchUi.dataset.notBuiltMsg ?? "";
+    },
+  );
+
   async function openSearch(): Promise<void> {
     if (!searchDialog || !searchUi) return;
-    if (!searchInitialized) {
-      searchInitialized = true;
-      try {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "/pagefind/pagefind-ui.css";
-        document.head.appendChild(link);
-        // @ts-expect-error pagefind-ui.js is generated at build time and not resolvable at type-check time
-        const pagefindUiModule = await import("/pagefind/pagefind-ui.js");
-        // pagefind-ui.js assigns to window.PagefindUI instead of exporting it as ESM
-        const PagefindUI =
-          pagefindUiModule.PagefindUI ?? (window as unknown as { PagefindUI: unknown }).PagefindUI;
-        new (PagefindUI as new (options: unknown) => unknown)({
-          element: searchUi,
-          showSubResults: true,
-          resetStyles: false,
-        });
-      } catch (error) {
-        console.error("Failed to initialize Pagefind search UI", error);
-        searchUi.textContent = searchUi.dataset.notBuiltMsg ?? "";
-      }
-    }
+    await initSearch();
     searchDialog.showModal();
     (searchUi.querySelector("input") as HTMLInputElement | null)?.focus();
   }
