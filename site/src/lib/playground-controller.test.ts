@@ -34,10 +34,12 @@ vi.mock("./playground-share", () => ({
   MAX_DECODED_SOURCE_BYTES: 1_000_000,
 }));
 
+const editorDispatch = vi.fn();
+
 vi.mock("./playground-editor", () => ({
   createPlaygroundEditor: () => ({
     state: { doc: { toString: () => "event x", length: 7, lines: 1 } },
-    dispatch: () => {},
+    dispatch: (...args: unknown[]) => editorDispatch(...args),
   }),
 }));
 
@@ -122,6 +124,7 @@ beforeEach(() => {
   setTdslWasmMessages.mockReset();
   extractSourceFromLocation.mockReset();
   extractSourceFromLocation.mockResolvedValue({ status: "none" });
+  editorDispatch.mockReset();
 });
 
 afterEach(() => {
@@ -309,6 +312,44 @@ describe("initPlayground runPlayground の状態分岐", () => {
     await vi.waitFor(() => {
       expect(dom.root.getAttribute("data-playground-state")).toBe("ready");
     });
+  });
+
+  it("共有URL復元待ちにサンプルを選択したら、遅れて完了した復元結果は適用されない", async () => {
+    setupDom();
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      '<select data-sample-select><option value="a">a</option><option value="b">b</option></select>'
+    );
+    mustQuery(document, "#playground-samples").textContent = JSON.stringify([
+      { id: "a", source: "event x" },
+      { id: "b", source: "event b" },
+    ]);
+    let resolveRestore: (value: unknown) => void = () => {};
+    extractSourceFromLocation.mockReturnValue(
+      new Promise((resolve) => {
+        resolveRestore = resolve;
+      })
+    );
+    checkTdslSource.mockResolvedValue([]);
+    renderTdslSvgWithOptions.mockResolvedValue(
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    );
+
+    initPlayground();
+
+    const select = mustQuery<HTMLSelectElement>(
+      document,
+      "[data-sample-select]"
+    );
+    select.value = "b";
+    select.dispatchEvent(new Event("change"));
+    expect(editorDispatch).toHaveBeenCalledTimes(1);
+
+    resolveRestore({ status: "ok", source: "stale shared A" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(editorDispatch).toHaveBeenCalledTimes(1);
+    expect(select.value).toBe("b");
   });
 });
 

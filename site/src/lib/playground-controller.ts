@@ -583,8 +583,12 @@ export function initPlayground(): void {
   // プログラムによる内容適用（読込・サンプル・共有 URL）と手入力を区別するためのフラグ。
   let applyingSource = false;
   let cancelPendingFileLoad = () => {};
+  // 共有 URL の復元待ちの間にユーザー操作（サンプル選択・手入力・ファイル適用）が
+  // 起きたら立てる。立っていれば遅れて完了した復元結果は適用しない。
+  let shareRestoreSuperseded = false;
 
   const applySource = (source: string) => {
+    shareRestoreSuperseded = true;
     applyingSource = true;
     try {
       view.dispatch({
@@ -603,13 +607,17 @@ export function initPlayground(): void {
     host: editorHost,
     doc: samples[0].source,
     onDocChange: () => {
-      if (!applyingSource) cancelPendingFileLoad();
+      if (!applyingSource) {
+        shareRestoreSuperseded = true;
+        cancelPendingFileLoad();
+      }
       queueRun();
     },
   });
 
   void (async () => {
     const result = await extractSourceFromLocation(window.location.search);
+    if (shareRestoreSuperseded) return;
     if (result.status === "ok") {
       applySource(result.source);
       if (sampleSelect) sampleSelect.value = "";
