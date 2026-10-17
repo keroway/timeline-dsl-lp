@@ -15,3 +15,21 @@ reason = """
 GHSA-jmr9-qjv8-65gv と同一の extract-zip@2.0.1 脆弱性（別 GHSA ID）。
 理由は同上。See https://github.com/keroway/timeline-dsl-lp/issues/590
 """
+
+[[IgnoredVulns]]
+id = "GHSA-vfj7-8cjw-p6xm"
+ignoreUntil = 2026-11-22
+reason = """
+braces@3.0.3 is the latest version on npm; no fixed version exists upstream.
+Transitive dependency of micromatch (starlight-llms-txt), build-time only,
+not shipped in the deployed site. Re-check for a fix at the ignoreUntil date.
+"""
+
+[[IgnoredVulns]]
+id = "GHSA-ch52-4w7c-c8xp"
+ignoreUntil = 2026-11-22
+reason = """
+GHSA has no patched version (affects <= 4.2.0; 4.3.0 is not listed as fixed).
+Transitive dependency of astro's build tooling (make-fetch-happen cache),
+no user-facing HTTP cache in the deployed static site. Re-check at ignoreUntil.
+"""
