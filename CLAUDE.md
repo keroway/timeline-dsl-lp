@@ -137,7 +137,7 @@ cd site && pnpm prepare
 ## Design
 
 デザイン決定は `DESIGN.md` に記述（カラートークン・タイポグラフィ・レイアウト原則）。
-新しい色は `site/src/styles/global.css` の既存 CSS 変数を優先して使う。
+新しい色は `site/src/styles/tokens.css` の既存 CSS 変数を優先して使う。
 
 ## Issue workflow
 

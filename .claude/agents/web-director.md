@@ -11,7 +11,7 @@ model: opus
 
 - `/Users/y.kurokawa/dev/src/github/keroway/timeline-dsl-lp/CLAUDE.md` — 技術スタックと運用ポリシー
 - `/Users/y.kurokawa/dev/src/github/keroway/timeline-dsl-lp/DESIGN.md` — カラートークン・タイポグラフィ・レイアウト原則 (Source as truth / Editor first / Calm density の 3 原則)
-- `site/src/styles/global.css` — 実際の CSS カスタムプロパティ
+- `site/src/styles/tokens.css` — 実際の CSS カスタムプロパティ
 - `site/src/i18n/{ja,en}.ts` と `site/src/content/docs/{docs,en/docs}/*.mdx` — i18n ペアの実体
 
 ## レビュー観点

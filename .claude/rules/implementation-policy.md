@@ -23,7 +23,7 @@
 
 ## 3. デザイン規約
 
-- 新しい色を直書きしない。`site/src/styles/global.css` の `--color-*` トークンを使う。
+- 新しい色を直書きしない。`site/src/styles/tokens.css` の `--color-*` トークンを使う。
 - 新色が本当に必要な場合は **light / dark / high-contrast の 3 セット** を同時に追加する。
 - DESIGN.md の 3 原則 (Source as truth / Editor first / Calm density) から外れる装飾は入れない。1 セクション 1 メッセージを守る。
 - lane パレット (`warm` 起点 / `gold` 周年 / `plum` 人物 / `sky` 外部要因) の意味を再利用前に確認する。
