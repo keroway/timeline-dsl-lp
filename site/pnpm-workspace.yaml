@@ -51,7 +51,7 @@ overrides:
 
 patchedDependencies:
   "@lhci/utils@0.15.1": patches/@lhci__utils@0.15.1.patch
-  undici@7.29.1: patches/undici@7.29.1.patch
+  undici@7.30.1: patches/undici@7.30.1.patch
 
 # pnpm 12 のセキュリティ寄りデフォルト (minimumReleaseAge=1440 / strictDepBuilds /
 # blockExoticSubdeps) は既定値のまま使う。
@@ -72,11 +72,13 @@ minimumReleaseAgeExclude:
     compression@1.8.2,
     proxy-addr@2.0.8,
     source-map-js@1.2.2,
-    undici@7.29.1,
+    undici@7.30.1,
     # Renovate security update: smol-toml@1.9.0
     smol-toml@1.9.0,
     # Renovate security update: sharp@0.35.5
-    sharp@0.35.5
+    sharp@0.35.5,
+    # osv-scanner 由来の postcss override（#714）。2026-10-21 に熟成するため以降は削除可
+    postcss@8.5.31
   ]
 
 # pnpm 12 はデフォルトで依存の build スクリプト実行を遮断する (strictDepBuilds)。
