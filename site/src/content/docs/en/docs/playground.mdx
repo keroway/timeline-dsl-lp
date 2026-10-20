@@ -23,46 +23,38 @@ When validation passes, an SVG rendering of the timeline is shown in the right p
 
 If a compile error occurs, the last successful preview is preserved and a "Showing last successful preview" badge is overlaid on the preview panel. The badge disappears once the error is fixed.
 
-### Template gallery
+### Choosing a sample
 
-Click the "Templates" button in the toolbar to open the template gallery modal. You can browse all `.tdsl` samples included in `examples/` as a thumbnail grid and load any of them into the editor with a single click.
+Use the "Sample" select in the toolbar to choose which sample to load into the editor.
 
-| Sample                             | Description                                                               |
-| ---------------------------------- | ------------------------------------------------------------------------- |
-| Chinese Dynasties                  | A practical example with dynasty `span` / `event` / `event_range` entries |
-| Modern History                     | A practical example with modern `span` / `event_range` entries            |
-| DSL Basic Grammar (minimal)        | A minimal sample covering `span` / `event` / `event_range`                |
-| Wikidata Import (requires network) | A reference example for Wikidata import syntax (not executable in WebUI)  |
+| Sample                                          | Description                                                                       |
+| ----------------------------------------------- | --------------------------------------------------------------------------------- |
+| Hello Timeline — minimal single-event example   | A minimal timeline with a single `event`                                          |
+| Three marker types — span / event / event_range | An example showing `span`, `event` and `event_range` together                     |
+| Multiple lanes — parallel events with hierarchy | Parallel events organized into a lane hierarchy                                   |
+| Wikidata import (CLI-only feature demo)         | A reference example for Wikidata import syntax (not executable in the Playground) |
 
-Selecting a sample from the gallery replaces the current editor content. If you want to keep your current work, download it first.
+Selecting a sample replaces the current editor content. If you want to keep your current work, save it first with "Save .tdsl".
+
+### Display scale
+
+The "Scale" select lets you set the preview scale to Auto, 0.5×, 1×, 2×, 4× or 8×.
 
 ### Always show labels (print/listing)
 
 Toggling the "Always show labels (print/listing)" checkbox in the toolbar draws labels for every Event / EventRange without requiring a hover, matching the CLI's `--show-event-labels` (v1.17.0+). This is handy when you want to review or print every item at a glance. Your choice is saved in the browser and kept for future visits.
 
-### Download `.tdsl`
+### Open file
 
-Click the "Download" button in the toolbar to download the current editor content as `timeline.tdsl`.
+The "Open file" button loads a local `.tdsl` / `.txt` file into the editor.
 
-### Code formatting (Format)
+### Saving (.tdsl / .svg / HTML)
 
-Click the "Format" button in the toolbar or press `Ctrl/Cmd+Shift+F` to reformat the editor content (v1.10.0+). The formatter re-emits the AST, producing a canonical form with 2-space indentation and one blank line between blocks. Because the change is applied as a CodeMirror transaction, Undo/Redo behave as expected.
+"Save .tdsl" saves the current editor content as a `.tdsl` file, and "Save .svg" / "Save HTML" save the rendered result as SVG / HTML. The SVG / HTML buttons are enabled only while the preview has rendered successfully.
 
-If parsing fails, only an error toast is shown and the editor is left unchanged. Comments are preserved like `tdsl fmt`, although comments inside blocks may be relocated to canonical positions.
+### Layout
 
-### Adjusting the editor/preview split
-
-Drag the handle between the editor and preview left or right to adjust the split ratio between 15% and 85%. The default is editor 40% / preview 60%.
-
-### Mobile and tablet support
-
-The layout switches automatically based on screen width.
-
-| Width                      | Layout                         |
-| -------------------------- | ------------------------------ |
-| ≤768px (smartphone)        | Editor / Preview tab switching |
-| 769px–1024px (tablet)      | Top-and-bottom two-row layout  |
-| 1025px and above (desktop) | Left-right split layout        |
+The editor, preview and diagnostics panels are shown together. The editor/preview width ratio is fixed and cannot be adjusted by dragging. At 820px and below, the layout switches to a single stacked column.
 
 ### Sharing via `?source=` query
 
