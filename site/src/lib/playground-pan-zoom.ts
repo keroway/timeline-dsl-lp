@@ -180,7 +180,10 @@ export function createPanZoom({
     panActive = false;
     stage.classList.remove("is-panning");
     surface.classList.remove("is-panning");
-    surface.releasePointerCapture(e.pointerId);
+    // lostpointercapture は capture が既に解放された後に届くため再解放しない。
+    if (e.type !== "lostpointercapture") {
+      surface.releasePointerCapture(e.pointerId);
+    }
   };
 
   const onWheel = (e: WheelEvent) => {
@@ -269,6 +272,7 @@ export function createPanZoom({
   surface.addEventListener("pointermove", onPointerMove);
   surface.addEventListener("pointerup", endPan);
   surface.addEventListener("pointercancel", endPan);
+  surface.addEventListener("lostpointercapture", endPan);
   surface.addEventListener("wheel", onWheel, { passive: false });
   surface.addEventListener("dblclick", onDblClick);
   resetButton?.addEventListener("click", fitToSurface);
@@ -286,6 +290,7 @@ export function createPanZoom({
       surface.removeEventListener("pointermove", onPointerMove);
       surface.removeEventListener("pointerup", endPan);
       surface.removeEventListener("pointercancel", endPan);
+      surface.removeEventListener("lostpointercapture", endPan);
       surface.removeEventListener("wheel", onWheel);
       surface.removeEventListener("dblclick", onDblClick);
       resetButton?.removeEventListener("click", fitToSurface);

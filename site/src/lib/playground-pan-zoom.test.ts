@@ -529,6 +529,38 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(surface.releasePointerCapture).toHaveBeenCalledWith(9);
   });
 
+  it("lostpointercapture で後始末し、別 pointer ID で再度パンできる（回帰: #806）", () => {
+    const { surface, stage } = makeEnv();
+    createPanZoom({ surface, stage, panThreshold: 5 });
+
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 1,
+    });
+    firePointer(surface, "pointermove", {
+      clientX: 20,
+      clientY: 0,
+      pointerId: 1,
+    });
+    firePointer(surface, "lostpointercapture", {
+      clientX: 20,
+      clientY: 0,
+      pointerId: 1,
+    });
+
+    expect(stage.classList.contains("is-panning")).toBe(false);
+    expect(surface.classList.contains("is-panning")).toBe(false);
+    expect(surface.releasePointerCapture).not.toHaveBeenCalled();
+
+    firePointer(surface, "pointerdown", {
+      clientX: 0,
+      clientY: 0,
+      pointerId: 2,
+    });
+    expect(surface.setPointerCapture).toHaveBeenCalledWith(2);
+  });
+
   it("reset ボタン上の pointerdown はパン開始として扱わず、ボタンの click を妨げない（回帰: reset クリックが効かないバグ）", () => {
     const { surface, stage } = makeEnv({
       surfaceW: 800,
