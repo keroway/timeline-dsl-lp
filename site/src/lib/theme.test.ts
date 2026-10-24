@@ -148,6 +148,70 @@ describe("initThemeToggle", () => {
     expect(second.value).toBe("dark");
   });
 
+  describe("OS のカラースキーム変更", () => {
+    function stubChangeableMatchMedia() {
+      let prefersLight = false;
+      let listener: (() => void) | undefined;
+      vi.stubGlobal(
+        "matchMedia",
+        (query: string) =>
+          ({
+            get matches() {
+              return query.includes("light") ? prefersLight : !prefersLight;
+            },
+            media: query,
+            addEventListener: (_: string, cb: () => void) => {
+              listener = cb;
+            },
+            removeEventListener: () => {},
+          }) as unknown as MediaQueryList
+      );
+      return (light: boolean) => {
+        prefersLight = light;
+        listener?.();
+      };
+    }
+
+    function breakStorage() {
+      vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+        throw new Error("denied");
+      });
+      vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+        throw new Error("denied");
+      });
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("ストレージが使えなくても明示選択したテーマを OS 変更で上書きしない", () => {
+      const changeOs = stubChangeableMatchMedia();
+      breakStorage();
+      const select = mountSelect();
+      initThemeToggle({ selectSelector: "[data-theme-select]" });
+
+      select.value = "dark";
+      select.dispatchEvent(new Event("change"));
+      changeOs(true);
+
+      expect(select.value).toBe("dark");
+      expect(document.documentElement.dataset.theme).toBe("dark");
+    });
+
+    it("auto のときは OS 変更に追従する", () => {
+      const changeOs = stubChangeableMatchMedia();
+      breakStorage();
+      mountSelect();
+      initThemeToggle({ selectSelector: "[data-theme-select]" });
+      expect(document.documentElement.dataset.theme).toBe("dark");
+
+      changeOs(true);
+
+      expect(document.documentElement.dataset.theme).toBe("light");
+    });
+  });
+
   it("select が存在しないマークアップでは何もしない", () => {
     document.body.innerHTML = "";
     expect(() =>
