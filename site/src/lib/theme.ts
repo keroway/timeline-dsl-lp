@@ -60,7 +60,11 @@ export function initThemeToggle({ selectSelector }: InitThemeToggleOpts): void {
     });
   };
 
+  // 永続化に失敗しても明示選択を維持するため、現在のテーマはメモリにも保持する。
+  let currentTheme: Theme;
+
   const onThemeChange = (theme: Theme): void => {
+    currentTheme = theme;
     applyTheme(theme);
     storeTheme(theme);
     syncSelects(theme);
@@ -68,9 +72,9 @@ export function initThemeToggle({ selectSelector }: InitThemeToggleOpts): void {
 
   // ページ読み込み時の data-theme は BaseLayout の inline FOUC 防止スクリプトで既に適用済みだが、
   // ここでも applyTheme を呼び直して、このモジュール単体でも幂等に正しい状態になるようにする。
-  const initial = loadTheme();
-  applyTheme(initial);
-  syncSelects(initial);
+  currentTheme = loadTheme();
+  applyTheme(currentTheme);
+  syncSelects(currentTheme);
 
   selects.forEach((select) => {
     select.addEventListener("change", () => {
@@ -80,6 +84,6 @@ export function initThemeToggle({ selectSelector }: InitThemeToggleOpts): void {
 
   // OS のカラースキーム変更に追従するのは "auto" を選んでいるときだけ（Starlight と同一挙動）。
   matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {
-    if (loadTheme() === "auto") applyTheme("auto");
+    if (currentTheme === "auto") applyTheme("auto");
   });
 }
