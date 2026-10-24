@@ -576,6 +576,45 @@ describe("wireDownloads", () => {
       });
     });
   });
+
+  it("htmlBtn クリックで HTML 内の SVG が getLastSvg（表示倍率反映済み）に差し替わる", async () => {
+    const tdslBtn = document.createElement("button");
+    const svgBtn = document.createElement("button");
+    const htmlBtn = document.createElement("button");
+    const previewSvg = '<svg width="188"><g>preview</g></svg>';
+
+    const createObjectURL = vi.fn().mockReturnValue("blob:mock");
+    const revokeObjectURL = vi.fn();
+    Object.defineProperty(window, "URL", {
+      value: { createObjectURL, revokeObjectURL },
+      writable: true,
+    });
+
+    renderTdslHtmlWithOptions.mockResolvedValueOnce(
+      '<html><body><svg width="740"><g>auto</g></svg><p>after</p></body></html>'
+    );
+
+    wireDownloads({
+      tdslBtn,
+      svgBtn,
+      htmlBtn,
+      liveRegion: null,
+      msgs: { htmlDownloadError: "html download error" },
+      getSource: vi.fn().mockReturnValue(""),
+      getLastSvg: vi.fn().mockReturnValue(previewSvg),
+      getLastSource: vi.fn().mockReturnValue("source content"),
+      getLastRenderOptions: vi.fn().mockReturnValue({}),
+    });
+    htmlBtn.click();
+
+    await vi.waitFor(() => {
+      expect(createObjectURL).toHaveBeenCalled();
+    });
+    const blob = createObjectURL.mock.calls[0][0] as Blob;
+    expect(await blob.text()).toBe(
+      `<html><body>${previewSvg}<p>after</p></body></html>`
+    );
+  });
 });
 
 describe("wireShare", () => {
