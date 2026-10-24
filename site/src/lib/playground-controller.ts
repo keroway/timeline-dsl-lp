@@ -118,6 +118,15 @@ function announceToLiveRegion(
   });
 }
 
+// WASM の HTML 出力は表示倍率を受け取れず自動倍率で SVG を埋め込むため、
+// 表示中プレビューの SVG（SVG 保存と同一）で埋め込み部分を差し替える。
+function embedPreviewSvg(html: string, previewSvg: string): string {
+  const start = html.indexOf("<svg");
+  const endTag = html.lastIndexOf("</svg>");
+  if (!previewSvg || start === -1 || endTag < start) return html;
+  return html.slice(0, start) + previewSvg + html.slice(endTag + 6);
+}
+
 export function wireDownloads(opts: {
   tdslBtn: HTMLButtonElement | null;
   svgBtn: HTMLButtonElement | null;
@@ -144,7 +153,11 @@ export function wireDownloads(opts: {
         source,
         opts.getLastRenderOptions()
       );
-      downloadText("timeline.html", "text/html;charset=utf-8", html);
+      downloadText(
+        "timeline.html",
+        "text/html;charset=utf-8",
+        embedPreviewSvg(html, opts.getLastSvg())
+      );
     } catch (error) {
       console.error("Failed to export Playground HTML", error);
       announceToLiveRegion(opts.liveRegion, opts.msgs.htmlDownloadError);
