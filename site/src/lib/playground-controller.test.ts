@@ -1007,6 +1007,33 @@ describe("wireTooltip", () => {
     });
   });
 
+  it("hide() で表示中の tooltipEl が閉じ、保留中の非表示タイマーも破棄される", () => {
+    vi.useFakeTimers();
+    const preview = document.createElement("div");
+    const target = document.createElement("span");
+    target.setAttribute("data-tdsl-tooltip", "OLD");
+    preview.appendChild(target);
+    const tooltipEl = document.createElement("div");
+    document.body.append(preview, tooltipEl);
+
+    const { hide } = wireTooltip({ preview, tooltipEl });
+    target.dispatchEvent(
+      new PointerEvent("pointermove", {
+        bubbles: true,
+        clientX: 10,
+        clientY: 10,
+      })
+    );
+    expect(tooltipEl.getAttribute("data-visible")).toBe("true");
+
+    hide();
+
+    expect(tooltipEl.hasAttribute("data-visible")).toBe(false);
+    expect(tooltipEl.getAttribute("aria-hidden")).toBe("true");
+    vi.useRealTimers();
+    document.body.replaceChildren();
+  });
+
   it("Escape キーで tooltipEl の data-visible が削除される", () => {
     const preview = document.createElement("div");
     const tooltipEl = document.createElement("div");

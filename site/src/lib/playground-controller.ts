@@ -257,7 +257,7 @@ export function wireFileOpen(opts: {
 export function wireTooltip(opts: {
   preview: HTMLElement | null;
   tooltipEl: HTMLElement | null;
-}): void {
+}): { hide: () => void } {
   const { preview, tooltipEl } = opts;
 
   // 起点からツールチップへ移る間の隙間（margin 分）を渡れるようにする猶予。
@@ -345,6 +345,9 @@ export function wireTooltip(opts: {
       if (event.key === "Escape") hideTooltip();
     });
   }
+
+  // 起点要素が差し替わるとき、残った表示と保留中の非表示タイマーを後始末できるようにする。
+  return { hide: hideTooltip };
 }
 
 export function wireScale(opts: {
@@ -485,6 +488,8 @@ export function initPlayground(): void {
     diagnostics.replaceChildren(node);
   };
 
+  let hideTooltip = () => {};
+
   const runPlayground = async () => {
     if (!preview) return;
 
@@ -547,6 +552,7 @@ export function initPlayground(): void {
       lastSource = source;
       lastRenderOptions = renderOptions;
       setSvgContent(stage, svg);
+      hideTooltip();
       panZoom?.applySvg();
       downloadSvgButton?.removeAttribute("disabled");
       downloadHtmlButton?.removeAttribute("disabled");
@@ -665,10 +671,10 @@ export function initPlayground(): void {
     onApplySource: applySource,
   }));
 
-  wireTooltip({
+  ({ hide: hideTooltip } = wireTooltip({
     preview,
     tooltipEl: document.getElementById("tdsl-tooltip"),
-  });
+  }));
 
   wireScale({
     scaleSelect,
