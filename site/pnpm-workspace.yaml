@@ -3,7 +3,7 @@ minimumReleaseAgeStrict: true
 
 overrides:
   esbuild: 0.28.2
-  fast-uri: 3.1.8
+  fast-uri: 3.1.9
   js-yaml: 4.3.2
   tmp: 0.2.7
   undici: 7.30.1
@@ -12,7 +12,7 @@ overrides:
   # osv-scanner で検出した脆弱性のパッチレベル修正（GHSA-r28c-9q8g-f849 / GHSA-v422-hmwv-36x6）。
   # いずれも破壊的変更なし
   postcss: 8.5.31
-  body-parser: 1.20.8
+  body-parser: 1.20.9
   # osv-scanner 検出分（2026-08-09、#573）。いずれも devDependency 経由でビルド成果物には載らない。
   # GHSA-mh99-v99m-4gvg / GHSA-rgw5-rvv9-x895 (brace-expansion ReDoS)
   #   — @lhci/cli > chrome-launcher > rimraf > glob > minimatch 経由。
@@ -48,6 +48,9 @@ overrides:
   proxy-addr: 2.0.8
   # GHSA-68fv-2mgg-jv7q (source-map-js) — svgo > csso > css-tree 経由。
   source-map-js: 1.2.2
+  # GHSA-mrhx-c7xc-m3w5 (zod メモリ枯渇) — lighthouse > puppeteer-core > chromium-bidi 経由の devDependency (3.x) と
+  #   astro/starlight 経由 (4.4.x)。修正版は 4.6.6 のみ。
+  zod: ">=4.6.6 <5"
 
 patchedDependencies:
   "@lhci/utils@0.15.1": patches/@lhci__utils@0.15.1.patch
@@ -72,6 +75,9 @@ minimumReleaseAgeExclude:
     compression@1.8.2,
     proxy-addr@2.0.8,
     source-map-js@1.2.2,
+    fast-uri@3.1.9,
+    body-parser@1.20.9,
+    zod@4.6.6,
     undici@7.30.1,
     # Renovate security update: smol-toml@1.9.0
     smol-toml@1.9.0,
