@@ -123,15 +123,22 @@ const sampleList = itemListLd({
     // localStorage 無効環境ではデフォルト（オフ）のまま継続する。
   }
 
+  // サンプルごとの描画世代。描画中にトグルで再描画が始まった場合、古い描画結果が
+  // 新しい結果を上書きしないよう完了時に世代を照合する。
+  const renderSeq = new Map<string, number>();
+
   const renderSample = async (sample: SampleData) => {
     const el = document.querySelector<HTMLElement>(`[data-gallery-preview="${sample.id}"]`);
     if (!el) return;
+    const seq = (renderSeq.get(sample.id) ?? 0) + 1;
+    renderSeq.set(sample.id, seq);
     try {
       // SVG は自社 WASM ライブラリが生成する信頼済みコンテンツ（playground.astro と同パターン）
       const svg = await renderTdslSvgWithOptions(sample.source, undefined, {
         showEventLabels: showEventLabelsToggle?.checked ?? false,
         locale: msgs.locale,
       });
+      if (renderSeq.get(sample.id) !== seq) return;
       el.innerHTML = svg;
       el.classList.add("has-svg");
       const zoomBtn = document.querySelector<HTMLButtonElement>(
@@ -139,6 +146,7 @@ const sampleList = itemListLd({
       );
       if (zoomBtn) zoomBtn.hidden = false;
     } catch (error) {
+      if (renderSeq.get(sample.id) !== seq) return;
       const message = error instanceof Error ? error.message : String(error);
       const errorDiv = document.createElement("div");
       errorDiv.className = "gallery-preview-error";
@@ -200,7 +208,7 @@ const sampleList = itemListLd({
     }
   }
 
-  // ラベル常時表示トグル: 切り替え時に描画済みのカードだけ再描画する（未描画カードは IntersectionObserver が抜けた際に現在のトグル状態で描画される）。
+  // ラベル常時表示トグル: 切り替え時に描画済み・描画中のカードを再描画する（未着手のカードは IntersectionObserver が抜けた際に現在のトグル状態で描画される）。
   showEventLabelsToggle?.addEventListener("change", () => {
     try {
       window.localStorage.setItem(
@@ -212,7 +220,7 @@ const sampleList = itemListLd({
     }
     for (const sample of samplesData) {
       const el = document.querySelector(`[data-gallery-preview="${sample.id}"]`);
-      if (el?.classList.contains("has-svg")) renderSample(sample);
+      if (el?.classList.contains("has-svg") || renderSeq.has(sample.id)) renderSample(sample);
     }
   });
 
