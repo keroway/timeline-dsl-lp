@@ -148,15 +148,14 @@ export function wireDownloads(opts: {
   opts.htmlBtn?.addEventListener("click", async () => {
     const source = opts.getLastSource();
     if (!source) return;
+    const renderOptions = opts.getLastRenderOptions();
+    const previewSvg = opts.getLastSvg();
     try {
-      const html = await renderTdslHtmlWithOptions(
-        source,
-        opts.getLastRenderOptions()
-      );
+      const html = await renderTdslHtmlWithOptions(source, renderOptions);
       downloadText(
         "timeline.html",
         "text/html;charset=utf-8",
-        embedPreviewSvg(html, opts.getLastSvg())
+        embedPreviewSvg(html, previewSvg)
       );
     } catch (error) {
       console.error("Failed to export Playground HTML", error);
