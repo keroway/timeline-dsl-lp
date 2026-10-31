@@ -71,7 +71,9 @@ async function fetchReleases() {
       throw new Error("GitHub Releases API response was not an array");
     }
 
-    releases.push(...data.map(normalizeRelease));
+    releases.push(
+      ...data.filter((release) => release.draft !== true).map(normalizeRelease)
+    );
     url = getNextPageUrl(response);
   }
 
