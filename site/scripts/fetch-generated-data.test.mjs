@@ -47,6 +47,20 @@ async function startFailingApi() {
   };
 }
 
+/** 固定の JSON 配列を 200 で返すローカルサーバを立てる。 */
+async function startApi(body) {
+  const server = createServer((_req, res) => {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(body));
+  });
+  await new Promise((done) => server.listen(0, "127.0.0.1", done));
+  const { port } = server.address();
+  return {
+    base: `http://127.0.0.1:${port}`,
+    close: () => new Promise((done) => server.close(done)),
+  };
+}
+
 function runScript(script, base) {
   return new Promise((done) => {
     const child = spawn(process.execPath, [resolve(SCRIPTS_DIR, script)], {
@@ -70,6 +84,57 @@ afterEach(async () => {
     await writeFile(file, content);
   }
   restore.clear();
+});
+
+describe("fetch-github-releases.mjs の draft 除外 (#824)", () => {
+  const dataFile = resolve(DATA_DIR, "releases.generated.json");
+  const draft = {
+    tag_name: "v99.0.0-draft",
+    name: "Unpublished",
+    draft: true,
+    prerelease: false,
+    published_at: null,
+    html_url: "https://example.invalid/draft",
+    body: "DRAFT BODY",
+  };
+  const published = {
+    tag_name: "v1.0.0",
+    name: "Published",
+    draft: false,
+    prerelease: false,
+    published_at: "2026-01-01T00:00:00Z",
+    html_url: "https://example.invalid/stable",
+    body: "Published body",
+  };
+
+  async function runWith(body) {
+    restore.set(dataFile, await readFile(dataFile, "utf8"));
+    const api = await startApi(body);
+    try {
+      const { code, stderr } = await runScript(
+        "fetch-github-releases.mjs",
+        api.base
+      );
+      expect(code, `stderr: ${stderr}`).toBe(0);
+      return JSON.parse(await readFile(dataFile, "utf8"));
+    } finally {
+      await api.close();
+    }
+  }
+
+  it("draft と公開済みが混在しても draft を除外し latest は公開済みになる", async () => {
+    const payload = await runWith([draft, published]);
+    expect(payload.releases.map((r) => r.tagName)).toEqual(["v1.0.0"]);
+    expect(payload.latest.tagName).toBe("v1.0.0");
+    expect(JSON.stringify(payload)).not.toContain("DRAFT BODY");
+  });
+
+  it("draft だけなら releases は空で latest は null になる", async () => {
+    const payload = await runWith([draft]);
+    expect(payload.releases).toEqual([]);
+    expect(payload.latest).toBeNull();
+    expect(JSON.stringify(payload)).not.toContain("DRAFT BODY");
+  });
 });
 
 describe.each(TARGETS)("$script", ({ script, dataFile }) => {
