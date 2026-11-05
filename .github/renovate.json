@@ -10,6 +10,12 @@
   ],
   "packageRules": [
     {
+      "description": "@lhci/cli 0.16 は lighthouse 13.6 > puppeteer-core 25.16 > chromium-bidi 157.0.8090-0 を引き込み、pnpm の trustPolicy(no-downgrade) が解決を拒否する。chromium-bidi が trust 証跡付きで再公開されるまで 0.15.x に据え置く",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@lhci/cli"],
+      "allowedVersions": "<0.16.0"
+    },
+    {
       "matchManagers": ["npm"],
       "matchUpdateTypes": ["minor", "patch"],
       "commitMessagePrefix": "chore",
