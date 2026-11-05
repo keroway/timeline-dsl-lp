@@ -33,3 +33,14 @@ GHSA has no patched version (affects <= 4.2.0; 4.3.0 is not listed as fixed).
 Transitive dependency of astro's build tooling (make-fetch-happen cache),
 no user-facing HTTP cache in the deployed static site. Re-check at ignoreUntil.
 """
+
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249"
+ignoreUntil = 2026-11-22
+reason = """
+minimatch@3.1.5 (via @lhci/cli > chrome-launcher > rimraf > glob@7). The only
+fixed version is 11.0.1 (ESM-only, different API), which glob@7 cannot load, so
+an `overrides` bump would break Lighthouse CI. devDependency only, not shipped
+in the deployed site. Re-check at the ignoreUntil date (e.g. @lhci/cli dropping
+glob@7).
+"""
