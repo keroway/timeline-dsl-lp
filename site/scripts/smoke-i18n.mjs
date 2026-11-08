@@ -336,6 +336,28 @@ async function smokeHttpSurface(rootUrl) {
   console.log(
     "HTTP smoke: /en/docs/ Starlight sidebar links stay within /en/. ✓"
   );
+
+  // Regression guard (#819): 英語ドキュメント本文・CTA の Playground リンクは
+  // /en/playground/ を指さなければならない（/playground/ は日本語 UI）。
+  for (const path of [
+    "/en/docs/playground/",
+    "/en/docs/quick-start/",
+    "/en/docs/grammar/",
+  ]) {
+    const res = await get(`${rootUrl}${path}`);
+    assertStatus(res, path);
+    const html = await res.text();
+    const jaLinks = [...html.matchAll(/href="(\/playground\/[^"]*)"/g)];
+    if (jaLinks.length > 0) {
+      throw new Error(
+        `HTTP smoke: ${path} links to ja Playground "${jaLinks[0][1].slice(0, 40)}" (expected /en/playground/)`
+      );
+    }
+    if (!html.includes('href="/en/playground/')) {
+      throw new Error(`HTTP smoke: ${path} has no /en/playground/ link`);
+    }
+  }
+  console.log("HTTP smoke: en docs body Playground links stay within /en/. ✓");
 }
 
 // header <nav class="nav"> と footer <footer class="site-footer"> 内の href を抽出し、
