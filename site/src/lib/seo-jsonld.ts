@@ -187,9 +187,14 @@ export function faqPageLd(input: {
   };
 }
 
+/**
+ * `<script type="application/ld+json">` へ set:html で埋め込まれるため、
+ * `<` を Unicode エスケープして `</script>` による script 脱出を防ぐ。
+ * JSON.parse で元の値に復元できる。
+ */
 export function graphLd(nodes: JsonLdNode[]): string {
   return JSON.stringify({
     "@context": "https://schema.org",
     "@graph": nodes,
-  });
+  }).replace(/</g, "\\u003c");
 }
