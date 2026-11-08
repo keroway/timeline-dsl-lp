@@ -241,4 +241,11 @@ describe("graphLd", () => {
     expect(Array.isArray(parsed["@graph"])).toBe(true);
     expect(parsed["@graph"][0]["@type"]).toBe("Organization");
   });
+
+  it("`</script>` を含む値でも script 終了構文を出力せず JSON.parse で復元できる", () => {
+    const name = "</script><p>probe</p>";
+    const json = graphLd([{ "@type": "Article", name }]);
+    expect(json).not.toContain("<");
+    expect(JSON.parse(json)["@graph"][0].name).toBe(name);
+  });
 });
