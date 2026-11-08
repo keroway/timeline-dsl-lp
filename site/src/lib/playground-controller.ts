@@ -338,7 +338,8 @@ export function wireTooltip(opts: {
       cancelPendingHide();
       return;
     }
-    hideTooltip();
+    // 境界外の隙間を経由して tooltip へ入れるよう、即時ではなく猶予後に閉じる。
+    hideTooltipSoon();
   });
 
   tooltipEl?.addEventListener("pointerenter", cancelPendingHide);

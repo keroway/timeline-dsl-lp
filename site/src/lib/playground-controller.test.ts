@@ -994,6 +994,7 @@ describe("wireTooltip", () => {
   });
 
   it("pointerleave で tooltipEl の data-visible が削除される", () => {
+    vi.useFakeTimers();
     const preview = document.createElement("div");
     const tooltipEl = document.createElement("div");
     tooltipEl.setAttribute("data-visible", "true");
@@ -1001,9 +1002,11 @@ describe("wireTooltip", () => {
 
     wireTooltip({ preview, tooltipEl });
     preview.dispatchEvent(new PointerEvent("pointerleave"));
+    vi.runAllTimers();
 
     expect(tooltipEl.hasAttribute("data-visible")).toBe(false);
     expect(tooltipEl.getAttribute("aria-hidden")).toBe("true");
+    vi.useRealTimers();
   });
 
   describe("表示内容へのホバー移動 (WCAG 1.4.13 Hoverable)", () => {
@@ -1041,14 +1044,30 @@ describe("wireTooltip", () => {
       expect(tooltipEl.getAttribute("data-visible")).toBe("true");
     });
 
-    it("relatedTarget が領域外の pointerleave では閉じる", () => {
+    it("relatedTarget が領域外の pointerleave では猶予後に閉じる", () => {
+      vi.useFakeTimers();
       const { preview, tooltipEl } = setup();
 
       preview.dispatchEvent(
         new PointerEvent("pointerleave", { relatedTarget: document.body })
       );
+      expect(tooltipEl.getAttribute("data-visible")).toBe("true");
+      vi.runAllTimers();
 
       expect(tooltipEl.hasAttribute("data-visible")).toBe(false);
+    });
+
+    it("境界の隙間へ出ても猶予内に tooltipEl へ入れば維持される", () => {
+      vi.useFakeTimers();
+      const { preview, tooltipEl } = setup();
+
+      preview.dispatchEvent(
+        new PointerEvent("pointerleave", { relatedTarget: document.body })
+      );
+      tooltipEl.dispatchEvent(new PointerEvent("pointerenter"));
+      vi.runAllTimers();
+
+      expect(tooltipEl.getAttribute("data-visible")).toBe("true");
     });
 
     it("起点外の pointermove 後も猶予内に tooltipEl へ入れば維持される", () => {
