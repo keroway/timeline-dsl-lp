@@ -20,7 +20,7 @@ lane "Books" as books { kind custom; order 10; }
 event books 2025 "Trying Timeline DSL" { id "event:first"; };
 ```
 
-[Open in Playground](/playground/?source=timeline+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22+%7B%0A++++title+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22%3B%0A++++unit+year%3B%0A++++range+2024..2026%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E6%9C%AC%22+as+books+%7B+kind+custom%3B+order+10%3B+%7D%0A%0Aevent+books+2025+%22Timeline+DSL%E3%82%92%E8%A9%A6%E3%81%99%22+%7B+id+%22event%3Afirst%22%3B+%7D%3B)
+[Open in Playground](/en/playground/?source=timeline+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22+%7B%0A++++title+%22%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2%22%3B%0A++++unit+year%3B%0A++++range+2024..2026%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E6%9C%AC%22+as+books+%7B+kind+custom%3B+order+10%3B+%7D%0A%0Aevent+books+2025+%22Timeline+DSL%E3%82%92%E8%A9%A6%E3%81%99%22+%7B+id+%22event%3Afirst%22%3B+%7D%3B)
 
 A `.tdsl` file combines `timeline` (the overall timeline), `lane` (vertical axis), and time elements: `event`, `span`, and `event_range`.
 
@@ -38,7 +38,7 @@ lane "milestones" as milestones { kind custom; order 10; }
 event milestones 2026 "Public Beta" {};
 ```
 
-[Open in Playground](/playground/?source=timeline+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22+%7B%0A++++title+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9E%E3%82%A4%E3%83%AB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%B3%22+as+milestones+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+milestones+2026+%22%E5%85%AC%E9%96%8B%E3%83%99%E3%83%BC%E3%82%BF%22+%7B%7D%3B)
+[Open in Playground](/en/playground/?source=timeline+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22+%7B%0A++++title+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9E%E3%82%A4%E3%83%AB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%B3%22+as+milestones+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+milestones+2026+%22%E5%85%AC%E9%96%8B%E3%83%99%E3%83%BC%E3%82%BF%22+%7B%7D%3B)
 
 `range 2025..2027;` defines the display and validation range. A good starting point is to fix `unit year;` and `calendar proleptic_gregorian;` to build a year-based timeline.
 
@@ -83,7 +83,7 @@ event frontend 2026 "UI Revamp" { id "event:ui"; };
 event backend 2026 "API v2" { id "event:api"; };
 ```
 
-[Open in Playground](/playground/?source=timeline+%22%E7%B5%84%E7%B9%94%E3%81%AE%E5%B9%B4%E8%A1%A8%22+%7B%0A++++title+%22%E7%B5%84%E7%B9%94%E3%81%AE%E5%B9%B4%E8%A1%A8%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Agroup+%22%E9%96%8B%E7%99%BA%E3%83%81%E3%83%BC%E3%83%A0%22+%7B%0A++++lane+%22%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89%22+as+frontend+%7B+kind+custom%3B+order+10%3B+%7D%0A++++lane+%22%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%22+as+backend+%7B+kind+custom%3B+order+20%3B+%7D%0A%7D%0A%0Aevent+frontend+2026+%22UI+%E5%88%B7%E6%96%B0%22+%7B+id+%22event%3Aui%22%3B+%7D%3B%0Aevent+backend+2026+%22API+v2%22+%7B+id+%22event%3Aapi%22%3B+%7D%3B)
+[Open in Playground](/en/playground/?source=timeline+%22%E7%B5%84%E7%B9%94%E3%81%AE%E5%B9%B4%E8%A1%A8%22+%7B%0A++++title+%22%E7%B5%84%E7%B9%94%E3%81%AE%E5%B9%B4%E8%A1%A8%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Agroup+%22%E9%96%8B%E7%99%BA%E3%83%81%E3%83%BC%E3%83%A0%22+%7B%0A++++lane+%22%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89%22+as+frontend+%7B+kind+custom%3B+order+10%3B+%7D%0A++++lane+%22%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%22+as+backend+%7B+kind+custom%3B+order+20%3B+%7D%0A%7D%0A%0Aevent+frontend+2026+%22UI+%E5%88%B7%E6%96%B0%22+%7B+id+%22event%3Aui%22%3B+%7D%3B%0Aevent+backend+2026+%22API+v2%22+%7B+id+%22event%3Aapi%22%3B+%7D%3B)
 
 The group name is shown as a label above its lanes, separated by boundary lines. A `lane` that does not belong to a `group` is rendered independently, so you can adopt grouping incrementally in existing timelines (backward compatible).
 
@@ -103,7 +103,7 @@ lane "milestones" as milestones { kind custom; order 10; }
 event milestones 2026 "Public Beta" { tags ["release"]; id "event:beta"; };
 ```
 
-[Open in Playground](/playground/?source=timeline+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22+%7B%0A++++title+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9E%E3%82%A4%E3%83%AB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%B3%22+as+milestones+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+milestones+2026+%22%E5%85%AC%E9%96%8B%E3%83%99%E3%83%BC%E3%82%BF%22+%7B+tags+%5B%22release%22%5D%3B+id+%22event%3Abeta%22%3B+%7D%3B)
+[Open in Playground](/en/playground/?source=timeline+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22+%7B%0A++++title+%22%E8%A3%BD%E5%93%81%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9E%E3%82%A4%E3%83%AB%E3%82%B9%E3%83%88%E3%83%BC%E3%83%B3%22+as+milestones+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+milestones+2026+%22%E5%85%AC%E9%96%8B%E3%83%99%E3%83%BC%E3%82%BF%22+%7B+tags+%5B%22release%22%5D%3B+id+%22event%3Abeta%22%3B+%7D%3B)
 
 Write it as `event <lane-id> <year> "<label>" { ... };`. The label is displayed on the timeline.
 
@@ -124,7 +124,7 @@ span phases 2025..2026 "Design" { tags ["phase"]; id "span:design"; };
 span phases 2026..2028 "Build" { tags ["phase"]; id "span:build"; };
 ```
 
-[Open in Playground](/playground/?source=timeline+%22%E5%B0%8F%E3%81%95%E3%81%AA%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%22+%7B%0A++++title+%22%E5%B0%8F%E3%81%95%E3%81%AA%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%22%3B%0A++++unit+year%3B%0A++++range+2025..2028%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E5%B7%A5%E7%A8%8B%22+as+phases+%7B+kind+custom%3B+order+10%3B+%7D%0Aspan+phases+2025..2026+%22%E8%A8%AD%E8%A8%88%22+%7B+tags+%5B%22phase%22%5D%3B+id+%22span%3Adesign%22%3B+%7D%3B%0Aspan+phases+2026..2028+%22%E5%AE%9F%E8%A3%85%22+%7B+tags+%5B%22phase%22%5D%3B+id+%22span%3Abuild%22%3B+%7D%3B)
+[Open in Playground](/en/playground/?source=timeline+%22%E5%B0%8F%E3%81%95%E3%81%AA%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%22+%7B%0A++++title+%22%E5%B0%8F%E3%81%95%E3%81%AA%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%22%3B%0A++++unit+year%3B%0A++++range+2025..2028%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E5%B7%A5%E7%A8%8B%22+as+phases+%7B+kind+custom%3B+order+10%3B+%7D%0Aspan+phases+2025..2026+%22%E8%A8%AD%E8%A8%88%22+%7B+tags+%5B%22phase%22%5D%3B+id+%22span%3Adesign%22%3B+%7D%3B%0Aspan+phases+2026..2028+%22%E5%AE%9F%E8%A3%85%22+%7B+tags+%5B%22phase%22%5D%3B+id+%22span%3Abuild%22%3B+%7D%3B)
 
 Write it as `span <lane-id> <start>..<end> "<label>" { ... };`.
 
@@ -145,7 +145,7 @@ event_range work 2025..2026 "Transition Period" { tags ["migration"]; };
 event work 2027 "New system goes live" {};
 ```
 
-[Open in Playground](/playground/?source=timeline+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E8%A8%88%E7%94%BB%22+%7B%0A++++title+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E8%A8%88%E7%94%BB%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E4%BD%9C%E6%A5%AD%22+as+work+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent_range+work+2025..2026+%22%E7%A7%BB%E8%A1%8C%E6%9C%9F%E9%96%93%22+%7B+tags+%5B%22migration%22%5D%3B+%7D%3B%0Aevent+work+2027+%22%E6%96%B0%E4%BD%93%E5%88%B6%E3%81%A7%E9%81%8B%E7%94%A8%E9%96%8B%E5%A7%8B%22+%7B%7D%3B)
+[Open in Playground](/en/playground/?source=timeline+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E8%A8%88%E7%94%BB%22+%7B%0A++++title+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E8%A8%88%E7%94%BB%22%3B%0A++++unit+year%3B%0A++++range+2025..2027%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E4%BD%9C%E6%A5%AD%22+as+work+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent_range+work+2025..2026+%22%E7%A7%BB%E8%A1%8C%E6%9C%9F%E9%96%93%22+%7B+tags+%5B%22migration%22%5D%3B+%7D%3B%0Aevent+work+2027+%22%E6%96%B0%E4%BD%93%E5%88%B6%E3%81%A7%E9%81%8B%E7%94%A8%E9%96%8B%E5%A7%8B%22+%7B%7D%3B)
 
 It looks similar to `span` in that it has a duration, but semantically it means "an event with a duration." Use `span` for eras or membership periods, and `event_range` for work, incidents, or wars — the distinction makes the timeline easier to read.
 
@@ -167,7 +167,7 @@ span era 2019..now "Reiwa" { tags ["era"]; id "span:reiwa"; };
 
 `now` is only valid in the `end` position of `span` / `event_range`. The IR gains an `end_open` flag, which is non-breaking for existing JSON consumers. `tdsl fmt` and `tdsl decompile` round-trip `now` as-is.
 
-[Open in Playground](/playground/?source=timeline+%22Reign+Period%22+%7B%0A++++title+%22Reign+Period%22%3B%0A++++unit+year%3B%0A++++range+2019..2030%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22Era%22+as+era+%7B+kind+custom%3B+order+10%3B+%7D%0Aspan+era+2019..now+%22Reiwa%22+%7B+tags+%5B%22era%22%5D%3B+id+%22span%3Areiwa%22%3B+%7D%3B)
+[Open in Playground](/en/playground/?source=timeline+%22Reign+Period%22+%7B%0A++++title+%22Reign+Period%22%3B%0A++++unit+year%3B%0A++++range+2019..2030%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22Era%22+as+era+%7B+kind+custom%3B+order+10%3B+%7D%0Aspan+era+2019..now+%22Reiwa%22+%7B+tags+%5B%22era%22%5D%3B+id+%22span%3Areiwa%22%3B+%7D%3B)
 
 ## tags, id, and metadata
 
@@ -190,7 +190,7 @@ event releases 2026 "v1.0 Released" {
 };
 ```
 
-[Open in Playground](/playground/?source=timeline+%22%E5%85%AC%E9%96%8B%E5%B1%A5%E6%AD%B4%22+%7B%0A++++title+%22%E5%85%AC%E9%96%8B%E5%B1%A5%E6%AD%B4%22%3B%0A++++unit+year%3B%0A++++range+2024..2026%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%22+as+releases+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+releases+2026+%22v1.0%E5%85%AC%E9%96%8B%22+%7B%0A++++tags+%5B%22release%22%2C+%22stable%22%5D%3B%0A++++source+wd%3AQ95%3B%0A++++origin+manual%3B%0A++++id+%22event%3Av1%22%3B%0A%7D%3B)
+[Open in Playground](/en/playground/?source=timeline+%22%E5%85%AC%E9%96%8B%E5%B1%A5%E6%AD%B4%22+%7B%0A++++title+%22%E5%85%AC%E9%96%8B%E5%B1%A5%E6%AD%B4%22%3B%0A++++unit+year%3B%0A++++range+2024..2026%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%22+as+releases+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+releases+2026+%22v1.0%E5%85%AC%E9%96%8B%22+%7B%0A++++tags+%5B%22release%22%2C+%22stable%22%5D%3B%0A++++source+wd%3AQ95%3B%0A++++origin+manual%3B%0A++++id+%22event%3Av1%22%3B%0A%7D%3B)
 
 `tags` is for classification, `id` is a stable identifier used for review and diff tracking. `source wd:Q95;` records a Wikidata QID as provenance metadata. `origin manual;` indicates hand-written data.
 
@@ -247,7 +247,7 @@ map wd.han_dynasty to span {
 }
 ```
 
-[Open in Playground](/playground/?source=timeline+%22%E4%B8%AD%E5%9B%BD%E7%8E%8B%E6%9C%9D%22+%7B%0A++++title+%22%E4%B8%AD%E5%9B%BD%E7%8E%8B%E6%9C%9D%22%3B%0A++++unit+year%3B%0A++++range+-300..300%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E7%8E%8B%E6%9C%9D%22+as+dynasties+%7B+kind+dynasty%3B+order+10%3B+%7D%0A%0Aevent+dynasties+-221+%22%E7%A7%A6%E3%81%AE%E5%A4%A9%E4%B8%8B%E7%B5%B1%E4%B8%80%22+%7B+tags+%5B%22manual%22%5D%3B+%7D%3B%0A%0Aimport+wikidata+as+wd+%7B%0A++++entity+Q7209+as+han_dynasty%3B%0A++++policy+merge_by_source%3B%0A%7D%0A%0Amap+wd.han_dynasty+to+span+%7B%0A++++lane+dynasties%3B%0A++++start+claim%28P571%29.year%3B%0A++++end+claim%28P576%29.year%3B%0A++++label+label%40ja+%3F%3F+label%40en%3B%0A++++tags+%5B%22dynasty%22%2C+%22imported%22%5D%3B%0A%7D)
+[Open in Playground](/en/playground/?source=timeline+%22%E4%B8%AD%E5%9B%BD%E7%8E%8B%E6%9C%9D%22+%7B%0A++++title+%22%E4%B8%AD%E5%9B%BD%E7%8E%8B%E6%9C%9D%22%3B%0A++++unit+year%3B%0A++++range+-300..300%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E7%8E%8B%E6%9C%9D%22+as+dynasties+%7B+kind+dynasty%3B+order+10%3B+%7D%0A%0Aevent+dynasties+-221+%22%E7%A7%A6%E3%81%AE%E5%A4%A9%E4%B8%8B%E7%B5%B1%E4%B8%80%22+%7B+tags+%5B%22manual%22%5D%3B+%7D%3B%0A%0Aimport+wikidata+as+wd+%7B%0A++++entity+Q7209+as+han_dynasty%3B%0A++++policy+merge_by_source%3B%0A%7D%0A%0Amap+wd.han_dynasty+to+span+%7B%0A++++lane+dynasties%3B%0A++++start+claim%28P571%29.year%3B%0A++++end+claim%28P576%29.year%3B%0A++++label+label%40ja+%3F%3F+label%40en%3B%0A++++tags+%5B%22dynasty%22%2C+%22imported%22%5D%3B%0A%7D)
 
 In the browser-based Playground, Wikidata network fetches are not performed. You can open the file for syntax checking, but items from `import` may be omitted from the rendered output. For content you want reliably displayed on the web, write it as static `event`, `span`, or `event_range` entries — like the `event dynasties -221 ...` example above.
 
@@ -336,7 +336,7 @@ lane "Mission" as mission { kind custom; order 10; }
 event mission 1969-07-20T20:17 "Moon Landing" { tags ["highlight"]; id "event:landing"; };
 ```
 
-[Open in Playground](</playground/?source=timeline+%22%E3%82%A2%E3%83%9D%E3%83%AD11%E5%8F%B7+%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%E6%97%A5%22+%7B%0A++++title+%22Apollo+11+%E2%80%94+Landing+Day+(UTC)%22%3B%0A++++unit+hour%3B%0A++++range+1969-07-20T00%3A00..1969-07-21T06%3A00%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9F%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%22+as+mission+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+mission+1969-07-20T20%3A17+%22%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%22+%7B+tags+%5B%22highlight%22%5D%3B+id+%22event%3Alanding%22%3B+%7D%3B>)
+[Open in Playground](</en/playground/?source=timeline+%22%E3%82%A2%E3%83%9D%E3%83%AD11%E5%8F%B7+%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%E6%97%A5%22+%7B%0A++++title+%22Apollo+11+%E2%80%94+Landing+Day+(UTC)%22%3B%0A++++unit+hour%3B%0A++++range+1969-07-20T00%3A00..1969-07-21T06%3A00%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22%E3%83%9F%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%22+as+mission+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+mission+1969-07-20T20%3A17+%22%E6%9C%88%E9%9D%A2%E7%9D%80%E9%99%B8%22+%7B+tags+%5B%22highlight%22%5D%3B+id+%22event%3Alanding%22%3B+%7D%3B>)
 
 Since v1.27.0, `unit second;` is also supported, and second-level axis ticks are likewise thinned out automatically based on density (1s/5s/15s/30s). Write `start` / `end` / `time` as **`YYYY-MM-DDTHH:MM:SS`** date-time literals.
 
@@ -352,7 +352,7 @@ lane "Landing" as landing { kind custom; order 10; }
 event landing 1969-07-20T20:17:40 "Touchdown Signal Received" { tags ["highlight"]; id "event:touchdown"; };
 ```
 
-[Open in Playground](</playground/?source=timeline+%22Apollo+11+Touchdown+Signal%22+%7B%0A++++title+%22Apollo+11+%E2%80%94+Touchdown+Signal+(UTC)%22%3B%0A++++unit+second%3B%0A++++range+1969-07-20T20%3A17%3A00..1969-07-20T20%3A18%3A00%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22Landing%22+as+landing+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+landing+1969-07-20T20%3A17%3A40+%22Touchdown+Signal+Received%22+%7B+tags+%5B%22highlight%22%5D%3B+id+%22event%3Atouchdown%22%3B+%7D%3B>)
+[Open in Playground](</en/playground/?source=timeline+%22Apollo+11+Touchdown+Signal%22+%7B%0A++++title+%22Apollo+11+%E2%80%94+Touchdown+Signal+(UTC)%22%3B%0A++++unit+second%3B%0A++++range+1969-07-20T20%3A17%3A00..1969-07-20T20%3A18%3A00%3B%0A++++calendar+proleptic_gregorian%3B%0A%7D%0A%0Alane+%22Landing%22+as+landing+%7B+kind+custom%3B+order+10%3B+%7D%0Aevent+landing+1969-07-20T20%3A17%3A40+%22Touchdown+Signal+Received%22+%7B+tags+%5B%22highlight%22%5D%3B+id+%22event%3Atouchdown%22%3B+%7D%3B>)
 
 ## `??` (Fallback) Operator in map
 
