@@ -161,19 +161,46 @@ describe("createPanZoom — fit / scaling", () => {
     expect(m.scale).toBeCloseTo(736 / 2000, 3);
   });
 
-  it("フィット後の scale は設定した minScale を下回らない", () => {
+  it("巨大な SVG でもフィットは minScale で切り上げず、全体が表示領域に収まる（回帰: #818）", () => {
     const { surface, stage } = makeEnv({
-      surfaceW: 100,
-      surfaceH: 100,
-      svgW: 5000,
-      svgH: 5000,
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 10000,
+      svgH: 1000,
     });
     const pz = createPanZoom({ surface, stage, minScale: 0.25 });
     pz.reset();
 
     const m = parseMatrix(stage);
-    // raw fit scale would be (100-64)/5000 = 0.0072, clamped up to minScale
-    expect(m.scale).toBe(0.25);
+    expect(m.scale).toBeCloseTo(736 / 10000, 6);
+    expect(m.tx).toBeGreaterThanOrEqual(0);
+    expect(m.tx + 10000 * m.scale).toBeLessThanOrEqual(800);
+    expect(m.ty).toBeGreaterThanOrEqual(0);
+    expect(m.ty + 1000 * m.scale).toBeLessThanOrEqual(600);
+  });
+
+  it("フィット倍率が minScale 未満でも、ホイール縮小はフィット倍率を下回らない", () => {
+    const { surface, stage } = makeEnv({
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 10000,
+      svgH: 1000,
+    });
+    const pz = createPanZoom({ surface, stage, minScale: 0.25 });
+    pz.reset();
+    const fit = parseMatrix(stage).scale;
+
+    surface.dispatchEvent(
+      new WheelEvent("wheel", {
+        deltaY: 100,
+        clientX: 400,
+        clientY: 300,
+        bubbles: true,
+        cancelable: true,
+      })
+    );
+
+    expect(parseMatrix(stage).scale).toBeCloseTo(fit, 6);
   });
 
   it("SVG の viewBox/clientWidth/Height が両方 0 のときは identity にフォールバックする", () => {
