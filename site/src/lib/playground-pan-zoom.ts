@@ -33,6 +33,7 @@ export function createPanZoom({
   keyPanStep = 48,
 }: PanZoomOptions): PanZoomController {
   let scale = 1;
+  let zoomFloor = minScale;
   let tx = 0;
   let ty = 0;
 
@@ -77,6 +78,7 @@ export function createPanZoom({
       surface.classList.remove("is-panning");
     }
     const svg = stage.querySelector<SVGSVGElement>("svg");
+    zoomFloor = minScale;
     if (!svg) {
       scale = 1;
       tx = 0;
@@ -102,7 +104,9 @@ export function createPanZoom({
       ty = 0;
     } else {
       scale = Math.min((sw - 2 * fitPad) / svgW, (sh - 2 * fitPad) / svgH, 1);
-      scale = Math.max(scale, minScale);
+      // フィットは SVG 全体が収まることを優先し、minScale では切り上げない。
+      // 手動ズームの下限だけフィット倍率まで広げ、フィット直後に縮小方向へ飛ばないようにする。
+      zoomFloor = Math.min(minScale, scale);
       tx = (sw - svgW * scale) / 2;
       ty = (sh - svgH * scale) / 2;
     }
@@ -211,7 +215,7 @@ export function createPanZoom({
           ? e.deltaY * rect.height
           : e.deltaY;
     const delta = -deltaPx * 0.0015;
-    const newScale = clamp(scale * (1 + delta), minScale, maxScale);
+    const newScale = clamp(scale * (1 + delta), zoomFloor, maxScale);
     const ratio = newScale / scale;
 
     tx = mx - ratio * (mx - tx);
