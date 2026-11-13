@@ -47,7 +47,7 @@
 | `--color-plum` | `#7b4569` | 人物・主体・登場（plum） |
 | `--color-sky` | `#2c6f9f` | 外部要因・環境・地理（sky） |
 
-lane 色のバー（`.span-block` / `.mini-span` / `.usecase-bar`）に乗る前景は `--color-on-lane`（`#ffffff`）に集約します。lane 背景は light / dark とも有色・暗色のため白が最適前景で、terminal と同じく **テーマ非依存**（`:root` に 1 度だけ定義し、dark / high-contrast でも override しない＝白が最大コントラスト）。gold lane は元 `#d69a24` が白前景に対し 2.47:1 で AA 未達だったため、色相・彩度比（R:G:B ≈ 214:154:36）を保ったまま `#8c6518`（5.26:1, AA 充足）へ調整済みです（#693）。light HC の `#806000`（5.85:1）は AA 充足・AAA 未達で、AAA への引き上げ可否は #210 の後続 sub-issue で扱います。
+lane 色のバー（`.span-block` / `.mini-span` / `.usecase-bar`）に乗る前景は `--color-on-lane`（`#ffffff`）に集約します。lane 背景は light / dark とも有色・暗色のため白が最適前景で、terminal と同じく **テーマ非依存**（`:root` に 1 度だけ定義し、dark / high-contrast でも override しない＝白が最大コントラスト）。gold lane は元 `#d69a24` が白前景に対し 2.47:1 で AA 未達だったため、色相・彩度比（R:G:B ≈ 214:154:36）を保ったまま `#8c6518`（5.26:1, AA 充足）へ調整済みです（#693）。light HC の gold は `#806000`（5.85:1）から `#6e5000`（7.47:1, AAA）へ引き上げ済みです（#695）。dark / dark HC は白前景 AAA と vs 黒 3:1 の輝度帯が重ならないため AA 止まりで確定です（後述）。
 
 ### Dark mode
 
@@ -81,13 +81,13 @@ dark base の lane パレットは、白前景（`--color-on-lane` `#ffffff`）�
 | `--color-accent` | `#0000ff` | 8.59:1 |
 | `--color-accent-strong` | `#000080` | 16.01:1 |
 | `--color-warm` | `#800000` | 10.95:1 |
-| `--color-gold` | `#806000` | 5.85:1 |
+| `--color-gold` | `#6e5000` | 7.47:1 |
 | `--color-plum` | `#600060` | 12.60:1 |
 | `--color-sky` | `#00557a` | 8.14:1 |
 
 `--color-sky` は外部要因 lane のセマンティクスを保つため青系（natural の `#2c6f9f` に近い色相）を維持しつつ、cyan 成分を持たせて純青の accent（`#0000ff` / `#000080`）と色相で区別します（過去は accent-strong と同じ `#000080` で同色衝突していた）。
 
-`--color-gold`（5.85:1）は AAA 未達・AA 充足の **既存値**であり、今回の同色衝突解消の対象外です。AAA への引き上げ可否は #210 の後続 sub-issue で検討します。
+`--color-gold` は同色衝突の対象外でしたが、#695 で `#806000`（5.85:1）から `#6e5000`（7.47:1, AAA）へ引き上げました。色相は gold（R:G ≈ 110:80）のまま、warm `#800000`（赤）とは色相で区別できます。dark HC の gold（`#8f6410`）は下記の理由で AA 止まりで確定です。
 
 dark の `@media (prefers-color-scheme: dark)` 下の high-contrast ブロックでも lane パレットを再宣言します（**解消済み**）。light HC 値（warm `#800000` 等）は黒背景（`#000000`）で沈むため流用せず、黒背景でバーが視認でき（vs 黒 ≥ 3:1）かつ白前景で AA 以上を満たす値へ置換します。warm=起点 / gold=周年 / plum=人物 / sky=外部要因 の色相は維持します。
 
