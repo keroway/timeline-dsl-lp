@@ -38,10 +38,11 @@ overrides:
   # osv-scanner 検出分（2026-09-20、#724）。
   # GHSA-9rgm-9g3h-6x36 (devalue) — astro 経由の transitive dependency。パッチレベル修正、破壊的変更なし。
   devalue: ">=5.9.2 <6"
-  # osv-scanner 検出分（2026-10-02、#742）。
-  # GHSA-c475-qrg2-pj4r (basic-ftp) — @lhci/cli > proxy-agent > pac-proxy-agent > get-uri 経由の
-  #   devDependency。修正版は 6.2.1 のみ（major 跳ね）だが、FTP 経路はビルド成果物にも lhci の実行にも使われない。
-  basic-ftp: ">=6.2.1 <7"
+  # osv-scanner 検出分（#742 / #839）。
+  # GHSA-c475-qrg2-pj4r / GHSA-5pm8-86m8-9m6r / GHSA-r4jh-29pc-gfqr (basic-ftp)。
+  # @lhci/cli > proxy-agent > pac-proxy-agent > get-uri 経由の devDependency。
+  # FTP 経路はビルド成果物にも lhci の実行にも使われない。
+  basic-ftp: ">=6.2.4 <7"
   # osv-scanner 検出分（2026-10-18）。いずれもパッチレベル修正、破壊的変更なし。
   # GHSA-vc2v-76pw-4v95 (compression) / GHSA-jqcg-44mw-7w3h (proxy-addr) — @lhci/cli > express 経由の devDependency。
   compression: 1.8.2
