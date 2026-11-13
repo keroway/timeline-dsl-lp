@@ -19,7 +19,7 @@ export const LANE_PALETTE: Record<LaneTheme, Record<LaneColor, string>> = {
   },
   lightHc: {
     warm: "#800000",
-    gold: "#806000",
+    gold: "#6e5000",
     plum: "#600060",
     sky: "#00557a",
   },

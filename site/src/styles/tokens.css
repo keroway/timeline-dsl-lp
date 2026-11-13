@@ -24,8 +24,7 @@
   --color-sky: #2c6f9f;
   /* lane 色のバー（mini-span / usecase-bar / hero の WASM レンダリング SVG）に乗る固定前景。lane 背景は
      light / dark とも有色・暗色のため白が最適前景で、terminal 同様にテーマ非依存。HC でも
-     白が最大コントラストのため override しない。gold lane 上の白は light HC で 5.85:1（AA充足・
-     AAA未達、#210 の別issue範囲）で、base light は #693 で 5.26:1 (AA) まで是正済み */
+     白が最大コントラストのため override しない。gold lane 上の白は light HC で 7.47:1（AAA、#695）で、base light は #693 で 5.26:1 (AA) まで是正済み */
   --color-on-lane: #ffffff;
   /* lane セマンティクスの named theme tokens（DESIGN.md §8）。既存 lane palette
      （--color-warm/gold/plum/sky）をプロキシするだけで、新色は追加しない。
@@ -138,7 +137,7 @@
   /* light HC accent は青 (#0000ff)。白前景で 8.59:1 (AAA) */
   --color-on-accent: #ffffff;
   --color-warm: #800000;
-  --color-gold: #806000;
+  --color-gold: #6e5000;
   --color-plum: #600060;
   --color-sky: #00557a;
   /* warn 文字は白背景で AAA (9.11:1)。on-lane は白固定のため HC でも override 不要 */
@@ -275,7 +274,7 @@
   --color-accent-strong: #000080;
   --color-on-accent: #ffffff;
   --color-warm: #800000;
-  --color-gold: #806000;
+  --color-gold: #6e5000;
   --color-plum: #600060;
   --color-sky: #00557a;
   --color-status-warn: #5c4500;
