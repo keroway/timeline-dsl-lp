@@ -314,6 +314,9 @@ export function wireTooltip(opts: {
     let top = clientY + margin;
     if (left + tw > vw - margin) left = clientX - tw - margin;
     if (top + th > vh - margin) top = clientY - th - margin;
+    // 反転後も画面外へはみ出さないよう、余白込みの範囲へ制限する（画面より大きい場合は左上優先）。
+    left = Math.max(margin, Math.min(left, vw - tw - margin));
+    top = Math.max(margin, Math.min(top, vh - th - margin));
 
     tooltipEl.style.left = `${left}px`;
     tooltipEl.style.top = `${top}px`;

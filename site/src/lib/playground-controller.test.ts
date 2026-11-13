@@ -1009,6 +1009,38 @@ describe("wireTooltip", () => {
     vi.useRealTimers();
   });
 
+  it("反転配置後も左右上下が画面内（余白 14px）に収まる", () => {
+    const preview = document.createElement("div");
+    const target = document.createElement("span");
+    target.setAttribute("data-tdsl-tooltip", "Long event detail");
+    preview.appendChild(target);
+    const tooltipEl = document.createElement("div");
+    Object.defineProperty(tooltipEl, "offsetWidth", { value: 320 });
+    Object.defineProperty(tooltipEl, "offsetHeight", { value: 80 });
+    vi.spyOn(window, "innerWidth", "get").mockReturnValue(375);
+    vi.spyOn(window, "innerHeight", "get").mockReturnValue(800);
+    wireTooltip({ preview, tooltipEl });
+
+    target.dispatchEvent(
+      new PointerEvent("pointermove", {
+        bubbles: true,
+        clientX: 100,
+        clientY: 200,
+      })
+    );
+
+    expect(tooltipEl.style.left).toBe("14px");
+    target.dispatchEvent(
+      new PointerEvent("pointermove", {
+        bubbles: true,
+        clientX: 100,
+        clientY: 790,
+      })
+    );
+    expect(tooltipEl.style.top).toBe("696px");
+    vi.restoreAllMocks();
+  });
+
   describe("表示内容へのホバー移動 (WCAG 1.4.13 Hoverable)", () => {
     const setup = () => {
       const preview = document.createElement("div");
