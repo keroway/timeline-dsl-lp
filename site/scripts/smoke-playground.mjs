@@ -8,6 +8,7 @@ import {
   assertStatus,
   captureNavigationTarget,
   DEFAULT_BASE_URL,
+  findWasmFailureProblems,
   get,
   normalizeBaseUrl,
   parseArgs,
@@ -683,16 +684,43 @@ async function smokeVisibleWasmFailure(rootUrl, browser) {
   });
 
   await page.goto(`${rootUrl}${PLAYGROUND_PATH}`, { waitUntil: "networkidle" });
+  // 説明文の語句ではなく、失敗専用の状態属性への遷移を待つ（#847）。
   await page.waitForFunction(
     () =>
-      /WASM|読み込めません|load|failed|error|エラー/i.test(
-        document.body.textContent ?? ""
-      ),
+      document
+        .querySelector("[data-playground-root]")
+        ?.getAttribute("data-playground-state") === "error",
     undefined,
     { timeout: 5000 }
   );
 
+  const snapshot = await page.evaluate(() => {
+    const textOf = (selector) =>
+      document.querySelector(selector)?.textContent ?? "";
+    const retry = document.querySelector(".preview-retry-btn");
+    const retryVisible =
+      retry instanceof HTMLElement && retry.getClientRects().length > 0;
+    return {
+      state: document
+        .querySelector("[data-playground-root]")
+        ?.getAttribute("data-playground-state"),
+      statusText: textOf("[data-status]"),
+      diagnosticsText: textOf("[data-diagnostics]"),
+      retryButtonText: retryVisible ? (retry.textContent ?? "") : "",
+    };
+  });
   await context.close();
+
+  // PLAYGROUND_PATH は ja。文言は site/src/i18n/ja.ts の playground.status.wasm_failed / playground.retry。
+  const problems = findWasmFailureProblems(snapshot, {
+    statusText: "WASM 処理に失敗しました",
+    retryText: "再試行",
+  });
+  if (problems.length > 0) {
+    throw new Error(
+      `Visible WASM failure state is incomplete:\n- ${problems.join("\n- ")}`
+    );
+  }
 }
 
 async function smokeLocaleToggle(rootUrl, browser) {
