@@ -83,6 +83,32 @@ export function assertIncludes(value, expected, label) {
   }
 }
 
+// Playground の WASM 初期化失敗が「見える形」で出ているかを判定する純粋関数（#847）。
+// snapshot は { state, statusText, diagnosticsText, retryButtonText }。
+// 説明文・loading 表示・DSL 診断エラーでは成功させず、失敗専用の状態・通知・再試行 UI を要求する。
+export function findWasmFailureProblems(snapshot, { statusText, retryText }) {
+  const problems = [];
+  if (snapshot.state !== "error") {
+    problems.push(
+      `data-playground-state should be "error" (got ${JSON.stringify(snapshot.state)})`
+    );
+  }
+  if ((snapshot.statusText ?? "").trim() !== statusText) {
+    problems.push(
+      `[data-status] should read ${JSON.stringify(statusText)} (got ${JSON.stringify(snapshot.statusText)})`
+    );
+  }
+  if (!(snapshot.diagnosticsText ?? "").trim()) {
+    problems.push("[data-diagnostics] should describe the init failure");
+  }
+  if ((snapshot.retryButtonText ?? "").trim() !== retryText) {
+    problems.push(
+      `.preview-retry-btn should be visible with ${JSON.stringify(retryText)} (got ${JSON.stringify(snapshot.retryButtonText)})`
+    );
+  }
+  return problems;
+}
+
 // ページ内の何らかのアクション（例: 言語トグルのクリック）が発生させるナビゲーションの
 // 遷移先 pathname を、実際には遷移させずに捕捉する。
 //
