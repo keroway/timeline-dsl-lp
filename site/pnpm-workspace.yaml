@@ -69,8 +69,8 @@ minimumReleaseAgeExclude:
   [
     # Renovate security update: fast-uri@3.1.6 || 3.1.7
     fast-uri@3.1.6 || 3.1.7 || 3.1.8,
-    # Renovate security update: astro@7.2.8
-    astro@7.2.8,
+    # Renovate security update: astro@7.2.8 || 7.4.7
+    astro@7.2.8 || 7.4.7,
     # Renovate security update: ip-address@10.5.1 || 10.7.1
     ip-address@10.5.1 || 10.7.1,
     # osv-scanner 検出分の即時修正（#742）
