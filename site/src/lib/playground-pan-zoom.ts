@@ -125,11 +125,14 @@ export function createPanZoom({
     // ここで pointer capture を取ってしまうと、ブラウザによっては pointerup のターゲットが
     // ボタンではなく surface にリダイレクトされ、応答するネイティブ click イベントが
     // 一切発火しなくなる（reset ボタンがクリックできなくなる）。
+    // 再試行ボタンなど surface 内に動的に追加されるボタン類も同様に除外する。
     if (
       resetButton &&
       e.target instanceof Node &&
       resetButton.contains(e.target)
     )
+      return;
+    if (e.target instanceof Element && e.target.closest("button, a, input"))
       return;
     pendingPan = {
       startX: e.clientX,

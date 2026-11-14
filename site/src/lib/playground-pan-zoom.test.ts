@@ -623,6 +623,26 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(stage.classList.contains("is-panning")).toBe(false);
   });
 
+  it("stage 内の再試行ボタン上の pointerdown はパン開始として扱わない（回帰: #846）", () => {
+    const { surface, stage } = makeEnv({
+      surfaceW: 800,
+      surfaceH: 600,
+      svgW: 400,
+      svgH: 200,
+    });
+    const retry = document.createElement("button");
+    stage.appendChild(retry);
+    createPanZoom({ surface, stage, panThreshold: 5 });
+
+    firePointer(retry, "pointerdown", {
+      clientX: 30,
+      clientY: 30,
+      pointerId: 7,
+    });
+
+    expect(surface.setPointerCapture).not.toHaveBeenCalledWith(7);
+  });
+
   it("pointerup 後の reset で、保留中のパン描画フレームがフィット表示を上書きしない（回帰）", () => {
     vi.useFakeTimers();
     const { surface, stage } = makeEnv({
