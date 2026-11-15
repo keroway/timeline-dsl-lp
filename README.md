@@ -106,6 +106,6 @@ Desktop preset is used (the docs site is primarily read on desktop, and it keeps
 
 ## WASM bundle
 
-All calls to the Timeline DSL WASM from the Playground and runnable docs go through `site/src/lib/tdsl-wasm.ts` only. The generated `@keroway/tdsl-wasm` browser package is vendored in `site/public/wasm/` so the LP can build independently of the main repository release pipeline.
+The Timeline DSL WASM is called through two modules, one per runtime: the Playground (browser, async init) goes through `site/src/lib/tdsl-wasm.ts`, and runnable docs (`TimelineEmbed.astro` / `HeroSection.astro` / `ExamplesSection.astro`, build-time Node, `initSync` after reading the binary with `node:fs/promises`) go through `site/src/lib/tdsl-wasm-node.mts`. The generated `@keroway/tdsl-wasm` browser package is vendored in `site/public/wasm/` so the LP can build independently of the main repository release pipeline.
 
 To update: build `crates/tdsl-wasm` in the main repo with `wasm-pack build --target web`, then sync `tdsl_wasm.{js,d.ts}`, `tdsl_wasm_bg.wasm`, and `package.json` into `site/public/wasm/`. `pnpm build` runs `check_source` and `render_svg_from_source` smoke tests before the main build.

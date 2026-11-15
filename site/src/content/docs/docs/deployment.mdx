@@ -112,9 +112,14 @@ PLAYGROUND_BASE_URL="http://127.0.0.1:4321" pnpm smoke:playground:browser
 
 ## WASM bundle の更新
 
-Playground と runnable docs から Timeline DSL WASM を使う場合、LP 側の呼び出し口は `src/lib/tdsl-wasm.ts` に集約します。Astro / Starlight のコンポーネントから `tdsl_wasm.js` や wasm-bindgen 生成物を直接 import しないでください。
+LP 側の WASM 呼び出し口は実行環境ごとに 2 つあります。Astro / Starlight のコンポーネントから `tdsl_wasm.js` や wasm-bindgen 生成物を直接 import しないでください。
 
-timeline-dsl v1.2.0 以降は、GitHub Release に `tdsl-wasm-<version>.tar.gz` が添付されます。LP 側ではその wasm-pack 生成物を `public/wasm/` に vendoring します。npm package 配布へ移行した場合も、差し替え対象は `src/lib/tdsl-wasm.ts`、`public/wasm/`、`scripts/smoke-tdsl-wasm.mjs`、`scripts/smoke-playground.mjs`、この更新手順に限定します。
+- ブラウザ用: `src/lib/tdsl-wasm.ts`。Playground（`playground-controller.ts`）が使い、ブラウザで非同期に初期化します。
+- ビルド時 Node 用: `src/lib/tdsl-wasm-node.mts`。runnable docs（`TimelineEmbed.astro` / `HeroSection.astro` / `ExamplesSection.astro`）が使い、`node:fs/promises` で WASM バイナリを読み `initSync` で初期化します。
+
+両者は初期化方式とエラーハンドリングが異なる別モジュールです。
+
+timeline-dsl v1.2.0 以降は、GitHub Release に `tdsl-wasm-<version>.tar.gz` が添付されます。LP 側ではその wasm-pack 生成物を `public/wasm/` に vendoring します。npm package 配布へ移行した場合も、差し替え対象は `src/lib/tdsl-wasm.ts`、`src/lib/tdsl-wasm-node.mts`、`public/wasm/`、`scripts/smoke-tdsl-wasm.mjs`、`scripts/smoke-playground.mjs`、この更新手順に限定します。
 
 更新時に確認するファイルは以下です。
 
