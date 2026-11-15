@@ -112,9 +112,14 @@ PLAYGROUND_BASE_URL="http://127.0.0.1:4321" pnpm smoke:playground:browser
 
 ## Updating the WASM bundle
 
-When using Timeline DSL WASM from Playground and runnable docs, centralize the call interface on the LP side in `src/lib/tdsl-wasm.ts`. Do not directly import `tdsl_wasm.js` or wasm-bindgen generated files from Astro / Starlight components.
+The LP has two WASM call interfaces, one per runtime. Do not directly import `tdsl_wasm.js` or wasm-bindgen generated files from Astro / Starlight components.
 
-From timeline-dsl v1.2.0 onwards, `tdsl-wasm-<version>.tar.gz` is attached to GitHub Releases. On the LP side, vendor the wasm-pack output into `public/wasm/`. Even when migrating to npm package distribution, the targets for replacement are limited to `src/lib/tdsl-wasm.ts`, `public/wasm/`, `scripts/smoke-tdsl-wasm.mjs`, `scripts/smoke-playground.mjs`, and this update procedure.
+- Browser: `src/lib/tdsl-wasm.ts`. Used by the Playground (`playground-controller.ts`); initializes asynchronously in the browser.
+- Build-time Node: `src/lib/tdsl-wasm-node.mts`. Used by runnable docs (`TimelineEmbed.astro` / `HeroSection.astro` / `ExamplesSection.astro`); reads the WASM binary with `node:fs/promises` and initializes it with `initSync`.
+
+The two are separate modules with different initialization and error handling.
+
+From timeline-dsl v1.2.0 onwards, `tdsl-wasm-<version>.tar.gz` is attached to GitHub Releases. On the LP side, vendor the wasm-pack output into `public/wasm/`. Even when migrating to npm package distribution, the targets for replacement are limited to `src/lib/tdsl-wasm.ts`, `src/lib/tdsl-wasm-node.mts`, `public/wasm/`, `scripts/smoke-tdsl-wasm.mjs`, `scripts/smoke-playground.mjs`, and this update procedure.
 
 When updating, verify the following files.
 
