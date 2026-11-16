@@ -28,6 +28,7 @@ async function runInSandbox({
   env = {},
   dateStepMs = 31_000,
   interruptWith,
+  fetchImpl,
 }) {
   const raw = await readFile(SCRIPT_PATH, "utf-8");
   const source = raw.replace('import { spawn } from "node:child_process";', "");
@@ -60,7 +61,15 @@ async function runInSandbox({
     },
     Date: { now: () => (now += dateStepMs) },
     setTimeout,
-    fetch: async () => {
+    AbortSignal,
+    fetch: async (url, fetchOptions) => {
+      if (fetchImpl) {
+        return fetchImpl(url, fetchOptions, {
+          advance: (ms) => {
+            now += ms;
+          },
+        });
+      }
       if (readyOnFirstFetch) {
         return { status: 200 };
       }
@@ -126,6 +135,48 @@ describe("check-full.mjs の preview server ライフサイクル", () => {
     expect(result.spawnCalls.at(-1).args).toContain("lhci");
     expect(result.killCount).toBeGreaterThanOrEqual(1);
     expect(log).toContain("Stopping preview server");
+  });
+
+  it("締切後に届いた 200 応答を ready とみなさず失敗終了する (#857)", async () => {
+    const result = await runInSandbox({
+      readyOnFirstFetch: true,
+      dateStepMs: 1,
+      fetchImpl: async (_url, _options, clock) => {
+        clock.advance(60_001);
+        return { status: 200 };
+      },
+    });
+    const log = result.logs.join("\n");
+
+    expect(result.exitCode).toBe(1);
+    expect(log).not.toContain("Preview server ready.");
+    expect(log).toContain("failed to become ready");
+    expect(result.spawnCount).toBe(2);
+    expect(result.killCount).toBeGreaterThanOrEqual(1);
+  });
+
+  it("応答しない fetch は残り時間の AbortSignal で中断され、失敗終了する (#857)", async () => {
+    const seen = {};
+    const result = await runInSandbox({
+      readyOnFirstFetch: false,
+      dateStepMs: 1,
+      fetchImpl: (_url, options, clock) => {
+        seen.signal = options.signal;
+        return new Promise((_resolve, reject) => {
+          // 実時間の締切（30s）の代わりに、signal の発火を待たず時計を進めて
+          // 締切超過を再現し、signal が渡されていることだけを検証する。
+          setTimeout(() => {
+            clock.advance(60_001);
+            reject(new Error("aborted"));
+          }, 10);
+        });
+      },
+    });
+
+    expect(seen.signal).toBeInstanceOf(AbortSignal);
+    expect(result.exitCode).toBe(1);
+    expect(result.logs.join("\n")).toContain("failed to become ready");
+    expect(result.killCount).toBeGreaterThanOrEqual(1);
   });
 
   it.each([
