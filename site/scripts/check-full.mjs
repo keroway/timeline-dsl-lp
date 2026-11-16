@@ -134,15 +134,23 @@ function startPreview() {
 
 async function waitForReady(previewProcess) {
   const deadline = Date.now() + READY_TIMEOUT_MS;
-  while (Date.now() < deadline) {
+  for (;;) {
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) {
+      break;
+    }
     if (previewProcess.exitCode !== null) {
       throw new Error(
         `Preview server exited early (code ${previewProcess.exitCode})`
       );
     }
     try {
-      const response = await fetch(BASE_URL, { redirect: "manual" });
-      if (response.status < 500) {
+      // 応答待ちも残り時間で打ち切り、締切後に届いた応答は ready と扱わない。
+      const response = await fetch(BASE_URL, {
+        redirect: "manual",
+        signal: AbortSignal.timeout(remaining),
+      });
+      if (response.status < 500 && Date.now() <= deadline) {
         console.log("Preview server ready.");
         return;
       }
