@@ -167,6 +167,20 @@ tdsl render manual.tdsl --output manual.html
 
 `import-csv` は `lane,type,start,end,time,label,tags,id` のヘッダー行を持つUTF-8 CSVを入力にします。`start` / `end` / `time` 列は `YYYY` / `YYYY-MM` / `YYYY-MM-DD` の日付精度に加え、`YYYY-MM-DDTHH:MM` / `YYYY-MM-DDTHH:MM:SS` の時刻精度と `Z` / `±HH:MM` のUTCオフセットを受理します（月・日精度は v1.10.0〜、時刻・秒・オフセットはDSL本体の時刻リテラルパーサに準拠）。`source` / `origin` 列は任意かつ独立に判定されるため、どちらか一方のみを含む9列CSVもそのまま受理し、両方を含む `export-csv` 出力の10列CSVも往復できます（v1.26.0〜）。
 
+#### `tags` 列の書式（v3.0.0〜、破壊的変更）
+
+`tags` 列の区切りは `|` で、`,` は区切りではなくタグの一部です。旧版の `"alpha,beta"`（2タグの意図）は `alpha|beta` に書き換えてください（カンマの一括置換はせず、既存CSVの意図を確認します）。タグ内の特殊文字は可逆エスケープされます。
+
+- `a\|b`: 1タグ `a\|b`（`\|` は `|` のエスケープ）
+- `\\`: バックスラッシュ
+- `\e`: 空文字タグ
+- `\s` / `\t` / `\n` / `\r`: 境界の空白・タブ・改行（CSVの前後空白除去から保護）
+- `\u{XXXX}`: 境界の Unicode 空白（全角スペース等）
+
+未知のエスケープと末尾の不完全なエスケープはエラーになります。`export-csv` → `import-csv` でタグ配列が完全に一致します。`\e` / `\u{...}` を含む出力は旧版の `import-csv` ではエラーになります。
+
+v3.0.0 では、継続中（`now`）の期間、`note` / `link` / `color` も往復で保持され、`label` / `id` / `note` の前後空白は削除されません（`lane` / `type` / 時刻 / `tags` は従来どおり前後空白を除去）。
+
 ### export-csv
 
 IR（`.tdsl` または `.json`）をCSVへ書き出します（v1.23.0〜）。`import-csv` が受理する8列（`lane,type,start,end,time,label,tags,id`）に `source` / `origin` を加えた10列を出力し、`source` / `origin` を含めて全10列が `import-csv` とラウンドトリップします（v1.26.0〜）。`start` / `end` / `time` の秒精度・UTCオフセット（`Z` / `±HH:MM`）も欠落せずラウンドトリップします（v1.27.0〜。それ以前は無声で破棄されていました）。`origin=wikidata` の行は `source` が `wd:Q<id>` 形式であることが必須で、不整合はCSV行番号付きエラーになります。

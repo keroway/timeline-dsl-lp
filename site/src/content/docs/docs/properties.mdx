@@ -7,6 +7,14 @@ description: timeline / lane / group / event / span / event_range が取りう�
 
 Wikidata を取り込む `import` / `map` / `template` / `apply` は [Wikidataインポート/マッピングリファレンス](/docs/wikidata-mapping/) で扱います。日付・時刻リテラルの書式（`YYYY-MM-DD` 等）は [日付・時刻表現リファレンス](/docs/date-time/) を参照してください。
 
+:::caution[v3.0.0 での厳格化]
+v3.0.0 から、次は黙って受理されず明示エラーになります。
+
+- 同一ブロック内のプロパティの重複指定（`timeline` の `title` / `unit` / `range` / `calendar`、`lane` の `kind` / `order` / `color`、`span` / `event` / `event_range` の `tags` / `source` / `id` / `origin` / `note` / `link` / `color`）。以前は後の値が先の値を上書きしていました。
+- 未対応の `calendar`（`proleptic_gregorian` 以外。エラー E119）。
+- 数字で始まる lane ラベルから自動生成される lane ID には `lane_` 接頭辞が付きます（例: `123` → `lane_123`）。JSON IR の消費側では `id` が変わります。
+  :::
+
 ## timeline
 
 年表全体のメタ情報を定義するブロック。`.tdsl` ファイルにつき 1 つ書きます。

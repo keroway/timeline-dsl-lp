@@ -167,6 +167,20 @@ tdsl render manual.tdsl --output manual.html
 
 `import-csv` takes a UTF-8 CSV with a header row of `lane,type,start,end,time,label,tags,id`. The `start` / `end` / `time` columns accept the date-only precisions `YYYY`, `YYYY-MM`, and `YYYY-MM-DD`, plus the datetime precisions `YYYY-MM-DDTHH:MM` and `YYYY-MM-DDTHH:MM:SS`, and UTC offsets (`Z` / `±HH:MM`) (month/day precision from v1.10.0+; time/second/offset follow the DSL's own time-literal parser). The `source` / `origin` columns are independently optional, so a 9-column CSV with only one of them is accepted too, and the 10-column CSV produced by `export-csv` (with both) round-trips as-is (v1.26.0+).
 
+#### `tags` column format (v3.0.0+, breaking change)
+
+Tags are separated by `|`; `,` is no longer a separator and is kept as part of a tag. Rewrite a legacy `"alpha,beta"` (intended as two tags) as `alpha|beta` — check the intent of existing CSVs instead of doing a blanket comma replacement. Special characters inside a tag use reversible escapes.
+
+- `a\|b`: One tag `a\|b` (`\|` escapes `|`)
+- `\\`: A backslash
+- `\e`: An empty tag
+- `\s` / `\t` / `\n` / `\r`: Boundary space / tab / newline (protected from CSV whitespace trimming)
+- `\u{XXXX}`: Boundary Unicode whitespace (e.g. full-width space)
+
+Unknown escapes and a trailing incomplete escape are errors. The tag array round-trips exactly through `export-csv` → `import-csv`. Output containing `\e` / `\u{...}` is rejected by older `import-csv` versions.
+
+Also in v3.0.0, ongoing (`now`) ranges and `note` / `link` / `color` survive the round trip, and leading/trailing whitespace in `label` / `id` / `note` is no longer stripped (`lane` / `type` / time / `tags` are still trimmed as before).
+
 ### export-csv
 
 Exports an IR (from `.tdsl` or `.json`) to CSV (v1.23.0+). Writes the 8 columns accepted by `import-csv` (`lane,type,start,end,time,label,tags,id`) plus `source` / `origin`, for a total of 10 columns. All 10 columns, including `source` / `origin`, round-trip with `import-csv` (v1.26.0+). Second precision and UTC offsets (`Z` / `±HH:MM`) in `start` / `end` / `time` also round-trip without loss (v1.27.0+; earlier versions silently dropped them). Rows with `origin=wikidata` require `source` to be in the `wd:Q<id>` form; a mismatch produces a CSV row-numbered error.
