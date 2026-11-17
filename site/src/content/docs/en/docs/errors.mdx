@@ -5,7 +5,7 @@ description: A reference of the diagnostic codes (errors, warnings, and lint) em
 
 This is a reference of the diagnostic codes emitted by `tdsl check` / `tdsl build` / `tdsl lint`, with the cause and fix for each code. See [Troubleshooting](/en/docs/troubleshooting/) for symptom-based diagnosis.
 
-## Parse errors (E001–E008)
+## Parse errors (E001–E009)
 
 Errors raised while parsing a file. They are reported when the `.tdsl` file contains invalid notation.
 
@@ -19,6 +19,7 @@ Errors raised while parsing a file. They are reported when the `.tdsl` file cont
 | E006 | Invalid month/day        |
 | E007 | Invalid second           |
 | E008 | Invalid UTC offset       |
+| E009 | Unknown claim accessor   |
 
 ### E001: Syntax error
 
@@ -169,7 +170,31 @@ event a 2024-01-01T10:00+09:00 "E" {};
 event a 2024-01-01T10:00Z "E" {};
 ```
 
-## Semantic errors (E101–E113)
+### E009: Unknown claim accessor
+
+**Message**: `Unknown claim accessor '{value}' (expected one of: year, month, day, hour, minute, second)`
+
+**Cause**: The accessor after `claim(...)` in a `map` block is not one of the six valid ones. This is typically a typo of `.year`.
+
+**Fix**: Use one of `year` / `month` / `day` / `hour` / `minute` / `second`.
+
+```tdsl
+// Wrong (typo of "year")
+map wd.dynasty to span {
+    lane han;
+    start claim(P571).yaer;
+}
+
+// Correct
+map wd.dynasty to span {
+    lane han;
+    start claim(P571).year;
+}
+```
+
+**Why this is an error (v1.29.0 and later)**: Previously an unknown accessor silently failed to resolve during lowering, and the item was simply not generated, accompanied by a generic warning that pointed at the wrong cause. A typo is now reported at its own location.
+
+## Semantic errors (E101–E119)
 
 Errors raised in the AST-to-IR conversion (lowering) phase. They are reported when the file is syntactically correct but semantically contradictory.
 
@@ -188,6 +213,12 @@ Errors raised in the AST-to-IR conversion (lowering) phase. They are reported wh
 | E111 | Invalid item link URL                                  |
 | E112 | Invalid item color value                               |
 | E113 | Comparing a UTC-offset value with an offset-free value |
+| E114 | Item type mismatch under field_priority                |
+| E115 | Duplicate import alias                                 |
+| E116 | Map references an undeclared import alias              |
+| E117 | Apply references an undeclared import alias            |
+| E118 | Apply references an undeclared template                |
+| E119 | Unsupported or unknown calendar                        |
 
 ### E101: Unknown lane reference
 
@@ -338,6 +369,89 @@ span a 2024-01-01T10:00:00+09:00..2024-01-02T10:00+09:00 "S" {};
 
 # Correct (remove the offset from both)
 span a 2024-01-01T10:00:00..2024-01-02T10:00 "S" {};
+```
+
+### E114: Item type mismatch under field_priority
+
+**Message**: `Item id {id} has conflicting types under policy field_priority: existing is {existing}, incoming is {incoming} (field-level merge is only defined between items of the same type)`
+
+**Cause**: Items whose IDs collide under `policy field_priority` have different types (for example, a hand-written `event` and a Wikidata-imported `span`). Field-level merging is only defined between items of the same type.
+
+**Fix**: Change one of the `id`s, or make the types match. If hand-written definitions should always win, use `policy keep_manual`. `policy overwrite_imported` does not apply here: it only replaces an existing item that was itself imported, and if the existing item is hand-written the result is E103.
+
+```
+// Wrong (same id "x1", different types)
+event lane 1950 "Hand-written event" { id "x1"; };
+// → error if a Wikidata import generates a span with the same id
+
+// Correct (separate the ids, or align the types)
+event lane 1950 "Hand-written event" { id "x1_manual"; };
+```
+
+**Note**: Previously the import side silently replaced the whole existing item, losing hand-written content even with `label manual`. This is now an explicit error.
+
+### E115: Duplicate import alias
+
+**Message**: ``Duplicate import alias: {alias} (use `import <QID> as <alias>` to give each import block a distinct alias)``
+
+**Cause**: Two or more `import` blocks share the same alias. When `as` is omitted, the alias is the import source name itself (`Q7209` for `import Q7209 { ... }`), so importing the same QID twice also collides.
+
+**Fix**: Give each block a distinct alias with `import <QID> as <alias>`, or merge imports of the same source into one block.
+
+```tdsl
+// Wrong (same QID twice; both aliases become "Q7209")
+import Q7209 { entity Q7209 as han; }
+import Q7209 { entity Q7209 as han2; }
+
+// Correct (merge into one block)
+import Q7209 { entity Q7209 as han; entity Q7209 as han2; }
+```
+
+```tdsl
+// Wrong (explicit alias duplicated)
+import Q7209 as wd { entity Q7209 as han; }
+import Q8686 as wd { entity Q8686 as tang; }
+
+// Correct
+import Q7209 as han_src { entity Q7209 as han; }
+import Q8686 as tang_src { entity Q8686 as tang; }
+```
+
+**Note (v1.29.0 and later)**: Previously the second import block silently replaced the entities of the first. This now matches lane (E102) and template (E109), which are already errors. Listing different import sources without `as` is valid and is not an error.
+
+### E116: Map references an undeclared import alias
+
+**Message**: `Map references undeclared import alias: {alias}`
+
+**Cause**: No `import ... as <alias>` block is declared for the `alias` in `map <alias>.<key>`. This is the same kind of mistake as E106, but it can be decided from the AST alone, so it is also detected by `tdsl check` / `tdsl build --offline`, which skip Wikidata fetching.
+
+**Fix**: Check that the alias name in the `import` block matches the name referenced in `map`.
+
+### E117: Apply references an undeclared import alias
+
+**Message**: `Apply references undeclared import alias: {alias}`
+
+**Cause**: No `import ... as <alias>` block is declared for the `<import>` in `apply <template> to <import>`. Like E116, this is detected offline as well.
+
+### E118: Apply references an undeclared template
+
+**Message**: `Apply references undeclared template: {name}`
+
+**Cause**: No `template ... as <alias>` block is declared for the `<template>` in `apply <template> to <import>`. This is the same kind of mistake as E110, but it is detected offline as well.
+
+### E119: Unsupported or unknown calendar
+
+**Message**: `Unsupported calendar: julian (only proleptic_gregorian is supported; julian calendar dates are not implemented)` / `Unsupported calendar: {value} (unknown calendar; supported: proleptic_gregorian)`
+
+**Cause**: The `calendar` of a `timeline` names a calendar that date calculation does not support, or contains a typo. Dates are always computed in the proleptic Gregorian calendar, so `julian` and typos were previously accepted silently and gave the same result as `proleptic_gregorian`. `julian` is intentionally not implemented.
+
+**Fix**: Use `calendar proleptic_gregorian;` or omit the `calendar` line (the default is `proleptic_gregorian`).
+
+```tdsl
+// Wrong
+timeline "T" { title "T"; unit year; range 0..100; calendar julian; }
+// Correct
+timeline "T" { title "T"; unit year; range 0..100; calendar proleptic_gregorian; }
 ```
 
 ## Validation warnings (W201–W207)
