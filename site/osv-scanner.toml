@@ -44,3 +44,14 @@ an `overrides` bump would break Lighthouse CI. devDependency only, not shipped
 in the deployed site. Re-check at the ignoreUntil date (e.g. @lhci/cli dropping
 glob@7).
 """
+
+[[IgnoredVulns]]
+id = "GHSA-fc5q-39xc-vjpf"
+ignoreUntil = 2026-12-02
+reason = """
+picomatch ReDoS (single-branch repeated extglob, CVE-2026-112366). Affects every
+release through 4.0.7, which is the latest on npm; no patched version exists yet
+(upstream fix: micromatch/picomatch#194, unreleased). Transitive via astro/vite/
+vitest/anymatch globbing of our own source paths at build time; no user-supplied
+patterns, not shipped in the static site. Re-check at ignoreUntil.
+"""
