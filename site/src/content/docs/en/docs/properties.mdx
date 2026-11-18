@@ -7,6 +7,14 @@ A comprehensive reference of the properties you can write on `timeline` / `lane`
 
 Importing from Wikidata (`import` / `map` / `template` / `apply`) is covered on the [Wikidata Import & Mapping Reference](/en/docs/wikidata-mapping/). For date/time literal formats (`YYYY-MM-DD` etc.), see the [Date & Time Reference](/en/docs/date-time/).
 
+:::caution[Stricter validation in v3.0.0]
+Starting with v3.0.0 the following are rejected with explicit errors instead of being accepted silently.
+
+- Duplicate properties in the same block (`title` / `unit` / `range` / `calendar` on `timeline`; `kind` / `order` / `color` on `lane`; `tags` / `source` / `id` / `origin` / `note` / `link` / `color` on `span` / `event` / `event_range`). Previously the later value silently overwrote the earlier one.
+- An unsupported `calendar` (anything other than `proleptic_gregorian`; error E119).
+- Auto-generated lane IDs from labels starting with a digit now get a `lane_` prefix (e.g. `123` → `lane_123`). Consumers of the JSON IR will see a different `id`.
+  :::
+
 ## timeline
 
 Defines the metadata for the whole timeline. Write exactly one per `.tdsl` file.
