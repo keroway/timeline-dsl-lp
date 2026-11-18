@@ -139,6 +139,10 @@ export function main(): void;
 /**
  * Render standalone HTML from TDSL source (static items only).
  * Returns Ok(html_string) or Err(error_message).
+ *
+ * `apps/webui` は現在このエクスポートを直接呼ばず `client.ts` の非同期ラッパー経由でも
+ * 未使用だが、npm 公開済みの `tdsl-wasm` パッケージの公開 API として意図的に残している
+ * （#820）。削除すると npm consumer に対する破壊的変更になる。
  */
 export function render_html_from_source(source: string): string;
 
@@ -155,6 +159,10 @@ export function render_html_from_source_with_options(source: string, opts: JsRen
  * `source_span` (line numbers) are embedded as `data-line` attributes in the SVG
  * for bidirectional editor↔preview jump.
  * Returns Ok(svg_string) or Err(error_message).
+ *
+ * `apps/webui` は現在このエクスポートを直接呼ばず `client.ts` の非同期ラッパー経由でも
+ * 未使用だが、npm 公開済みの `tdsl-wasm` パッケージの公開 API として意図的に残している
+ * （#820）。削除すると npm consumer に対する破壊的変更になる。
  */
 export function render_svg_from_source(source: string, scale: number): string;
 
