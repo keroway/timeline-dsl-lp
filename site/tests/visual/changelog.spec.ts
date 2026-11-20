@@ -12,6 +12,11 @@ const THEMES = [
 
 for (const theme of THEMES) {
   test(`Changelog (/changelog/) — ${theme.name}`, async ({ page }) => {
+    // toHaveScreenshot の timeout(60000)より test 全体の timeout を長くする。
+    // 既定の 30000ms だと、撮影が 30,000px 超で遅い run で screenshot の再試行中に
+    // test timeout が先に発火して失敗する(#867)。
+    test.setTimeout(120000);
+
     await page.emulateMedia({ colorScheme: theme.colorScheme });
 
     if (theme.classes.length > 0) {
