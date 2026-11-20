@@ -147,6 +147,12 @@ const sampleList = itemListLd({
       if (zoomBtn) zoomBtn.hidden = false;
     } catch (error) {
       if (renderSeq.get(sample.id) !== seq) return;
+      // 以前の成功描画の状態を解除する（SVG が無いのに拡大ボタンだけ残るのを防ぐ）。
+      el.classList.remove("has-svg");
+      const failedZoomBtn = document.querySelector<HTMLButtonElement>(
+        `[data-gallery-zoom-trigger="${sample.id}"]`,
+      );
+      if (failedZoomBtn) failedZoomBtn.hidden = true;
       const message = error instanceof Error ? error.message : String(error);
       const errorDiv = document.createElement("div");
       errorDiv.className = "gallery-preview-error";
