@@ -1,4 +1,4 @@
-import { localizedPath, type DictionaryKeys, type Locale } from "../i18n/index";
+import { type DictionaryKeys, type Locale, localizedPath } from "../i18n/index";
 
 export type NavItem = {
   labelKey: DictionaryKeys;
@@ -7,7 +7,9 @@ export type NavItem = {
 };
 
 function isActiveInBothLocales(path: string, base: string): boolean {
-  return path === localizedPath(base, "ja") || path === localizedPath(base, "en");
+  return (
+    path === localizedPath(base, "ja") || path === localizedPath(base, "en")
+  );
 }
 
 export const TOP_NAV: NavItem[] = [

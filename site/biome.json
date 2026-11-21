@@ -16,7 +16,7 @@
       "!.lighthouseci",
       "!.playwright-snapshots",
       "!public/wasm",
-      "!src/data",
+      "!src/data/*.generated.json",
       "!pnpm-lock.yaml"
     ]
   },

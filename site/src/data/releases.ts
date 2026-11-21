@@ -24,7 +24,7 @@ export function parseReleasesPayload(raw: unknown): ReleasesPayload {
   const parsed = releasesPayloadSchema.safeParse(raw);
   if (!parsed.success) {
     throw new Error(
-      `[releases] releases.generated.json failed schema validation: ${JSON.stringify(parsed.error.issues)}`,
+      `[releases] releases.generated.json failed schema validation: ${JSON.stringify(parsed.error.issues)}`
     );
   }
   return parsed.data;

@@ -16,7 +16,7 @@ export function parseRepoStatsPayload(raw: unknown): RepoStatsPayload {
   const parsed = repoStatsPayloadSchema.safeParse(raw);
   if (!parsed.success) {
     throw new Error(
-      `[repo-stats] repo-stats.generated.json failed schema validation: ${JSON.stringify(parsed.error.issues)}`,
+      `[repo-stats] repo-stats.generated.json failed schema validation: ${JSON.stringify(parsed.error.issues)}`
     );
   }
   return parsed.data;
