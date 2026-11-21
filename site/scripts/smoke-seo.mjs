@@ -9,6 +9,7 @@ import {
   assertIncludes,
   assertStatus,
   DEFAULT_BASE_URL,
+  findJsonLdProblems,
   get,
   normalizeBaseUrl,
   parseArgs,
@@ -42,9 +43,9 @@ async function smokeSeo(rootUrl) {
     const res = await get(`${rootUrl}${path}`);
     assertStatus(res, path);
     const html = await res.text();
-    const compact = html.replace(/\s+/g, "");
-    for (const needle of required) {
-      assertIncludes(compact, needle, `${path} must include JSON-LD ${needle}`);
+    const problems = findJsonLdProblems(html, required);
+    if (problems.length > 0) {
+      throw new Error(`${path} JSON-LD: ${problems.join(" / ")}`);
     }
   }
   console.log(

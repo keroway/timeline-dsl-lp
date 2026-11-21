@@ -83,6 +83,50 @@ export function assertIncludes(value, expected, label) {
   }
 }
 
+// 受信 HTML の application/ld+json script 要素を JSON として解析し、required
+// （'"@type":"Organization"' 形式）の @type が実ノードに存在するかを判定する純粋関数（#871）。
+// script 要素なし・JSON 構文不正・HTML コメント内だけの @type は問題として返す。
+export function findJsonLdProblems(html, required) {
+  const withoutComments = html.replace(/<!--[\s\S]*?-->/g, "");
+  const scripts = [
+    ...withoutComments.matchAll(
+      /<script\b[^>]*\btype=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi
+    ),
+  ];
+  if (scripts.length === 0) {
+    return ["application/ld+json の script 要素がありません"];
+  }
+  const problems = [];
+  const types = new Set();
+  const collect = (node) => {
+    if (Array.isArray(node)) {
+      for (const item of node) collect(item);
+    } else if (node && typeof node === "object") {
+      const type = node["@type"];
+      for (const t of Array.isArray(type) ? type : [type]) {
+        if (typeof t === "string") types.add(t);
+      }
+      for (const value of Object.values(node)) collect(value);
+    }
+  };
+  for (const [, body] of scripts) {
+    try {
+      collect(JSON.parse(body));
+    } catch (error) {
+      problems.push(`JSON-LD の JSON 構文が不正です: ${error.message}`);
+    }
+  }
+  for (const needle of required) {
+    const name = /^"@type":"(.+)"$/.exec(needle)?.[1];
+    if (name === undefined) {
+      problems.push(`required の形式が不正です: ${needle}`);
+    } else if (!types.has(name)) {
+      problems.push(`JSON-LD に @type ${name} がありません`);
+    }
+  }
+  return problems;
+}
+
 // Playground の WASM 初期化失敗が「見える形」で出ているかを判定する純粋関数（#847）。
 // snapshot は { state, statusText, diagnosticsText, retryButtonText }。
 // 説明文・loading 表示・DSL 診断エラーでは成功させず、失敗専用の状態・通知・再試行 UI を要求する。
