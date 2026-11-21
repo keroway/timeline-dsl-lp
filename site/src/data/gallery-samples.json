@@ -11,7 +11,10 @@
   },
   {
     "id": "project-roadmap",
-    "title": { "ja": "ソフトウェア開発ロードマップ", "en": "Software Development Roadmap" },
+    "title": {
+      "ja": "ソフトウェア開発ロードマップ",
+      "en": "Software Development Roadmap"
+    },
     "description": {
       "ja": "フェーズと節目を span / event で表現したプロジェクト年表",
       "en": "A project timeline expressing phases and milestones with span / event."
@@ -31,7 +34,10 @@
   },
   {
     "id": "release-cycle",
-    "title": { "ja": "ライブラリ リリースサイクル", "en": "Library Release Cycle" },
+    "title": {
+      "ja": "ライブラリ リリースサイクル",
+      "en": "Library Release Cycle"
+    },
     "description": {
       "ja": "メジャー・マイナーバージョンと LTS 期間を span で可視化した例",
       "en": "An example visualizing major/minor versions and LTS periods with span."

@@ -36,7 +36,9 @@ export const INSTALL_CHANNELS: InstallChannel[] = [
     id: "powershell",
     labelKey: "lp.install.tab.powershell",
     osKey: "lp.install.os.powershell",
-    lines: ["irm https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.ps1 | iex"],
+    lines: [
+      "irm https://raw.githubusercontent.com/keroway/timeline-dsl/main/install.ps1 | iex",
+    ],
   },
   {
     id: "cargo",
