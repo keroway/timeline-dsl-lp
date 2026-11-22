@@ -10,6 +10,7 @@ import {
   assertStatus,
   DEFAULT_BASE_URL,
   findJsonLdProblems,
+  findOgImageProblems,
   get,
   normalizeBaseUrl,
   parseArgs,
@@ -60,16 +61,10 @@ async function smokeSeo(rootUrl) {
     const html = await res.text();
     // og:image の content は Astro.site（本番 origin）で出力されるため、preview origin に
     // 依存しないようパス部分の一致で検証する（origin 結合を避ける）。
-    assertIncludes(
-      html,
-      'property="og:image"',
-      `${path} must include og:image`
-    );
-    assertIncludes(
-      html,
-      `${image}"`,
-      `${path} og:image must reference ${image}`
-    );
+    const ogImage = findOgImageProblems(html, image);
+    if (ogImage.problems.length > 0) {
+      throw new Error(`${path} ${ogImage.problems.join(" / ")}`);
+    }
     assertIncludes(
       html,
       'property="og:image:type" content="image/png"',
@@ -85,9 +80,9 @@ async function smokeSeo(rootUrl) {
       'property="og:image:height" content="630"',
       `${path} must include og:image:height=630`
     );
-    // 参照先 PNG が実際に 200 / image/png で配信されることも確認する。
-    const imageRes = await get(`${rootUrl}${image}`);
-    assertStatus(imageRes, image);
+    // meta から抽出した参照先 PNG が実際に 200 / image/png で配信されることも確認する。
+    const imageRes = await get(`${rootUrl}${ogImage.path}`);
+    assertStatus(imageRes, ogImage.path);
     const contentType = imageRes.headers.get("content-type") ?? "";
     if (!contentType.includes("image/png")) {
       throw new Error(
@@ -127,16 +122,10 @@ async function smokeSeo(rootUrl) {
     const res = await get(`${rootUrl}${path}`);
     assertStatus(res, path);
     const html = await res.text();
-    assertIncludes(
-      html,
-      'property="og:image"',
-      `${path} must include og:image`
-    );
-    assertIncludes(
-      html,
-      `${image}"`,
-      `${path} og:image must reference ${image}`
-    );
+    const ogImage = findOgImageProblems(html, image);
+    if (ogImage.problems.length > 0) {
+      throw new Error(`${path} ${ogImage.problems.join(" / ")}`);
+    }
     assertIncludes(
       html,
       'property="og:image:type" content="image/png"',
@@ -152,8 +141,8 @@ async function smokeSeo(rootUrl) {
       'property="og:image:height" content="630"',
       `${path} must include og:image:height=630`
     );
-    const imageRes = await get(`${rootUrl}${image}`);
-    assertStatus(imageRes, image);
+    const imageRes = await get(`${rootUrl}${ogImage.path}`);
+    assertStatus(imageRes, ogImage.path);
     const contentType = imageRes.headers.get("content-type") ?? "";
     if (!contentType.includes("image/png")) {
       throw new Error(

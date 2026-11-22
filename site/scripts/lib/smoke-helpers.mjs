@@ -127,6 +127,50 @@ export function findJsonLdProblems(html, required) {
   return problems;
 }
 
+// HTML コメントを除いた meta 要素のうち、属性 key=value を持つものの content を全て返す（#877）。
+export function extractMetaContents(html, key, value) {
+  const withoutComments = html.replace(/<!--[\s\S]*?-->/g, "");
+  const contents = [];
+  for (const [tag] of withoutComments.matchAll(/<meta\b[^>]*>/gi)) {
+    const attrs = new Map();
+    for (const [, name, , dq, sq, bare] of tag.matchAll(
+      /([^\s=/>]+)\s*=\s*("([^"]*)"|'([^']*)'|[^\s>]+)/g
+    )) {
+      attrs.set(name.toLowerCase(), dq ?? sq ?? bare);
+    }
+    if (attrs.get(key) === value && attrs.has("content")) {
+      contents.push(attrs.get("content"));
+    }
+  }
+  return contents;
+}
+
+// og:image の meta content 自体が期待パス image を指すかを判定する純粋関数（#877）。
+// twitter:image やコメント内の一致では成功させない。origin は本番固定なので pathname で比較する。
+// 返す path は画像取得に使う（参照が解決できなければ undefined）。
+export function findOgImageProblems(html, image) {
+  const contents = extractMetaContents(html, "property", "og:image");
+  if (contents.length === 0) {
+    return { problems: ["og:image の meta 要素（content 付き）がありません"] };
+  }
+  const paths = contents.map((content) => {
+    try {
+      return new URL(content, "http://localhost").pathname;
+    } catch {
+      return content;
+    }
+  });
+  const wrong = paths.filter((path) => path !== image);
+  if (wrong.length > 0) {
+    return {
+      problems: [
+        `og:image が ${image} ではなく ${wrong.join(", ")} を指しています`,
+      ],
+    };
+  }
+  return { problems: [], path: paths[0] };
+}
+
 // Playground の WASM 初期化失敗が「見える形」で出ているかを判定する純粋関数（#847）。
 // snapshot は { state, statusText, diagnosticsText, retryButtonText }。
 // 説明文・loading 表示・DSL 診断エラーでは成功させず、失敗専用の状態・通知・再試行 UI を要求する。
