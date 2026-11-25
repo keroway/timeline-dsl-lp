@@ -69,6 +69,16 @@ describe("findOgImageProblems (#877)", () => {
     ).toHaveLength(1);
   });
 
+  it("script 内の文字列だけに og:image がある場合は拒否する", () => {
+    const html = `<script>const example = '${og(IMG)}';</script>`;
+    expect(findOgImageProblems(html, IMG).problems).toHaveLength(1);
+  });
+
+  it("引用符なしの property / content も取得する", () => {
+    const html = `<meta property=og:image content=${IMG}>`;
+    expect(findOgImageProblems(html, IMG).problems).toEqual([]);
+  });
+
   it("og:image が無ければ拒否する", () => {
     expect(findOgImageProblems(`<p>${IMG}</p>`, IMG).problems).toHaveLength(1);
   });

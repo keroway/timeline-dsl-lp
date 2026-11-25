@@ -127,14 +127,19 @@ export function findJsonLdProblems(html, required) {
   return problems;
 }
 
-// HTML コメントを除いた meta 要素のうち、属性 key=value を持つものの content を全て返す（#877）。
+// HTML コメントと生テキスト要素（script / style / textarea / title）の中身を除いた
+// meta 要素のうち、属性 key=value を持つものの content を全て返す（#877）。
+// jsdom 等の HTML パーサーは import 時に undici のグローバル dispatcher を差し替え、
+// 組み込み fetch の圧縮レスポンス展開を壊すため、この共通ヘルパーでは使わない。
 export function extractMetaContents(html, key, value) {
-  const withoutComments = html.replace(/<!--[\s\S]*?-->/g, "");
+  const visible = html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<(script|style|textarea|title)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, "");
   const contents = [];
-  for (const [tag] of withoutComments.matchAll(/<meta\b[^>]*>/gi)) {
+  for (const [tag] of visible.matchAll(/<meta\b[^>]*>/gi)) {
     const attrs = new Map();
     for (const [, name, , dq, sq, bare] of tag.matchAll(
-      /([^\s=/>]+)\s*=\s*("([^"]*)"|'([^']*)'|[^\s>]+)/g
+      /([^\s=/>]+)\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/g
     )) {
       attrs.set(name.toLowerCase(), dq ?? sq ?? bare);
     }
