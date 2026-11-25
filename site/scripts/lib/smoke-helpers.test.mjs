@@ -1,12 +1,34 @@
 import { describe, expect, it } from "vitest";
 import {
   findJsonLdProblems,
+  findLlmsBodyProblems,
   findOgImageProblems,
   findWasmFailureProblems,
 } from "./smoke-helpers.mjs";
 
 const REQ = ['"@type":"Organization"', '"@type":"WebPage"'];
 const ld = (body) => `<script type="application/ld+json">${body}</script>`;
+
+describe("findLlmsBodyProblems (#886)", () => {
+  const REQUIRED = ["# Timeline DSL", "llms-full.txt"];
+
+  it("必須文字列がそろえば問題なし", () => {
+    expect(
+      findLlmsBodyProblems("# Timeline DSL\n- llms-full.txt", REQUIRED)
+    ).toEqual([]);
+  });
+
+  it("空本文・空白のみを拒否する", () => {
+    expect(findLlmsBodyProblems("", REQUIRED)).toEqual(["body is empty"]);
+    expect(findLlmsBodyProblems(" \n\t", REQUIRED)).toEqual(["body is empty"]);
+  });
+
+  it("エラーページ相当の本文を拒否する", () => {
+    expect(
+      findLlmsBodyProblems("<html><body>Not Found</body></html>", REQUIRED)
+    ).toHaveLength(2);
+  });
+});
 
 describe("findJsonLdProblems (#871)", () => {
   it("配列・@graph 内の @type を含め、required がそろえば問題なし", () => {
