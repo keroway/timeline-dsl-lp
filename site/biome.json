@@ -5,6 +5,8 @@
       "**/*.ts",
       "**/*.js",
       "**/*.mjs",
+      "**/*.mts",
+      "**/*.cjs",
       "**/*.json",
       "!dist",
       "!node_modules",
