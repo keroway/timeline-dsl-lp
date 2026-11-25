@@ -56,7 +56,6 @@ overrides:
   "@vitest/mocker": 4.1.12
 
 patchedDependencies:
-  "@lhci/utils@0.15.1": patches/@lhci__utils@0.15.1.patch
   undici@7.30.1: patches/undici@7.30.1.patch
 
 # pnpm 12 のセキュリティ寄りデフォルト (minimumReleaseAge=1440 / strictDepBuilds /
@@ -120,9 +119,16 @@ trustPolicy: no-downgrade
 #   実際の侵害の証拠は無い)。同時期に shadcn-vue / react-router / c12 等の他プロジェクトでも
 #   同じ downgrade 検知が報告されている (pnpm/pnpm#10622)。chokidar が v5 で provenance を
 #   再度付けるようになったら、この行を削除して trustPolicy を機能させる。
+# chromium-bidi@157.0.8090-0: @lhci/cli 0.16 > lighthouse 13 > puppeteer-core 25 が完全一致で固定する
+#   dev 専用依存。上流ソースが Chromium 本体 (third_party/chromium-bidi) へ移管され
+#   (GoogleChromeLabs/chromium-bidi の README に明記)、157.x 以降は Chrome のマイルストーン準拠の
+#   版番号で Google の chrome-devtools-npm アカウントから publish されるようになった。
+#   GitHub Actions の OIDC publish をやめたため provenance attestation が付かず downgrade 判定される。
+#   puppeteer-core 側が chromium-bidi の版を上げたら、ここも同じ版に差し替える (#880)。
 trustPolicyExclude:
   - "semver@5.7.2 || 6.3.1"
   - "chokidar@4.0.3"
+  - "chromium-bidi@157.0.8090-0"
 
 # pnpm 12 はデフォルトで packageManager フィールドの pnpm バージョンを
 # lockfile に packageManagerDependencies として記録し、pnpm-lock.yaml が

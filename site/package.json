@@ -53,7 +53,7 @@
     "@astrojs/check": "0.9.10",
     "@axe-core/playwright": "^4.11.3",
     "@biomejs/biome": "^2.5.4",
-    "@lhci/cli": "^0.15.1",
+    "@lhci/cli": "^0.16.1",
     "@resvg/resvg-js": "^2.6.2",
     "jsdom": "^29.1.1",
     "lefthook": "^2.1.10",
