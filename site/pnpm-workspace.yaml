@@ -56,7 +56,7 @@ overrides:
   "@vitest/mocker": 4.1.12
 
 patchedDependencies:
-  undici@7.30.1: patches/undici@7.30.1.patch
+  undici@7.30.2: patches/undici@7.30.2.patch
 
 # pnpm 12 のセキュリティ寄りデフォルト (minimumReleaseAge=1440 / strictDepBuilds /
 # blockExoticSubdeps) は既定値のまま使う。
