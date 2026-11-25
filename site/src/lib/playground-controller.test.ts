@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { LOCALE_SWITCH_EVENT } from "./i18n-toggle";
 import { mustQuery } from "./test-dom-helpers";
 
 // WASM・CodeMirror・pan-zoom・共有 URL は collaborator として mock し、
@@ -47,6 +48,7 @@ import {
   buildDiagnosticsFragment,
   createRunLoop,
   initPlayground,
+  LOCALE_HANDOFF_KEY,
   wireDownloads,
   wireFileOpen,
   wireScale,
@@ -74,6 +76,7 @@ const MSGS = {
   shareTooLong: "too long {limit}",
   shareSourceTooLarge: "source too large {limit}",
   shareLoadFailed: "共有リンクを読み込めませんでした",
+  localeHandoffFailed: "引き継げませんでした",
   severityError: "エラー",
   severityWarn: "警告",
   severityInfo: "情報",
@@ -350,6 +353,91 @@ describe("initPlayground runPlayground の状態分岐", () => {
 
     expect(editorDispatch).toHaveBeenCalledTimes(1);
     expect(select.value).toBe("b");
+  });
+});
+
+describe("initPlayground 言語切り替え時の編集内容の引き継ぎ (#879)", () => {
+  const switchLocale = (targetPath: string) => {
+    const event = new CustomEvent(LOCALE_SWITCH_EVENT, {
+      cancelable: true,
+      detail: { targetPath },
+    });
+    window.dispatchEvent(event);
+    return event;
+  };
+
+  beforeEach(() => {
+    sessionStorage.clear();
+    checkTdslSource.mockResolvedValue([]);
+    renderTdslSvgWithOptions.mockResolvedValue(
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+    );
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    window.history.pushState({}, "", "/");
+  });
+
+  it("切り替え時に現在のエディタ内容を遷移先パス宛てに保存する", () => {
+    setupDom();
+    initPlayground();
+
+    const event = switchLocale("/en/playground/");
+
+    expect(event.defaultPrevented).toBe(false);
+    expect(
+      JSON.parse(sessionStorage.getItem(LOCALE_HANDOFF_KEY) ?? "null")
+    ).toEqual({ path: "/en/playground/", source: "event x" });
+  });
+
+  it("遷移先では引き継いだソースを URL の共有ソースより優先して一度だけ復元する", async () => {
+    setupDom();
+    window.history.pushState({}, "", "/en/playground/?src=abc");
+    sessionStorage.setItem(
+      LOCALE_HANDOFF_KEY,
+      JSON.stringify({ path: "/en/playground/", source: "edited" })
+    );
+
+    initPlayground();
+
+    expect(editorDispatch).toHaveBeenCalledWith({
+      changes: { from: 0, to: 7, insert: "edited" },
+    });
+    expect(sessionStorage.getItem(LOCALE_HANDOFF_KEY)).toBeNull();
+    await Promise.resolve();
+    expect(extractSourceFromLocation).not.toHaveBeenCalled();
+  });
+
+  it("別パス宛ての引き継ぎは使わずに破棄し、URL から復元する", async () => {
+    setupDom();
+    window.history.pushState({}, "", "/playground/");
+    sessionStorage.setItem(
+      LOCALE_HANDOFF_KEY,
+      JSON.stringify({ path: "/en/playground/", source: "edited" })
+    );
+
+    initPlayground();
+
+    expect(sessionStorage.getItem(LOCALE_HANDOFF_KEY)).toBeNull();
+    await vi.waitFor(() => {
+      expect(extractSourceFromLocation).toHaveBeenCalled();
+    });
+    expect(editorDispatch).not.toHaveBeenCalled();
+  });
+
+  it("保存できないときは1回目だけ遷移を止めて通知し、2回目は切り替えを許す", async () => {
+    const dom = setupDom();
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("quota", "QuotaExceededError");
+    });
+    initPlayground();
+
+    expect(switchLocale("/en/playground/").defaultPrevented).toBe(true);
+    await vi.waitFor(() => {
+      expect(dom.shareLive.textContent).toBe(MSGS.localeHandoffFailed);
+    });
+    expect(switchLocale("/en/playground/").defaultPrevented).toBe(false);
   });
 });
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { initLangToggle, LOCALE_KEY } from "./i18n-toggle";
+import { initLangToggle, LOCALE_KEY, LOCALE_SWITCH_EVENT } from "./i18n-toggle";
 import { mustQuery } from "./test-dom-helpers";
 
 // jsdom の window.location.assign は非 configurable で spy できないため、
@@ -101,6 +101,37 @@ describe("initLangToggle", () => {
     button.click();
 
     expect(assignMock).toHaveBeenCalledWith("/playground/?src=abc123#preview");
+  });
+
+  it("遷移前に遷移先パスを載せた LOCALE_SWITCH_EVENT を dispatch する", () => {
+    setLocation("/playground/", "?src=abc123");
+    const button = mountButton();
+    const listener = vi.fn();
+    window.addEventListener(LOCALE_SWITCH_EVENT, listener);
+
+    initLangToggle({ buttonSelector: "#lang-toggle", currentLocale: "ja" });
+    button.click();
+    window.removeEventListener(LOCALE_SWITCH_EVENT, listener);
+
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener.mock.calls[0][0].detail).toEqual({
+      targetPath: "/en/playground/",
+    });
+    expect(assignMock).toHaveBeenCalledWith("/en/playground/?src=abc123");
+  });
+
+  it("LOCALE_SWITCH_EVENT が preventDefault されたら遷移も言語保存もしない", () => {
+    setLocation("/playground/");
+    const button = mountButton();
+    const cancel = (event: Event) => event.preventDefault();
+    window.addEventListener(LOCALE_SWITCH_EVENT, cancel);
+
+    initLangToggle({ buttonSelector: "#lang-toggle", currentLocale: "ja" });
+    button.click();
+    window.removeEventListener(LOCALE_SWITCH_EVENT, cancel);
+
+    expect(assignMock).not.toHaveBeenCalled();
+    expect(localStorage.getItem(LOCALE_KEY)).toBeNull();
   });
 
   it("setItem が例外を投げても言語切り替えの遷移は続行する", () => {

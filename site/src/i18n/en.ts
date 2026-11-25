@@ -298,6 +298,8 @@ export const en = {
     "Source is too large to share as a link (limit {limit} bytes after decoding)",
   "playground.share.load_failed":
     "Could not load the shared link. Showing the default sample instead",
+  "playground.locale.handoff_failed":
+    "Could not carry your edits over to the other language. Press the button again to switch and discard your edits",
   "playground.download.html_error": "Could not download the HTML file",
   "playground.file.open_error":
     "Could not read the file. Your current editor content is unchanged",
