@@ -13,6 +13,10 @@ const devServerPort = process.env.PORT ? Number(process.env.PORT) : 4321;
 
 export default defineConfig({
   site: "https://timeline-dsl-lp.pages.dev",
+  // Starlight 0.42 までは integration 側で "where" を強制していたが 0.43 で外れ、
+  // Astro 既定の "attribute" になると scoped style の詳細度が上がって
+  // グローバル CSS との優先順位が変わる（showcase のフッター位置ずれ等）。従来どおり明示する。
+  scopedStyleStrategy: "where",
   // dev / preview 両方に適用される。host を 127.0.0.1 に固定して
   // preview が ::1 のみ bind する問題 (127.0.0.1 で ECONNREFUSED) も回避する。
   server: {

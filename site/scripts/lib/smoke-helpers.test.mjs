@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   findJsonLdProblems,
+  findOgImageProblems,
   findWasmFailureProblems,
 } from "./smoke-helpers.mjs";
 
@@ -37,6 +38,49 @@ describe("findJsonLdProblems (#871)", () => {
     expect(findJsonLdProblems(html, REQ)).toEqual([
       "JSON-LD に @type WebPage がありません",
     ]);
+  });
+});
+
+describe("findOgImageProblems (#877)", () => {
+  const IMG = "/og/home.png";
+  const og = (content) => `<meta property="og:image" content="${content}">`;
+
+  it("og:image の content が期待パスなら絶対 URL でも相対でも通る", () => {
+    expect(findOgImageProblems(og(`https://example.com${IMG}`), IMG)).toEqual({
+      problems: [],
+      path: IMG,
+    });
+    expect(findOgImageProblems(og(IMG), IMG).problems).toEqual([]);
+  });
+
+  it("属性順が逆でも content を取得する", () => {
+    const html = `<meta content="${IMG}" property="og:image" />`;
+    expect(findOgImageProblems(html, IMG).problems).toEqual([]);
+  });
+
+  it("og:image が誤りで twitter:image だけ正しい場合は拒否する", () => {
+    const html = `${og("/wrong.png")}<meta name="twitter:image" content="${IMG}">`;
+    expect(findOgImageProblems(html, IMG).problems).toHaveLength(1);
+  });
+
+  it("コメント内だけに og:image がある場合は拒否する", () => {
+    expect(
+      findOgImageProblems(`<!-- ${og(IMG)} -->`, IMG).problems
+    ).toHaveLength(1);
+  });
+
+  it("script 内の文字列だけに og:image がある場合は拒否する", () => {
+    const html = `<script>const example = '${og(IMG)}';</script>`;
+    expect(findOgImageProblems(html, IMG).problems).toHaveLength(1);
+  });
+
+  it("引用符なしの property / content も取得する", () => {
+    const html = `<meta property=og:image content=${IMG}>`;
+    expect(findOgImageProblems(html, IMG).problems).toEqual([]);
+  });
+
+  it("og:image が無ければ拒否する", () => {
+    expect(findOgImageProblems(`<p>${IMG}</p>`, IMG).problems).toHaveLength(1);
   });
 });
 
