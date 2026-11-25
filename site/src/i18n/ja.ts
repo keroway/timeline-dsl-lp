@@ -294,6 +294,8 @@ export const ja = {
     "ソースが大きすぎて共有リンクを作成できません（展開後の上限 {limit} バイト）",
   "playground.share.load_failed":
     "共有リンクを読み込めませんでした。デフォルトのサンプルを表示しています",
+  "playground.locale.handoff_failed":
+    "編集中の内容を切り替え先の言語へ引き継げませんでした。もう一度押すと、編集内容を破棄して切り替えます",
   "playground.download.html_error": "HTML のダウンロードに失敗しました",
   "playground.file.open_error":
     "ファイルを読み込めませんでした。編集中の内容は保持されています",

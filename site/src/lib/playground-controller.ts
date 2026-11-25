@@ -1,5 +1,6 @@
 import type { PlaygroundSample } from "../data/playground-samples";
 import { interpolate, resolveLocaleFromLocation } from "../i18n/index";
+import { LOCALE_SWITCH_EVENT, type LocaleSwitchDetail } from "./i18n-toggle";
 import { createPlaygroundEditor } from "./playground-editor";
 import type { PlaygroundMsgs } from "./playground-messages";
 import { createPanZoom } from "./playground-pan-zoom";
@@ -407,6 +408,46 @@ export function wireShowEventLabels(opts: {
   return { getShowEventLabels: () => toggle?.checked ?? false };
 }
 
+// 言語切り替え時に編集中のソースを遷移先へ引き渡す sessionStorage キー（#879）。
+// URL の ?src= は共有時点のソースのままなので、編集内容はこちらで運ぶ。
+export const LOCALE_HANDOFF_KEY = "tdsl-playground-locale-handoff";
+
+/** 遷移先パス宛てにソースを保存する。保存できなければ false。 */
+export function saveLocaleHandoff(targetPath: string, source: string): boolean {
+  try {
+    sessionStorage.setItem(
+      LOCALE_HANDOFF_KEY,
+      JSON.stringify({ path: targetPath, source })
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** 現在パス宛てに引き渡されたソースを一度だけ取り出す。無ければ null。 */
+export function takeLocaleHandoff(pathname: string): string | null {
+  try {
+    const raw = sessionStorage.getItem(LOCALE_HANDOFF_KEY);
+    if (raw === null) return null;
+    sessionStorage.removeItem(LOCALE_HANDOFF_KEY);
+    const data: unknown = JSON.parse(raw);
+    if (
+      typeof data === "object" &&
+      data !== null &&
+      "path" in data &&
+      "source" in data &&
+      data.path === pathname &&
+      typeof data.source === "string"
+    ) {
+      return data.source;
+    }
+  } catch {
+    // ストレージ無効・壊れた値は引き渡し無しとして扱う。
+  }
+  return null;
+}
+
 export function initPlayground(): void {
   const root = document.querySelector<HTMLElement>("[data-playground-root]");
   const editorHost = document.querySelector<HTMLElement>("[data-editor-host]");
@@ -637,7 +678,30 @@ export function initPlayground(): void {
     },
   });
 
+  // 保存できないときは1回目だけ遷移を止めて通知し、2回目は編集内容を破棄して切り替える。
+  let handoffFailureAnnounced = false;
+  window.addEventListener(LOCALE_SWITCH_EVENT, (event) => {
+    if (!root?.isConnected) return;
+    const { targetPath } = (event as CustomEvent<LocaleSwitchDetail>).detail;
+    if (saveLocaleHandoff(targetPath, view.state.doc.toString())) return;
+    if (handoffFailureAnnounced) return;
+    handoffFailureAnnounced = true;
+    event.preventDefault();
+    announceToLiveRegion(shareLive, msgs.localeHandoffFailed);
+  });
+
+  const handedOffSource = takeLocaleHandoff(window.location.pathname);
+  if (handedOffSource !== null) {
+    applySource(handedOffSource);
+    if (sampleSelect) {
+      sampleSelect.value =
+        samples.find((item) => item.source === handedOffSource)?.id ?? "";
+    }
+  }
+
   void (async () => {
+    // 言語切り替えで引き継いだ編集内容は、URL の共有ソースより優先する。
+    if (handedOffSource !== null) return;
     const result = await extractSourceFromLocation(window.location.search);
     if (shareRestoreSuperseded) return;
     if (result.status === "ok") {
