@@ -407,17 +407,18 @@ function assertLocaleScopedLinks(html, expectedPrefix) {
   }
 }
 
-// Starlight の左サイドバー（<nav class="sidebar ..." aria-label="Main">）内の href を
+// Starlight の左サイドバー（<nav class="sidebar ...">）内の href を
 // 抽出し、外部リンク（http(s)://）を除いた内部リンクがすべて指定 prefix 配下であることを
 // 検証する。「サイト」/"Site" グループの手動 link 項目（astro.config.mjs の sidebar 設定）
 // が locale 解決されずに ja 側ページへ誤遷移する回帰（#539）を検知する。
+// aria-label は Starlight 0.43 からロケールごとに翻訳される（ja は「メイン」）ため class で特定する。
 function assertLocaleScopedSidebarLinks(html, expectedPrefix) {
   const sidebarMatch = html.match(
-    /<nav class="sidebar[^"]*" aria-label="Main">[\s\S]*?<\/nav>/
+    /<nav class="sidebar[^"]*"[^>]*>[\s\S]*?<\/nav>/
   );
   if (!sidebarMatch) {
     throw new Error(
-      'assertLocaleScopedSidebarLinks: <nav class="sidebar" aria-label="Main"> block not found'
+      'assertLocaleScopedSidebarLinks: <nav class="sidebar"> block not found'
     );
   }
 
