@@ -11,7 +11,7 @@ pre-commit:
   jobs:
     - name: biome check (staged files)
       root: site/
-      glob: "*.{ts,js,mjs,json}"
+      glob: "*.{ts,mts,js,mjs,cjs,json}"
       run: pnpm exec biome check --write --no-errors-on-unmatched {staged_files}
       stage_fixed: true
 
