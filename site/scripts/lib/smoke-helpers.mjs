@@ -83,6 +83,16 @@ export function assertIncludes(value, expected, label) {
   }
 }
 
+// llms*.txt の本文が空・エラーページ相当でないことを判定する純粋関数（#886）。
+// 正常な生成物に必ず現れる必須文字列（required）が全て含まれるかを調べ、
+// 欠けているものを問題として返す。空本文は全 required が欠けるため必ず検出される。
+export function findLlmsBodyProblems(body, required) {
+  if (body.trim() === "") return ["body is empty"];
+  return required
+    .filter((needle) => !body.includes(needle))
+    .map((needle) => `missing: ${needle}`);
+}
+
 // 受信 HTML の application/ld+json script 要素を JSON として解析し、required
 // （'"@type":"Organization"' 形式）の @type が実ノードに存在するかを判定する純粋関数（#871）。
 // script 要素なし・JSON 構文不正・HTML コメント内だけの @type は問題として返す。

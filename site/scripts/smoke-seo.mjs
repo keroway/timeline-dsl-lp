@@ -10,6 +10,7 @@ import {
   assertStatus,
   DEFAULT_BASE_URL,
   findJsonLdProblems,
+  findLlmsBodyProblems,
   findOgImageProblems,
   get,
   normalizeBaseUrl,
@@ -164,6 +165,29 @@ async function smokeSeo(rootUrl) {
   const llmsSmallRes = await get(`${rootUrl}/llms-small.txt`);
   assertStatus(llmsSmallRes, "/llms-small.txt");
   const llmsSmallBody = await llmsSmallRes.text();
+  // 本文消失・エラーページ化を検知する（#886）。必須文字列は正常な生成物から選んだ安定値。
+  for (const [path, body, required] of [
+    [
+      "/llms.txt",
+      await llmsTxtRes.text(),
+      ["# Timeline DSL", "llms-full.txt", "llms-small.txt"],
+    ],
+    [
+      "/llms-full.txt",
+      await llmsFullRes.text(),
+      ["This is the full developer documentation", "# 概要"],
+    ],
+    [
+      "/llms-small.txt",
+      llmsSmallBody,
+      ["This is the abridged developer documentation", "# 概要"],
+    ],
+  ]) {
+    const problems = findLlmsBodyProblems(body, required);
+    if (problems.length > 0) {
+      throw new Error(`${path} body is invalid: ${problems.join("; ")}`);
+    }
+  }
   // astro.config.mjs の starlightLlmsTxt({ exclude: [...] }) は llms-small.txt
   // （要約版）にのみ適用される。deployment ページの見出しが漏れていないことを
   // 確認し、exclude 設定のリグレッションを検知する。
