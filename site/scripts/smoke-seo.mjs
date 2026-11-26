@@ -12,6 +12,7 @@ import {
   findJsonLdProblems,
   findLlmsBodyProblems,
   findOgImageProblems,
+  findPngProblems,
   get,
   normalizeBaseUrl,
   parseArgs,
@@ -23,6 +24,15 @@ const baseUrl = normalizeBaseUrl(
 );
 
 await smokeSeo(baseUrl);
+
+// 配信された OG 画像の本文が有効な 1200x630 PNG であることを確認する（#890）。
+async function assertPngBody(response, label) {
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  const problems = findPngProblems(bytes, 1200, 630);
+  if (problems.length > 0) {
+    throw new Error(`${label} ${problems.join(" / ")}`);
+  }
+}
 
 async function smokeSeo(rootUrl) {
   for (const path of HREFLANG_PATHS) {
@@ -90,6 +100,7 @@ async function smokeSeo(rootUrl) {
         `${image} must be served as image/png (got "${contentType}")`
       );
     }
+    await assertPngBody(imageRes, image);
 
     // og:locale / og:locale:alternate は SocialMeta.astro を使う LP 系ページ（OG_IMAGE_TARGETS
     // と同一スコープ）でのみ、ページの locale と逆向きのペアで 1 つずつ出力される想定
@@ -150,6 +161,7 @@ async function smokeSeo(rootUrl) {
         `${image} must be served as image/png (got "${contentType}")`
       );
     }
+    await assertPngBody(imageRes, image);
   }
   console.log(
     `og:image (Starlight docs): per-page PNG + type + 1200x630 dimensions confirmed on ${STARLIGHT_OG_IMAGE_TARGETS.length} pages. ✓`
