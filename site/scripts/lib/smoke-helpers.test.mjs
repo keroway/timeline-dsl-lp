@@ -61,6 +61,17 @@ describe("findJsonLdProblems (#871)", () => {
       "JSON-LD に @type WebPage がありません",
     ]);
   });
+
+  it("textarea 内の script 文字列は拒否する (#888)", () => {
+    const html = `<textarea>${ld('{"@type":"Organization"}')}</textarea>`;
+    expect(findJsonLdProblems(html, REQ)).toHaveLength(1);
+  });
+
+  it("data-type 属性だけの script は拒否する (#888)", () => {
+    const html =
+      '<script data-type="application/ld+json">{"@type":"Organization"}</script>';
+    expect(findJsonLdProblems(html, REQ)).toHaveLength(1);
+  });
 });
 
 describe("findOgImageProblems (#877)", () => {
