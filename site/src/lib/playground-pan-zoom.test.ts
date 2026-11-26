@@ -912,3 +912,85 @@ describe("createPanZoom — pointer state / RAF / teardown", () => {
     expect(stage.style.transform).toBe(before);
   });
 });
+
+describe("createPanZoom — resize 追従", () => {
+  function makeResizable(width: number) {
+    const env = makeEnv({
+      surfaceW: width,
+      surfaceH: 600,
+      svgW: 700,
+      svgH: 400,
+    });
+    let w = width;
+    Object.defineProperty(env.surface, "clientWidth", {
+      get: () => w,
+      configurable: true,
+    });
+    return { ...env, setWidth: (next: number) => (w = next) };
+  }
+
+  it("フィット状態では resize で新しい寸法に再フィットする", () => {
+    const { surface, stage, setWidth } = makeResizable(800);
+    const pz = createPanZoom({ surface, stage });
+    pz.reset();
+    const before = parseMatrix(stage);
+
+    setWidth(320);
+    window.dispatchEvent(new Event("resize"));
+
+    const after = parseMatrix(stage);
+    expect(after.scale).toBeLessThan(before.scale);
+    expect(after.scale).toBeCloseTo((320 - 64) / 700, 5);
+    pz.destroy();
+  });
+
+  it("手動ズーム後は resize でリセットしない", () => {
+    const { surface, stage, setWidth } = makeResizable(800);
+    const pz = createPanZoom({ surface, stage });
+    pz.reset();
+    surface.dispatchEvent(
+      new WheelEvent("wheel", {
+        deltaY: -100,
+        clientX: 0,
+        clientY: 0,
+        bubbles: true,
+        cancelable: true,
+      })
+    );
+    const zoomed = stage.style.transform;
+
+    setWidth(320);
+    window.dispatchEvent(new Event("resize"));
+
+    expect(stage.style.transform).toBe(zoomed);
+    pz.destroy();
+  });
+
+  it("手動操作後に reset するとフィット状態に戻り resize に追従する", () => {
+    const { surface, stage, setWidth } = makeResizable(800);
+    const pz = createPanZoom({ surface, stage });
+    surface.dispatchEvent(
+      new WheelEvent("wheel", { deltaY: -100, bubbles: true, cancelable: true })
+    );
+    pz.reset();
+
+    setWidth(320);
+    window.dispatchEvent(new Event("resize"));
+
+    expect(parseMatrix(stage).scale).toBeCloseTo((320 - 64) / 700, 5);
+    pz.destroy();
+  });
+
+  it("destroy() 後は resize に反応しない", () => {
+    const { surface, stage, setWidth } = makeResizable(800);
+    const pz = createPanZoom({ surface, stage });
+    pz.reset();
+    const before = stage.style.transform;
+    pz.destroy();
+
+    setWidth(320);
+    window.dispatchEvent(new Event("resize"));
+
+    expect(stage.style.transform).toBe(before);
+  });
+});
