@@ -203,6 +203,15 @@ export function findOgImageProblems(html, image) {
 }
 
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+// color type ごとのチャンネル数と許容 bit depth（PNG 仕様 11.2.2）。
+const PNG_CHANNELS = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 };
+const PNG_BIT_DEPTHS = {
+  0: [1, 2, 4, 8, 16],
+  2: [8, 16],
+  3: [1, 2, 4, 8],
+  4: [8, 16],
+  6: [8, 16],
+};
 
 // 配信された PNG 本体（Uint8Array）が PNG として有効で、実寸が width x height かを判定する純粋関数（#890）。
 // 署名 8 バイト + IHDR チャンク（長さ 13・種別 "IHDR"・幅/高さ big-endian）を読み、
@@ -260,10 +269,33 @@ export function findPngProblems(bytes, width, height) {
   if (idat.length === 0) {
     return ["PNG に IDAT チャンクがありません"];
   }
+  const bitDepth = bytes[24];
+  const colorType = bytes[25];
+  const channels = PNG_CHANNELS[colorType];
+  if (channels === undefined || !PNG_BIT_DEPTHS[colorType].includes(bitDepth)) {
+    return [
+      `PNG の IHDR が不正です（bit depth ${bitDepth} / color type ${colorType}）`,
+    ];
+  }
+  if (bytes[26] !== 0 || bytes[27] !== 0 || bytes[28] !== 0) {
+    return ["PNG の IHDR が非対応です（圧縮・フィルター・インターレース方式）"];
+  }
+  let raw;
   try {
-    inflateSync(Buffer.concat(idat));
+    raw = inflateSync(Buffer.concat(idat));
   } catch {
     return ["PNG の画像データ（IDAT）を展開できません"];
+  }
+  const rowBytes = Math.ceil((width * channels * bitDepth) / 8) + 1;
+  if (raw.length !== rowBytes * height) {
+    return [
+      `PNG の画素データが ${raw.length} バイトです（期待 ${rowBytes * height}）`,
+    ];
+  }
+  for (let row = 0; row < height; row++) {
+    if (raw[row * rowBytes] > 4) {
+      return [`PNG の ${row} 行目のフィルター種別が不正です`];
+    }
   }
   return [];
 }
