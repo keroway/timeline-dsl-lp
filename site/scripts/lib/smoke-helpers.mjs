@@ -97,12 +97,26 @@ export function findLlmsBodyProblems(body, required) {
 // （'"@type":"Organization"' 形式）の @type が実ノードに存在するかを判定する純粋関数（#871）。
 // script 要素なし・JSON 構文不正・HTML コメント内だけの @type は問題として返す。
 export function findJsonLdProblems(html, required) {
-  const withoutComments = html.replace(/<!--[\s\S]*?-->/g, "");
-  const scripts = [
-    ...withoutComments.matchAll(
-      /<script\b[^>]*\btype=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi
-    ),
-  ];
+  // 左から 1 パスで走査し、textarea / style / title の中身は丸ごと読み飛ばす。
+  // script 要素は type 属性が厳密に application/ld+json のものだけを採る（data-type 等は不可）。
+  const scripts = [];
+  for (const [, tag, body, rawTag] of html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .matchAll(
+      /<(?:script\b([^>]*)>([\s\S]*?)<\/script\s*>|(?:textarea|style|title)\b[^>]*>[\s\S]*?<\/(textarea|style|title)\s*>)/gi
+    )) {
+    if (rawTag !== undefined || tag === undefined) continue;
+    for (const [, name, , dq, sq, bare] of tag.matchAll(
+      /([^\s=/>]+)\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/g
+    )) {
+      if (
+        name.toLowerCase() === "type" &&
+        (dq ?? sq ?? bare).trim().toLowerCase() === "application/ld+json"
+      ) {
+        scripts.push(body);
+      }
+    }
+  }
   if (scripts.length === 0) {
     return ["application/ld+json の script 要素がありません"];
   }
@@ -119,7 +133,7 @@ export function findJsonLdProblems(html, required) {
       for (const value of Object.values(node)) collect(value);
     }
   };
-  for (const [, body] of scripts) {
+  for (const body of scripts) {
     try {
       collect(JSON.parse(body));
     } catch (error) {
