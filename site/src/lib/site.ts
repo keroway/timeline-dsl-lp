@@ -29,5 +29,7 @@ export function formatDate(
     year: "numeric",
     month: "long",
     day: "numeric",
+    // ビルド環境の TZ に依存させない（リリース公開日は UTC 基準で固定）
+    timeZone: "UTC",
   }).format(date);
 }
