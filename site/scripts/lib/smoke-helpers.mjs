@@ -200,6 +200,32 @@ export function findOgImageProblems(html, image) {
   return { problems: [], path: paths[0] };
 }
 
+const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+
+// 配信された PNG 本体（Uint8Array）が PNG として有効で、実寸が width x height かを判定する純粋関数（#890）。
+// 署名 8 バイト + IHDR チャンク（長さ 13・種別 "IHDR"・幅/高さ big-endian）を読む。
+export function findPngProblems(bytes, width, height) {
+  if (bytes.length === 0) {
+    return ["画像本文が空です"];
+  }
+  if (bytes.length < 24 || PNG_SIGNATURE.some((b, i) => bytes[i] !== b)) {
+    return ["PNG として不正な内容です（署名が一致しません）"];
+  }
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const ihdr = String.fromCharCode(...bytes.subarray(12, 16));
+  if (view.getUint32(8) !== 13 || ihdr !== "IHDR") {
+    return ["PNG の IHDR チャンクが不正です"];
+  }
+  const actualWidth = view.getUint32(16);
+  const actualHeight = view.getUint32(20);
+  if (actualWidth !== width || actualHeight !== height) {
+    return [
+      `画像の実寸が ${actualWidth}x${actualHeight} です（期待 ${width}x${height}）`,
+    ];
+  }
+  return [];
+}
+
 // Playground の WASM 初期化失敗が「見える形」で出ているかを判定する純粋関数（#847）。
 // snapshot は { state, statusText, diagnosticsText, retryButtonText }。
 // 説明文・loading 表示・DSL 診断エラーでは成功させず、失敗専用の状態・通知・再試行 UI を要求する。

@@ -3,6 +3,7 @@ import {
   findJsonLdProblems,
   findLlmsBodyProblems,
   findOgImageProblems,
+  findPngProblems,
   findWasmFailureProblems,
 } from "./smoke-helpers.mjs";
 
@@ -114,6 +115,36 @@ describe("findOgImageProblems (#877)", () => {
 
   it("og:image が無ければ拒否する", () => {
     expect(findOgImageProblems(`<p>${IMG}</p>`, IMG).problems).toHaveLength(1);
+  });
+});
+
+const png = (width, height) => {
+  const bytes = new Uint8Array(33);
+  bytes.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  const view = new DataView(bytes.buffer);
+  view.setUint32(8, 13);
+  bytes.set([0x49, 0x48, 0x44, 0x52], 12);
+  view.setUint32(16, width);
+  view.setUint32(20, height);
+  return bytes;
+};
+
+describe("findPngProblems (#890)", () => {
+  it("正常な 1200x630 PNG を受理する", () => {
+    expect(findPngProblems(png(1200, 630), 1200, 630)).toEqual([]);
+  });
+
+  it("空本文を拒否する", () => {
+    expect(findPngProblems(new Uint8Array(), 1200, 630)).toHaveLength(1);
+  });
+
+  it("PNG 署名でない本文を拒否する", () => {
+    const jpeg = new Uint8Array(33).fill(0xff);
+    expect(findPngProblems(jpeg, 1200, 630)).toHaveLength(1);
+  });
+
+  it("実寸が異なる PNG を拒否する", () => {
+    expect(findPngProblems(png(600, 315), 1200, 630)).toHaveLength(1);
   });
 });
 
