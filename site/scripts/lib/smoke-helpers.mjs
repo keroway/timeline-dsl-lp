@@ -3,6 +3,8 @@
 // 汎用アサーションを集約する。smoke 固有ロジック（assertCachePolicy / assertExcludes /
 // importPlaywright 等）は各スクリプトのローカルに残す。
 
+import { crc32, inflateSync } from "node:zlib";
+
 export const DEFAULT_BASE_URL = "http://127.0.0.1:4321";
 
 // CLI 引数をパースする。`--base-url <url>` / `--base-url=<url>` は常に解釈する。
@@ -203,7 +205,8 @@ export function findOgImageProblems(html, image) {
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 
 // 配信された PNG 本体（Uint8Array）が PNG として有効で、実寸が width x height かを判定する純粋関数（#890）。
-// 署名 8 バイト + IHDR チャンク（長さ 13・種別 "IHDR"・幅/高さ big-endian）を読む。
+// 署名 8 バイト + IHDR チャンク（長さ 13・種別 "IHDR"・幅/高さ big-endian）を読み、
+// 全チャンクを CRC 付きで走査して IDAT が zlib 展開でき IEND で終わることまで確認する（#892）。
 export function findPngProblems(bytes, width, height) {
   if (bytes.length === 0) {
     return ["画像本文が空です"];
@@ -222,6 +225,45 @@ export function findPngProblems(bytes, width, height) {
     return [
       `画像の実寸が ${actualWidth}x${actualHeight} です（期待 ${width}x${height}）`,
     ];
+  }
+  const idat = [];
+  let sawIend = false;
+  let offset = 8;
+  while (offset < bytes.length) {
+    if (sawIend) {
+      return ["PNG の IEND 以降に余分なデータがあります"];
+    }
+    if (offset + 12 > bytes.length) {
+      return ["PNG のチャンクが途中で切れています"];
+    }
+    const length = view.getUint32(offset);
+    const end = offset + 12 + length;
+    if (end > bytes.length) {
+      return ["PNG のチャンクが途中で切れています"];
+    }
+    const type = String.fromCharCode(...bytes.subarray(offset + 4, offset + 8));
+    const data = bytes.subarray(offset + 8, offset + 8 + length);
+    const expectedCrc = crc32(bytes.subarray(offset + 4, offset + 8 + length));
+    if (view.getUint32(offset + 8 + length) !== expectedCrc) {
+      return [`PNG の ${type} チャンクの CRC が一致しません`];
+    }
+    if (type === "IDAT") {
+      idat.push(data);
+    } else if (type === "IEND") {
+      sawIend = true;
+    }
+    offset = end;
+  }
+  if (!sawIend) {
+    return ["PNG に IEND チャンクがありません"];
+  }
+  if (idat.length === 0) {
+    return ["PNG に IDAT チャンクがありません"];
+  }
+  try {
+    inflateSync(Buffer.concat(idat));
+  } catch {
+    return ["PNG の画像データ（IDAT）を展開できません"];
   }
   return [];
 }
