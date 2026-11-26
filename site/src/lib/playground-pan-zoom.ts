@@ -36,6 +36,8 @@ export function createPanZoom({
   let zoomFloor = minScale;
   let tx = 0;
   let ty = 0;
+  // フィット直後は true。手動のパン・ズームで false になり、リサイズ時の再フィット対象から外す。
+  let fitted = false;
 
   let pendingPan: {
     startX: number;
@@ -79,6 +81,7 @@ export function createPanZoom({
     }
     const svg = stage.querySelector<SVGSVGElement>("svg");
     zoomFloor = minScale;
+    fitted = true;
     if (!svg) {
       scale = 1;
       tx = 0;
@@ -154,6 +157,7 @@ export function createPanZoom({
     if (!panActive) {
       if (Math.hypot(dx, dy) < panThreshold) return;
       panActive = true;
+      fitted = false;
       stage.classList.add("is-panning");
       surface.classList.add("is-panning");
       if (tooltipEl) {
@@ -224,6 +228,7 @@ export function createPanZoom({
     tx = mx - ratio * (mx - tx);
     ty = my - ratio * (my - ty);
     scale = newScale;
+    fitted = false;
 
     applyTransform(scale, tx, ty, false);
 
@@ -238,6 +243,15 @@ export function createPanZoom({
   };
 
   const onDblClick = () => fitToSurface();
+
+  // 表示領域のサイズ変更時は、フィット状態のときだけ新しい寸法で再計算する。
+  const onResize = () => {
+    if (fitted) fitToSurface();
+  };
+  const resizeObserver =
+    typeof ResizeObserver === "undefined" ? null : new ResizeObserver(onResize);
+  resizeObserver?.observe(surface);
+  window.addEventListener("resize", onResize);
 
   // スクロールと同じ向き: ArrowRight は表示領域を右へ動かす（コンテンツは左へ）。
   const keyPanDeltas: Record<string, [number, number]> = {
@@ -264,6 +278,7 @@ export function createPanZoom({
     }
     tx += delta[0];
     ty += delta[1];
+    fitted = false;
     applyTransform(scale, tx, ty, false);
     if (pendingPan) {
       // 進行中のパンの基準をキー移動後の位置へ付け替える。
@@ -292,6 +307,8 @@ export function createPanZoom({
     reset: fitToSurface,
     destroy() {
       cancelPendingFrame();
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", onResize);
       surface.removeEventListener("keydown", onKeyDown);
       surface.removeEventListener("pointerdown", onPointerDown);
       surface.removeEventListener("pointermove", onPointerMove);
