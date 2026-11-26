@@ -183,6 +183,64 @@ describe("findPngProblems (#890, #892)", () => {
     expect(findPngProblems(bytes, 1200, 630)).toHaveLength(1);
   });
 
+  describe("画素データの検証 (#894)", () => {
+    const withRaw = (raw) => {
+      const ihdr = Buffer.alloc(13);
+      ihdr.writeUInt32BE(1200, 0);
+      ihdr.writeUInt32BE(630, 4);
+      ihdr[8] = 8;
+      return new Uint8Array(
+        Buffer.concat([
+          Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+          chunk("IHDR", ihdr),
+          chunk("IDAT", deflateSync(raw)),
+          chunk("IEND", Buffer.alloc(0)),
+        ])
+      );
+    };
+
+    it("展開結果が 0 バイトの IDAT を拒否する", () => {
+      expect(findPngProblems(withRaw(Buffer.alloc(0)), 1200, 630)).toHaveLength(
+        1
+      );
+    });
+
+    it("走査線が不足する IDAT を拒否する", () => {
+      expect(
+        findPngProblems(withRaw(Buffer.alloc(629 * 1201)), 1200, 630)
+      ).toHaveLength(1);
+    });
+
+    it("走査線が余る IDAT を拒否する", () => {
+      expect(
+        findPngProblems(withRaw(Buffer.alloc(631 * 1201)), 1200, 630)
+      ).toHaveLength(1);
+    });
+
+    it("不正なフィルター種別を拒否する", () => {
+      const raw = Buffer.alloc(630 * 1201);
+      raw[10 * 1201] = 5;
+      expect(findPngProblems(withRaw(raw), 1200, 630)).toHaveLength(1);
+    });
+
+    it("color type と bit depth の組み合わせが不正なら拒否する", () => {
+      const ihdr = Buffer.alloc(13);
+      ihdr.writeUInt32BE(1200, 0);
+      ihdr.writeUInt32BE(630, 4);
+      ihdr[8] = 4; // color type 2 (RGB) は 8/16bit のみ
+      ihdr[9] = 2;
+      const bytes = new Uint8Array(
+        Buffer.concat([
+          Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+          chunk("IHDR", ihdr),
+          chunk("IDAT", deflateSync(Buffer.alloc(630 * 1801))),
+          chunk("IEND", Buffer.alloc(0)),
+        ])
+      );
+      expect(findPngProblems(bytes, 1200, 630)).toHaveLength(1);
+    });
+  });
+
   it("空本文を拒否する", () => {
     expect(findPngProblems(new Uint8Array(), 1200, 630)).toHaveLength(1);
   });
