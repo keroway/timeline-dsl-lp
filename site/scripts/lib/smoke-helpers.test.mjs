@@ -1,3 +1,4 @@
+import { crc32, deflateSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import {
   findJsonLdProblems,
@@ -118,20 +119,68 @@ describe("findOgImageProblems (#877)", () => {
   });
 });
 
-const png = (width, height) => {
-  const bytes = new Uint8Array(33);
-  bytes.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
-  const view = new DataView(bytes.buffer);
-  view.setUint32(8, 13);
-  bytes.set([0x49, 0x48, 0x44, 0x52], 12);
-  view.setUint32(16, width);
-  view.setUint32(20, height);
-  return bytes;
+const chunk = (type, data) => {
+  const out = Buffer.alloc(12 + data.length);
+  out.writeUInt32BE(data.length, 0);
+  out.write(type, 4, "ascii");
+  Buffer.from(data).copy(out, 8);
+  out.writeUInt32BE(crc32(out.subarray(4, 8 + data.length)), 8 + data.length);
+  return out;
 };
 
-describe("findPngProblems (#890)", () => {
+// 実際にデコードできる PNG（8bit グレースケール・全画素 0）を組み立てる。
+const png = (width, height) => {
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(width, 0);
+  ihdr.writeUInt32BE(height, 4);
+  ihdr[8] = 8; // bit depth
+  ihdr[9] = 0; // grayscale
+  const raw = Buffer.alloc(height * (1 + width));
+  return new Uint8Array(
+    Buffer.concat([
+      Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+      chunk("IHDR", ihdr),
+      chunk("IDAT", deflateSync(raw)),
+      chunk("IEND", Buffer.alloc(0)),
+    ])
+  );
+};
+
+describe("findPngProblems (#890, #892)", () => {
   it("正常な 1200x630 PNG を受理する", () => {
     expect(findPngProblems(png(1200, 630), 1200, 630)).toEqual([]);
+  });
+
+  it("IHDR 途中の 24 バイトで切れた本文を拒否する (#892)", () => {
+    const truncated = png(1200, 630).slice(0, 24);
+    expect(findPngProblems(truncated, 1200, 630)).toHaveLength(1);
+  });
+
+  it("IEND を欠く本文を拒否する (#892)", () => {
+    const full = png(1200, 630);
+    expect(
+      findPngProblems(full.slice(0, full.length - 12), 1200, 630)
+    ).toHaveLength(1);
+  });
+
+  it("IDAT を欠く本文を拒否する (#892)", () => {
+    const ihdr = Buffer.alloc(13);
+    ihdr.writeUInt32BE(1200, 0);
+    ihdr.writeUInt32BE(630, 4);
+    const bytes = new Uint8Array(
+      Buffer.concat([
+        Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+        chunk("IHDR", ihdr),
+        chunk("IEND", Buffer.alloc(0)),
+      ])
+    );
+    expect(findPngProblems(bytes, 1200, 630)).toHaveLength(1);
+  });
+
+  it("CRC が壊れた本文を拒否する (#892)", () => {
+    const bytes = png(1200, 630);
+    bytes[bytes.length - 1] ^= 0xff;
+    expect(findPngProblems(bytes, 1200, 630)).toHaveLength(1);
   });
 
   it("空本文を拒否する", () => {
