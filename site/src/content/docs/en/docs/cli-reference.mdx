@@ -115,11 +115,11 @@ tdsl check [OPTIONS] <FILE>...
 
 ### Options
 
-| Option              | Description                                                                                                                              | Default |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `--offline`         | Make it explicit that Wikidata resolution is skipped (currently the only behavior either way)                                            | —       |
-| `--format <FORMAT>` | Output format (`text` / `json`). `json` prints machine-readable diagnostics including `code` / `severity` / `line` / `message` (v2.0.0+) | `text`  |
-| `--deny-warnings`   | Exit non-zero when any warning is reported. By default, warnings alone still succeed (v2.0.0+)                                           | —       |
+| Option              | Description                                                                                                                                                                                   | Default |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `--offline`         | Make it explicit that Wikidata resolution is skipped (currently the only behavior either way)                                                                                                 | —       |
+| `--format <FORMAT>` | Output format (`text` / `json`). `json` prints machine-readable diagnostics including `code` / `severity` / `line` / `message` (v2.0.0+)                                                      | `text`  |
+| `--deny-warnings`   | Exit non-zero when any warning is reported. By default, warnings alone still succeed (v2.0.0+). Error diagnostics (including E116–E118) always exit non-zero even without this flag (v3.0.0+) | —       |
 
 For the list of diagnostic codes (e.g. `W204`), see [Errors](/en/docs/errors/). In `text` output, each diagnostic is prefixed with its code and line number, e.g. `Warning [W204] line 2: ...` (v2.0.0+).
 
@@ -214,6 +214,8 @@ tdsl merge base.tdsl extension.tdsl --output combined.json --pretty
 ## decompile
 
 Reverse-generates `.tdsl` source code from a JSON IR file. Useful when the JSON was produced by another tool, or when you want to recover source from an existing IR. Second precision and UTC offsets (`Z` / `±HH:MM`) in `start` / `end` / `time` also round-trip without loss (v1.27.0+; earlier versions silently dropped them).
+
+The IR is not validated before conversion. The same validation warnings as `tdsl build`, such as [W212](/en/docs/errors/) for a lane ID that is not a valid identifier, are only emitted as `Warning:` on stderr; the converted output and the exit code are unchanged (v3.0.0+). Use `tdsl check` to confirm that the output parses again.
 
 ```
 tdsl decompile [OPTIONS] [INPUT]
@@ -492,6 +494,8 @@ tdsl scaffold wikidata \
   --target span
 ```
 
+If a time claim used for mapping (P569 / P570 / P571 / P576 / P580 / P582 / P585) has a value that cannot be converted (an invalid year, month, day, etc.), the command exits with a `<QID>: invalid time claim <PID>: ...` error (v3.0.0+; earlier versions silently ignored it, which could leave the range as `0..2000`).
+
 ## render
 
 Renders a `.tdsl` file to a standalone HTML / SVG / PNG / PDF timeline. See [Commands](/en/docs/commands/#render) for the basic usage.
@@ -736,6 +740,8 @@ tdsl export-csv ir.json --output items.csv
 ## cache
 
 Manages the local cache of Wikidata fetch results. Specify the `status` or `clear` subcommand.
+
+If a cache file is corrupt (unreadable or not valid JSON), fetching prints `tdsl cache: 破損キャッシュを再取得します <path>: <reason>` to stderr, refetches from the API, and overwrites the file (this is not an error; v3.0.0+). Since `--offline` cannot refetch, this warning is the clue to the cause. A missing or expired file is an ordinary miss and produces no warning.
 
 ```
 tdsl cache <COMMAND>

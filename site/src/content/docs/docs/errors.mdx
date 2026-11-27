@@ -3,7 +3,7 @@ title: エラーコードリファレンス
 description: tdsl check / build / lint が出力する診断コード（エラー・警告・Lint）の一覧です。
 ---
 
-`tdsl check` / `tdsl build` / `tdsl lint` が出力する診断コードの一覧です。各コードの原因と修正方法を記載しています。症状からの切り分け方は [Troubleshooting](/docs/troubleshooting/) も参照してください。
+`tdsl check` / `tdsl build` / `tdsl lint` が出力する診断コードの一覧です（W212 は `tdsl decompile` も出力します）。各コードの原因と修正方法を記載しています。症状からの切り分け方は [Troubleshooting](/docs/troubleshooting/) も参照してください。
 
 ## パースエラー（E001–E009）
 
@@ -530,9 +530,9 @@ span dynasty -206..9 "秦"
 
 **修正方法**: 意図した上であれば対応不要。タイプミスであれば `timeline.range` またはアイテムの日付を修正してください。
 
-## Lowering 警告（W208–W211）
+## Lowering 警告（W208–W212）
 
-lowering / validate 段階で発生する警告です。エラーではないためビルドは続行しますが、UTC オフセットの有無が食い違っていて前後関係を判定できないケースや、`map` / `apply` の解決結果に関わる問題を検知するために報告されます。`tdsl build` / `tdsl check` が `Warning:` として stderr に出力します。
+lowering / validate 段階で発生する警告です。エラーではないためビルドは続行しますが、UTC オフセットの有無が食い違っていて前後関係を判定できないケースや、`map` / `apply` の解決結果に関わる問題、IR の lane ID が DSL から参照できない問題を検知するために報告されます。`tdsl build` / `tdsl check` が `Warning:` として stderr に出力します。W212 は IR の検証（validate）で出る警告で、`tdsl decompile` も同じ形式で出力します。
 
 | コード | 内容                                                 |
 | ------ | ---------------------------------------------------- |
@@ -540,6 +540,7 @@ lowering / validate 段階で発生する警告です。エラーではないた
 | W209   | timeline.range でオフセット付き値となし値が混在      |
 | W210   | マッピング対象が必須フィールド未解決でアイテム未生成 |
 | W211   | offline lowering で import / map / apply が未解決    |
+| W212   | lane ID が識別子として無効                           |
 
 ### W208: アイテムの時刻でオフセット付き値となし値が混在
 
@@ -580,6 +581,20 @@ lowering / validate 段階で発生する警告です。エラーではないた
 **原因**: `tdsl check`（および `tdsl build --offline`）は lowering の Pass 1/2 のみを実行し、import 解決（Pass 3）と map 適用（Pass 4）を行いません。そのため `import` / `map` / `apply` ブロックから生成されるはずのアイテムは 0 件になります。
 
 **修正方法**: エラーではありません。Wikidata 由来のアイテムまで検証したい場合は `--offline` を付けずに `tdsl build` を実行してください。
+
+### W212: lane ID が識別子として無効
+
+**メッセージ**: `Lane "{id}" has an id that is not a valid identifier (must start with an ASCII letter or '_' and contain only ASCII letters, digits, '_' or '-'); it cannot be referenced from DSL and 'tdsl decompile' output will not parse`
+
+**原因**: JSON IR の lane `id` が DSL の識別子の文法（先頭は ASCII 英字か `_`、以降は ASCII 英数字・`_`・`-`）を満たしていません。`123` のような ID や、空白・非 ASCII 文字を含む ID は DSL から参照できず、`tdsl decompile` が出力する `as 123` も構文エラーになります。DSL から `tdsl build` した IR では、alias 省略時の自動 ID が `lane_<slug>` になるため通常は発生せず、過去に生成された IR JSON や、手書き・外部生成の IR で起こります（v3.0.0〜）。
+
+**修正方法**: IR の lane `id`（と、それを参照するアイテムの `lane`）を、先頭が英字か `_` の ID に直してください。`tdsl decompile` は IR を検証せずに変換を続け、この警告を stderr に `Warning:` として出すだけです（標準出力と終了コードは変わりません）。
+
+```tdsl
+// 正しい（alias を明示すれば数字だけのラベルでも有効な ID にできる）
+timeline "T" { title "T"; unit year; range 0..100; }
+lane "123" as lane_123 { kind custom; order 1; }
+```
 
 ## Wikidata エラー（E301–E307）
 
