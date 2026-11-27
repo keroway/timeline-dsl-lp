@@ -3,7 +3,7 @@ title: Error Code Reference
 description: A reference of the diagnostic codes (errors, warnings, and lint) emitted by tdsl check / build / lint.
 ---
 
-This is a reference of the diagnostic codes emitted by `tdsl check` / `tdsl build` / `tdsl lint`, with the cause and fix for each code. See [Troubleshooting](/en/docs/troubleshooting/) for symptom-based diagnosis.
+This is a reference of the diagnostic codes emitted by `tdsl check` / `tdsl build` / `tdsl lint` (W212 is also emitted by `tdsl decompile`), with the cause and fix for each code. See [Troubleshooting](/en/docs/troubleshooting/) for symptom-based diagnosis.
 
 ## Parse errors (E001–E009)
 
@@ -530,9 +530,9 @@ span dynasty -206..9 "秦"
 
 **Fix**: No action needed if intentional. If it is a typo, fix `timeline.range` or the item's dates.
 
-## Lowering warnings (W208–W211)
+## Lowering warnings (W208–W212)
 
-Warnings raised during lowering / validation. Since these are not errors, the build continues, but they are reported to catch cases where mismatched UTC-offset usage makes the start/end order indeterminate, or issues related to how `map` / `apply` are resolved. `tdsl build` / `tdsl check` emit them as `Warning:` on stderr.
+Warnings raised during lowering / validation. Since these are not errors, the build continues, but they are reported to catch cases where mismatched UTC-offset usage makes the start/end order indeterminate, issues related to how `map` / `apply` are resolved, or IR lane IDs that cannot be referenced from DSL. `tdsl build` / `tdsl check` emit them as `Warning:` on stderr. W212 is raised by IR validation, and `tdsl decompile` emits it in the same form.
 
 | Code | Description                                                      |
 | ---- | ---------------------------------------------------------------- |
@@ -540,6 +540,7 @@ Warnings raised during lowering / validation. Since these are not errors, the bu
 | W209 | timeline.range mixes a value with a UTC offset and one without   |
 | W210 | Mapped entity produced no item due to unresolved required fields |
 | W211 | import / map / apply left unresolved during offline lowering     |
+| W212 | Lane ID is not a valid identifier                                |
 
 ### W208: Item time mixes a value with a UTC offset and one without
 
@@ -580,6 +581,20 @@ When `expand` is used, `{id}` is suffixed with `(property#index)` to indicate wh
 **Cause**: `tdsl check` (and `tdsl build --offline`) only run Pass 1/2 of lowering, and do not perform import resolution (Pass 3) or map application (Pass 4). As a result, items that would be generated from `import` / `map` / `apply` blocks number zero.
 
 **Fix**: This is not an error. If you want to validate items originating from Wikidata as well, run `tdsl build` without `--offline`.
+
+### W212: Lane ID is not a valid identifier
+
+**Message**: `Lane "{id}" has an id that is not a valid identifier (must start with an ASCII letter or '_' and contain only ASCII letters, digits, '_' or '-'); it cannot be referenced from DSL and 'tdsl decompile' output will not parse`
+
+**Cause**: A lane `id` in the JSON IR does not satisfy the DSL identifier grammar (it must start with an ASCII letter or `_`, followed by ASCII letters, digits, `_`, or `-`). An ID such as `123`, or one containing whitespace or non-ASCII characters, cannot be referenced from DSL, and the `as 123` that `tdsl decompile` outputs is a syntax error. This normally does not happen for an IR produced by `tdsl build` from DSL, because the automatic ID for a lane without an alias becomes `lane_<slug>`; it occurs with IR JSON generated in the past, or with hand-written or externally generated IR (v3.0.0+).
+
+**Fix**: Change the lane `id` in the IR (and the `lane` of the items that reference it) to an ID that starts with a letter or `_`. `tdsl decompile` keeps converting without validating the IR and only emits this warning as `Warning:` on stderr (stdout and the exit code are unchanged).
+
+```tdsl
+// Correct (with an explicit alias, even a digits-only label gets a valid ID)
+timeline "T" { title "T"; unit year; range 0..100; }
+lane "123" as lane_123 { kind custom; order 1; }
+```
 
 ## Wikidata errors (E301–E307)
 
