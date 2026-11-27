@@ -741,7 +741,7 @@ tdsl export-csv ir.json --output items.csv
 
 Manages the local cache of Wikidata fetch results. Specify the `status` or `clear` subcommand.
 
-If a cache file is corrupt (unreadable or not valid JSON), fetching prints `tdsl cache: 破損キャッシュを再取得します <path>: <reason>` to stderr, refetches from the API, and overwrites the file (this is not an error; v3.0.0+). Since `--offline` cannot refetch, this warning is the clue to the cause. A missing or expired file is an ordinary miss and produces no warning.
+If a cache file is corrupt (unreadable or not valid JSON), fetching prints `tdsl cache: 破損キャッシュを再取得します <path>: <reason>` to stderr, refetches from the API, and overwrites the file (this is not an error; v3.0.0+). With `--offline`, Wikidata is not resolved and the cache is not read, so this warning does not appear even if a file is corrupt. A missing or expired file is an ordinary miss and produces no warning.
 
 ```
 tdsl cache <COMMAND>
