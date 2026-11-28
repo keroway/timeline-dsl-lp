@@ -557,6 +557,8 @@ Generates interactive HTML with zoom, pan, item search, a legend, and a detail p
 
 In addition to the lane toggles, the legend panel shows a "Tags" section with a checkbox for each tag registered in `color_map` (declared in the `timeline` block, or overridden via `--color-map`) (since v2.0.0, all tags checked by default). Tag filtering uses OR semantics: an item is hidden when it has none of the checked tags. Unchecking all tags disables tag filtering entirely, showing all items again. Lane toggles and tag toggles combine with AND, so only items matching both conditions are shown. If `color_map` is not set, the Tags section is not rendered.
 
+A tag containing a comma (`a,b`) is also filtered as a single tag (v3.0.1+; earlier versions split it into `a` and `b`, which wrongly hid the item). Each item in the SVG carries a `data-tags-json` attribute holding its tags as a JSON string array (v3.0.1+). The comma-joined `data-tags` is still emitted as before, but read `data-tags-json` to handle tags that contain a comma correctly.
+
 ```sh
 tdsl render examples/china_dynasties.tdsl --interactive --output china_interactive.html
 ```
@@ -669,6 +671,8 @@ tdsl init \
 ## import-csv
 
 Reads timeline items from a CSV file and converts them into a `.tdsl` snippet. See [Commands](/en/docs/commands/) for the CSV column spec (header row, time literals, and the `source`/`origin` columns).
+
+The `lane` column is validated as a DSL identifier, and invalid values (`bad lane`, `1abc`, `a.b`, etc.) are rejected with `CSV row <N>: lane must be a valid identifier` (v3.0.1+, breaking change).
 
 ```
 tdsl import-csv [OPTIONS] <CSV>

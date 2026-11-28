@@ -183,6 +183,8 @@ tdsl render manual.tdsl --output manual.html
 
 v3.0.0 では、継続中（`now`）の期間、`note` / `link` / `color` も往復で保持され、`label` / `id` / `note` の前後空白は削除されません（`lane` / `type` / 時刻 / `tags` は従来どおり前後空白を除去）。
 
+`lane` 列は DSL の識別子（先頭は ASCII 英字か `_`、以降は ASCII 英数字・`_`・`-`）として検証され、`bad lane`・`1abc`・`a.b` のような値は `CSV row <N>: lane must be a valid identifier` のエラーで拒否されます（v3.0.1〜、破壊的変更）。それ以前はそのまま DSL へ展開され、`build` で構文エラーになっていました。これまで通っていた無効な `lane` を含む CSV は、今後エラーになります。
+
 ### export-csv
 
 IR（`.tdsl` または `.json`）をCSVへ書き出します（v1.23.0〜）。`import-csv` が受理する8列（`lane,type,start,end,time,label,tags,id`）に `source` / `origin` を加えた10列を出力し、`source` / `origin` を含めて全10列が `import-csv` とラウンドトリップします（v1.26.0〜）。`start` / `end` / `time` の秒精度・UTCオフセット（`Z` / `±HH:MM`）も欠落せずラウンドトリップします（v1.27.0〜。それ以前は無声で破棄されていました）。`origin=wikidata` の行は `source` が `wd:Q<id>` 形式であることが必須で、不整合はCSV行番号付きエラーになります。
