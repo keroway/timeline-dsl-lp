@@ -7,7 +7,7 @@ This page provides examples for continuously validating `.tdsl` files in your ow
 
 ## Using the Composite Action (Recommended)
 
-With `uses: keroway/timeline-dsl@v1`, you can render `.tdsl` files to SVG or HTML without any manual installation. It supports Linux, macOS, and Windows runners.
+With `uses: keroway/timeline-dsl@v3.0.1`, you can render `.tdsl` files to SVG or HTML without any manual installation. It supports Linux, macOS, and Windows runners.
 
 ```yaml
 name: Render Timeline
@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: keroway/timeline-dsl@v1
+      - uses: keroway/timeline-dsl@v3.0.1
         with:
           file: examples/china_dynasties.tdsl
           format: svg
@@ -33,6 +33,12 @@ jobs:
           name: timeline-svg
           path: output/
 ```
+
+### Which version to reference
+
+Specify a full version tag in `uses:` (e.g. `keroway/timeline-dsl@v3.0.1`). Moving major-version tags such as `@v3` are not provided. Check [Releases](https://github.com/keroway/timeline-dsl/releases) for newer versions.
+
+The tag in `uses:` pins the action definition. The version of the tdsl CLI that gets downloaded is determined separately by the `version` input, which defaults to `latest`.
 
 ### Inputs
 
@@ -45,7 +51,7 @@ jobs:
 | `interactive` | —        | `false`               | Interactive HTML output (only when `format: html`) |
 | `theme`       | —        | (CLI default)         | Theme: `default` / `dark` / `print` / `pastel`     |
 | `scale`       | —        | (CLI default)         | Horizontal axis pixels-per-year rate               |
-| `version`     | —        | `latest`              | The tdsl version to use (e.g. `v1.6.0`)            |
+| `version`     | —        | `latest`              | The tdsl version to use (e.g. `v3.0.1`)            |
 
 ### Outputs
 
@@ -70,7 +76,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: keroway/timeline-dsl@v1
+      - uses: keroway/timeline-dsl@v3.0.1
         with:
           file: examples/china_dynasties.tdsl
           format: svg
@@ -102,7 +108,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: keroway/timeline-dsl@v1
+      - uses: keroway/timeline-dsl@v3.0.1
         with:
           file: timelines/main.tdsl
           format: html
@@ -122,7 +128,7 @@ jobs:
 This is an excerpt intended for release-triggered workflows such as a tag push. Configure the job with an `actions/checkout` step and `permissions: contents: write` (required to upload to the release).
 
 ```yaml
-- uses: keroway/timeline-dsl@v1
+- uses: keroway/timeline-dsl@v3.0.1
   id: render
   with:
     file: timeline.tdsl
@@ -139,10 +145,10 @@ This is an excerpt intended for release-triggered workflows such as a tag push. 
 ### Example: Pin a specific version
 
 ```yaml
-- uses: keroway/timeline-dsl@v1
+- uses: keroway/timeline-dsl@v3.0.1
   with:
     file: timeline.tdsl
-    version: v1.5.0 # Pin the version
+    version: v3.0.1 # Pin the version
 ```
 
 ### Notes
