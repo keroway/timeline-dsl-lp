@@ -72,6 +72,8 @@ tdsl render sample.tdsl \
 | PNG    | `--format png` | Raster (v1.10.0+) | Social sharing, previews       |
 | PDF    | `--format pdf` | Vector (v1.11.0+) | Print, high-resolution display |
 
+The SVG produced by `--format svg` embeds CSS that defines the base colors for lane backgrounds, axes, labels, and so on (v3.0.1+). The colors are no longer missing when the SVG is opened on its own without the HTML wrapper or embedded via `<img>` (earlier versions defined them only on the HTML side, so they were missing in a standalone SVG). See [Styling](/en/docs/styling/) for how overrides take precedence.
+
 PNG is a raster image, so you can adjust its resolution. Use `--dpi <N>` (default 96) to scale from SVG user units by `dpi / 96`, or `--png-scale <factor>` to specify the multiplier directly. The two cannot be combined (v1.11.0+).
 
 ```sh

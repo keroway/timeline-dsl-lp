@@ -38,6 +38,8 @@ The output HTML has no external font/CDN dependency by default. Body text uses t
 The SVG and surrounding elements in the output HTML carry the following CSS classes.
 Override each class via `--custom-css` to change the appearance of the corresponding element.
 
+The SVG itself also embeds base styles equivalent to the default theme (colors for lane backgrounds, axes, labels, and so on) in a `<style>` element (v3.0.1+). Every selector in it is wrapped in `:where()` so its specificity is zero, which means overrides from themes, `--custom-css`, and the host page's CSS always win regardless of stylesheet order.
+
 ### Container
 
 | Class            | Target                                        | Main Properties                                    |
