@@ -170,4 +170,6 @@ pnpm build
 
 For updates that include Playground, also run `pnpm smoke:playground` against the local preview or Cloudflare Pages Preview.
 
+When the version changes, also update the version in `uses:` on the "Validate in CI" page to match `public/wasm/package.json` in the same PR (`pnpm test:unit` detects a mismatch).
+
 The WASM wrapper targets static `.tdsl` validation, IR generation, and SVG/HTML rendering. Wikidata import resolution and network fetching are not supported in the browser-side WASM, and are treated as diagnostics on the Playground side.

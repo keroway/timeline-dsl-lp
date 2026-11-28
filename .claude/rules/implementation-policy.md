@@ -52,6 +52,7 @@
 - WASM バイナリは `site/public/wasm/` に vendoring 済み。
 - 更新は本体リポジトリ (`~/dev/src/github/keroway/timeline-dsl/crates/tdsl-wasm/`) で `wasm-pack build --target web` した成果物を `cp` で同期する。
 - バージョンアップは独立 PR にする (機能変更と混ぜない)。
+- 版を上げるときは docs の `uses: keroway/timeline-dsl@vX.Y.Z` も同じ PR で揃える (`pnpm test:unit` が不一致を検出する)。
 
 ## 8. Issue 運用
 

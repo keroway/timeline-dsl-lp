@@ -170,4 +170,6 @@ pnpm build
 
 Playground を含む更新では、ローカル preview または Cloudflare Pages Preview に対して `pnpm smoke:playground` も実行します。
 
+版を上げたときは、「CIで検証する」ページの `uses:` の版番号も同じ PR で `public/wasm/package.json` の版に揃えます（`pnpm test:unit` が不一致を検出します）。
+
 WASM wrapper が対象にするのは静的な `.tdsl` の検証、IR 生成、SVG/HTML レンダリングです。Wikidata import の解決やネットワーク取得はブラウザ版 WASM では対応外とし、Playground 側では diagnostic として扱います。

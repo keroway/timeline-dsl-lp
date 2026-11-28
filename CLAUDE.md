@@ -96,7 +96,8 @@ site/
 `site/src/lib/tdsl-wasm-node.mts` 経由で WASM を呼ぶ。両者は初期化方式・エラーハンドリングが
 非対称な別モジュール（#732）。バイナリは `site/public/wasm/` に vendoring 済み。更新時は
 本体リポジトリの `crates/tdsl-wasm` を `wasm-pack build --target web` し、生成物を
-`site/public/wasm/` に同期する。
+`site/public/wasm/` に同期する。版を上げるときは docs の `uses: keroway/timeline-dsl@vX.Y.Z` も同じ PR で揃える
+（`site/scripts/action-ref-version-sync.test.mjs` が不一致を検出する）。
 
 ## AI エージェント / LLM 向け公開
 
