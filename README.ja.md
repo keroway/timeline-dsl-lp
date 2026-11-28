@@ -108,4 +108,4 @@ Docs サイトはデスクトップ閲覧が主なため desktop preset を使�
 
 Timeline DSL WASM の呼び出し口は実行環境ごとに 2 つです。Playground（ブラウザ、非同期初期化）は `site/src/lib/tdsl-wasm.ts`、runnable docs（`TimelineEmbed.astro` / `HeroSection.astro` / `ExamplesSection.astro`、ビルド時 Node、`node:fs/promises` で読んだバイナリを `initSync`）は `site/src/lib/tdsl-wasm-node.mts` を経由します。生成済みの `@keroway/tdsl-wasm` ブラウザパッケージを `site/public/wasm/` に vendoring し、本体リポジトリの release pipeline から独立して LP を build できるようにしています。
 
-更新時は本体 repo の `crates/tdsl-wasm` を `wasm-pack build --target web` し、`tdsl_wasm.{js,d.ts}`、`tdsl_wasm_bg.wasm`、`package.json` を `site/public/wasm/` に同期します。`pnpm build` は `check_source` と `render_svg_from_source` の smoke を先に実行します。
+更新時は本体 repo の `crates/tdsl-wasm` を `wasm-pack build --target web` し、`tdsl_wasm.{js,d.ts}`、`tdsl_wasm_bg.wasm`、`package.json` を `site/public/wasm/` に同期します。版を上げたときは docs の `uses: keroway/timeline-dsl@vX.Y.Z` も同じ PR で揃えます（`pnpm test:unit` が不一致を検出します）。`pnpm build` は `check_source` と `render_svg_from_source` の smoke を先に実行します。
